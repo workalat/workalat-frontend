@@ -1,11 +1,11 @@
-import Dashboard from "@/components/Admin/Dashboard/Dashboard";
+import Leads from "@/components/Admin/Dashboard/Leads/Leads";
 import AdminNavbar from "@/components/navbar/admin_navbar";
 
-export default function page() {
+export default function LeadPage() {
     return (
         <div>
             <AdminNavbar />
-            <Dashboard />
+            <Leads />
         </div>
     )
 }

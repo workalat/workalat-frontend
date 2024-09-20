@@ -1,11 +1,11 @@
-import Dashboard from "@/components/Admin/Dashboard/Dashboard";
+import Manage from "@/components/Admin/Dashboard/Manage/Manage";
 import AdminNavbar from "@/components/navbar/admin_navbar";
 
-export default function page() {
+export default function ManagePage() {
     return (
         <div>
             <AdminNavbar />
-            <Dashboard />
+            <Manage />
         </div>
     )
 }

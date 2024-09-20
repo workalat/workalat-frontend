@@ -1,0 +1,15 @@
+.leads-table .react-datepicker__navigation--next--with-time:not(.react-datepicker__navigation--next--with-today-button) {
+    right: 0 !important;
+}
+
+.leads-table .react-datepicker__time-container {
+    width: 100% !important;
+}
+
+.leads-table .react-datepicker__month-container {
+    width: 100% !important;
+}
+
+.leads-table .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+    width: 100% !important;
+}

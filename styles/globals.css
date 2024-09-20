@@ -21,3 +21,25 @@ body:has(.loader) footer {
 @keyframes l13{ 
   100%{transform: rotate(1turn)}
 }
+
+@layer utilities {
+  .hiddenScroll::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+
+  .hiddenScroll::-webkit-scrollbar-track {
+    width: 0px;
+    height: 0px;
+  }
+
+  .hiddenScroll::-webkit-scrollbar-thumb {
+    width: 0px;
+    height: 0px;
+  }
+
+  .hiddenScroll::-webkit-scrollbar-thumb:hover {
+    width: 0px;
+    height: 0px;
+  }
+}
