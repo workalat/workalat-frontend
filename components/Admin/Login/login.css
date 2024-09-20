@@ -1,0 +1,30 @@
+/* Container to hold the CAPTCHA */
+.captcha {
+    width: 100%;
+    position: relative;
+    transform-origin: 0 0;
+    /* Scale from top-left corner */
+    display: flex;
+    justify-content: center;
+}
+
+/* Scale the reCAPTCHA */
+.captcha iframe {
+    width: 100%;
+    transform: scale(1);
+    /* Adjust this scale value to fit your container */
+    transform-origin: top center;
+    /* Ensure it scales from the top-left */
+}
+
+.captcha>div {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Optional: limit container height to avoid overflowing */
+.captcha iframe {
+    height: auto;
+}

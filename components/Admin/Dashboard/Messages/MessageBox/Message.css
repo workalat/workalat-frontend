@@ -1,0 +1,28 @@
+.custom-scroll-of-message::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scroll-of-message::-webkit-scrollbar-track {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scroll-of-message::-webkit-scrollbar-thumb {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scroll-of-message::-webkit-scrollbar-thumb:hover {
+    width: 8px;
+    height: 8px;
+}
+
+.react-input-emoji--container {
+    margin: 0 !important;
+}
+
+.react-input-emoji--button--icon {
+    height: 20px !important;
+    width: 20px !important;
+}
