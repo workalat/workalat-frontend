@@ -100,12 +100,12 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         )}
         {[
           { icon: <SchoolIcon />, text: "Get Certified", hideOnClient: true },
-          { icon: <ConfirmationNumberIcon />, text: "Support Tickets" },
+          { icon: <ConfirmationNumberIcon />, text: "Support Tickets", routePath: "dashboard/support-tickets" },
           { icon: <HelpIcon />, text: "Help" },
         ].map((item, index) => (
           <Link
             key={index}
-            href={`/${item.text.toLowerCase().replace(" ", "-")}`}
+            href={`/${item?.routePath ? item.routePath : item.text.toLowerCase().replace(" ", "-")}`}
             className={`flex items-center p-3 hover:bg-gray-700 rounded-md ${(item.hideOnClient && isClientDashboard) ? "hidden" : ""}`}
           >
             {item.icon}

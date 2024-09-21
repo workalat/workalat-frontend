@@ -73,7 +73,7 @@ const AuthNavbar = () => {
       </NavbarBrand>
       <NavbarContent as="div" justify="end">
         <NavbarItem className="hidden md:inline">
-          <Link href="/projects">My Projects</Link>
+          <Link href="/client/my-projects">My Projects</Link>
         </NavbarItem>
         <NavbarItem className="cursor-pointer ml-6 flex gap-2 items-center" onClick={() => setOpenDropdown(!openDropdown)}>
           <Avatar src={testimonial3Img.src} className="w-8 h-8" />
