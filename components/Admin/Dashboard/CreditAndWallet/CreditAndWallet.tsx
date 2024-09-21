@@ -109,8 +109,7 @@ export default function CreditAndWallet() {
                     </button>
 
                     <div className="flex items-center gap-2">
-                       
-                        {[...Array(Math.ceil(walletData.length / transactionsPerPage)).keys()].map(number => (
+                        {Array.from({ length: Math.ceil(walletData.length / transactionsPerPage) }, (_, number) => (
                             <button
                                 key={number + 1}
                                 onClick={() => setCurrentPage(number + 1)}

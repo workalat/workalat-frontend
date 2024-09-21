@@ -13,7 +13,6 @@ import LeadsNotifier from "./sub-components/leadsNotifier";
 import Help from "./sub-components/help";
 import ResponseNotifier from "./sub-components/responseNotifier";
 
-import AuthNavbar from "@/components/navbar/auth_navbar";
 import theme from "@/config/theme.js";
 import { formatDateTime } from "@/utils/helper";
 
@@ -40,7 +39,6 @@ const Page = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthNavbar />
       <div className="md:hidden fixed bottom-4 right-4 z-50">
         <button
           className="bg-main text-white p-2 rounded-full shadow-lg"

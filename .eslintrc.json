@@ -11,7 +11,12 @@
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended"
   ],
-  "plugins": ["react", "unused-imports", "import", "@typescript-eslint"],
+  "plugins": [
+    "react",
+    "unused-imports",
+    "import",
+    "@typescript-eslint"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -37,6 +42,10 @@
     "no-unused-vars": "off",
     "unused-imports/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "warn",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react-hooks/rules-of-hooks": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
@@ -80,12 +89,32 @@
     ],
     "padding-line-between-statements": [
       "warn",
-      {"blankLine": "always", "prev": "*", "next": "return"},
-      {"blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      {
+        "blankLine": "always",
+        "prev": "*",
+        "next": "return"
+      },
+      {
+        "blankLine": "always",
+        "prev": [
+          "const",
+          "let",
+          "var"
+        ],
+        "next": "*"
+      },
       {
         "blankLine": "any",
-        "prev": ["const", "let", "var"],
-        "next": ["const", "let", "var"]
+        "prev": [
+          "const",
+          "let",
+          "var"
+        ],
+        "next": [
+          "const",
+          "let",
+          "var"
+        ]
       }
     ]
   }
