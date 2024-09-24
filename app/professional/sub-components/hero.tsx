@@ -1,5 +1,5 @@
 "use client";
-import React, { FormEvent,  useState } from "react";
+import React, { FormEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Box, Button } from "@mui/material";
@@ -8,6 +8,7 @@ import { Box, Button } from "@mui/material";
 import searchIcon from "@/public/icons/search.svg";
 import heroIcon from "@/public/images/hero_img2.svg";
 import { siteConfig } from "@/config/site";
+import { useRouter } from "next/navigation";
 
 interface Option {
   label: string;
@@ -15,20 +16,23 @@ interface Option {
 
 const Hero: React.FC = () => {
   const [inputFocus, setInputFocus] = useState<boolean>(false);
-  
+
 
   // State to manage category selection
   const [category, setCategory] = useState<string>("");
 
   // State to manage post code input
-  
 
-  
+
+  const router = useRouter();
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     // eslint-disable-next-line no-console
     console.log("searching...");
+    if (e) {
+      router.push("/professional/signup");
+    }
   };
 
   return (
@@ -81,9 +85,9 @@ const Hero: React.FC = () => {
               )}
             />
           </div>
-          
+
           <Button
-           
+
             className="bg-secondary text-main px-6 py-2 rounded-md disabled:text-opacity-40 flex-grow"
             type="submit"
           >
@@ -97,7 +101,7 @@ const Hero: React.FC = () => {
         className="hidden md:block w-[750px] h-[700px] object-fill object-center"
 
       />
-      
+
     </div>
   );
 };

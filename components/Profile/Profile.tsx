@@ -1,13 +1,16 @@
 'use client'
 
-import { AiOutlineMail } from "react-icons/ai"
-import { FaStar } from "react-icons/fa6"
+import { FaFacebookF, FaLink, FaStar, FaTwitter, FaWhatsapp } from "react-icons/fa6"
 import { GiCheckedShield } from "react-icons/gi"
 import { HiMiniCheckBadge } from "react-icons/hi2"
 import { IoMdChatboxes, IoMdShare } from "react-icons/io"
-import { IoPersonOutline } from "react-icons/io5"
-import { BsTelephone } from "react-icons/bs";
-import { RiWallet3Line } from "react-icons/ri"
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
+import DoneIcon from "@mui/icons-material/Done";
+import { Box, Tooltip } from "@mui/material"
+import { ReactNode, useState } from "react"
 
 export default function Profile() {
 
@@ -98,6 +101,48 @@ export default function Profile() {
         ]
     }
 
+    const VerifiedCell = ({
+        isVerified,
+        Icon,
+        name,
+    }: {
+        isVerified: boolean | undefined;
+        Icon: ReactNode;
+        name: "email" | "payment" | "identity" | "phone";
+    }) => {
+        return (
+            <Tooltip
+                arrow
+                title={
+                    <span className="!font-mono capitalize flex items-center gap-2 !text-sm">
+                        {Icon}
+                        {name} {isVerified ? "Verified" : "Unverified"}
+                        <DoneIcon className="text-green-600 w-4 h-4 -mt-0.5" />
+                    </span>
+                }
+                classes={{
+                    tooltip: "bg-[rgb(237,237,237)] text-main",
+                    arrow: "text-[rgb(237,237,237)]",
+                }}
+            >
+                <Box className={`flex justify-center items-center gap-1 cursor-pointer`}>
+                    {Icon}
+                </Box>
+            </Tooltip>
+        );
+    };
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+        setIsOpen(false); // Close the dropdown after copying
+    };
     return (
         <div className="bg-white relative pb-12">
             {/* Left Image */}
@@ -107,11 +152,11 @@ export default function Profile() {
 
             <div className="w-full bg-secondary h-[80px] sm:h-[100px]"></div>
             {/* Content */}
-            <div className="relative z-10 pt-6 container mx-auto max-w-7xl px-6">
+            <div className="relative z-10 pt-6 container mx-auto lg:px-12 2xl:px-36">
                 <div className="flex flex-col lg:flex-row">
                     <div className="w-full lg:w-1/2 px-2">
-                        <div className="flex w-full">
-                            <img className="w-[80px] h-[80px] sm:w-[120px] sm:h-[120px] object-cover object-top -mt-16 shadow rounded" src="https://img.freepik.com/free-photo/young-businesswoman-wearing-glasses_329181-11694.jpg?size=626&ext=jpg&ga=GA1.1.1819120589.1726704000&semt=ais_hybrid" alt="work alat" />
+                        <div className="flex flex-col md:flex-row gap-5 md:gap-0 w-full">
+                            <img className="w-[80px] mx-auto md:mx-0 h-[80px] sm:w-[100px] sm:h-[100px] object-cover object-top -mt-12 shadow rounded" src="https://img.freepik.com/free-photo/young-businesswoman-wearing-glasses_329181-11694.jpg?size=626&ext=jpg&ga=GA1.1.1819120589.1726704000&semt=ais_hybrid" alt="work alat" />
 
                             <div className="px-3 -mt-4 sm:flex-grow">
                                 <div className="flex justify-between items-start">
@@ -149,23 +194,103 @@ export default function Profile() {
                                             </div>
                                         </div>
                                         <h4 className="font-semibold text-sm sm:text-md py-1">{userData?.title}</h4>
-                                        <div className="flex justify-between">
-                                            <p className="text-xs capitalize">{userData?.location}</p>
+                                        <div className="flex justify-start">
+                                            <p className="text-xs capitalize flex gap-1 items-center">
+
+                                                <img className="size-[13px]" src="/flag.png" alt="workalat" />
+
+                                                {userData?.location}</p>
                                             <p className="text-xs capitalize ps-4">joined on {userData?.joined}</p>
                                         </div>
                                     </div>
-                                    <button className="ms-5"><IoMdShare className="size-5 text-black" /></button>
+
+                                    {/* share button */}
+                                    <div className="relative">
+                                        <button onClick={toggleDropdown} className="flex items-center justify-center w-10 h-10">
+                                            <IoMdShare className="text-2xl text-black" />
+                                        </button>
+                                        {isOpen && (
+                                            <div className="absolute mt-2 w-[250px] bg-white shadow-lg rounded-lg py-2 z-10">
+                                                <button
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
+                                                    onClick={handleCopyLink}
+                                                >
+                                                    <FaLink className="text-blue-500" />
+                                                    Copy Link
+                                                </button>
+                                                <a
+                                                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
+                                                >
+                                                    <FaFacebookF className="text-blue-600" />
+                                                    Share to Facebook
+                                                </a>
+                                                <a
+                                                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
+                                                >
+                                                    <FaTwitter className="text-blue-400" />
+                                                    Share to Twitter
+                                                </a>
+                                                <a
+                                                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(window.location.href)}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
+                                                >
+                                                    <FaWhatsapp className="text-green-500" />
+                                                    Share to WhatsApp
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+
+
                                 </div>
                             </div>
                         </div>
                         <div className="w-full">
                             <h4 className="font-semibold pb-3 pt-2">Verifications</h4>
-                            <div className="flex gap-5 items-center">
-                                <IoPersonOutline className={`size-5 font-bold ${userData?.userIdentity ? "text-green-700" : "text-red"}`} />
-                                <BsTelephone className={`size-[17px] font-bold ${userData?.phoneNumber ? "text-green-700" : "text-red"}`} />
-                                <AiOutlineMail className={`size-5 font-bold ${userData?.email ? "text-green-700" : "text-red"}`} />
-                                <RiWallet3Line className={`size-5 font-bold ${userData?.wallet ? "text-green-700" : "text-red"}`} />
-                            </div>
+                            <Box className="flex gap-4">
+                                {userData?.userIdentity && (
+                                    <VerifiedCell
+                                        isVerified={userData?.userIdentity}
+                                        Icon={
+                                            <PersonOutlineOutlinedIcon className="text-[rgba(4,132,47,1)]" />
+                                        }
+                                        name="identity"
+                                    />
+                                )}
+                                {userData?.phoneNumber && (
+                                    <VerifiedCell
+                                        isVerified={userData?.phoneNumber}
+                                        Icon={
+                                            <LocalPhoneOutlinedIcon className="text-[rgba(4,132,47,1)]" />
+                                        }
+                                        name="phone"
+                                    />
+                                )}
+                                {userData?.email && (
+                                    <VerifiedCell
+                                        isVerified={userData?.email}
+                                        Icon={<EmailOutlinedIcon className="text-[rgba(4,132,47,1)]" />}
+                                        name="email"
+                                    />
+                                )}
+                                {userData?.wallet && (
+                                    <VerifiedCell
+                                        isVerified={userData?.wallet}
+                                        Icon={
+                                            <CreditCardOutlinedIcon className="text-[rgba(4,132,47,1)]" />
+                                        }
+                                        name="payment"
+                                    />
+                                )}
+                            </Box>
 
                             <div className="py-2">
                                 {

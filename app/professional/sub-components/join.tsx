@@ -1,11 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 import { Box, Button } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 // Update with the correct path to your image
 const statsImageUrl = '/images/scores.png';
 
 const StatsComponent = () => {
+  const router = useRouter();
   return (
     <Box className=" text-black py-10 px-5 lg:px-20 flex flex-col lg:flex-row justify-between items-center">
       <div className="max-w-lg mb-10 lg:mb-0">
@@ -17,6 +19,7 @@ const StatsComponent = () => {
           variant="contained"
           className="bg-secondary text-black px-6 py-2  hover:bg-yellow-500"
           size="large"
+          onClick={() => router.push('/professional/signup')}
         >
           Join now →
         </Button>

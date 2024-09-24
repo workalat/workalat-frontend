@@ -12,7 +12,7 @@ import Image from "next/image";
 import clsx from "clsx";
 
 import { fontSans } from "@/config/fonts";
-import logo_light from "@/public/logo_light.png";
+import logo_dark from "@/public/logo_dark.png";
 import logoutIcon from "@/public/icons/logout.svg";
 import settingsIcon from "@/public/icons/settings.svg";
 import notificationsIcon from "@/public/icons/notifications.svg";
@@ -23,10 +23,16 @@ import businessIcon from "@/public/icons/business.svg";
 
 const avatarDropdownMenu = [
   {
+    key: "dashboard",
+    icon: "/icons/dashboard.png",
+    text: "Dashboard",
+    href: "/dashboard"
+  },
+  {
     key: "projects",
     icon: businessIcon,
     text: "My Projects",
-    href: "/projects",
+    href: "/my-projects",
   },
   {
     key: "notifications",
@@ -59,23 +65,23 @@ const AuthNavbar = () => {
 
   return (
     <Navbar
-      className="bg-white border-b border-dark border-opacity-20"
+      className="bg-main border-b border-white border-opacity-20"
       position="sticky"
       maxWidth="xl"
     >
       <NavbarBrand>
-        <Link href="/" className="flex justify-start items-center gap-1">
-          <Image alt="WhatWorks" className="w-8 md:w-11" src={logo_light} />
+        <Link href="/" className="flex justify-start text-white items-center gap-1">
+          <Image alt="WhatWorks" className="w-8 md:w-11" src={logo_dark} />
           <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
           </span>
         </Link>
       </NavbarBrand>
       <NavbarContent as="div" justify="end">
-        <NavbarItem className="hidden md:inline">
+        <NavbarItem className="hidden md:inline text-white">
           <Link href="/client/my-projects">My Projects</Link>
         </NavbarItem>
-        <NavbarItem className="cursor-pointer ml-6 flex gap-2 items-center" onClick={() => setOpenDropdown(!openDropdown)}>
+        <NavbarItem className="cursor-pointer ml-6 flex gap-2 text-white items-center" onClick={() => setOpenDropdown(!openDropdown)}>
           <Avatar src={testimonial3Img.src} className="w-8 h-8" />
           <span className="text-sm sm:text-base">Anita Maika</span>
           <Image
@@ -93,7 +99,7 @@ const AuthNavbar = () => {
                     className={`flex items-center gap-4 p-2 px-3 ${menu.key === "logout" ? "" : "border-b"} border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
                   >
                     <div className="p-2 bg-main rounded-md">
-                      <Image src={menu.icon} alt={menu.text} />
+                      <Image width={500} height={500} className="w-5" src={menu.icon} alt={menu.text} />
                     </div>
                     <span
                       className={

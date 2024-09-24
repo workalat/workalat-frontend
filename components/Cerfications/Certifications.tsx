@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FaArrowRight, FaSquarePlus } from "react-icons/fa6"
 import CertificationModal from "./CertificationsModal";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
+import { formatDateTime } from "@/utils/helper";
 
 export default function Certifications() {
 
@@ -25,6 +26,18 @@ export default function Certifications() {
         setIsAddNewOpen(false);
     }
 
+    const [currentTime, setCurrentTime] = useState<string>(
+        formatDateTime(new Date())
+    );
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(formatDateTime(new Date()));
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <div className="bg-white relative pb-12">
             {/* Left Image */}
@@ -35,8 +48,8 @@ export default function Certifications() {
             {/* Content */}
             <div className="relative z-10 pt-6 container mx-auto max-w-7xl px-6">
                 <div className="flex justify-between items-center py-3 border-b border-black/30">
-                    <h3 className="text-lg font-bold">Certifications</h3>
-                    <h3 className="text-lg font-bold">Saturday, 25 May 8:17am</h3>
+                    <h3 className="text-md font-bold">Certifications</h3>
+                    <h3 className="text-md font-bold">{currentTime}</h3>
                 </div>
 
                 <div className="flex flex-col md:flex-row items-stretch gap-2">

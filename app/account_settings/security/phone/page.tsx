@@ -29,7 +29,7 @@ const PhonePage = () => {
               <PhoneInput
                 international
                 countryCallingCodeEditable={false}
-                defaultCountry="PK"
+                defaultCountry="GB"
                 className="[&_.PhoneInputCountry]:!p-3 [&_.PhoneInputCountry]:bg-gray-200 [&_.PhoneInputCountry]:rounded-md [&_input]:bg-transparent [&_input]:border-b [&_input:hover]:border-dark [&_input]:p-2  [&_input:focus]:outline-secondary"
                 value={value}
                 onChange={handlePhoneNumberChange}
