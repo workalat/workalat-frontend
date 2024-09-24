@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaFacebookF, FaTwitter } from 'react-icons/fa6';
 import { ImLinkedin } from 'react-icons/im';
@@ -89,18 +90,18 @@ const ReferralLinkShare = () => {
                 <div className="flex flex-col items-center w-full mt-4 pb-6">
                     <h2 className="text-sm md:text-md lg:text-lg mb-4">Or share via</h2>
                     <div className="flex flex-wrap justify-center space-x-4">
-                        <a href="#" className="text-[#425994] text-2xl hover:text-[#003d79] transition-colors">
+                        <Link href="#" className="text-[#425994] text-2xl hover:text-[#003d79] transition-colors">
                             <FaFacebookF />
-                        </a>
-                        <a href="#" className="text-[#6DABE9] text-2xl hover:text-[#4a8ad8] transition-colors">
+                        </Link>
+                        <Link href="#" className="text-[#6DABE9] text-2xl hover:text-[#4a8ad8] transition-colors">
                             <FaTwitter />
-                        </a>
-                        <a href="#" className="text-[#FF4853] text-2xl hover:text-[#c8102e] transition-colors">
+                        </Link>
+                        <Link href="#" className="text-[#FF4853] text-2xl hover:text-[#c8102e] transition-colors">
                             <RiInstagramFill />
-                        </a>
-                        <a href="#" className="text-[#2D7AF1] text-2xl hover:text-[#0056b3] transition-colors">
+                        </Link>
+                        <Link href="#" className="text-[#2D7AF1] text-2xl hover:text-[#0056b3] transition-colors">
                             <ImLinkedin />
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

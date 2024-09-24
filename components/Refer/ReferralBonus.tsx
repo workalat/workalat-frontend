@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { FaFacebookF, FaTwitter } from 'react-icons/fa6';
 import { RiInstagramFill } from 'react-icons/ri';
 import { ImLinkedin } from 'react-icons/im';
+import Link from 'next/link';
 
 const ReferralBonus = () => {
     const [isCopied, setIsCopied] = useState(false);
@@ -93,18 +94,18 @@ const ReferralBonus = () => {
                 <div className="flex items-center justify-stretch space-x-2 w-auto mt-4">
                     <h2 className="text-lg">Or share via</h2>
                     <div className="flex items-center space-x-3">
-                        <a href="#" className="text-[#425994] text-2xl">
+                        <Link href="#" className="text-[#425994] text-2xl">
                             <FaFacebookF />
-                        </a>
-                        <a href="#" className="text-[#6DABE9] text-2xl">
+                        </Link>
+                        <Link href="#" className="text-[#6DABE9] text-2xl">
                             <FaTwitter />
-                        </a>
-                        <a href="#" className="text-[#FF4853] text-2xl">
+                        </Link>
+                        <Link href="#" className="text-[#FF4853] text-2xl">
                             <RiInstagramFill />
-                        </a>
-                        <a href="#" className="text-[#2D7AF1] text-2xl">
+                        </Link>
+                        <Link href="#" className="text-[#2D7AF1] text-2xl">
                             <ImLinkedin />
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

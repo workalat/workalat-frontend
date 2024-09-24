@@ -33,18 +33,18 @@ const GetInTouch = () => {
                     <div className="flex items-center space-x-4 mt-6">
                         <h2 className="text-md font-medium text-gray-600">Or share via</h2>
                         <div className="flex space-x-4">
-                            <a href="#" className="text-3xl text-[#425994] hover:text-gray-800 transition-colors duration-200">
+                            <Link href="#" className="text-3xl text-[#425994] hover:text-gray-800 transition-colors duration-200">
                                 <FaFacebookF />
-                            </a>
-                            <a href="#" className="text-3xl text-[#6DABE9] hover:text-gray-600 transition-colors duration-200">
+                            </Link>
+                            <Link href="#" className="text-3xl text-[#6DABE9] hover:text-gray-600 transition-colors duration-200">
                                 <FaTwitter />
-                            </a>
-                            <a href="#" className="text-3xl text-[#FF4853] hover:text-red-500 transition-colors duration-200">
+                            </Link>
+                            <Link href="#" className="text-3xl text-[#FF4853] hover:text-red-500 transition-colors duration-200">
                                 <RiInstagramFill />
-                            </a>
-                            <a href="#" className="text-3xl text-[#2D7AF1] hover:text-gray-700 transition-colors duration-200">
+                            </Link>
+                            <Link href="#" className="text-3xl text-[#2D7AF1] hover:text-gray-700 transition-colors duration-200">
                                 <ImLinkedin />
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
