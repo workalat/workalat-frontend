@@ -8,7 +8,7 @@ const Map = () => {
       <h1 className='text-[36px] lg:text-[40px] sm:text-[36px] md:text-[38px] font-bold'>Contact</h1>
       <p className='text-[18px] mb-[1%]' >World's largest freelancing and crowdsourcing marketplace.</p>
       
-      <iframe className="w-full h-[400px] rounded-xl" src={location} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+      <iframe title="location" className="w-full h-[400px] rounded-xl" src={location} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
     </div>
   )
 }
