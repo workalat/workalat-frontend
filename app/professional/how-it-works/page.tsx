@@ -16,7 +16,7 @@ export default function HowItWorksPage() {
       <div className="container mx-auto max-w-7xl px-6 mt-12">
         <Box className="sticky top-[65px] pt-7 z-10 bg-white flex justify-center items-center w-full border-b border-dark border-opacity-30">
           <Link
-            href="/dashboard"
+            href="/client/dashboard"
             className="flex gap-2 absolute left-0 font-bold"
           >
             <Image

@@ -20,48 +20,52 @@ import switchIcon from "@/public/icons/switch.svg";
 import arrowDownWhiteIcon from "@/public/icons/arrow_down_white.svg";
 import testimonial3Img from "@/public/images/testimonial3.png";
 import businessIcon from "@/public/icons/business.svg";
-
-const avatarDropdownMenu = [
-  {
-    key: "dashboard",
-    icon: "/icons/dashboard.png",
-    text: "Dashboard",
-    href: "/dashboard"
-  },
-  {
-    key: "projects",
-    icon: businessIcon,
-    text: "My Projects",
-    href: "/my-projects",
-  },
-  {
-    key: "notifications",
-    icon: notificationsIcon,
-    text: "Notifications",
-    href: "/notifications",
-  },
-  {
-    key: "switch",
-    icon: switchIcon,
-    text: "Switch to seller",
-    href: "/seller",
-  },
-  {
-    key: "settings",
-    icon: settingsIcon,
-    text: "Settings",
-    href: "/settings",
-  },
-  {
-    key: "logout",
-    icon: logoutIcon,
-    text: "Logout",
-    href: "/logout",
-  },
-];
+import { usePathname } from "next/navigation";
 
 const AuthNavbar = () => {
+  const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = React.useState(false);
+
+
+  const avatarDropdownMenu = [
+    {
+      key: "dashboard",
+      icon: "/icons/dashboard.png",
+      text: "Dashboard",
+      href: "/dashboard"
+    },
+    {
+      key: "projects",
+      icon: businessIcon,
+      text: "My Projects",
+      href: "/my-projects",
+    },
+    {
+      key: "notifications",
+      icon: notificationsIcon,
+      text: "Notifications",
+      href: "/notifications",
+    },
+    {
+      key: "switch",
+      icon: switchIcon,
+      text: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "Switch to Seller" : "Switch to Client"}`,
+      href: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "/professional/dashboard" : "/client/dashboard"}`,
+    },
+    {
+      key: "settings",
+      icon: settingsIcon,
+      text: "Settings",
+      href: "/settings",
+    },
+    {
+      key: "logout",
+      icon: logoutIcon,
+      text: "Logout",
+      href: "/logout",
+    },
+  ];
+
 
   return (
     <Navbar

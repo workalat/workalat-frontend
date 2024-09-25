@@ -12,19 +12,31 @@ import arrowRightIcon from "@/public/icons/arrow_right.svg";
 
 const formItems = [
   {
-    label: "Small Project (£20-£150)",
+    label: {
+      text: "Small Project",
+      amount: "(Below £150)"
+    },
     value: "small",
   },
   {
-    label: "Mini Project (£150- £500)",
+    label: {
+      text: "Mini Project",
+      amount: "(Below £500)"
+    },
     value: "mini",
   },
   {
-    label: "Mega Project (£500- £3,000)",
+    label: {
+      text: "Mega Project",
+      amount: "(Below £3,000)"
+    },
     value: "mega",
   },
   {
-    label: "Negotiable",
+    label: {
+      text: "Premium Project",
+      amount: "(£3,000 & above)"
+    },
     value: "negotiable",
   },
 ];
@@ -73,7 +85,7 @@ const Step6: React.FC<Step5Props> = ({
                 key={index}
                 value={item.value}
                 control={<Radio />}
-                label={item.label}
+                label={<span>{item.label.text} <b>{item.label.amount}</b></span>}
                 labelPlacement="start"
                 className="flex-grow text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
               />

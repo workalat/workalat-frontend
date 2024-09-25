@@ -1,12 +1,9 @@
 import React, { useEffect } from "react";
-import { Button, FormControl, OutlinedInput, TextField } from "@mui/material";
-import { MuiFileInput } from "mui-file-input";
+import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
-import addIcon from "@/public/icons/add.svg";
 import loadingGif from "@/public/images/loader.gif";
-import { isEmptyObject } from "@/utils/helper";
 
 interface Step7Props {
   handleNext: () => void;
@@ -19,6 +16,26 @@ interface FormDataType {
   description: string;
   file: File | null;
 }
+
+
+const formItems = [
+  {
+    label: "Urgently",
+    value: "small",
+  },
+  {
+    label: "Later",
+    value: "mini",
+  },
+  {
+    label: "I'm Flexible",
+    value: "mega",
+  },
+  {
+    label: "I am planning and researching",
+    value: "negotiable",
+  },
+];
 
 const Loader = () => (
   <div className="bg-white px-10 flex flex-col items-center gap-4 text-center">
@@ -55,13 +72,13 @@ const Step7 = ({ handleNext, updateFormData, handlePrev }: Step7Props) => {
     ) {
       return alert("Please fill in all fields");
     }
-    
+
     updateFormData({ summary: formData });
     setLoading(true);
 
     // MOCK API call
     setTimeout(() => {
-        handleNext();
+      handleNext();
     }, 3000);
   }
 
@@ -79,6 +96,16 @@ const Step7 = ({ handleNext, updateFormData, handlePrev }: Step7Props) => {
     }
   }, []);
 
+  const [budget, setBudget] = React.useState(
+    localStorage.getItem("stepFormData")
+      ? JSON.parse(localStorage.getItem("stepFormData")!).budget
+      : ""
+  );
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBudget((event.target as HTMLInputElement).value);
+  };
+
   return (
     <>
       {loading ? (
@@ -86,65 +113,31 @@ const Step7 = ({ handleNext, updateFormData, handlePrev }: Step7Props) => {
       ) : (
         <>
           <h1 className="text-2xl font-bold text-center max-w-[450px]">
-            This is the summary of your project requirement
-          </h1>
-          <p className="mb-2 -mt-4">
-            Please edit the details below if you are not satisfied.
-          </p>
+            When do you need this service?
+            </h1>
+            <p className="-mt-4">Please let us know when you need the service</p>
           <form
-            className="flex flex-col items-center gap-6 w-full px-10"
+              className="flex flex-col gap-0 px-8 w-full"
             onSubmit={handleSubmit}
           >
-            <FormControl className="w-full">
-              <label htmlFor="service" className="sm:text-lg font-bold mb-2">
-                Title
-              </label>
-              <OutlinedInput
-                required
-                placeholder="I need a dry cleaner in CF37 1FD"
-                value={formData.title}
-                id="service"
-                className="rounded-md shadow-medium border-b-3 border-b-secondary"
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, title: e.target.value }))
-                }
-              />
-            </FormControl>
-            <FormControl className="w-full">
-              <label htmlFor="location" className="sm:text-lg font-bold mb-2">
-                Description
-              </label>
-              <TextField
-                required
-                multiline
-                placeholder="I need a professional dry cleaner in my house located in CF37 1FD. The service i required in a weekly basis to clean my laundry, iron it and arrange it properly."
-                value={formData.description}
-                rows={4}
-                id="location"
-                className="rounded-md shadow-medium [&>*]:!border-b-4 [&>*]:!border-b-secondary"
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-              />
-            </FormControl>
-            <FormControl className="w-full relative cursor-pointer">
-              <MuiFileInput
-                required
-                className="bg-main bg-opacity-40 rounded-md !border-none focus:!border-none"
-                value={formData.file}
-                onChange={(newFile) =>
-                  setFormData((prev) => ({ ...prev, file: newFile }))
-                }
-              />
-              <div
-                className={`flex gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer pointer-events-none ${(formData.file || isEmptyObject(formData.file)) ? "hidden" : ""}`}
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="additional service"
+                name="additional service"
+                value={budget}
+                onChange={handleChange}
               >
-                <Image src={addIcon} alt="" />
-                <p className="text-lg">Add photos/files</p>
-              </div>
+                {formItems.map((item, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={item.value}
+                    control={<Radio />}
+                    label={item.label}
+                    labelPlacement="start"
+                    className="flex-grow text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
+                  />
+                ))}
+              </RadioGroup>
             </FormControl>
             <div className="mt-2 flex w-full justify-between">
               <Button

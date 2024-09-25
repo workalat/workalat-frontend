@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface Step3Props {
   handleNext: () => void;
@@ -32,12 +33,14 @@ const Step3: React.FC<Step3Props> = ({ handleNext, handlePrev, updateFormData })
   
   return (
     <>
-      <h1 className="text-3xl font-bold text-center">
+      {/* <h1 className="text-3xl font-bold text-center">
         Number of Items to Dry Clean
       </h1>
-      <p className="-mt-4 mb-4">Indicate the number of laundry.</p>
+      <p className="-mt-4 mb-4">Indicate the number of laundry.</p> */}
       <form className="flex flex-col gap-0 px-8 w-full" onSubmit={handleSubmit}>
-        <FormControl fullWidth>
+        {/* this div will be removed */}
+        <div className="h-[400px]"></div>
+        {/* <FormControl fullWidth>
           <InputLabel id="no_of_items">Please select</InputLabel>
           <Select
             required
@@ -55,7 +58,7 @@ const Step3: React.FC<Step3Props> = ({ handleNext, handlePrev, updateFormData })
             <MenuItem value={"5"}>Five</MenuItem>
             <MenuItem value={"More"}>More</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
         <div className="mt-8 flex justify-between">
             <Button
               variant="outlined"
@@ -75,6 +78,7 @@ const Step3: React.FC<Step3Props> = ({ handleNext, handlePrev, updateFormData })
                 <Image src={arrowRightIcon} alt="Arrow right" />
             </Button>
         </div>
+        <button onClick={handleNext} className="flex items-center justify-center">Skip <IoIosArrowForward className="size-3" /></button>
       </form>
     </>
   );
