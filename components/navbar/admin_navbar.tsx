@@ -21,42 +21,51 @@ import testimonial3Img from "@/public/images/testimonial3.png";
 import businessIcon from "@/public/icons/business.svg";
 import { TiArrowSortedUp } from "react-icons/ti";
 import { FaBell } from "react-icons/fa6";
+import { usePathname } from "next/navigation";
 
-const avatarDropdownMenu = [
-    {
-        key: "projects",
-        icon: businessIcon,
-        text: "My Projects",
-        href: "/projects",
-    },
-    {
-        key: "notifications",
-        icon: notificationsIcon,
-        text: "Notifications",
-        href: "/notifications",
-    },
-    {
-        key: "switch",
-        icon: switchIcon,
-        text: "Switch to seller",
-        href: "/seller",
-    },
-    {
-        key: "settings",
-        icon: settingsIcon,
-        text: "Settings",
-        href: "/settings",
-    },
-    {
-        key: "logout",
-        icon: logoutIcon,
-        text: "Logout",
-        href: "/logout",
-    },
-];
 
 const AdminNavbar = () => {
+    const pathname = usePathname();
     const [openDropdown, setOpenDropdown] = React.useState(false);
+
+    const avatarDropdownMenu = [
+        {
+            key: "dashboard",
+            icon: "/icons/dashboard.png",
+            text: "Dashboard",
+            href: "/client/dashboard"
+        },
+        {
+            key: "projects",
+            icon: businessIcon,
+            text: "My Projects",
+            href: "/my-projects",
+        },
+        {
+            key: "notifications",
+            icon: notificationsIcon,
+            text: "Notifications",
+            href: "/notifications",
+        },
+        {
+            key: "switch",
+            icon: switchIcon,
+            text: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "Switch to Seller" : "Switch to Client"}`,
+            href: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "/professional/dashboard" : "/client/dashboard"}`,
+        },
+        {
+            key: "settings",
+            icon: settingsIcon,
+            text: "Settings",
+            href: "/settings",
+        },
+        {
+            key: "logout",
+            icon: logoutIcon,
+            text: "Logout",
+            href: "/logout",
+        },
+    ];
 
     return (
         <Navbar
@@ -66,7 +75,7 @@ const AdminNavbar = () => {
         >
             <NavbarBrand>
                 <Link href="/" className="flex justify-start items-center gap-1">
-                    <Image alt="WhatWorks" className="w-8 md:w-11" src={logo_dark} />
+                    <Image width={1000} height={1000} alt="WhatWorks" className="w-8 md:w-11" src={logo_dark} />
                     <span className={clsx("font-semibold font-sans text-white", fontSans.variable)}>
                         WhatWorks
                     </span>
@@ -88,7 +97,7 @@ const AdminNavbar = () => {
                                         className={`flex items-center gap-4 p-2 px-3 ${menu.key === "logout" ? "" : "border-b"} border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
                                     >
                                         <div className="p-2 bg-main rounded-md">
-                                            <Image src={menu.icon} alt={menu.text} />
+                                            <Image className="w-5" width={1000} height={1000} src={menu.icon} alt={menu.text} />
                                         </div>
                                         <span
                                             className={

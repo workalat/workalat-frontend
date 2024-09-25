@@ -14,7 +14,7 @@ export default function WalletLayout({ children }: { children: ReactNode }) {
       <main className="w-full max-w-screen-xl mx-auto mt-8 px-6">
         <Box className="relative flex justify-center items-center w-full border-b border-dark border-opacity-30">
           <Link
-            href="/dashboard"
+            href="/client/dashboard"
             className="flex gap-2 absolute left-0 font-bold"
           >
             <Image

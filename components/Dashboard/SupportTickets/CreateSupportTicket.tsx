@@ -2,9 +2,10 @@
 import SideNav from "@/components/sideNav";
 import { ticketsData } from "@/utils/TicketsData";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import MenuIcon from "@mui/icons-material/Menu";
+import { usePathname } from "next/navigation";
 
 export default function CreateSupportTicket() {
     // here tickets data will be dynamically from the backend. for now i using "import { ticketsData } from "@/utils/TicketsData";" as a demo tickets data. and here also will be post operation for create ticket
@@ -17,6 +18,18 @@ export default function CreateSupportTicket() {
     const toggleSideNav = () => {
         setIsSideNavOpen(!isSideNavOpen);
     };
+
+
+    const pathname = usePathname();
+
+    useEffect(() => {
+
+        if (pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")) {
+            setIsClientDashboard(true);
+        } else if (pathname === "/professional/dashboard" || pathname.startsWith("/professional/dashboard/")) {
+            setIsClientDashboard(false);
+        }
+    }, [pathname]);
 
     return (
         <div>
@@ -48,9 +61,9 @@ export default function CreateSupportTicket() {
                             <h4 className="font-bold text-[20px]">{ticketsData?.length} Records</h4>
                             {/* users type selector */}
                             <div className="flex justify-end gap-4">
-                                <Link href={"/dashboard/support-tickets"} className="bg-transparent flex items-center justify-center text-[15px] py-2 font-semibold rounded-md px-8 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer">All</Link>
+                                <Link href={isClientDashboard ? "/client/dashboard/support-tickets" : "/professional/dashboard/support-tickets"} className="bg-transparent flex items-center justify-center text-[15px] py-2 font-semibold rounded-md px-8 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer">All</Link>
 
-                                <Link href="/dashboard/support-tickets/create-tickets" className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
+                                <Link href={isClientDashboard ? "/client/dashboard/support-tickets/create-tickets" : "/professional/dashboard/support-tickets/create-tickets"} className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
                             </div>
                         </div>
 

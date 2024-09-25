@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from "react";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface formDataType {
   two_piece: boolean;
@@ -87,11 +88,13 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
   
   return (
     <>
-      <h1 className="text-3xl font-bold text-center mt-8">
+      {/* <h1 className="text-3xl font-bold text-center mt-8">
         What do you need Dry Cleaning?
-      </h1>
+      </h1> */}
       <form className="flex flex-col gap-0 px-4 pr-8 w-full" onSubmit={handleSubmit} >
-        {formItems.map((item, index) => (
+        {/* this div will be removed */}
+        <div className="h-[400px]"></div>
+        {/* {formItems.map((item, index) => (
           <FormControlLabel
             key={index}
             className="flex-grow text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
@@ -105,7 +108,7 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
             label={item.label}
             labelPlacement="start"
           />
-        ))}
+        ))} */}
         <div className="mt-8 flex justify-between pl-4">
             <Button
               variant="outlined"
@@ -125,6 +128,7 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
                 <Image src={arrowRightIcon} alt="Arrow right" />
             </Button>
         </div>
+        <button onClick={handleNext} className="flex items-center justify-center">Skip <IoIosArrowForward className="size-3" /></button>
       </form>
     </>
   );

@@ -6,6 +6,7 @@ import graphicdesigner from "@/public/images/graphic_designer.png";
 import housecleaning from "@/public/images/house_cleaning.png";
 import lifecoaching from "@/public/images/life_coaching.png";
 import webdevimg from "@/public/images/web_development.png";
+import { useRouter } from "next/navigation";
 
 const popular_services = [
   {
@@ -31,6 +32,7 @@ const popular_services = [
 ];
 
 const PopularServices = () => {
+  const router = useRouter();
   return (
     <Box className="space-y-7 mt-20 pb-10 mx-10 sm:px-6 lg:px-8">
       <h2 className="font-extrabold text-3xl pb-3">Popular Services</h2>
@@ -41,7 +43,7 @@ const PopularServices = () => {
             <div className="p-4 bg-main text-white">
               <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
               <p className="text-sm mb-3">{service.description}</p>
-              <button className="text-yellow-400 border border-yellow-400 px-3 py-1 rounded hover:bg-yellow-400 hover:text-[#012B6D] transition-colors">
+              <button onClick={() => router.push("/professional/signup")} className="text-yellow-400 border border-yellow-400 px-3 py-1 rounded hover:bg-yellow-400 hover:text-[#012B6D] transition-colors">
                 Explore →
               </button>
             </div>

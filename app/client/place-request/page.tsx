@@ -16,6 +16,7 @@ import Step7 from "../components/step7";
 import PhoneOtp from "../components/phoneOtp";
 import VerifyOTP from "../components/verifyOtp";
 import Done from "../components/done";
+import Step8 from "../components/step8";
 
 type formDataType = {
   service: string;
@@ -130,9 +131,10 @@ const PlaceRequestPage = () => {
     if (step === 4) return <Step5 handleNext={handleNext} updateFormData={updateFormData} handlePrev={handleBack} />;
     if (step === 5) return <Step6 handleNext={handleNext} updateFormData={updateFormData} handlePrev={handleBack} />;
     if (step === 6) return <Step7 handleNext={handleNext} updateFormData={updateFormData} handlePrev={handleBack} />;
-    if (step === 7) return <PhoneOtp handleNext={handleNext} updateFormData={updateFormData} handlePrev={handleBack} />
-    if (step === 8) return <VerifyOTP handleNext={handleNext} handlePrev={handleBack} />
-    if (step === 9) return <Done />;
+    if (step === 7) return <Step8 handleNext={handleNext} updateFormData={updateFormData} handlePrev={handleBack} />;
+    if (step === 8) return <PhoneOtp handleNext={handleNext} updateFormData={updateFormData} handlePrev={handleBack} />
+    if (step === 9) return <VerifyOTP handleNext={handleNext} handlePrev={handleBack} />
+    if (step === 10) return <Done />;
   };
 
   return (
@@ -148,7 +150,7 @@ const PlaceRequestPage = () => {
         {(activeStep !== 0 && activeStep !== 7 && activeStep !== 8 && activeStep !== 9 ) && (
           <MobileStepper
             variant="progress"
-            steps={10}
+            steps={11}
             position="static"
             activeStep={activeStep}
             sx={{ width: 700, background: "transparent", flexGrow: 1 }}

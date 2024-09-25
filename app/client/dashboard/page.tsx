@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import SideNav from "../../components/sideNav";
+import SideNav from "../../../components/sideNav";
 
 import ProfileWidget from "./sub-components/profileWidget";
 import VerificationWidget from "./sub-components/verificationWidget";
@@ -15,9 +15,11 @@ import ResponseNotifier from "./sub-components/responseNotifier";
 
 import theme from "@/config/theme.js";
 import { formatDateTime } from "@/utils/helper";
+import { usePathname } from "next/navigation";
 
 const Page = () => {
   const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
+  const pathname = usePathname();
 
   const [isSideNavOpen, setIsSideNavOpen] = useState(false);
 
@@ -36,6 +38,18 @@ const Page = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    console.log("Current pathname:", pathname); // Check what's being logged
+
+    if (pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")) {
+      setIsClientDashboard(true);
+    } else if (pathname === "/professional/dashboard" || pathname.startsWith("/professional/dashboard/")) {
+      setIsClientDashboard(false);
+    }
+  }, [pathname]);
+
+
 
   return (
     <ThemeProvider theme={theme}>

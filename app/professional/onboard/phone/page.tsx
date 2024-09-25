@@ -59,7 +59,7 @@ const GetProfessionalPhone = () => {
                             international
                             id="phone-input"
                             countryCallingCodeEditable={false}
-                            defaultCountry="PK"
+                            defaultCountry="GB"
                             className="[&_.PhoneInputCountry]:!p-3 [&_.PhoneInputCountry]:bg-gray-200 [&_.PhoneInputCountry]:rounded-md [&_input]:bg-transparent [&_input:hover]:border-dark [&_input]:p-2  [&:has(input:focus)]:border-secondary [&_input:focus]:outline-none border px-4 py-2 rounded-md border-b-4 border-b-secondary shadow-md"
                             value={value}
                             onChange={handlePhoneNumberChange}

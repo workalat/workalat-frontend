@@ -8,6 +8,7 @@ import Link from "next/link";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import SideNav from "@/components/sideNav";
+import { usePathname } from "next/navigation";
 
 export default function SupportTickets() {
 
@@ -29,6 +30,8 @@ export default function SupportTickets() {
         setFilteredUsers(result);
     }, [userType]);
 
+    const pathname = usePathname();
+
     const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
 
     const [isSideNavOpen, setIsSideNavOpen] = useState(false);
@@ -36,6 +39,16 @@ export default function SupportTickets() {
     const toggleSideNav = () => {
         setIsSideNavOpen(!isSideNavOpen);
     };
+
+    useEffect(() => {
+        console.log("Current pathname:", pathname); // Check what's being logged
+
+        if (pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")) {
+            setIsClientDashboard(true);
+        } else if (pathname === "/professional/dashboard" || pathname.startsWith("/professional/dashboard/")) {
+            setIsClientDashboard(false);
+        }
+    }, [pathname]);
     return (
         <div>
             <div className="md:hidden fixed bottom-4 right-4 z-50">
@@ -83,7 +96,7 @@ export default function SupportTickets() {
                                 {/* button for refresh */}
                                 <button onClick={() => window.location.reload()} className="flex justify-center items-center px-5 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] "><RiRefreshLine className="size-[15px]" /></button>
                                 {/* open new ticket button */}
-                                <Link href="/dashboard/support-tickets/create-tickets" className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
+                                <Link href={isClientDashboard ? "/client/dashboard/support-tickets/create-tickets" : "/professional/dashboard/support-tickets/create-tickets"} className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
                                 {/* all tickets */}
                                 <button className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] text-[15px] font-bold ">All Tickets<FaArrowRight className="size-3" /></button>
                             </div>
@@ -111,7 +124,7 @@ export default function SupportTickets() {
                                                 <td className="p-4">
                                                     {/* this button will be connected with backend for some function or operation and it will dynamic */}
                                                     {
-                                                        user?.status == "waiting" ? <Link href={`/dashboard/support-tickets/view/${user?.id}`} className="flex gap-2 justify-center items-center px-2 py-2 rounded-md bg-[#7A7A7A] text-white text-[15px] font-semibold w-[200px]"><RiCloseFill className="size-[15px] rounded-sm text-[#07242B] bg-white" />Waiting on Customer</Link> : user?.status == "closed" && <button className="px-4 py-2 rounded-md bg-[#00A770] text-white text-[15px] font-semibold">Closed</button>
+                                                        user?.status == "waiting" ? <Link href={isClientDashboard ? `/client/dashboard/support-tickets/view/${user?.id}` : `/professional/dashboard/support-tickets/view/${user?.id}`} className="flex gap-2 justify-center items-center px-2 py-2 rounded-md bg-[#7A7A7A] text-white text-[15px] font-semibold w-[200px]"><RiCloseFill className="size-[15px] rounded-sm text-[#07242B] bg-white" />Waiting on Customer</Link> : user?.status == "closed" && <button className="px-4 py-2 rounded-md bg-[#00A770] text-white text-[15px] font-semibold">Closed</button>
                                                     }
                                                 </td>
 

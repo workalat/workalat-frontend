@@ -22,7 +22,7 @@ export default function ProjectAward() {
             <img className="absolute z-0 rotate-180 right-0 top-[40px] w-[600px]" src="/CIRCLES.png" alt="workalat" />
 
             {/* Content */}
-            <div className="relative z-10 mt-6 container mx-auto max-w-7xl px-6">
+            <div className="relative z-10 mt-6 container mx-auto max-w-7xl px-6 pt-6">
                 <div className="py-16">
                     <h3 className="text-2xl font-bold text-[#07242B]">My Responses</h3>
                     <Link className="text-xs text-[#FFBE00] underline underline-offset-4 font-bold" href={"/professional/project-history"}>View Project History</Link>

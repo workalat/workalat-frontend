@@ -9,6 +9,7 @@ import React from "react";
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { IoIosArrowForward } from "react-icons/io";
 
 const formItems = [
   {
@@ -74,12 +75,14 @@ const Step4: React.FC<Step4Props> = ({
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-center">
+      {/* <h1 className="text-3xl font-bold text-center">
         Need any additional service?
       </h1>
-      <p className="-mt-4 mb-4">Pick an additional laundry service.</p>
+      <p className="-mt-4 mb-4">Pick an additional laundry service.</p> */}
       <form className="flex flex-col gap-0 px-8 w-full" onSubmit={handleSubmit}>
-        <FormControl>
+        {/* this div will be removed */}
+        <div className="h-[400px]"></div>
+        {/* <FormControl>
           <RadioGroup
             aria-labelledby="additional service"
             name="additional service"
@@ -97,7 +100,7 @@ const Step4: React.FC<Step4Props> = ({
               />
             ))}
           </RadioGroup>
-        </FormControl>
+        </FormControl> */}
         <div className="mt-8 flex justify-between">
           <Button
             variant="outlined"
@@ -121,6 +124,7 @@ const Step4: React.FC<Step4Props> = ({
             <Image src={arrowRightIcon} alt="Arrow right" />
           </Button>
         </div>
+        <button onClick={handleNext} className="flex items-center justify-center">Skip <IoIosArrowForward className="size-3" /></button>
       </form>
     </>
   );

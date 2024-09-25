@@ -83,7 +83,7 @@ export default function Manage() {
             <div className="relative z-10 pt-6 container mx-auto max-w-7xl px-6">
                 <Box className="sticky top-[65px] pt-2 z-10 bg-white flex justify-center items-center w-full border-b border-dark border-opacity-30">
                     <Link
-                        href="/dashboard"
+                        href="/client/dashboard"
                         className="flex gap-2 absolute left-0 font-bold"
                     >
                         <Image
