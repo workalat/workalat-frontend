@@ -32,7 +32,7 @@ const AuthNavbar = () => {
       key: "dashboard",
       icon: "/icons/dashboard.png",
       text: "Dashboard",
-      href: "/dashboard"
+      href: "/client/dashboard"
     },
     {
       key: "projects",
