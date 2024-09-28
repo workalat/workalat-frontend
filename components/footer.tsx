@@ -10,38 +10,35 @@ import twitterIcon from "@/public/icons/twitter.svg";
 
 const footer_links = [
   {
-    title: "About",
+    title: "For clients",
     links: [
-      { title: "About Us", href: "/" },
-      { title: "Become Seller", href: "/" },
-      { title: "Jobs on Whatworks", href: "/" },
+      { title: "How to hire", href: "/" },
+      { title: "Find a professional", href: "/" },
+      { title: "Login", href: "/" },
+      { title: "Download app", href: "/" },
+    ]
+  },
+  {
+    title: "For professionals",
+    links: [
+      { title: "Join as a professional", href: "/" },
+      { title: "How it works", href: "/" },
       { title: "Pricing", href: "/" },
-      { title: "Services Whatworks", href: "/" },
-      { title: "Terms of Service", href: "/" }
+      { title: "Login", href: "/" },
+      { title: "Download app", href: "/" },
     ]
   },
   {
-    title: "Categories",
-    links: [
-      { title: "Design & Creative", href: "/" },
-      { title: "Development & IT", href: "/" },
-      { title: "Music & Audio", href: "/" },
-      { title: "Programming & Tech", href: "/" },
-      { title: "Digital Marketing", href: "/" },
-      { title: "Finance & Accounting", href: "/" },
-      { title: "Writing & Translation", href: "/" },
-      { title: "Trending", href: "/" },
-      { title: "Lifestyle", href: "/" }
-    ]
-  },
-  {
-    title: "Support",
+    title: "Resources",
     links: [
       { title: "Help & Support", href: "/" },
-      { title: "FAQ Whatworks", href: "/" },
+      { title: "About us", href: "/" },
+      { title: "Categories", href: "/" },
+      { title: "Guides", href: "/" },
       { title: "Contact Us", href: "/" },
-      { title: "Services", href: "/" },
-      { title: "Terms of Service", href: "/" }
+      { title: "Terms of Service", href: "/" },
+      { title: "Privacy policy", href: "/" },
+      { title: "Cookie policy", href: "/" },
     ]
   }
 ]
