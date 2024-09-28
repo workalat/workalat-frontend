@@ -4,11 +4,13 @@ import categoriesIcon from "@/public/icons/categories.svg";
 import categoriesdarkIcon from "@/public/icons/categories_dark.svg";
 import howitworksIcon from "@/public/icons/howitworks.svg";
 import howitworksdarkIcon from "@/public/icons/howitworks_dark.svg";
-import socialMediaImg from "@/public/images/social_media.png";
-import cleanerImg from "@/public/images/cleaner.png";
-import nannyImg from "@/public/images/nanny.png";
-import webDevelopmentImg from "@/public/images/web_dev.png";
+import accountinImg from "@/public/images/Accounting.png";
+import digitalMarketingImg from "@/public/images/Digital Marketing.png";
+import gardeningImg from "@/public/images/Gardening.png";
+import houseCleaningImg from "@/public/images/House Cleaning.png";
 import mechanicImg from "@/public/images/mechanic.png";
+import plumbingImg from "@/public/images/Plumbing.png";
+import webDesignImg from "@/public/images/Web Design.png";
 
 export const siteConfig = {
   name: "What Works",
@@ -61,29 +63,39 @@ export const siteConfig = {
   ],
   services: [
     {
-      name: "Social Media",
-      description: "Read more customers",
-      image: socialMediaImg,
+      name: "Accounting",
+      description: "Manage finances",
+      image: accountinImg,
     },
     {
-      name: "Cleaner",
-      description: "Care for your Home",
-      image: cleanerImg,
+      name: "Digital Marketing",
+      description: "Get better reach",
+      image: digitalMarketingImg,
     },
     {
-      name: "Nanny",
-      description: "Hire for your Kids",
-      image: nannyImg,
+      name: "House Cleaning",
+      description: "Clean your house",
+      image: houseCleaningImg,
     },
     {
-      name: "Web Development",
+      name: "Web Design",
       description: "Design Stunning Websites",
-      image: webDevelopmentImg,
+      image: webDesignImg,
     },
     {
       name: "Mechanic",
       description: "Repair your Cars",
       image: mechanicImg,
+    },
+    {
+      name: "Plumbing",
+      description: "Get your plumbing fixed",
+      image: plumbingImg,
+    },
+    {
+      name: "Gardening",
+      description: "Get your garden maintained",
+      image: gardeningImg,
     },
   ],
   skillOptions: [

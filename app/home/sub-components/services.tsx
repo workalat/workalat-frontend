@@ -2,6 +2,7 @@
 import { Typography } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
+import Link from "next/link";
 
 // Import Swiper styles
 import "swiper/css";
@@ -14,7 +15,10 @@ const Services = () => {
   return (
     <div className="relative">
       <Typography component={"h2"} className="font-semibold text-3xl">
-        Popular professional services
+        Browse popular professional services
+      </Typography>
+      <Typography className="mt-2 hover:text-blue-600 hover:underline">
+        <Link href="/">Post a project and hire a pro {">"}</Link>
       </Typography>
       <Swiper
         spaceBetween={20}
@@ -77,14 +81,14 @@ const CarouselItem = ({
       <img
         src={service.image.src}
         alt={service.name}
-        className="absolute w-full h-full object-cover rounded-xl"
+        className="absolute w-full h-full object-cover rounded-xl filter brightness-50"
       />
       <div className="space-y-1 relative z-10 text-white py-11 pl-3">
-        <Typography component={"p"} className="">
-          {service.description}
-        </Typography>
         <Typography component={"h3"} className="font-semibold text-2xl">
           {service.name}
+        </Typography>
+        <Typography className="hover:underline">
+          <Link href="/">Post a job now {">"}</Link>
         </Typography>
       </div>
     </div>

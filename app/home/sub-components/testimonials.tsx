@@ -2,10 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-import testimonial1img from "@/public/images/testimonial1.png";
-import testimonial2img from "@/public/images/testimonial2.png";
-import testimonial3img from "@/public/images/testimonial3.png";
-import testimonial4img from "@/public/images/testimonial4.png";
+import testimonialImg from "@/public/images/testimonial.png";
 import arrowDownIcon from "@/public/icons/arrow_down.svg";
 
 const Testimonials = () => {
@@ -22,34 +19,40 @@ const Testimonials = () => {
 
 const testimonials = [
   {
-    text: "Interdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsum",
-    img: testimonial2img.src,
-    clientname: "Thomil Kalus",
-    clientdesc: "Bank Manager, United Arab.",
+    text: "I was struggling to find a reliable contractor for my home renovation, but WorkAlat made the process so easy! Within hours of posting my project, I had multiple quotes from verified professionals. I ended up hiring a fantastic contractor who did an amazing job. The platform is user-friendly, and I loved the ability to compare reviews and prices before making a decision. I'll definitely be using WorkAlat again!",
+    img: testimonialImg.src,
+    clientname: "Sarah L.",
+    clientdesc: "Home Renovation Client",
 },
 {
-    text: "Interdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsum",
-    img: testimonial3img.src,
-    clientname: "Thomil Kajus",
-    clientdesc: "Bank Manager, United Arab.",
+    text: "As a small business owner, finding affordable and quality marketing support is always a challenge. WorkAlat connected me with a digital marketing expert who completely transformed my online presence. The process was seamless, and I appreciated how transparent everything was. I found the perfect freelancer, and my business has seen a significant boost since. Highly recommended!",
+    img: testimonialImg.src,
+    clientname: "James M.",
+    clientdesc: "Small Business Owner",
 },
 {
-    text: "Interdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsum",
-    img: testimonial1img.src,
-    clientname: "Thomil Talus",
-    clientdesc: "Bank Manager, United Arab.",
+    text: "I used WorkAlat to find a caterer and photographer for my wedding, and I couldn't be happier! I got quotes from several vendors within minutes of submitting my request, and the reviews helped me feel confident about my choice. The caterer and photographer were professional and exceeded my expectations. WorkAlat made my big day stress-free and special. It's a fantastic platform for anyone looking for top-notch services.",
+    img: testimonialImg.src,
+    clientname: "Emily T.",
+    clientdesc: "Event Planning Client",
 },
 {
-    text: "Interdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsum",
-    img: testimonial4img.src,
-    clientname: "Thomil Falus",
-    clientdesc: "Bank Manager, United Arab.",
+    text: "Joining WorkAlat was one of the best decisions for my freelance career. Within the first week, I connected with multiple clients who were looking for high-quality design work. The platform makes it easy to showcase my portfolio, and the review system helps me stand out. Every client I've worked with has been real, verified, and ready to collaborate. WorkAlat has become my go-to for finding new business!",
+    img: testimonialImg.src,
+    clientname: "David S.",
+    clientdesc: "Freelance Graphic Designer",
 },
 {
-    text: "Interdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsumInterdum et malesuada fames ac ante ipsum",
-    img: testimonial2img.src,
-    clientname: "Thomil Yalus",
-    clientdesc: "Bank Manager, United Arab.",
+    text: "WorkAlat has been a game-changer for my event planning business. I used to struggle with finding consistent clients, but since I joined the platform, I've had a steady stream of verified leads. The ability to receive detailed job requests and communicate directly with clients makes the process so smooth. The clients I've worked with have been serious about their projects, and it's clear that WorkAlat only attracts people who value quality.",
+    img: testimonialImg.src,
+    clientname: "Maria K.",
+    clientdesc: "Event Planner",
+  },
+{
+    text: "As someone who offers local handyman services, WorkAlat has helped me expand my customer base beyond word-of-mouth. I've connected with real clients who need specific jobs done, and the quoting system allows me to offer competitive prices while showcasing my skills. What I appreciate most is that the platform vets clients, so I know the leads are legitimate and serious about hiring. I've secured multiple projects through WorkAlat, and it's boosted my business tremendously!",
+    img: testimonialImg.src,
+    clientname: "Alex T.",
+    clientdesc: "Handyman Services",
   },
 ];
 

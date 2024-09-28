@@ -41,10 +41,10 @@ const Hero: React.FC = () => {
     <div className="flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6">
       <div className="max-w-[696px] flex flex-col gap-9 relative z-10">
         <h1 className="text-white text-4xl md:text-5xl font-bold">
-          Find the perfect professional for you.
+          Connecting you with top professionals
         </h1>
         <p className="text-white text-xl sm:text-xl">
-          Get free quotes within minutes
+        Where Expertise Meets Your Needs!
         </p>
         <Box
           component={"form"}
@@ -76,7 +76,7 @@ const Hero: React.FC = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  placeholder="What are you looking for?"
+                  placeholder="What service are you looking for today?"
                   InputProps={{
                     ...params.InputProps,
                     onFocus: () => setInputFocus(true),
@@ -120,7 +120,7 @@ const Hero: React.FC = () => {
       <img
         src={heroIcon.src}
         alt=""
-        className="absolute -bottom-10 -right-28 2xl:right-32 w-[1050px]"
+        className="absolute -bottom-28 -right-28 2xl:right-32 w-[1050px]"
       />
     </div>
   );
