@@ -10,6 +10,7 @@ import { Avatar, Box } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 
 import { fontSans } from "@/config/fonts";
 import logo_dark from "@/public/logo_dark.png";
@@ -20,7 +21,6 @@ import switchIcon from "@/public/icons/switch.svg";
 import arrowDownWhiteIcon from "@/public/icons/arrow_down_white.svg";
 import testimonial3Img from "@/public/images/testimonial3.png";
 import businessIcon from "@/public/icons/business.svg";
-import { usePathname } from "next/navigation";
 
 const AuthNavbar = () => {
   const pathname = usePathname();
@@ -75,10 +75,10 @@ const AuthNavbar = () => {
     >
       <NavbarBrand>
         <Link href="/" className="flex justify-start text-white items-center gap-1">
-          <Image alt="WhatWorks" className="w-8 md:w-11" src={logo_dark} />
-          <span className={clsx("font-semibold font-sans", fontSans.variable)}>
+          <Image alt="WhatWorks" className="min-w-24 w-52" src={logo_dark} />
+          {/* <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
-          </span>
+          </span> */}
         </Link>
       </NavbarBrand>
       <NavbarContent as="div" justify="end">

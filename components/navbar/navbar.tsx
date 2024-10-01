@@ -55,11 +55,11 @@ export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             {currentMode === "light" ? (
-              <Image alt="WhatWorks" className="w-8 md:w-11" src={logo_light} />
+              <Image alt="WhatWorks" className="min-w-24 w-36" src={logo_light} />
             ) : (
-              <Image alt="WhatWorks" className="w-8 md:w-11" src={logo_dark} />
+              <Image alt="WhatWorks" className="min-w-24 w-52" src={logo_dark} />
             )}
-            <p
+            {/* <p
               className={clsx(
                 "font-semibold font-sans md:border-r pr-5 leading-[32px]",
                 fontSans.variable,
@@ -69,7 +69,7 @@ export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
               )}
             >
               WhatWorks
-            </p>
+            </p> */}
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-6 justify-start ml-2">
