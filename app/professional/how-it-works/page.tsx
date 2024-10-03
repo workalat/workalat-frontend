@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import arrowRightSm from "@/public/icons/arrow_right_sm.svg";
@@ -28,21 +28,21 @@ export default function HowItWorksPage() {
               Back <span className="hidden md:inline-flex">to dashboard</span>
             </span>
           </Link>
-          <Typography gutterBottom className="text-3xl invisible text-transparent font-bold text-center">
+          <Typography
+            gutterBottom
+            className="text-3xl invisible text-transparent font-bold text-center"
+          >
             How It Works
           </Typography>
         </Box>
 
         <div className="w-full bg-[url('/images/working.png')] py-20 px-5 rounded-md overflow-hidden mt-5 bg-black/40 bg-blend-multiply">
-          <h1 className="text-5xl font-bold mb-4 text-white">
-            How can freelancers help<br />your business?
-          </h1>
+          <h1 className="text-5xl font-bold mb-4 text-white">HOW IT WORKS</h1>
           <p className="text-lg text-white pb-5">
-            The possibilities are endless. We have expert freelancers who<br /> work in every technical, professional, and creative field<br /> imaginable.
+            At WorkAlat, we help you grow your business by connecting you with
+            clients actively looking for your expertise.
           </p>
-          <button
-            className="px-8 py-2 font-semibold bg-[#FFBE00] text-[#242424] rounded-md flex items-center justify-center gap-2"
-          >
+          <button className="px-8 py-2 font-semibold bg-[#FFBE00] text-[#242424] rounded-md flex items-center justify-center gap-2">
             <span>Post a project</span>
             <FaArrowRight className="size-3" />
           </button>
@@ -54,10 +54,12 @@ export default function HowItWorksPage() {
         <div className="w-full flex flex-col justify-center items-center pt-4">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">
-              Choose from endless possibilities.
+              Grow your business with WorkAlat today
             </h1>
             <p className="text-lg  mb-4">
-              Get anything done, exactly how you want it. Turn that spark of an idea into reality.
+              Whether you're a freelancer, contractor, or small business owner,
+              our platform gives you the opportunity to showcase your skills and
+              receive real, verified leads.
             </p>
           </div>
         </div>
@@ -72,10 +74,11 @@ export default function HowItWorksPage() {
                 <PiMedal className="text-black text-2xl sm:text-2xl md:text-3xl lg:text-4xl" />
               </div>
               <h2 className="text-[18px] md:text-[20px] font-bold leading-[23px] md:leading-[25px] mb-2">
-                Flexible payment terms
+                Access to Verified Clients
               </h2>
               <p className="text-[14px] md:text-[15px] leading-[18px] md:leading-[19px] text-justify">
-                Pay your freelancers a fixed price or by the hour. All secured by the Milestone Payments system.
+                We connect you with real, actively searching clients,
+                eliminating the hassle of chasing leads.
               </p>
             </div>
 
@@ -85,10 +88,11 @@ export default function HowItWorksPage() {
                 <CiSearch className="text-black text-2xl md:text-3xl lg:text-4xl" />
               </div>
               <h2 className="text-[18px] md:text-[20px] font-bold leading-[23px] md:leading-[25px] mb-2">
-                Flexible payment terms
+                Boost your online presence
               </h2>
               <p className="text-[14px] md:text-[15px] leading-[18px] md:leading-[19px] text-justify">
-                Pay your freelancers a fixed price or by the hour. All secured by the Milestone Payments system.
+                Stand out and attract more clients with a polished online
+                presence.
               </p>
             </div>
 
@@ -98,10 +102,11 @@ export default function HowItWorksPage() {
                 <TbCrown className="text-black text-2xl sm:text-2xl md:text-3xl lg:text-4xl" />
               </div>
               <h2 className="text-[18px] md:text-[20px] font-bold leading-[23px] md:leading-[25px] mb-2">
-                Flexible payment terms
+                Grow your reputation
               </h2>
               <p className="text-[14px] md:text-[15px] leading-[18px] md:leading-[19px] text-justify">
-                Pay your freelancers a fixed price or by the hour. All secured by the Milestone Payments system.
+                Earn reviews and ratings from satisfied clients, boosting your
+                credibility and helping you stand out in a competitive market.
               </p>
             </div>
           </div>
@@ -111,71 +116,30 @@ export default function HowItWorksPage() {
       <MarketplaceHowItWorks />
 
       <div className="w-full bg-[#07242B] py-12">
-        <div className="container mx-auto max-w-7xl px-6">
-          {/* Title */}
-          <p className="text-[#FFFFFF] text-[10px] sm:text-[10px] md:text-[13px] lg:text-[15px] font-normal text-left">
-            WHAT WE DO
-          </p>
-
-          <div className="flex flex-wrap">
+        <div className="container mx-auto px-6">
+          <div className="flex justify-center items-center flex-col gap-8">
             {/* Left Section */}
-            <div className="w-full md:w-8/12 mt-4">
-              <h2 className="text-[#FFFFFF] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[24px] font-bold leading-[38px] text-left">
-                Be in control. Keep in contact.
+            <div className="w-full mt-4">
+              <h2 className="text-[#FFFFFF] text-center text-xl md:text-3xl font-bold leading-[38px]">
+              Grow your business with WorkAlat today!
               </h2>
-              <p className="font-space-grotesk text-[16px] font-normal leading-[23px] text-left text-[#FFFFFF] mt-4">
-                Use our collaboration tools to work efficiently with your freelancer. Share files,
-                <br className="hidden md:block" /> chat in real-time, monitor progress, and so much more.
+              <p className="font-space-grotesk text-center text-[16px] font-normal leading-[23px] text-[#FFFFFF] mt-4 max-w-4xl mx-auto">
+              Ready to expand your client base and win more jobs? WorkAlat helps you connect with clients and grow your reputation.
               </p>
-
-              {/* Feature Cards */}
-              <div className="flex flex-wrap gap-3 mt-6">
-                {/* Live Chat */}
-                <div className="w-full md:w-[calc(50%-0.75rem)] p-6 rounded-lg">
-                  <div className="text-[#FFC119] text-3xl mb-4">
-                    <GrChatOption className="text-2xl md:text-3xl" />
-                  </div>
-                  <h3 className="text-[#FFFFFF] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[24px] font-bold leading-[38px] text-left">
-                    Live chat
-                  </h3>
-                  <p className="font-space-grotesk text-[16px] text-[#FFFFFF] font-normal leading-[23px] text-left mt-2">
-                    You can live chat with your freelancers to ask questions, share feedback, and get constant updates on the progress of your work.
-                  </p>
-                </div>
-
-                {/* Mobile App */}
-                <div className="w-full md:w-[calc(50%-0.75rem)] p-6 rounded-lg">
-                  <div className="text-[#FFC119] text-3xl mb-4">
-                    <PiDeviceMobile className="text-2xl md:text-3xl" />
-                  </div>
-                  <h3 className="text-[#FFFFFF] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[24px] font-bold leading-[38px] text-left">
-                    Mobile App
-                  </h3>
-                  <p className="font-space-grotesk text-[16px] text-[#FFFFFF] font-normal leading-[23px] text-left mt-2">
-                    Manage your project at the touch of your fingertips. The mobile app makes on-the-go collaboration a breeze.
-                  </p>
-                </div>
-              </div>
             </div>
-
-            {/* Right Section - Image */}
-            <div className="w-full md:w-4/12 px-4 mt-5 mb-5">
-              <div className="relative w-full h-[334px]">
-                <Image
-                  src="/images/mobile.png"
-                  alt="Image description"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-[10px]"
-                />
-              </div>
-            </div>
+            <Button
+              variant="contained"
+              size="large"
+              className="font-semibold px-8 py-4"
+            >
+              Become a professional <FaArrowRight className="ml-2" />
+            </Button>
           </div>
         </div>
       </div>
 
       <div className="flex justify-start pb-9 bg-[#07242B]">
-        <div className="w-full h-[10px] bg-yellow-400"></div>
+        <div className="w-full h-[10px] bg-yellow-400" />
       </div>
     </>
   );

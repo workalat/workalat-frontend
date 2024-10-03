@@ -7,9 +7,9 @@ const MarketplaceHowItWorks = () => {
             <div className="flex flex-wrap">
                 {/* Image Section */}
                 <div className="w-full md:w-1/2 mt-5">
-                    <div className="relative w-full h-[360px] sm:h-[360px] md:h-[450px] lg:h-[490px]">
+                    <div className="relative w-full h-[360px] sm:h-[360px] md:h-full">
                         <Image
-                            src="/images/howworks.png"
+                            src="/images/howworks2.png"
                             alt="Image description"
                             layout="fill"
                             objectFit="cover"
@@ -21,31 +21,33 @@ const MarketplaceHowItWorks = () => {
                 {/* Text Section */}
                 <div className="w-full md:w-1/2 px-12 mt-5">
                     <p className="text-[16px] font-normal leading-[23px] text-left text-gray-700">
-                        WHATWORKS FREELANCER MARKETPLACE
+                    Connect with top professionals on WorkAlat
                     </p>
                     <h2 className="text-[24px] sm:text-[28px] md:text-[30px] lg:text-[32px] font-bold leading-[1.3] mt-3">
-                        How does it work?
+                    How to get started
                     </h2>
-                    <p className="text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] font-normal leading-[23px] mt-3">
-                        Work with the largest network of independent professionals and get things done—from quick turnarounds to big transformations.
-                    </p>
 
                     {/* Steps */}
                     {[
                         {
-                            title: 'Post a project or contest',
+                            title: 'Step 1: Create your free profile',
                             description:
-                                'Simply post a project or contest for what you need done and receive competitive bids from freelancers within minutes.',
+                            `Get started by signing up and creating a professional profile that highlights your skills, services, and experience.`
                         },
                         {
-                            title: 'Choose the perfect freelancer',
+                            title: 'Step 2: Receive job leads tailored to your expertise',
                             description:
-                                'Browse freelancer profiles. Chat in real-time. Compare proposals and select the best one. Award your project and your freelancer starts work.',
+                            `Once your profile is set up, WorkAlat will start matching you with relevant job opportunities based on your skills, location, and services offered. You’ll be notified when new projects are posted that align with what you do, so you can focus on the work that suits you best.`
                         },
                         {
-                            title: 'Pay when you’re satisfied',
+                            title: 'Step 3: Send quotes & communicate directly with clients',
                             description:
-                                'Pay securely using our Milestone Payment system. Release payments when it has been completed and you\'re 100% satisfied.',
+                            `When a job opportunity catches your eye, you can easily send a personalized quote to the client. Be clear about your pricing, timeline, and approach so clients can see why you’re the right fit. You can communicate directly with potential clients to clarify details, answer questions, and build a strong connection before they hire you.`,
+                        },
+                        {
+                            title: 'Step 4: Win jobs and build your reputation',
+                            description:
+                            `Once a client selects your quote, you can begin working on the project. Deliver exceptional service, and once the job is complete, ask your client for a review. Positive feedback will help boost your profile and attract more clients in the future. The better your ratings and reviews, the higher you’ll rank in search results.`,
                         },
                     ].map((item, index) => (
                         <div
