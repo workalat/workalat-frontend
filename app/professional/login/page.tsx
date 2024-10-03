@@ -67,7 +67,7 @@ const LoginPage = () => {
     generateSnackbar("Logged in successfully!", "success");
 
     // set the context
-    setUser({ id: 0, name: "Anika Maika", email, role: "professional" });
+    setUser({ id: 0, name: "Anika Maika", email, role: "client" });
     
     // Redirect after successful login
     router.push("/professional/onboard/phone");
