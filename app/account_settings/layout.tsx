@@ -115,9 +115,9 @@ const AccountSettingsLayout = ({ children }: { children: React.ReactNode }) => {
             <Tab label="Profile" />
             <Tab label="Security" />
             <Tab label="Preferences" />
-            <Tab label="Plan & Billing" />
+            {/* <Tab label="Plan & Billing" /> */}
             <Tab label="Notifications" />
-            <Tab label="Integrations" />
+            {/* <Tab label="Integrations" /> */}
           </Tabs>
           {children}
         </Container>
