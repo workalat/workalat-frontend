@@ -52,7 +52,9 @@ const LoginPage = () => {
       <div className="w-full min-h-[80svh] flex justify-center items-center mt-28 mb-10 px-6">
         <div className="w-full max-w-lg border border-main border-opacity-50 shadow-lg rounded-md sm:rounded-xl px-4 py-8 sm:p-8">
           <form className="space-y-4">
-            <h1 className="font-bold text-2xl sm:text-3xl text-center">Login</h1>
+            <h1 className="font-bold text-2xl sm:text-3xl text-center">
+              Login
+            </h1>
             <div className="space-y-1">
               <p className="font-semibold sm:text-lg">Email</p>
               <TextField
@@ -72,8 +74,8 @@ const LoginPage = () => {
                 value={password}
                 className="border-main border-opacity-15 shadow-lg [&:has(Mui-focused)]:!border-secondary [&_*]:p-0 [&>*]:!p-3"
                 InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
+                  endAdornment: (
+                    <InputAdornment position="end">
                       <IconButton onClick={handleShowPasswordToggle}>
                         <img src={lockIcon.src} alt="" />
                       </IconButton>
@@ -92,12 +94,6 @@ const LoginPage = () => {
                 />
                 <p className="font-semibold text-sm sm:text-lg">Remember me</p>
               </div>
-              <Link
-                href="/forgot-password"
-                className="text-fadedwhite hover:text-dark transition-colors text-sm sm:text-lg"
-              >
-                Forgot password?
-              </Link>
             </div>
             <Button
               fullWidth
@@ -107,7 +103,13 @@ const LoginPage = () => {
               Login
             </Button>
           </form>
-          <div className="relative !mt-6">
+          <Link
+            href="/forgot-password"
+            className="text-secondary hover:text-dark transition-colors text-sm sm:text-base mt-2 w-full flex justify-end"
+          >
+            Forgot password?
+          </Link>
+          <div className="relative !mt-4">
             <hr className="border-dark border-opacity-50 absolute top-1/2 -translate-y-1/2 w-full" />
             <p className="relative w-14 mx-auto bg-white text-center text-fadedwhite">
               OR
@@ -132,13 +134,19 @@ const LoginPage = () => {
           <div className="text-sm text-center mt-10 font-bold">
             <p>
               Offering a service?{" "}
-              <Link href={"/professional/signup"} className="text-main underline hover:text-opacity-80">
+              <Link
+                href={"/professional/signup"}
+                className="text-main underline hover:text-opacity-80"
+              >
                 Join as a professional
               </Link>
             </p>
             <p>
               Looking for a service?{" "}
-              <Link href={"/signup"} className="text-main underline hover:text-opacity-80">
+              <Link
+                href={"/signup"}
+                className="text-main underline hover:text-opacity-80"
+              >
                 Get started
               </Link>
             </p>
