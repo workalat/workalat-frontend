@@ -36,8 +36,8 @@ export default function HowItWorksPage() {
           </Typography>
         </Box>
 
-        <div className="w-full bg-[url('/images/working.png')] py-20 px-5 rounded-md overflow-hidden mt-5 bg-black/40 bg-blend-multiply">
-          <h1 className="text-5xl font-bold mb-4 text-white">HOW IT WORKS</h1>
+        <div className="w-full bg-[url('/images/how-it-works-client.png')] py-20 px-5 rounded-md overflow-hidden mt-5 bg-black/40 bg-blend-multiply">
+          <h1 className="text-5xl font-bold mb-4 text-white">How it works</h1>
           <p className="text-lg text-white pb-5">
             At WorkAlat, we make hiring the right professional quick, easy, and
             transparent.

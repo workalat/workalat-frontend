@@ -1,10 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { FaArrowRight } from "react-icons/fa6";
 
 import AuthNavbar from "@/components/navbar/auth_navbar";
 import arrowRightSm from "@/public/icons/arrow_right_sm.svg";
-import ReferralBenifits from "@/components/Guid/ReferralBenefits";
+// import ReferralBenifits from "@/components/Guid/ReferralBenefits";
 import HowWorks from "@/components/Guid/HowWorks";
 import FreelancerBenefits from "@/components/Guid/FreelancerBenefits";
 
@@ -28,13 +29,22 @@ export default function GuidPage() {
             </span>
           </Link>
           <Typography gutterBottom className="text-3xl font-bold text-center">
-            HOW TO GET HIRED
+            &nbsp;
           </Typography>
         </Box>
       </div>
+      <div className="text-main bg-secondary w-full py-4 text-center text-2xl font-bold">
+        GUIDES
+      </div>
       <FreelancerBenefits />
-      <ReferralBenifits />
+      {/* <ReferralBenifits /> */}
       <HowWorks />
+      <div className="flex justify-center items-center w-full mb-16">
+        <Button variant="contained" color="primary" size="large" className="px-12 py-4 font-semibold w-full sm:w-auto" >
+          Get Started
+          <FaArrowRight className="ml-2" />
+        </Button>
+      </div>
     </div>
   );
 }

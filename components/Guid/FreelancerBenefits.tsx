@@ -34,6 +34,19 @@ const FreelancerBenefits = () => {
               </>
             )}
           </p>
+        </div>
+        <div className="pic w-full lg:w-[35%] flex justify-center ">
+          <Image
+            width={1000}
+            height={1000}
+            src={ user.user?.role === "client" ? "/images/howworks2.png" : "/images/create-profile.png"}
+            alt="Happy freelancers working"
+            className="size-full sm:size-[60%] md:size-[90%] lg:size-full xl:size-full rounded-lg shadow-sm"
+          />
+        </div>
+      </div>
+      <div className="flex flex-col lg:flex-row-reverse justify-center p-[2%] bg-[#F3F3F3] rounded-md gap-4 lg:gap-12">
+        <div className=" flex flex-col  w-full lg:w-[65%] mb-4 mt-3 lg:mb-0  lg:text-left">
           <h2 className=" w-full text-left lg:w-[70%] text-xl sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-[3%] leading-tight mt-8">
             {user.user?.role === "client"
             ? "How to receive quotes"
@@ -84,7 +97,7 @@ const FreelancerBenefits = () => {
           <Image
             width={1000}
             height={1000}
-            src="/images/freelancerBenefits.png"
+            src={ user.user?.role === "client" ? "/images/receive-quotes.png":"/images/find-job.png"}
             alt="Happy freelancers working"
             className="size-full sm:size-[60%] md:size-[90%] lg:size-full xl:size-full rounded-lg shadow-sm"
           />

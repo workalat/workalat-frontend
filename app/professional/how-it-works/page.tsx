@@ -36,14 +36,14 @@ export default function HowItWorksPage() {
           </Typography>
         </Box>
 
-        <div className="w-full bg-[url('/images/working.png')] py-20 px-5 rounded-md overflow-hidden mt-5 bg-black/40 bg-blend-multiply">
-          <h1 className="text-5xl font-bold mb-4 text-white">HOW IT WORKS</h1>
+        <div className="w-full bg-[url('/images/how-it-works-professional.png')] py-20 px-5 rounded-md overflow-hidden mt-5 bg-black/40 bg-blend-multiply">
+          <h1 className="text-5xl font-bold mb-4 text-white">How it works</h1>
           <p className="text-lg text-white pb-5">
             At WorkAlat, we help you grow your business by connecting you with
             clients actively looking for your expertise.
           </p>
           <button className="px-8 py-2 font-semibold bg-[#FFBE00] text-[#242424] rounded-md flex items-center justify-center gap-2">
-            <span>Post a project</span>
+            <span>Get Started</span>
             <FaArrowRight className="size-3" />
           </button>
         </div>

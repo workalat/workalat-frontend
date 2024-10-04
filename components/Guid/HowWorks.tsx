@@ -9,10 +9,14 @@ const HowWorks = () => {
 
   return (
     <div className="pt-6 container mx-auto max-w-7xl px-6">
-      <div className="flex flex-col md:flex-row justify-center gap-x-10 py-5">
+      <div className="flex flex-col md:flex-row-reverse justify-center gap-x-10 py-5">
         <div className="w-[300px] sm:w-[300px] md:w-[406px] lg:w-[406px]">
           <Image
-            src="/images/chat_pic.png"
+            src={
+              user?.role === "client"
+                ? "/images/select-best.png"
+                : "/images/win-project.png"
+            }
             alt="Descriptive Alt Text"
             width={500}
             height={300}
@@ -64,59 +68,46 @@ const HowWorks = () => {
               </>
             )}
           </div>
-          <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8">
-            {user?.role === "client"
-              ? "How do I manage my project?"
-              : "Building a reputation on WorkAlat"}
-          </h1>
-          <div>
-            {user?.role === "client" ? (
-              <>
-                On your dashboard, you can navigate to “My Project” page to see
-                the list of jobs/project you have posted. Use any button like
-                “Project details” to track your project. We also have features
-                that can allow you upload files, tracklist and more to ensure
-                your project is successfully.
-              </>
-            ) : (
-              <>
-                After each project, ask your clients to leave a review. Positive
-                ratings help you rank higher on the platform and attract more
-                clients.
-                <ul className="list-disc ml-4 mt-2 space-y-2">
-                  <li>
-                    <strong>Request Reviews: </strong> A strong rating and good
-                    reviews increase your chances of winning more jobs.
-                  </li>
-                  <li>
-                    <strong>Grow Your Business: </strong> Use WorkAlat as a tool
-                    to grow your client base and expand your offerings. on
-                    track.
-                  </li>
-                </ul>
-              </>
-            )}
-          </div>
         </div>
       </div>
       {user?.role === "client" && (
-        <div className="my-16">
-          <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8 text-gray-700">
-            Do I need to leave a review?
-          </h1>
-          <p className="md:text-lg">
-            Once the work is complete and you&apos;re satisfied, finalize the
-            payment through WorkAlat. Don&apos;t forget to leave a review to
-            help other clients make informed decisions.
-          </p>
-          <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8 text-gray-700">
-            How secure is the platform?
-          </h1>
-          <p className="md:text-lg">
-            WorkAlat is secure and transparent. We have integrated sophisticated
-            solutions to keep you safe. All professionals on our platform are
-            verified.
-          </p>
+        <div className="my-16 space-y-16">
+          <div className="flex lg:flex-row-reverse flex-col gap-6 lg:gap-12">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8 text-gray-700">
+                Do I need to leave a review?
+              </h1>
+              <p className="md:text-lg">
+                Once the work is complete and you&apos;re satisfied, finalize
+                the payment through WorkAlat. Don&apos;t forget to leave a
+                review to help other clients make informed decisions.
+              </p>
+            </div>
+            <Image
+              src={"/images/leave-review.png"}
+              alt="review"
+              width={430}
+              height={300}
+            />
+          </div>
+          <div className="flex p-8 bg-[#F3F3F3] rounded-md">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8 text-gray-700">
+                How secure is the platform?
+              </h1>
+              <p className="md:text-lg">
+                WorkAlat is secure and transparent. We have integrated
+                sophisticated solutions to keep you safe. All professionals on
+                our platform are verified.
+              </p>
+            </div>
+            <Image
+              src={"/images/select-best.png"}
+              alt="security"
+              width={430}
+              height={300}
+            />
+          </div>
         </div>
       )}
     </div>
