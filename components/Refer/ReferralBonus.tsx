@@ -112,7 +112,7 @@ const ReferralBonus = () => {
 
             {/* Image Section */}
             <div className='pic w-full lg:w-[35%] flex justify-center'>
-                <Image width={1000} height={1000} src="/images/freelancerBenefits.png" alt="Happy freelancers working" className="w-full h-auto max-w-[400px] rounded-lg shadow-sm" />
+                <Image width={1000} height={1000} src="/images/howworks2.png" alt="Happy freelancers working" className="w-full h-auto max-w-[430px] rounded-lg shadow-sm" />
             </div>
         </div>
     );

@@ -1,12 +1,13 @@
 "use client"
 
+import { Box, Typography } from "@mui/material"
+import Image from "next/image"
+import Link from "next/link"
+
 import AuthNavbar from "@/components/navbar/auth_navbar"
 import ReferralBenifits from "@/components/Refer/ReferralBenefits"
 import ReferralBonus from "@/components/Refer/ReferralBonus"
 import ReferralLinkShare from "@/components/Refer/ReferralLinkShare"
-import { Box, Typography } from "@mui/material"
-import Image from "next/image"
-import Link from "next/link"
 import arrowRightSm from "@/public/icons/arrow_right_sm.svg";
 
 export default function ReferPage() {
