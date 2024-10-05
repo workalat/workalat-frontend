@@ -8,13 +8,12 @@ import locIcon from "@/public/icons/location.svg";
 import searchIcon from "@/public/icons/search.svg";
 import heroIcon from "@/public/images/hero_img.svg";
 import { siteConfig } from "@/config/site";
-import { useRouter } from "next/navigation";
 
 interface Option {
   label: string;
 }
 
-const Hero: React.FC = () => {
+const Hero = ({ openModal }: {openModal: ()=>void}) => {
   const [inputFocus, setInputFocus] = useState<boolean>(false);
   const [zipFocus, setZipFocus] = useState<boolean>(false);
   const [searchEnabled, setSearchEnabled] = useState<boolean>(true);
@@ -24,9 +23,6 @@ const Hero: React.FC = () => {
 
   // State to manage post code input
   const [postCode, setPostCode] = useState<string>("");
-
-  // router
-  const router = useRouter();
 
   useEffect(() => {
     if (category && postCode) {
@@ -38,8 +34,7 @@ const Hero: React.FC = () => {
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    router.push('/client/place-request')
-    console.log("searching...");
+    openModal();
   };
 
   return (

@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import ctaImg from "@/public/images/third_section.png";
 
-const Cta = () => {
+const Cta = ({ openModal }: {openModal: ()=>void}) => {
   return (
     <Box className="bg-main bg-[url('/images/bg_pattern.svg')] bg-cover rounded-xl p-8 lg:pl-20 md:p-4 flex justify-between items-center flex-wrap gap-y-6">
       <div className="text-white max-w-[584px] space-y-9">
@@ -18,6 +18,7 @@ const Cta = () => {
           <Button
             variant="contained"
             className="w-full sm:max-w-max group bg-secondary text-dark font-semibold py-2 px-8 hover:bg-secondary"
+            onClick={openModal}
           >
             Post a project
             <img

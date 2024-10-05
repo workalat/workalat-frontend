@@ -1,3 +1,6 @@
+"use client";
+import { useState } from "react";
+
 import Cta from "./sub-components/cta";
 import CtaWorkers from "./sub-components/cta_workers";
 import Featured from "./sub-components/featured";
@@ -7,11 +10,17 @@ import Partners from "./sub-components/partners";
 import Services from "./sub-components/services";
 import Testimonials from "./sub-components/testimonials";
 
+import PlaceRequestModal from "@/components/Clients/PlaceRequestModal/PlaceRequestModal";
+
 const HomePage = () => {
+  const [openPlaceReqModal, setOpenPlaceReqModal] = useState(false);
+  const closePlaceReqModal = () => setOpenPlaceReqModal(false);
+  const doOpenPlaceReqModal =  () => setOpenPlaceReqModal(true);
+
   return (
     <>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-[clamp(50svh,631px,80svh)] sm:h-[680px] bg-main relative overflow-hidden">
-        <Hero />
+        <Hero openModal={doOpenPlaceReqModal}  />
       </section>
       <section className="bg-[#f2f2f2] pt-14 pb-9">
         <div className="container mx-auto max-w-7xl flex flex-col gap-14 px-6">
@@ -19,7 +28,7 @@ const HomePage = () => {
             <Partners />
           </section>
           <Services />
-          <Cta />
+          <Cta openModal={doOpenPlaceReqModal} />
         </div>
       </section>
       <section className="container mx-auto max-w-7xl flex flex-col gap-14 px-6">
@@ -27,7 +36,7 @@ const HomePage = () => {
       </section>
       <section className="bg-main py-20 mt-10">
         <div className="container mx-auto max-w-7xl flex flex-col gap-14 px-6">
-          <CtaWorkers />
+          <CtaWorkers openModal={doOpenPlaceReqModal} />
         </div>
       </section>
       <section className="container mx-auto max-w-7xl flex flex-col gap-14 px-6">
@@ -38,6 +47,7 @@ const HomePage = () => {
           <MobileAppCta />
         </div>
       </section>
+      <PlaceRequestModal open={openPlaceReqModal} onClose={closePlaceReqModal} />
     </>
   );
 };

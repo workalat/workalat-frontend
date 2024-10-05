@@ -3,7 +3,7 @@ import { Button } from "@mui/material"
 import Cta2 from "@/public/images/cta2.svg"
 import arrowRightIcon from "@/public/icons/arrow_right.svg"
 
-const CtaWorkers = () => {
+const CtaWorkers = ({ openModal }: {openModal: ()=>void}) => {
   return (
     <div className="flex justify-start items-center gap-x-10 gap-y-12 text-white flex-wrap lg:flex-nowrap">
         <img alt="" src={Cta2.src} />
@@ -15,7 +15,7 @@ const CtaWorkers = () => {
                 <li>Your projects are matched with the right experts for a smooth and seamless experience.</li>
                 <li>From personal services to business needs, we cover a wide range of industries.</li>
             </ul>
-            <Button className="bg-secondary hover:bg-secondary text-base font-semibold text-black py-4 px-8 group hover:opacity-90">
+            <Button className="bg-secondary hover:bg-secondary text-base font-semibold text-black py-4 px-8 group hover:opacity-90" onClick={openModal}>
                 Post a job now
                 <img src={arrowRightIcon.src} alt="" className="ml-2 group-hover:translate-x-1 transition-all" />
             </Button>
