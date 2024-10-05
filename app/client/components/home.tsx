@@ -1,6 +1,7 @@
 "use client"
 import { useRouter } from "next/navigation";
 import { Button } from "@mui/material";
+import { useState } from "react";
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
@@ -11,6 +12,7 @@ import drycleanImg from "@/public/images/dry_clean.png";
 import graphicDesignImg from "@/public/images/engineering.png";
 import cleaningImg from "@/public/images/cleaning.png";
 import webDevImg from "@/public/images/web_dev_2.png";
+import PlaceRequestModal from "@/components/Clients/PlaceRequestModal/PlaceRequestModal";
 
 const featured_services = [
   {
@@ -39,6 +41,10 @@ const Home = () => {
 
   const router = useRouter();
 
+  const [open, setOpen] = useState(false);
+  const openModal = () => setOpen(true);
+  const closeModal = () => setOpen(false);
+  
   return (
     <>
       <section className="bg-main text-white p-6 sm:p-12 rounded-lg !space-y-8 min-h-[480px] relative z-10">
@@ -56,7 +62,7 @@ const Home = () => {
             systems to office stationery.
           </p>
         </div>
-        <Button variant="contained" className="p-4 px-6 rounded-sm flex gap-2" onClick={()=>router.push("/client/place-request")}>
+        <Button variant="contained" className="p-4 px-6 rounded-sm flex gap-2" onClick={openModal}>
           <span className="font-bold">Place new request</span>
           <Image src={arrowRightIcon} alt="Arrow right" />
         </Button>
@@ -80,6 +86,7 @@ const Home = () => {
           }
         </div>
       </section>
+      <PlaceRequestModal open={open} onClose={closeModal} />
     </>
   );
 };
