@@ -125,7 +125,7 @@ const HelpedMillions = () => {
         <div className="w-full md:w-1/2 mt-5">
           <div className="relative pl-4 w-full h-[360px] sm:h-[360px] lg:h-[450px]">
             <Image
-              src="/images/about-img1.png"
+              src="/images/howworks2.png"
               alt="Image description"
               layout="fill"
               objectFit="cover"
