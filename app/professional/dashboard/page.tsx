@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { usePathname } from "next/navigation";
 
 import SideNav from "../../../components/sideNav";
 
@@ -15,7 +16,6 @@ import ResponseNotifier from "./sub-components/responseNotifier";
 
 import theme from "@/config/theme.js";
 import { formatDateTime } from "@/utils/helper";
-import { usePathname } from "next/navigation";
 
 const Page = () => {
   const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
@@ -40,8 +40,6 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Current pathname:", pathname); // Check what's being logged
-
     if (pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")) {
       setIsClientDashboard(true);
     } else if (pathname === "/professional/dashboard" || pathname.startsWith("/professional/dashboard/")) {
@@ -77,7 +75,7 @@ const Page = () => {
           </div>
           <div className="w-full h-[0.5px] bg-gray-400 mt-4" />
           <section className="w-full flex flex-col md:flex-row gap-3 mt-6 justify-between">
-            <ProfileWidget />
+            <ProfileWidget isClientDashboard={isClientDashboard} />
             <VerificationWidget />
           </section>
           <section
