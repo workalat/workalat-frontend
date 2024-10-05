@@ -202,14 +202,7 @@ const SecuritySettings = () => {
                                 <label className="block pb-1">Phone</label>
                                 <input className="w-full border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" />
                               </div>
-                              <div className="py-2 w-full px-1">
-                                <label className="block pb-1">Company Name</label>
-                                <input className="w-full border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" />
-                              </div>
-                              <div className="py-2 w-full px-1">
-                                <label className="block pb-1">Company Number</label>
-                                <input className="w-full border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" />
-                              </div>
+                              
                               <div className="py-2 w-full px-1">
                                 <label className="block pb-1">Address</label>
                                 <input className="w-full border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" />
