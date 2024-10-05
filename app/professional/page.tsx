@@ -1,10 +1,10 @@
 "use client"
+import { Button } from "@mui/material";
+import { FaArrowRight } from "react-icons/fa6";
 
 import Hero from "./sub-components/hero";
-import Partners from "./sub-components/partners";
 import Jobs from "./sub-components/jobs";
 import HelpfulSection from "./sub-components/helpfulSection";
-import SuccessStories from "./sub-components/successStories";
 import Join from "./sub-components/join";
 
 export default function Professional() {
@@ -22,16 +22,19 @@ export default function Professional() {
       <section className="bg-[#eff1f2] w-full bg-[url('/images/bg_pattern_4.svg')] bg-no-repeat bg-right-top">
         <Join />
       </section>
-      <section className="w-full h-max-844px bg-main pb-6">
+      {/* <section className="w-full h-max-844px bg-main pb-6">
         <SuccessStories />
-      </section>
+      </section> */}
       
-      <section className="bg-[#f2f2f2] pt-14 pb-9">
-        <div className="container mx-auto max-w-7xl flex flex-col gap-14 px-6">
-          <h2 className="text-center text-5xl text-wrap font-bold text-main pb-3">Larger businesses use WhatWorks too</h2>
-          <section className="bg-main bg-opacity-20 py-9">
-            <Partners />
-          </section>
+      <section className="bg-secondary py-12 lg:py-20 mt-16">
+        <div className="container mx-auto max-w-7xl flex flex-col gap-12 px-6">
+          <h2 className="text-center text-2xl lg:text-5xl font-bold text-main pb-3 text-pretty">
+          Join WorkAlat today and unlock the potential to expand your service business!
+          </h2>
+          <Button variant="contained" color="secondary" className="w-max mx-auto py-4 px-12" >
+            Get Started
+            <FaArrowRight className="ml-2" />
+          </Button>
         </div>
       </section>
     </>

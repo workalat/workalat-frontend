@@ -10,35 +10,35 @@ import twitterIcon from "@/public/icons/twitter.svg";
 
 const footer_links = [
   {
-    title: "For clients",
+    title: "For Clients",
     links: [
-      { title: "How to hire", href: "/" },
-      { title: "Find a professional", href: "/" },
-      { title: "Login", href: "/" },
+      { title: "How to hire", href: "/guide" },
+      { title: "Post a project", href: "/" },
+      { title: "Login", href: "/login" },
       { title: "Download app", href: "/" },
     ]
   },
   {
-    title: "For professionals",
+    title: "For Professionals",
     links: [
-      { title: "Join as a professional", href: "/" },
-      { title: "How it works", href: "/" },
-      { title: "Pricing", href: "/" },
-      { title: "Login", href: "/" },
+      { title: "Join as a professional", href: "/professional" },
+      { title: "How it works", href: "/guide" },
+      { title: "Pricing", href: "/wallet" },
+      { title: "Login", href: "/login" },
       { title: "Download app", href: "/" },
     ]
   },
   {
     title: "Resources",
     links: [
-      { title: "Help & Support", href: "/" },
-      { title: "About us", href: "/" },
-      { title: "Categories", href: "/" },
-      { title: "Guides", href: "/" },
-      { title: "Contact Us", href: "/" },
-      { title: "Terms of Service", href: "/" },
-      { title: "Privacy policy", href: "/" },
-      { title: "Cookie policy", href: "/" },
+      { title: "Help & Support", href: "/help" },
+      { title: "About us", href: "/about" },
+      // { title: "Categories", href: "/" },
+      { title: "Guides", href: "/guide" },
+      { title: "Contact Us", href: "/contact" },
+      { title: "Terms of Service", href: "/terms" },
+      { title: "Privacy policy", href: "/privacy" },
+      // { title: "Cookie policy", href: "/" },
     ]
   }
 ]
@@ -105,7 +105,7 @@ const Footer = () => {
         </div>
         <hr className="w-full opacity-20 mt-6" />
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 py-6">
-          <p className="text-sm">© Whatworks. 2024. All rights reserved</p>
+          <p className="text-sm">© WorkAlat. 2024. All rights reserved</p>
           <Button className="!capitalize text-fadedwhite bg-black bg-opacity-50 rounded-lg px-4">
             English
             <img alt="" src={arrowRightWhiteIcon.src} className="ml-1" />

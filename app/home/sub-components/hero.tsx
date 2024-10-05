@@ -8,6 +8,7 @@ import locIcon from "@/public/icons/location.svg";
 import searchIcon from "@/public/icons/search.svg";
 import heroIcon from "@/public/images/hero_img.svg";
 import { siteConfig } from "@/config/site";
+import { useRouter } from "next/navigation";
 
 interface Option {
   label: string;
@@ -24,6 +25,9 @@ const Hero: React.FC = () => {
   // State to manage post code input
   const [postCode, setPostCode] = useState<string>("");
 
+  // router
+  const router = useRouter();
+
   useEffect(() => {
     if (category && postCode) {
       setSearchEnabled(false);
@@ -34,6 +38,7 @@ const Hero: React.FC = () => {
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
+    router.push('/client/place-request')
     console.log("searching...");
   };
 
@@ -41,17 +46,17 @@ const Hero: React.FC = () => {
     <div className="flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6">
       <div className="max-w-[696px] flex flex-col gap-9 relative z-10">
         <h1 className="text-white text-4xl md:text-5xl font-bold">
-          Connecting you with top professionals
+          Find verified professionals you can trust
         </h1>
         <p className="text-white text-xl sm:text-xl">
-        Where Expertise Meets Your Needs!
+        It takes a few clicks
         </p>
         <Box
           component={"form"}
-          className="flex items-center flex-wrap gap-4 bg-white py-2 px-3 rounded-md border-2 border-transparent transition-all [&:has(input:focus)]:border-secondary max-w-2xl"
+          className="flex items-center flex-wrap gap-4 bg-white py-2 px-3 rounded-md border-2 border-transparent transition-all [&:has(input:focus)]:border-secondary max-w-3xl"
           onSubmit={handleSearch}
         >
-          <div className="flex w-full md:max-w-[320px]">
+          <div className="flex w-full md:max-w-[350px]">
             <img
               alt=""
               className={
@@ -64,7 +69,7 @@ const Hero: React.FC = () => {
               disablePortal
               id="combo-box-demo"
               options={siteConfig.categories}
-              className="[&_input]:pl-3 [&_input]:text-lg w-full sm:w-[400px] [&_*]:pl-0 [&_*]:!py-0 [&_*]:!border-0 md:!border-r"
+              className="[&_input]:pl-3 [&_input]:text-base w-full sm:w-[430px] [&_*]:pl-0 [&_*]:!py-0 [&_*]:!border-0 md:!border-r"
               onChange={(
                 event: React.SyntheticEvent,
                 newValue?: Option | null
@@ -76,7 +81,7 @@ const Hero: React.FC = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  placeholder="What service are you looking for today?"
+                  placeholder="What service are you looking for?"
                   InputProps={{
                     ...params.InputProps,
                     onFocus: () => setInputFocus(true),
@@ -92,7 +97,7 @@ const Hero: React.FC = () => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPostCode(e.target.value)
             }
-            className="[&_*]:pl-0 [&_input]:pl-3 [&_input]:text-lg w-full sm:w-[180px] [&_*]:!py-0 !border-0 [&_*]:!border-0"
+            className="[&_*]:pl-0 [&_input]:pl-3 [&_input]:text-base w-full sm:w-[180px] [&_*]:!py-0 !border-0 [&_*]:!border-0"
             placeholder="Post Code"
             type="number"
             InputProps={{
@@ -116,6 +121,7 @@ const Hero: React.FC = () => {
             Search
           </Button>
         </Box>
+        <p className="text-white -mt-4">Popular: House Cleaning, Web Design, Personal Trainers</p>
       </div>
       <img
         src={heroIcon.src}

@@ -26,7 +26,7 @@ const Featured = () => {
     <Box className="space-y-7 mt-20 border-b border-dotted border-black pb-10">
       <div className="flex justify-between items-center">
         <h2 className="font-bold text-3xl">Featured Services</h2>
-        <Link href="/services" className="flex gap-2 text-base sm:text-xl group text-nowrap">
+        <Link href="/categories" className="flex gap-2 text-base sm:text-xl group text-nowrap">
           <p>View all</p>
           <img src={arrowRightSmIcon.src} alt="" className="group-hover:translate-x-1 transition-all" />
         </Link>

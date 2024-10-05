@@ -5,13 +5,19 @@ import React from "react";
 import { useUserContext } from "@/context/user_context";
 
 const FreelancerBenefits = () => {
-  const user = useUserContext();
+  // const user = useUserContext();
+
+  const user = {
+    user: {
+      role: "professional",
+    }
+  }
 
   return (
     <div className="pt-6 container mx-auto max-w-7xl px-6">
       <div className="flex flex-col lg:flex-row justify-center py-[2%]">
         <div className=" flex flex-col  w-full lg:w-[65%] mb-4 mt-3 lg:mb-0  lg:text-left">
-          <h2 className=" w-full text-left lg:w-[70%] text-xl sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-[3%] leading-tight ">
+          <h2 className=" w-full text-left lg:w-[70%] text-xl sm:text-xl md:text-3xl lg:text-3xl font-semibold text-gray-900 mb-[3%] leading-tight ">
             {user.user?.role === "client"
               ? "How  to post a job"
               : "How do I create a profile?"}
@@ -47,7 +53,7 @@ const FreelancerBenefits = () => {
       </div>
       <div className="flex flex-col lg:flex-row-reverse justify-center p-[2%] bg-[#F3F3F3] rounded-md gap-4 lg:gap-12">
         <div className=" flex flex-col  w-full lg:w-[65%] mb-4 mt-3 lg:mb-0  lg:text-left">
-          <h2 className=" w-full text-left lg:w-[70%] text-xl sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-[3%] leading-tight mt-8">
+          <h2 className=" w-full text-left lg:w-[70%] text-xl sm:text-xl md:text-3xl lg:text-3xl font-semibold text-gray-900 mb-[3%] leading-tight mt-8">
             {user.user?.role === "client"
             ? "How to receive quotes"
               : "Finding a job on WorkAlat"}

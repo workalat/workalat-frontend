@@ -1,3 +1,4 @@
+"use client"
 import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,8 +10,16 @@ import { CiSearch } from "react-icons/ci";
 import { TbCrown } from "react-icons/tb";
 import { GrChatOption } from "react-icons/gr";
 import MarketplaceHowItWorks from "./MarketplaceHowItWorks";
+import { useRouter } from "next/navigation";
 
 export default function HowItWorksPage() {
+  
+  const router = useRouter();
+
+  const redirectToProfessional = () => {
+    router.push("/professional");
+  }
+  
   return (
     <>
       <div className="container mx-auto max-w-7xl px-6 mt-12">
@@ -40,9 +49,10 @@ export default function HowItWorksPage() {
           <h1 className="text-5xl font-bold mb-4 text-white">How it works</h1>
           <p className="text-lg text-white pb-5">
             At WorkAlat, we help you grow your business by connecting you with
-            clients actively looking for your expertise.
+            clients<br/> actively looking for your expertise.
           </p>
-          <button className="px-8 py-2 font-semibold bg-[#FFBE00] text-[#242424] rounded-md flex items-center justify-center gap-2">
+          <button className="px-8 py-2 font-semibold bg-[#FFBE00] text-[#242424] rounded-md flex items-center justify-center gap-2"
+          onClick={redirectToProfessional}>
             <span>Get Started</span>
             <FaArrowRight className="size-3" />
           </button>
@@ -56,7 +66,7 @@ export default function HowItWorksPage() {
             <h1 className="text-2xl font-bold mb-4">
               Grow your business with WorkAlat today
             </h1>
-            <p className="text-lg  mb-4">
+            <p className="text-lg  mb-4 text-balance">
               Whether you're a freelancer, contractor, or small business owner,
               our platform gives you the opportunity to showcase your skills and
               receive real, verified leads.
@@ -131,6 +141,7 @@ export default function HowItWorksPage() {
               variant="contained"
               size="large"
               className="font-semibold px-8 py-4"
+              href="/professional"
             >
               Become a professional <FaArrowRight className="ml-2" />
             </Button>

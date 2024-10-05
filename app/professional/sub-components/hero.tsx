@@ -3,12 +3,12 @@ import React, { FormEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Box, Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 
 import searchIcon from "@/public/icons/search.svg";
 import heroIcon from "@/public/images/hero_img2.svg";
 import { siteConfig } from "@/config/site";
-import { useRouter } from "next/navigation";
 
 interface Option {
   label: string;
@@ -39,17 +39,17 @@ const Hero: React.FC = () => {
     <div className=" flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6">
       <div className="max-w-[796px] flex flex-col gap-9 relative z-10">
         <h1 className="text-black text-4xl md:text-5xl font-bold">
-          Secure Jobs and grow your business
+          Ready to grow your business?
         </h1>
         <p className="text-black text-xl sm:text-xl">
-          1000&apos;s of local and remote clients are already waiting for your services.
+        Join WorkAlat to grow your business and reach more clients
         </p>
         <Box
           component={"form"}
-          className="flex items-center flex-wrap gap-4 bg-white py-2 px-3 rounded-md border-1 border-x-gray-300 transition-all [&:has(input:focus)]:border-secondary max-w-2xl"
+          className="flex items-center gap-4 bg-white py-2 px-3 rounded-md border-1 border-x-gray-300 transition-all [&:has(input:focus)]:border-secondary w-full"
           onSubmit={handleSearch}
         >
-          <div className="flex w-full md:max-w-[320px]">
+          <div className="flex w-full md:max-w-[340px]">
             <img
               alt=""
               className={
@@ -87,18 +87,17 @@ const Hero: React.FC = () => {
           </div>
 
           <Button
-
-            className="bg-secondary text-main px-6 py-2 rounded-md disabled:text-opacity-40 flex-grow"
+            className="bg-secondary text-main px-6 py-2 rounded-md disabled:text-opacity-40 flex-grow min-w-40"
             type="submit"
           >
-            Search
+            Get Started
           </Button>
         </Box>
       </div>
       <img
         src={heroIcon.src}
         alt=""
-        className="hidden md:block w-[750px] h-[700px] object-fill object-center"
+        className="hidden md:block w-[850px] h-[750px] object-fill object-center"
 
       />
 

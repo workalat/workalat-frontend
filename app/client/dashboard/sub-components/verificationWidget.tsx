@@ -66,7 +66,7 @@ const VerificationWidget = () => {
         }}
         className='bg-secondary text-black'
       >
-        Get Certified
+        Get Verified
       </Button>
     </Box>
   );

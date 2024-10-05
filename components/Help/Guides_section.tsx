@@ -9,7 +9,7 @@ const Guides_section = () => {
 
     // Function to handle the click and navigate to /categories
     const handleClick = () => {
-        router.push('/guide_screen');  // Navigate to /guide_screen
+        router.push('/guide');  // Navigate to /guide_screen
     };
 
     // Array of custom text values

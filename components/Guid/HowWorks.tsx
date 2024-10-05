@@ -5,7 +5,11 @@ import React from "react";
 import { useUserContext } from "@/context/user_context";
 
 const HowWorks = () => {
-  const user = useUserContext().user;
+  // const user = useUserContext().user;
+
+  const user = {
+    role: "professional",
+  }
 
   return (
     <div className="pt-6 container mx-auto max-w-7xl px-6">
@@ -26,7 +30,7 @@ const HowWorks = () => {
           className="flex-1 py-4 text-gray-700 text-[14px] sm:text-[14px] md:text-[14px] lg:text-[18px] xl:text-[18px]"
           style={{ wordSpacing: "1px", lineHeight: "1.4" }}
         >
-          <h1 className="text-xl md:text-2xl font-bold mb-4">
+          <h1 className="text-xl md:text-3xl font-bold mb-4">
             {user?.role === "client"
               ? "How to select best service provider"
               : "Winning jobs"}
@@ -74,7 +78,7 @@ const HowWorks = () => {
         <div className="my-16 space-y-16">
           <div className="flex lg:flex-row-reverse flex-col gap-6 lg:gap-12">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8 text-gray-700">
+              <h1 className="text-xl md:text-3xl font-bold mb-4 mt-8 text-gray-700">
                 Do I need to leave a review?
               </h1>
               <p className="md:text-lg">
@@ -92,7 +96,7 @@ const HowWorks = () => {
           </div>
           <div className="flex p-8 bg-[#F3F3F3] rounded-md">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold mb-4 mt-8 text-gray-700">
+              <h1 className="text-xl md:text-3xl font-bold mb-4 mt-8 text-gray-700">
                 How secure is the platform?
               </h1>
               <p className="md:text-lg">

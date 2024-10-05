@@ -9,11 +9,11 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import HelpIcon from "@mui/icons-material/Help";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { FaUserEdit } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
 
 import projectsIcon from "@/public/icons/projects.svg";
 import responsesIcon from "@/public/icons/responses.svg";
 import settingsIcon from "@/public/icons/settings_white.svg";
-import { usePathname, useRouter } from "next/navigation";
 
 interface SideNavProps {
   isClientDashboard: boolean;
@@ -114,8 +114,8 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         </Box>
         <Box className="border-b border-white !mt-1" />
         {[
-          { icon: <Image src={projectsIcon} alt="" />, text: "Leads" },
-          { icon: <Image src={responsesIcon} alt="" />, text: "My Responses" },
+          { icon: <Image src={projectsIcon} alt="" />, text: "My Projects" },
+          { icon: <Image src={responsesIcon} alt="" />, text: "Post New Project" },
           { icon: <Image src={settingsIcon} alt="" />, text: "Settings", href: "/account_settings" },
         ].map((item, index) => (
           <Link
@@ -161,7 +161,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
 
       <Link
         href="/logout"
-        className="flex items-center p-3 hover:bg-gray-700 rounded-md mt-8"
+        className="flex items-center p-3 hover:bg-gray-700 rounded-md mt-4"
       >
         <ExitToAppIcon />
         <Typography className="ml-3">Logout</Typography>

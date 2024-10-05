@@ -1,59 +1,64 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import Image from "next/image";
-
-import arrowRightSmIcon from "@/public/images/browse_all.svg";
-import graphicdesigner from "@/public/images/graphic_designer.png";
-import housecleaning from "@/public/images/house_cleaning.png";
-import lifecoaching from "@/public/images/life_coaching.png";
-import webdevimg from "@/public/images/web_development.png";
 import { useRouter } from "next/navigation";
+import { FaArrowRight } from "react-icons/fa6";
+
+import img1 from "@/public/images/verified-client.png";
+import img2 from "@/public/images/boost-presence.png";
+import img3 from "@/public/images/flexible-opportunities.png";
+import img4 from "@/public/images/zero-commission.png";
 
 const popular_services = [
   {
-    img: graphicdesigner,
-    title: "Graphics Designer",
-    description: "Design great templates for prospective clients.",
+    img: img1,
+    title: "Verified Clients",
+    description: "We connect you with clients who are actively seeking services, ensuring you only get legitimate leads.",
   },
   {
-    img: housecleaning,
-    title: "House Cleaning",
-    description: "Design great templates for prospective clients.",
+    img: img2,
+    title: "Boost your online presence ",
+    description: "Showcase your skills, experience and stand out to attract more clients",
   },
   {
-    img: lifecoaching,
-    title: "Life Coaching",
-    description: "Design great templates for prospective clients.",
+    img: img3,
+    title: "Flexible opportunities",
+    description: "Browse projects that fit your availability and expertise, from short term gigs or long-term contracts.",
   },
   {
-    img: webdevimg,
-    title: "Web Development",
-    description: "Design great templates for prospective clients.",
+    img: img4,
+    title: "Pay zero commission",
+    description: "You only pay a token to bid for a project on our platform. If you don't win it, you get a 50% refund. ",
   },
 ];
 
 const PopularServices = () => {
   const router = useRouter();
+
   return (
-    <Box className="space-y-7 mt-20 pb-10 mx-10 sm:px-6 lg:px-8">
-      <h2 className="font-extrabold text-3xl pb-3">Popular Services</h2>
+    <Box className="space-y-7 mt-20 pb-10 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto px-6">
+      <h2 className="font-extrabold text-3xl pb-3">Why choose WorkAlat?</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 max-w-350px mx-auto">
         {popular_services.map((service, index) => (
-          <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md mx-auto">
-            <Image src={service.img} alt={service.title} width={400} height={225} objectFit="cover" />
-            <div className="p-4 bg-main text-white">
+          <div key={index} className="h-96 rounded-lg overflow-hidden shadow-md mx-auto">
+            <Image src={service.img} alt={service.title} width={400} height={225} objectFit="cover" className="w-full h-1/2 object-cover border border-b-4 border-white" />
+            <div className="p-4 bg-main text-white w-full h-full">
               <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
               <p className="text-sm mb-3">{service.description}</p>
-              <button onClick={() => router.push("/professional/signup")} className="text-yellow-400 border border-yellow-400 px-3 py-1 rounded hover:bg-yellow-400 hover:text-[#012B6D] transition-colors">
-                Explore →
-              </button>
+              <Button
+                variant="outlined"
+                onClick={() => router.push("/professional/signup")}
+              >
+                Explore
+                <FaArrowRight className="ml-2" />
+              </Button>
             </div>
           </div>
         ))}
       </div>
-      <div className="flex justify-center items-center gap-2 text-base sm:text-xl group text-nowrap pt-8">
+      {/* <div className="flex justify-center items-center gap-2 text-base sm:text-xl group text-nowrap pt-8">
         <p className="text-black text-3xl">Browse All</p>
         <Image src={arrowRightSmIcon} alt="" className="group-hover:translate-x-1 transition-all" width={24} height={24} />
-      </div>
+      </div> */}
     </Box>
   );
 };

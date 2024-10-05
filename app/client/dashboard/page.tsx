@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { usePathname } from "next/navigation";
 
 import SideNav from "../../../components/sideNav";
 
@@ -15,7 +16,6 @@ import ResponseNotifier from "./sub-components/responseNotifier";
 
 import theme from "@/config/theme.js";
 import { formatDateTime } from "@/utils/helper";
-import { usePathname } from "next/navigation";
 
 const Page = () => {
   const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);

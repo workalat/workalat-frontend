@@ -25,7 +25,7 @@ export const siteConfig = {
     },
     {
       label: "How It Works",
-      href: "/how-it-works",
+      href: "/client/how-it-works",
       icon: howitworksIcon,
       icon_dark: howitworksdarkIcon,
       isDropdown: false,
@@ -40,7 +40,7 @@ export const siteConfig = {
     },
     {
       label: "How It Works",
-      href: "/how-it-works",
+      href: "/client/how-it-works",
       icon: howitworksIcon,
       icon_dark: howitworksdarkIcon,
     },
@@ -83,7 +83,7 @@ export const siteConfig = {
       image: webDesignImg,
     },
     {
-      name: "Mechanic",
+      name: "Auto Mechanic",
       description: "Repair your Cars",
       image: mechanicImg,
     },
