@@ -1,5 +1,4 @@
 "use client"
-import { useRouter } from "next/navigation";
 import { Button } from "@mui/material";
 import { useState } from "react";
 import Image from "next/image";
@@ -38,8 +37,6 @@ const featured_services = [
 ]
 
 const Home = () => {
-
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const openModal = () => setOpen(true);
