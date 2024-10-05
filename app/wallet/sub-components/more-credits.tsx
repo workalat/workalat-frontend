@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 interface row {
   id: number;
@@ -31,6 +32,9 @@ function createData(points: string, price: string): row {
 export default function MoreCredits(
     { openBuyModal }: { openBuyModal: () => void }
 ) {
+  
+  const router = useRouter()
+  
   return (
     <Box>
       <Table className="[&_*]:!font-mono border !rounded-lg md:[&_*]:!text-lg shadow-md">
@@ -56,7 +60,9 @@ export default function MoreCredits(
           ))}
         </TableBody>
       </Table>
-      <Button className="text-main font-bold text-center w-full md:text-lg mt-2">
+      <Button className="text-main font-bold text-center w-full md:text-lg mt-2"
+        onClick={() => router.push('/contact')}
+      >
         Buy more credits
         <ArrowForward className="w-5 ml-2" />
       </Button>

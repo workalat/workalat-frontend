@@ -1,18 +1,25 @@
+"use client"
 import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
+import CompanyOverview from "@/components/AboutUs/CompanyOverview";
+import HelpedMillions from "@/components/AboutUs/HelpedMillions";
+import Hero from "@/components/AboutUs/Hero";
+import OurValue from "@/components/AboutUs/OurValue";
+import PressInquiriesCard from "@/components/Contact/PressInquiriesCard";
 import AuthNavbar from "@/components/navbar/auth_navbar";
 import arrowRightSm from "@/public/icons/arrow_right_sm.svg";
-import Hero from "@/components/AboutUs/Hero";
-import HelpedMillions from "@/components/AboutUs/HelpedMillions";
-import PressInquiriesCard from "@/components/Contact/PressInquiriesCard";
-import CompanyOverview from "@/components/AboutUs/CompanyOverview";
-import OurValue from "@/components/AboutUs/OurValue";
-import OurTeam from "@/components/AboutUs/OurTeam";
 import { FaArrowRight } from "react-icons/fa6";
+import PlaceRequestModal from "@/components/Clients/PlaceRequestModal/PlaceRequestModal";
+import { useState } from "react";
 
 export default function AboutPage() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div>
       <AuthNavbar />
@@ -50,11 +57,12 @@ export default function AboutPage() {
           With WorkAlat, it&apos;s as easy as posting your request, receiving quotes,
           and choosing the best professional.<br/> Let&apos;s make your next project{" "}
         </p>
-        <Button variant="contained" color="secondary" size="large" className="py-4 px-12">
+        <Button variant="contained" color="secondary" size="large" className="py-4 px-12" onClick={openModal}>
             Post a project
             <FaArrowRight className="ml-2" />
         </Button>
       </section>
+      <PlaceRequestModal open={isModalOpen} onClose={closeModal} />
       {/* <OurTeam /> */}
     </div>
   );

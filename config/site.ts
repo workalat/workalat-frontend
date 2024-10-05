@@ -47,7 +47,7 @@ export const siteConfig = {
   ],
   links: {
     login: "/login",
-    serviceProviderSignup: "/professional/signup",
+    serviceProviderSignup: "/professional",
   },
   categories: [
     { label: "Dry Cleaning" },

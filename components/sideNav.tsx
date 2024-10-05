@@ -90,7 +90,9 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
                 variant="middle"
                 className="border-slate-400"
               />
-              <button className="py-1">Manage</button>
+              <button className="py-1" onClick={
+                () => router.push("/membership")
+              }>Manage</button>
             </Box>
           </Box>
         </Box>
@@ -132,10 +134,11 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         </Box>
         <Box className="border-b border-white !mt-1" />
         {[
-          { icon: <Image src={projectsIcon} alt="" />, text: "My Projects" },
+          { icon: <Image src={projectsIcon} alt="" />, text: "Leads", href: "/leads" },
           {
             icon: <Image src={responsesIcon} alt="" />,
             text: isClientDashboard ? "Post new project" : "My Responses",
+            href: isClientDashboard ? "/client/place-request" : "/professional/my-responses",
           },
           {
             icon: <Image src={settingsIcon} alt="" />,

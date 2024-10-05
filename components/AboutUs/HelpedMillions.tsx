@@ -1,7 +1,9 @@
+"use client"
 import React from "react";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa6";
 import { Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const HelpedMillions = () => {
 //   const [progress, setProgress] = useState(0);
@@ -52,6 +54,8 @@ const HelpedMillions = () => {
 
 //     return () => window.removeEventListener("scroll", handleScroll);
 //   }, [visible]);
+
+const router = useRouter();
 
   return (
     <div className="pt-6 container mx-auto max-w-7xl px-6 mt-5 pb-5">
@@ -116,7 +120,7 @@ const HelpedMillions = () => {
               </div>
             </div> */}
 
-            <Button variant="contained" size="large" className="py-4 px-16 font-bold">
+            <Button variant="contained" size="large" className="py-4 px-16 font-bold" onClick={()=>router.push("/contact")}>
               More About Us
               <FaArrowRight className="ml-2" />
             </Button>

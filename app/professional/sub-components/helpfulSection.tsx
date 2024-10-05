@@ -1,5 +1,7 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import boomerangIcon from "@/public/images/boomerangIcon.svg";
 import avatarIcon from "@/public/images/avatarIcon.svg";
@@ -14,6 +16,7 @@ const features = [
     ],
     buttonText: "How it works",
     isParagraph: true,
+    link: "/professional/how-it-works",
   },
   {
     icon: avatarIcon,
@@ -25,6 +28,7 @@ const features = [
     ],
     buttonText: "See an example lead",
     isParagraph: false,
+    link: "/leads",
   },
   {
     icon: graphIcon,
@@ -34,10 +38,13 @@ const features = [
     ],
     buttonText: "See more about pricing",
     isParagraph: true,
+    link: "/wallet",
   },
 ];
 
 const HelpfulSection = () => {
+  const router = useRouter();
+
   return (
     <div className="max-w-screen-2xl mx-auto px-6">
       <h1 className="text-main md:text-3xl text-xl text-center mt-24 font-bold">
@@ -71,7 +78,10 @@ const HelpfulSection = () => {
                 ))}
               </ul>
             </div>
-            <button className="w-full bg-main text-white py-2 rounded hover:bg-secondary hover:text-main transition-colors h-16">
+            <button
+              className="w-full bg-main text-white py-2 rounded hover:bg-secondary hover:text-main transition-colors h-16"
+              onClick={() => router.push(feature.link)}
+            >
               {feature.buttonText}
             </button>
           </div>

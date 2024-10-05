@@ -66,7 +66,7 @@ const ProfessionalSettingsPage = () => {
       <Grid item xs={12} md={6}>
         <Paper
           elevation={3}
-          sx={{ px: 6, py: 4, height: "100%" }}
+          sx={{ px: 6, py: 4 }}
           className="rounded-xl border border-dark border-opacity-30 shadow-none"
         >
           <Typography
@@ -96,35 +96,23 @@ const ProfessionalSettingsPage = () => {
             </Button>
             <Button
               variant="contained"
-              color="secondary"
-              className="!bg-main !bg-opacity-40 text-main font-bold text-lg w-full max-w-[350px] py-2"
+              color="primary"
+              className="font-bold text-lg w-full max-w-[350px] py-2"
             >
-              Take Photo
+              Save
             </Button>
           </Box>
           <FormGroup>
             <div className="flex flex-col gap-4 md:flex-row">
               <FormControl fullWidth margin="normal">
                 <Typography gutterBottom variant="body1">
-                  First Name
+                  Full Name
                 </Typography>
                 <TextField
-                  name="firstName"
+                  name="Full Name"
                   value={personalInfo.firstName}
                   className="shadow-medium"
                   placeholder="Jane"
-                  onChange={handlePersonalInfoChange}
-                />
-              </FormControl>
-              <FormControl fullWidth margin="normal">
-                <Typography gutterBottom variant="body1">
-                  Last Name
-                </Typography>
-                <TextField
-                  name="lastName"
-                  className="shadow-medium"
-                  value={personalInfo.lastName}
-                  placeholder="Doe"
                   onChange={handlePersonalInfoChange}
                 />
               </FormControl>
@@ -158,31 +146,6 @@ const ProfessionalSettingsPage = () => {
               </FormControl>
             </div>
 
-            <FormControl fullWidth margin="normal" className="mt-4">
-              <Typography gutterBottom variant="body1">
-                Date of Birth
-              </Typography>
-              <TextField
-                name="dateOfBirth"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                value={personalInfo.dateOfBirth}
-                className="shadow-medium"
-                onChange={handlePersonalInfoChange}
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal" className="mt-4">
-              <Typography gutterBottom variant="body1">
-                Address
-              </Typography>
-              <TextField
-                name="address"
-                value={personalInfo.address}
-                className="shadow-medium"
-                placeholder="123 Main St, Anytown, AN 12345"
-                onChange={handlePersonalInfoChange}
-              />
-            </FormControl>
           </FormGroup>
           <Box mt={2} className="flex gap-2">
             <Button

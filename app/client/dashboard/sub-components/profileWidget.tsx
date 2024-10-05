@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import { 
   Card, 
@@ -11,8 +12,11 @@ import {
 } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
+import { useRouter } from 'next/navigation';
 
 const ProfileWidget = () => {
+  const router = useRouter();
+
   return (
     <Card sx={{ width: '100%', maxWidth: 800, borderRadius: 2 }} className=' border-1 border-gray-300 p-2'>
       <CardContent>
@@ -21,12 +25,13 @@ const ProfileWidget = () => {
             Anita Maika Services
           </Typography>
           <Box>
-            <IconButton size="small">
+            <IconButton size="small" href='/profile' >
               <ShareIcon />
             </IconButton>
             <Button 
               variant="contained" 
               className="bg-secondary  text-black hover:bg-secondary-dark ml-1"
+              onClick={()=>router.push("/account_settings")} 
             >
               Edit Profile
             </Button>
@@ -49,7 +54,7 @@ const ProfileWidget = () => {
             <Typography className='text-sm font-bold'>
               Your profile is 80% complete
             </Typography>
-            <IconButton size="small">
+            <IconButton size="small" onClick={()=>router.push("/account_settings")} >
               <EditIcon />
             </IconButton>
           </Box>
