@@ -5,7 +5,7 @@ export default function OurValue() {
         <div className="w-full h-auto bg-[#07242B] mt-6 pt-6 pb-6 flex flex-col items-center">
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
                 <h1 className="text-white font-bold text-[26px] md:text-[30px] lg:text-[32px]">
-                    Our Value
+                    What makes us different?
                 </h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-5">
                     {/* Flexibility */}
@@ -16,10 +16,10 @@ export default function OurValue() {
                             </div>
                             <div className="mt-3">
                                 <h2 className="text-white font-bold text-[20px] md:text-[18px]">
-                                    Flexibility
+                                Verified Professionals
                                 </h2>
                                 <p className="text-white text-[15px] md:text-[14px] mt-3">
-                                    Today's businesses are facing rapid changes, so they need to stay flexible in how they work. And they shouldn't be constrained by the four walls of an office, nine-to-five schedules, or traditional models that no longer fit.
+                                ·We carefully screen and verify each service provider on our platform. Trust is our top priority, and we ensure that only qualified experts are part of the WorkAlat community.
                                 </p>
                             </div>
                         </div>
@@ -32,10 +32,10 @@ export default function OurValue() {
                             </div>
                             <div className="mt-3">
                                 <h2 className="text-white font-bold text-[20px] md:text-[18px]">
-                                    Empowerment
+                                    Transparent Platform
                                 </h2>
                                 <p className="text-white text-[15px] md:text-[14px] mt-3">
-                                    Career decisions shouldn't be left to corporate management alone. That's old-school. Each member of our team is an invaluable partner whose expertise and contributions make us stronger every day.
+                                Real Jobs, clear terms, straightforward pricing, and a commitment to fostering trust between freelancers and clients.
                                 </p>
                             </div>
                         </div>
@@ -48,10 +48,10 @@ export default function OurValue() {
                             </div>
                             <div className="mt-3">
                                 <h2 className="text-white font-bold text-[20px] md:text-[18px]">
-                                    Inclusivity
+                                    Tailored Matches
                                 </h2>
                                 <p className="text-white text-[15px] md:text-[14px] mt-3">
-                                    Diversity delivers better outcomes for companies and talent alike. It&apos;s critical to cultivate workplace environments where people of all backgrounds and experiences are both valued and viewed as equal, so that everyone can excel in their careers and thrive.
+                                By using a smart matching system, we help you find professionals who not only meet your budget but also have the right skills and experience for your project.
                                 </p>
                             </div>
                         </div>
@@ -64,10 +64,10 @@ export default function OurValue() {
                             </div>
                             <div className="mt-3">
                                 <h2 className="text-white font-bold text-[20px] md:text-[18px]">
-                                    Sustainability
+                                    Commitment to Excellence
                                 </h2>
                                 <p className="text-white text-[15px] md:text-[14px] mt-3">
-                                    Today, more than ever, businesses must do their part to reverse climate change. So we're taking big steps to go carbon negative, becoming virtual-first, switching to energy-efficient tech, and building solar arrays in America's heartland.
+                                Our team is constantly working behind the scenes to improve the user experience. We listen to feedback, innovate regularly, and always strive to deliver the best possible service.
                                 </p>
                             </div>
                         </div>
