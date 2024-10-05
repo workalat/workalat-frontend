@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 interface row {
   id: number;
   details: string;
+  transactionId: number;
   date: Date;
   type: "success" | "fail";
   amount: string;
@@ -24,11 +25,12 @@ interface row {
 function createData(
   id: number,
   details: string,
+  transactionId: number,
   date: Date,
   type: "success" | "fail",
   amount: string
 ): row {
-  return { id, details, date, type, amount };
+  return { id, details, transactionId, date, type, amount };
 }
 
 
@@ -53,11 +55,11 @@ export default function Transactions() {
 
   useEffect(()=> {
     const rows: row[] = [
-      createData(0, "Payment for 25 points", new Date(), "success", "£42.50"),
-      createData(1, "Payment for 50 points", new Date(), "success", "£85.00"),
-      createData(2, "Failed payment", new Date(), "fail", "£42.50"),
-      createData(3, "Payment for 25 points", new Date(), "success", "£42.50"),
-      createData(4, "Payment for 50 points", new Date(), "success", "£85.00"),
+      createData(0, "30 wallet points", 12321311, new Date(), "success", "£42.50"),
+      createData(1, "30 wallet points", 12321311, new Date(), "success", "£85.00"),
+      createData(2, "30 wallet points", 12321311, new Date(), "fail", "£42.50"),
+      createData(3, "30 wallet points", 12321311, new Date(), "success", "£42.50"),
+      createData(4, "30 wallet points", 12321311, new Date(), "success", "£85.00"),
     ];
 
     setRows(rows);
@@ -74,7 +76,8 @@ export default function Transactions() {
                 ID
               </TableCell>
               <TableCell align="left" className="min-w-[120px]">Details</TableCell>
-              <TableCell align="left" className="min-w-[120px]">Date</TableCell>
+              <TableCell align="left" className="min-w-[120px]">Transaction Id</TableCell>
+              <TableCell align="left" className="min-w-[120px]">Date & time</TableCell>
               <TableCell align="left" className="min-w-[120px]">Type</TableCell>
               <TableCell align="left" className="min-w-[120px]">Amount</TableCell>
             </TableRow>
@@ -92,6 +95,7 @@ export default function Transactions() {
                   <AccountBalanceWalletIcon className="w-6 mr-2" />
                   {row.details}
                 </TableCell>
+                <TableCell align="left" className="min-w-[120px]">{row.transactionId}</TableCell>
                 <TableCell align="left" className="min-w-[120px]">{row.date.toUTCString()}</TableCell>
                 <TableCell align="left" className="min-w-[120px]">
                   {row.type === "success" ? <SuccessButton /> : <FailButton />}

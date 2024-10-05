@@ -16,8 +16,10 @@ interface row {
 }
 
 const rows: row[] = [
-  createData("25 Points", "£42.50"),
-  createData("50 Points", "£85.00"),
+  createData("10 Points", "£8. + VAT"),
+  createData("20 Points", "£15.2 + VAT"),
+  createData("30 Points", "£30 + VAT"),
+  createData("50 Points", "£60 + VAT"),
 ];
 
 function createData(points: string, price: string): row {
@@ -32,13 +34,13 @@ export default function MoreCredits(
   return (
     <Box>
       <Table className="[&_*]:!font-mono border !rounded-lg md:[&_*]:!text-lg shadow-md">
-        <TableHead>
+        {/* <TableHead>
           <TableRow>
             <TableCell align="center">Points</TableCell>
             <TableCell align="center">Price</TableCell>
             <TableCell align="center">Action</TableCell>
           </TableRow>
-        </TableHead>
+        </TableHead> */}
         <TableBody>
           {rows.map((row) => (
             <TableRow
