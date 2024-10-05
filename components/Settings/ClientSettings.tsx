@@ -1,13 +1,14 @@
 "use client";
-import { useState } from "react";
-import { Avatar, Button, FormControl, OutlinedInput } from "@mui/material";
+import { Button, FormControl } from "@mui/material";
 import Image from "next/image";
+import { useState } from "react";
+
+import BioEditor from "./BioEditor";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import userIcon from "@/public/icons/user.svg";
-import BioEditor from "./BioEditor";
 
-const SettingsPage = () => {
+const ClientSettings = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "",
@@ -16,24 +17,15 @@ const SettingsPage = () => {
 
   return (
     <>
-      <h1 className="text-main font-bold text-3xl text-center mb-2">
-        Account Settings
+      <h1 className="text-main font-bold text-3xl text-center mb-6 mt-8">
+        My Personal Details
       </h1>
-      <p className="text-main text-md text-center max-w-[600px] mx-auto mb-4">
-        Keep your details updated so that professionals can get in touch. If you
-        no longer require the service, please close the request.
-      </p>
       <form>
         <div className="bg-white border-main shadow-medium relative z-10 py-12 px-6 sm:px-6 rounded-lg max-w-2xl mx-auto">
-          <h2 className="text-main text-center font-bold text-2xl mb-6">
-            My personal details
-          </h2>
           <div className="flex flex-col justify-center items-center gap-3">
-            <Avatar
-              src={userIcon}
-              alt="Profile picture"
-              className="w-28 h-28 mb-3"
-            />
+            <div className="w-40 h-40 border shadow-sm rounded-md bg-white p-2 pb-0 -mt-14">
+              <img src={userIcon.src} alt="User icon" className="w-full h-full object-fit" />
+            </div>
             <Button
               variant="contained"
               className="bg-main !bg-opacity-40 text-main font-bold text-lg w-full max-w-[300px] py-2"
@@ -41,10 +33,10 @@ const SettingsPage = () => {
               Upload Photo
             </Button>
             <Button
-              variant="contained"
-              className="bg-main !bg-opacity-40 text-main font-bold text-lg w-full max-w-[300px] py-2"
+              variant="contained"              
+              className="font-bold text-lg w-full max-w-[300px] py-2"
             >
-              Take Photo
+              Save
             </Button>
           </div>
           <div className="space-y-4 mt-6 sm:mt-0">
@@ -128,4 +120,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default ClientSettings;
