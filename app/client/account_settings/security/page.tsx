@@ -39,7 +39,7 @@ const SecuritySettings = () => {
         <Grid item xs={12} md={6}>
           <Box className="rounded-xl border border-dark border-opacity-30 px-6 py-4 pb-6 space-y-4 h-full bg-white md:bg-transparent">
             <Typography
-              gutterBottom  
+              gutterBottom
               className="text-xl font-semibold border-b border-dark border-opacity-30 pb-2"
             >
               Password
@@ -106,6 +106,7 @@ const SecuritySettings = () => {
             <Typography>Last Changed 20 Jan 2024, 09:00 AM</Typography>
             <Button
               variant="contained"
+              onClick={openModal}
               color="primary"
               className="gap-2 py-3 px-6 font-semibold"
             >

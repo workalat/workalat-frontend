@@ -101,7 +101,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
 
       <Box className="flex-grow space-y-4">
         <Link
-          href="/dashboard"
+          href={`${isClientDashboard ? "/client/dashboard" : "/professional/dashboard"}`}
           className="bg-white text-main rounded-md p-3 flex items-center"
         >
           <DashboardIcon className="mr-3" />
@@ -143,7 +143,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           {
             icon: <Image src={settingsIcon} alt="" />,
             text: "Settings",
-            href: "/account_settings",
+            href: isClientDashboard ? "/client/account_settings" : "/professional/account_settings",
           },
         ].map((item, index) => (
           <Link
