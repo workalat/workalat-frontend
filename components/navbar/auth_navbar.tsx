@@ -71,15 +71,9 @@ const AuthNavbar = () => {
       position="sticky"
       maxWidth="xl"
     >
-<<<<<<< HEAD
       <NavbarBrand>
         <Link href="/" className="flex justify-start text-white items-center gap-1">
           <Image alt="WhatWorks" className="min-w-24 w-52 -ml-8" src={logo_dark} />
-=======
-      <NavbarBrand className="overflow-hidden">
-        <Link href="/" className="flex justify-start text-white items-center gap-1 overflow-hidden">
-          <Image alt="WhatWorks" className="min-w-24 w-36" src={logo_dark} />
->>>>>>> 02125a04d928d4b13a7544e320c23936ec0aa49c
           {/* <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
           </span> */}
