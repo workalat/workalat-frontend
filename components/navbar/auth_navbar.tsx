@@ -73,7 +73,7 @@ const AuthNavbar = () => {
     >
       <NavbarBrand>
         <Link href="/" className="flex justify-start text-white items-center gap-1">
-          <Image alt="WhatWorks" className="min-w-24 w-52 -ml-8" src={logo_dark} />
+          <Image alt="WhatWorks" className="min-w-24 w-28" src={logo_dark} />
           {/* <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
           </span> */}
