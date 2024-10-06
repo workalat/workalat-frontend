@@ -49,7 +49,7 @@ export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
     <NextUINavbar
       className={`border-b ${currentMode === "light" ? "border-dark !bg-white !bg-opacity-70" : "border-white"} border-opacity-10 pt-4 backdrop-blur-0 bg-transparent fixed top-0 z-50`}
       maxWidth="xl"
-    >
+    > 
       <NavbarContent className="basis-1/5 sm:basis-full items-center self-center" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
