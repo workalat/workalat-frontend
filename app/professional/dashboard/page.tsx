@@ -82,22 +82,22 @@ const Page = () => {
             className={`w-full flex flex-col md:flex-row ${isClientDashboard ? "justify-end" : "justify-between"} gap-3 mt-8`}
           >
             {!isClientDashboard && (
-              <>
+              <div>
                 <LeadsSetting />
-              </>
+              </div>
             )}
             <div className="max-w-xl w-full">
               {isClientDashboard ? (
                 <Help />
               ) : (
-                <>
+                <div>
                   <OfferWidget />
                   <div className="flex flex-col md:flex-row gap-2 mt-6 w-full">
                     <LeadsNotifier />
                     <ResponseNotifier />
                   </div>
                   <Help />
-                </>
+                </div>
               )}
             </div>
           </section>

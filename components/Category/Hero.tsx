@@ -25,17 +25,12 @@ export default function Hero() {
         <div className="w-full lg:w-3/5">
           <div className="px-12 py-12">
             <h3 className="text-4xl text-white font-bold">
-              Find services for your business on Whatworks
+              Connect with the right professional for any task
             </h3>
             <p className="text-lg text-white pt-5">
-              Most businesses could be getting a better deal on the services
-              they use day to day. We've got thousands of suppliers ready and
-              waiting to quote.
+              WorkAlat connects you with the top freelancers and service providers to get the job done right. From local specialists to remote experts, our platform simplifies the hiring process, saving you time and ensuring quality results.
             </p>
-            <p className="text-lg text-white pt-3">
-              Find everything from web designers to bookkeepers and telephone
-              systems to office stationery.
-            </p>
+           
             <div className="pt-5">
               <button
                 onClick={openModal}
@@ -51,7 +46,7 @@ export default function Hero() {
             className="w-[300px] lg:w-[400px] xl:w-[400px] mx-auto lg:ms-auto pe-5 -mt-12 lg:-mt-5 xl:-mt-12 h-auto"
             width={1000}
             height={1000}
-            src="/images/client_hero.png"
+            src="/images/category-hero.png"
             alt="what works"
           />
         </div>

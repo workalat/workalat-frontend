@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
 import EditIcon from "@mui/icons-material/Edit";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const ProfileWidget = ({
   isClientDashboard,
@@ -21,6 +21,7 @@ const ProfileWidget = ({
 }) => {
   
   const pathname = usePathname();
+  const router = useRouter();
   
   return (
     <Card
@@ -39,13 +40,14 @@ const ProfileWidget = ({
           </Typography>
           <Box>
             {(pathname!=="/client/dashboard" ) && (
-              <IconButton size="small" className={(pathname!=="/client/dashboard") ? "":"hidden"}>
+              <IconButton onClick={() => router.push("/profile")} size="small" className={(pathname!=="/client/dashboard") ? "":"hidden"}>
                 <ShareIcon />
               </IconButton>
             )}
             <Button
               variant="contained"
               className="bg-secondary  text-black hover:bg-secondary-dark ml-1"
+              onClick={() => router.push("/professional/account_settings")}
             >
               Edit Profile
             </Button>
@@ -76,7 +78,7 @@ const ProfileWidget = ({
             <Typography className="text-sm font-bold">
               Your profile is 80% complete
             </Typography>
-            <IconButton size="small">
+            <IconButton onClick={() => router.push('/professional/account_settings')} size="small">
               <EditIcon />
             </IconButton>
           </Box>

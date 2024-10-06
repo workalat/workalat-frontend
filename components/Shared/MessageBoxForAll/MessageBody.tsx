@@ -1,6 +1,6 @@
 "use client"
 
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineMenu, AiOutlineSearch } from "react-icons/ai";
 import MessageBoxForAll from "./MessageBoxForAll";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useState } from "react";
@@ -14,7 +14,8 @@ export default function MessageBody() {
 
   return (
       <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
-          <div className="w-auto flex-grow px-3 pt-2 md:py-2 overflow-hidden relative">
+          <button type="button" onClick={() => setMessageListOpen(!messageListOpen)} className="m-0 p-0 relative z-[300]"><AiOutlineMenu className="size-5" /></button>
+          <div className="w-auto flex-grow md:px-3 pt-2 md:py-2 overflow-hidden relative">
 
               {/* message box must be dynamic with chat socket io */}
               <div className="flex h-full gap-4 relative">

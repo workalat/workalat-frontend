@@ -16,7 +16,7 @@ const ClientSettings = () => {
   });
 
   return (
-    <>
+    <div>
       <h1 className="text-main font-bold text-3xl text-center mb-6 mt-8">
         My Personal Details
       </h1>
@@ -116,7 +116,7 @@ const ClientSettings = () => {
           <Image src={arrowRightIcon} alt="Arrow right" />
         </Button>
       </form>
-    </>
+    </div>
   );
 };
 

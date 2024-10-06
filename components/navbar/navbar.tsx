@@ -23,6 +23,11 @@ import { siteConfig } from "@/config/site";
 import user_icon from "@/public/icons/user.svg";
 import logo_dark from "@/public/logo_dark.png";
 import logo_light from "@/public/logo_light.png";
+<<<<<<< HEAD
+=======
+import user_icon from "@/public/icons/user.svg";
+import { siteConfig } from "@/config/site";
+>>>>>>> 02125a04d928d4b13a7544e320c23936ec0aa49c
 
 
 export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
@@ -50,13 +55,19 @@ export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
       className={`border-b ${currentMode === "light" ? "border-dark !bg-white !bg-opacity-70" : "border-white"} border-opacity-10 pt-4 backdrop-blur-0 bg-transparent fixed top-0 z-50`}
       maxWidth="xl"
     >
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+      <NavbarContent className="basis-1/5 sm:basis-full items-center self-center" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             {currentMode === "light" ? (
+<<<<<<< HEAD
               <Image alt="WhatWorks" className="min-w-24 w-36 -ml-2" src={logo_light} />
             ) : (
               <Image alt="WhatWorks" className="min-w-24 w-52 -ml-8" src={logo_dark} />
+=======
+              <Image alt="WhatWorks" className="min-w-24 w-36 -mt-2" src={logo_light} />
+            ) : (
+              <Image alt="WhatWorks" className="min-w-24 w-36 -mt-2" src={logo_dark} />
+>>>>>>> 02125a04d928d4b13a7544e320c23936ec0aa49c
             )}
             {/* <p
               className={clsx(

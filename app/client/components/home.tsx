@@ -17,11 +17,13 @@ import webDevImg from "@/public/images/web_dev_2.png";
 const featured_services = [
   {
     title: "House Cleaning",
+    title: "House Cleaning",
     img: cleaningImg,
     subtitle:
       "Get expert cleaning services to keep your space spotless and fresh.",
   },
   {
+    title: "Graphic Design",
     title: "Graphic Design",
     img: webDevImg,
     subtitle:
@@ -33,6 +35,7 @@ const featured_services = [
     subtitle: "Get a reliable handyman services for all your home repair needs",
   },
   {
+    title: "Web Development",
     title: "Web Development",
     img: drycleanImg,
     subtitle:
@@ -116,7 +119,7 @@ const Home = () => {
         </Box>
       </section>
       <PlaceRequestModal open={open} onClose={closeModal} />
-    </>
+    </div>
   );
 };
 

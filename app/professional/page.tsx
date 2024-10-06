@@ -13,7 +13,7 @@ export default function Professional() {
   const router = useRouter()
   
   return (
-    <>
+    <div>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-[clamp(50svh,631px,80svh)] sm:h-[680px] bg-white relative overflow-hidden">
         <Hero />
       </section>
@@ -43,6 +43,6 @@ export default function Professional() {
           </Button>
         </div>
       </section>
-    </>
+    </div>
   );
 }

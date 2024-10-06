@@ -54,7 +54,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center">
               Anita Maika{" "}
-              <span className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
+              <span onClick={() => router.push("/profile")} className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
                 <FaUserEdit />
               </span>
             </Typography>
@@ -77,7 +77,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center">
               Anita Maika{" "}
-              <span className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
+              <span onClick={() => router.push("/profile")} className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
                 <FaUserEdit />
               </span>
             </Typography>
@@ -101,7 +101,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
 
       <Box className="flex-grow space-y-4">
         <Link
-          href="/dashboard"
+          href={`${isClientDashboard ? "/client/dashboard" : "/professional/dashboard"}`}
           className="bg-white text-main rounded-md p-3 flex items-center"
         >
           <DashboardIcon className="mr-3" />
@@ -143,7 +143,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           {
             icon: <Image src={settingsIcon} alt="" />,
             text: "Settings",
-            href: "/account_settings",
+            href: isClientDashboard ? "/client/account_settings" : "/professional/account_settings",
           },
         ].map((item, index) => (
           <Link

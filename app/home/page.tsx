@@ -18,7 +18,7 @@ const HomePage = () => {
   const doOpenPlaceReqModal =  () => setOpenPlaceReqModal(true);
 
   return (
-    <>
+    <div>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-[clamp(50svh,631px,80svh)] sm:h-[680px] bg-main relative overflow-hidden">
         <Hero openModal={doOpenPlaceReqModal}  />
       </section>
@@ -48,7 +48,7 @@ const HomePage = () => {
         </div>
       </section>
       <PlaceRequestModal open={openPlaceReqModal} onClose={closePlaceReqModal} />
-    </>
+    </div>
   );
 };
 
