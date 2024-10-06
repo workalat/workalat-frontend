@@ -1,12 +1,12 @@
 "use client"
 import { Button } from "@mui/material";
 import { FaArrowRight } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 import Hero from "./sub-components/hero";
 import Jobs from "./sub-components/jobs";
 import HelpfulSection from "./sub-components/helpfulSection";
 import Join from "./sub-components/join";
-import { useRouter } from "next/navigation";
 
 export default function Professional() {
   
