@@ -64,15 +64,15 @@ const Step8 = ({ handleNext, updateFormData, handlePrev }: Step7Props) => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (
-            formData.title === "" ||
-            formData.description === "" ||
-            formData.file === null
-        ) {
-            return alert("Please fill in all fields");
-        }
+        // if (
+        //     formData.title === "" ||
+        //     formData.description === "" ||
+        //     formData.file === null
+        // ) {
+        //     return alert("Please fill in all fields");
+        // }
 
-        updateFormData({ summary: formData });
+        // updateFormData({ summary: formData });
         setLoading(true);
 
         // MOCK API call

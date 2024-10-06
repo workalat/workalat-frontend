@@ -77,10 +77,10 @@ const PreferenceSettings = () => {
             </Box>
           </Grid>
         </Grid>
-        <Button variant="contained" color="error" className="absolute top-4 right-4" >
+        {/* <Button variant="contained" color="error" className="absolute top-4 right-4" >
           Close Account
           <Close />
-        </Button>
+        </Button> */}
       </Box>
     </>
   );

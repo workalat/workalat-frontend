@@ -12,7 +12,7 @@ const footer_links = [
   {
     title: "For Clients",
     links: [
-      { title: "How to hire", href: "/guide" },
+      { title: "How to hire", href: "/client/how-it-works" },
       { title: "Post a project", href: "/" },
       { title: "Login", href: "/login" },
       { title: "Download app", href: "/" },
@@ -22,7 +22,7 @@ const footer_links = [
     title: "For Professionals",
     links: [
       { title: "Join as a professional", href: "/professional" },
-      { title: "How it works", href: "/guide" },
+      { title: "How it works", href: "/professional/how-it-works" },
       { title: "Pricing", href: "/wallet" },
       { title: "Login", href: "/login" },
       { title: "Download app", href: "/" },

@@ -113,7 +113,7 @@ const PlaceRequestModal = ({
   }, [stepFormData]);
 
   const handleNext = () => {
-    if (activeStep === 9) return;
+    if (activeStep === 8) return;
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 

@@ -10,15 +10,21 @@ import {
   FormControl,
   FormGroup,
   Grid,
+  MenuItem,
+  Chip,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
 } from "@mui/material";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 
 import cancelIcon from "@/public/icons/cancel.svg";
 import arrowRight from "@/public/icons/arrow_right.svg";
+import { siteConfig } from "@/config/site";
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const ProfessionalSettingsPage = () => {
   const [personalInfo, setPersonalInfo] = useState({
@@ -55,11 +61,36 @@ const ProfessionalSettingsPage = () => {
     setNewEmail(event.target.value);
   };
 
-  const [editorValue, setEditorValue] = useState<string>('');
+  const [editorValue, setEditorValue] = useState<string>("");
 
-    const handleChange = (value: string) => {
-        setEditorValue(value);
-    };
+  const handleChange = (value: string) => {
+    setEditorValue(value);
+  };
+
+  const [personName, setPersonName] = useState<string[]>([]);
+
+  const handleChange2 = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
+  const names = [
+    " Dry Cleaning",
+    "Commercial & Office Cleaning",
+    "Pressure Washing",
+    "End of Tenancy Cleaning",
+    "Gutter Cleaning",
+    "Carpet Cleaning",
+    "Car Cleaning & Valet",
+    "Office Cleaning",
+    "Oven Cleaning",
+    "Roof Cleaning",
+  ];
 
   return (
     <Grid container spacing={3} className="mt-1">
@@ -145,7 +176,6 @@ const ProfessionalSettingsPage = () => {
                 />
               </FormControl>
             </div>
-
           </FormGroup>
           <Box mt={2} className="flex gap-2">
             <Button
@@ -166,6 +196,70 @@ const ProfessionalSettingsPage = () => {
             </Button>
           </Box>
         </Paper>
+        <Grid item xs={24} className="mt-6">
+          <Paper
+            elevation={3}
+            sx={{ px: 6, py: 4 }}
+            className="rounded-xl border border-dark border-opacity-30 shadow-none"
+          >
+            <Typography
+              gutterBottom
+              className="text-xl font-semibold mb-4 border-b border-dark border-opacity-30 pb-4"
+            >
+              Change Email
+            </Typography>
+            <FormGroup>
+              <FormControl fullWidth margin="normal" className="mt-4">
+                <Typography gutterBottom variant="body1">
+                  Current Email
+                </Typography>
+                <TextField
+                  className="shadow-medium"
+                  value={personalInfo.email}
+                  placeholder="current@email.com"
+                />
+              </FormControl>
+              <FormControl fullWidth margin="normal" className="mt-4">
+                <Typography gutterBottom variant="body1">
+                  New Email
+                </Typography>
+                <TextField
+                  value={newEmail}
+                  className="shadow-medium"
+                  placeholder="new@email.com"
+                  onChange={handleNewEmailChange}
+                />
+              </FormControl>
+              <FormControl fullWidth margin="normal" className="mt-4">
+                <Typography gutterBottom variant="body1">
+                  Confirm Email
+                </Typography>
+                <TextField
+                  className="shadow-medium"
+                  placeholder="new@email.com"
+                />
+              </FormControl>
+            </FormGroup>
+            <Box mt={2} className="flex gap-2">
+              <Button
+                variant="contained"
+                color="secondary"
+                className="gap-2 py-3 px-6"
+              >
+                Cancel
+                <Image src={cancelIcon} alt="Cancel" />
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="gap-2 py-3 px-6"
+              >
+                Save changes
+                <Image src={arrowRight} alt="Save changes" />
+              </Button>
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
 
       <Grid item xs={12} md={6}>
@@ -231,9 +325,7 @@ const ProfessionalSettingsPage = () => {
             </FormControl>
             <FormControl>
               <Box>
-                <Typography variant="body1">
-                  Your Bio.
-                </Typography>
+                <Typography variant="body1">Your Bio.</Typography>
                 <ReactQuill
                   // value={editorValue}
                   // onChange={handleChange}
@@ -265,17 +357,49 @@ const ProfessionalSettingsPage = () => {
                 />
               </Box>
             </FormControl>
-            <FormControl fullWidth margin="normal" className="mt-4">
+            <FormControl fullWidth className="mt-6">
               <Typography gutterBottom variant="body1">
                 Services
               </Typography>
-              <TextField
-                name="skillSet"
-                // value={jobInfo.skillSet}
+              <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                placeholder="Services"
+                label="Services"
                 className="shadow-medium"
-                placeholder="Professional Dry Cleaner"
-                // onChange={handleJobInfoChange}
-              />
+                multiple
+                value={personName}
+                onChange={handleChange2}
+                input={
+                  <OutlinedInput
+                    id="select-multiple-chip"
+                    label="Services"
+                    color="primary"
+                  />
+                }
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value, index) => (
+                      <Chip
+                        key={value}
+                        label={value}
+                        color="secondary"
+                        onDelete={index===0 ? undefined : () => {
+                          setPersonName((prev) =>
+                            prev.filter((name) => name !== value)
+                          );
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
+              >
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
             <FormControl fullWidth margin="normal" className="mt-4">
               <Typography gutterBottom variant="body1">
@@ -299,71 +423,6 @@ const ProfessionalSettingsPage = () => {
                 className="shadow-medium"
                 placeholder="123 Main St, Anytown, AN 12345"
                 // onChange={handleJobInfoChange}
-              />
-            </FormControl>
-          </FormGroup>
-          <Box mt={2} className="flex gap-2">
-            <Button
-              variant="contained"
-              color="secondary"
-              className="gap-2 py-3 px-6"
-            >
-              Cancel
-              <Image src={cancelIcon} alt="Cancel" />
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className="gap-2 py-3 px-6"
-            >
-              Save changes
-              <Image src={arrowRight} alt="Save changes" />
-            </Button>
-          </Box>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} md={6}>
-        <Paper
-          elevation={3}
-          sx={{ px: 6, py: 4 }}
-          className="rounded-xl border border-dark border-opacity-30 shadow-none"
-        >
-          <Typography
-            gutterBottom
-            className="text-xl font-semibold mb-4 border-b border-dark border-opacity-30 pb-4"
-          >
-            Change Email
-          </Typography>
-          <FormGroup>
-            <FormControl fullWidth margin="normal" className="mt-4">
-              <Typography gutterBottom variant="body1">
-                Current Email
-              </Typography>
-              <TextField
-                className="shadow-medium"
-                value={personalInfo.email}
-                placeholder="current@email.com"
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal" className="mt-4">
-              <Typography gutterBottom variant="body1">
-                New Email
-              </Typography>
-              <TextField
-                value={newEmail}
-                className="shadow-medium"
-                placeholder="new@email.com"
-                onChange={handleNewEmailChange}
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal" className="mt-4">
-              <Typography gutterBottom variant="body1">
-                Confirm Email
-              </Typography>
-              <TextField
-                className="shadow-medium"
-                placeholder="new@email.com"
               />
             </FormControl>
           </FormGroup>

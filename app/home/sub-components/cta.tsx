@@ -1,9 +1,14 @@
+"use client"
 import { Box, Button } from "@mui/material";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import ctaImg from "@/public/images/third_section.png";
+import { useRouter } from "next/navigation";
 
 const Cta = ({ openModal }: {openModal: ()=>void}) => {
+  
+  const router = useRouter();
+  
   return (
     <Box className="bg-main bg-[url('/images/bg_pattern.svg')] bg-cover rounded-xl p-8 lg:pl-20 md:p-4 flex justify-between items-center flex-wrap gap-y-6">
       <div className="text-white max-w-[584px] space-y-9">
@@ -27,7 +32,9 @@ const Cta = ({ openModal }: {openModal: ()=>void}) => {
               className="ml-2 group-hover:translate-x-2 transition-all"
             />
           </Button>
-          <Button variant="outlined" className="w-full sm:max-w-max  ml-2">
+          <Button variant="outlined" className="w-full sm:max-w-max  ml-2"
+            onClick={() => router.push("/professional")}
+          >
             Join as a professional
             <img
               src={arrowRightIcon.src}

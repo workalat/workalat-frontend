@@ -1,11 +1,18 @@
+"use client"
 import { Box, Typography, Divider, Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const ResponsesNotifier = () => {
+  
+  const router = useRouter();
+  
   return (
     <Box className="w-full max-w-xs flex flex-col gap-2 p-6 bg-[#F9F2F2] rounded-lg">
       <Box className="flex justify-between items-center gap-2">
         <Typography className="text-lg font-bold">Responses</Typography>
-        <Button color='secondary'>
+        <Button color='secondary'
+          onClick={() => router.push('/professional/my-responses')}
+        >
           View
         </Button>
       </Box>

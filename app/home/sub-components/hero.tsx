@@ -13,7 +13,7 @@ interface Option {
   label: string;
 }
 
-const Hero = ({ openModal }: {openModal: ()=>void}) => {
+const Hero = ({ openModal }: { openModal: () => void }) => {
   const [inputFocus, setInputFocus] = useState<boolean>(false);
   const [zipFocus, setZipFocus] = useState<boolean>(false);
   const [searchEnabled, setSearchEnabled] = useState<boolean>(true);
@@ -43,9 +43,7 @@ const Hero = ({ openModal }: {openModal: ()=>void}) => {
         <h1 className="text-white text-4xl md:text-5xl font-bold">
           Find verified professionals you can trust
         </h1>
-        <p className="text-white text-xl sm:text-xl">
-        It takes a few clicks
-        </p>
+        <p className="text-white text-xl sm:text-xl">It takes a few clicks</p>
         <Box
           component={"form"}
           className="flex items-center flex-wrap gap-4 bg-white py-2 px-3 rounded-md border-2 border-transparent transition-all [&:has(input:focus)]:border-secondary max-w-3xl"
@@ -86,7 +84,7 @@ const Hero = ({ openModal }: {openModal: ()=>void}) => {
               )}
             />
           </div>
-          <TextField
+          {/* <TextField
             onFocus={() => setZipFocus(true)}
             onBlur={() => setZipFocus(false)}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -107,6 +105,53 @@ const Hero = ({ openModal }: {openModal: ()=>void}) => {
                 />
               ),
             }}
+          /> */}
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={[
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+              { label: "123456" },
+            ]}
+            className="[&_*]:pl-0 [&_input]:pl-3 [&_input]:text-base w-full sm:w-[180px] [&_*]:!py-0 !border-0 [&_*]:!border-0"
+            onChange={(
+              event: React.SyntheticEvent,
+              newValue?: Option | null
+            ) => {
+              if (newValue) {
+                setCategory(newValue.label);
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Post Code"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <img
+                      alt=""
+                      className={
+                        zipFocus || postCode !== ""
+                          ? "opacity-100"
+                          : "opacity-40"
+                      }
+                      src={locIcon.src}
+                      width={18}
+                    />
+                  ),
+                  onFocus: () => setInputFocus(true),
+                  onBlur: () => setInputFocus(false),
+                }}
+              />
+            )}
           />
           <Button
             disabled={searchEnabled}
@@ -116,12 +161,14 @@ const Hero = ({ openModal }: {openModal: ()=>void}) => {
             Search
           </Button>
         </Box>
-        <p className="text-white -mt-4">Popular: House Cleaning, Web Design, Personal Trainers</p>
+        <p className="text-white -mt-4">
+          Popular: House Cleaning, Web Design, Personal Trainers
+        </p>
       </div>
       <img
         src={heroIcon.src}
         alt=""
-        className="absolute -bottom-28 -right-28 2xl:right-32 w-[1050px]"
+        className="absolute -bottom-28 -right-28 2xl:right-32 w-[1050px] min-w-[1050px]"
       />
     </div>
   );

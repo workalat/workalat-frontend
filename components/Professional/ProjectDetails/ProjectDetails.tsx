@@ -6,6 +6,7 @@ import { GoDotFill } from "react-icons/go";
 import { IoArrowForwardSharp, IoClose } from "react-icons/io5";
 import MaskedPhoneNumber from "@/components/Admin/Dashboard/Leads/MaskedPhoneNumber";
 import MaskedEmail from "@/components/Admin/Dashboard/Leads/MaskedEmail";
+import Link from "next/link";
 
 export default function ProjectDetails({ params }: any) {
     const dynamicData = projectsData?.find((data) => data?.projectId == params?.id);
@@ -47,7 +48,7 @@ export default function ProjectDetails({ params }: any) {
                                     <img className="w-12 h-12 object-cover" src={dynamicData?.userDetails?.profilePhoto} alt="work alat" />
                                     <div className="px-2">
                                         <p className="text-sm font-bold capitalize">{dynamicData?.userDetails?.user}</p>
-                                        <button className="text-sm text-black px-3 rounded-md mt-1 py-1 font-semibold bg-[#FFBE00]">Chat</button>
+                                        <Link href={'/professional/chat'} className="text-sm text-black px-3 rounded-md mt-1 py-1 font-semibold bg-[#FFBE00]">Chat</Link>
                                     </div>
                                 </div>
                             </div>

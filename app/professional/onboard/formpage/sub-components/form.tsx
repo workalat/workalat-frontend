@@ -346,7 +346,7 @@ export default function Form() {
         >
           By continuing, you confirm your agreement to our {""}
           <Link
-            href="/terms-and-conditions"
+        href="/terms"
             className="font-semibold underline hover:text-secondary"
           >
             Terms & Conditions

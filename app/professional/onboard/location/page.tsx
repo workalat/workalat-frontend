@@ -3,13 +3,16 @@
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import {
+  Autocomplete,
   Box,
   Button,
+  Chip,
   FormControl,
   InputAdornment,
   InputLabel,
   MenuItem,
   Modal,
+  OutlinedInput,
   Select,
   SelectChangeEvent,
   TextField,
@@ -29,7 +32,7 @@ export default function LocationPage() {
   const [postCode, setPostCode] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    setDistance(event.target.value as string);
+    setDistance([event.target.value as string]);
   };
 
   // handle submission
@@ -44,6 +47,20 @@ export default function LocationPage() {
     // redirect to next page
     router.push("/professional/onboard/more");
   };
+
+  const [personName, setPersonName] = useState<string[]>([]);
+
+  const handleChange2 = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
+  const names = ["Nationwise", "Cardiff", "Newport, NP20"];
 
   return (
     <>
@@ -62,37 +79,80 @@ export default function LocationPage() {
           >
             <Box className="flex gap-4 items-center">
               <FormControl fullWidth>
-                <InputLabel id="distance">Radius</InputLabel>
                 <Select
-                  required
-                  labelId="distance"
-                  id="distance"
-                  value={distance}
-                  label="Radius"
-                  className="!text-left"
-                  onChange={handleChange}
+                  labelId="demo-multiple-chip-label"
+                  id="demo-multiple-chip"
+                  placeholder="Location"
+                  multiple
+                  value={personName}
+                  onChange={handleChange2}
+                  input={
+                    <OutlinedInput
+                      id="select-multiple-chip"
+                      label="Services"
+                      color="primary"
+                    />
+                  }
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          color="secondary"
+                          onDelete={() => {
+                            setPersonName((prev) =>
+                              prev.filter((name) => name !== value)
+                            );
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  )}
                 >
-                  <MenuItem value={10}>10 Miles</MenuItem>
-                  <MenuItem value={20}>20 Miles</MenuItem>
-                  <MenuItem value={30}>30 Miles</MenuItem>
+                  {names.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      {name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <p className="font-semibold">from</p>
-              <TextField
-                fullWidth
-                required
-                id="postcode"
-                type="number"
-                value={postCode}
-                InputProps={{
-                  placeholder: "Enter your post code",
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PinDropIcon className=" text-black text-opacity-30" />
-                    </InputAdornment>
-                  ),
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={[
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                  { label: "123456" },
+                ]}
+                className="[&_*]:pl-0 [&_input]:pl-3 [&_input]:text-base w-full"
+                onChange={(
+                  event: React.SyntheticEvent,
+                  newValue?: {label: string} | null
+                ) => {
+                  if (newValue) {
+                    setPostCode(newValue.label);
+                  }
                 }}
-                onChange={(e) => setPostCode(e.target.value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Post Code"
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <PinDropIcon />
+                      ),
+                    }}
+                  />
+                )}
               />
             </Box>
             <Box className="flex justify-between items-center mt-6">
@@ -111,10 +171,12 @@ export default function LocationPage() {
         <Box className="w-full h-full flex justify-center items-center">
           <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
             <img src="/images/loader.gif" alt="Loading..." className="w-60" />
-            <h1 className="text-center font-bold text-xl ml-2">Creating account...</h1>
+            <h1 className="text-center font-bold text-xl ml-2">
+              Creating account...
+            </h1>
           </Box>
         </Box>
-    </Modal>
+      </Modal>
     </>
   );
 }

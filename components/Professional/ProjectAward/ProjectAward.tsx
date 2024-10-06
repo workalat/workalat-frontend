@@ -14,6 +14,7 @@ export default function ProjectAward() {
   const handleToggleStatus = (id: any) => {
     setActiveStatusId((prevId) => (prevId === id ? null : id));
   };
+  
   return (
     <div className="bg-white relative">
       {/* Left Image */}

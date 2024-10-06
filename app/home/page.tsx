@@ -43,7 +43,7 @@ const HomePage = () => {
         <Testimonials />
       </section>
       <section className="bg-secondary mt-10 min-h-80 bg-[url('/images/bg_pattern_2.svg')] bg-cover">
-        <div className="container mx-auto max-w-7xl flex flex-col justify-center h-full gap-14 px-6">
+        <div className="container mx-auto max-w-7xl flex flex-col justify-center h-full gap-14 px-6 py-12">
           <MobileAppCta />
         </div>
       </section>

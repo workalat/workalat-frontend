@@ -38,6 +38,7 @@ export default function ProjectAward() {
     const handleClick = (index: number) => {
         setRating(index);
     };
+    
     return (
         <div className="bg-white relative">
             {/* Left Image */}

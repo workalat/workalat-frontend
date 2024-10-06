@@ -78,7 +78,7 @@ const Page = () => {
           <div className="w-full h-[0.5px] bg-gray-400 mt-4" />
           <section className="w-full flex flex-col md:flex-row gap-3 mt-6 justify-between">
             <ProfileWidget />
-            <VerificationWidget />
+            <VerificationWidget isClientDashboard={isClientDashboard} />
           </section>
           <section
             className={`w-full flex flex-col md:flex-row ${isClientDashboard ? "justify-end" : "justify-between"} gap-3 mt-8`}

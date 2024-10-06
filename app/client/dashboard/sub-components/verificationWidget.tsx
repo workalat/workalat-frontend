@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
 
-const VerificationWidget = () => {
+const VerificationWidget = ({ isClientDashboard } : {isClientDashboard: boolean}) => {
   const theme = useTheme();
   const verifications = [
     { name: 'Top Professional', status: 'join' },
@@ -33,6 +33,7 @@ const VerificationWidget = () => {
       </Typography>
       <List className='font-light'>
         {verifications.map((item, index) => (
+          isClientDashboard && index === 0 ? null : (
           <ListItem key={index} disablePadding>
             <ListItemText primary={item.name} />
             <ListItemIcon>
@@ -53,7 +54,7 @@ const VerificationWidget = () => {
               )}
             </ListItemIcon>
           </ListItem>
-        ))}
+        )))}
       </List>
       <Button
         variant="contained"

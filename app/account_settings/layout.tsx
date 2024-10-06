@@ -71,7 +71,7 @@ const AccountSettingsLayout = ({ children }: { children: React.ReactNode }) => {
       //   break;
       case 3:
         // Notifications
-        router.push("/notifications");
+        router.push("/account_settings/notifications");
         break;
       // case 5:
       //   // Integrations

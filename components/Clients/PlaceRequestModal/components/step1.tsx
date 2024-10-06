@@ -1,13 +1,19 @@
 import React, { useEffect } from "react";
-import { Button, FormControl, OutlinedInput } from "@mui/material";
+import { Autocomplete, Button, FormControl, OutlinedInput, TextField } from "@mui/material";
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { siteConfig } from "@/config/site";
 
 interface Step1Props {
     handleNext: () => void;
     updateFormData: (data: any) => void;
 }
+
+interface Option {
+  label: string;
+}
+
 const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
     
   const [formData, setFormData] = React.useState({
@@ -41,7 +47,7 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
           <label htmlFor="service" className="sm:text-lg font-bold mb-2">
             Services needed
           </label>
-          <OutlinedInput
+          {/* <OutlinedInput
             required
             placeholder="e.g Web Development, Dry Cleaning"
             value={formData.service || ""}
@@ -51,7 +57,30 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
               setFormData((prev) => ({ ...prev, service: e.target.value }));
              }
             }
-          />
+          /> */}
+          <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={siteConfig.categories}
+            className="[&_input]:pl-3 [&_input]:text-base w-full [&>*>*]:border-b-4 [&>*>*]:border-b-secondary [&>*>*]:rounded-b-sm"
+              onChange={(
+                event: React.SyntheticEvent,
+                newValue?: Option | null
+              ) => {
+                if (newValue) {
+                  setFormData((prev) => ({ ...prev, service: newValue.label }));
+                }
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="What service are you looking for?"
+                  InputProps={{
+                    ...params.InputProps,
+                  }}
+                />
+              )}
+            />
         </FormControl>
         <FormControl className="w-full">
           <label htmlFor="location" className="sm:text-lg font-bold mb-2">

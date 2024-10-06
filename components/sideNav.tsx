@@ -54,7 +54,10 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center">
               Anita Maika{" "}
-              <span onClick={() => router.push("/profile")} className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
+              <span
+                onClick={() => router.push("/profile")}
+                className="border border-white rounded-full h-7 w-7 flex items-center justify-center"
+              >
                 <FaUserEdit />
               </span>
             </Typography>
@@ -77,7 +80,10 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center">
               Anita Maika{" "}
-              <span onClick={() => router.push("/profile")} className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
+              <span
+                onClick={() => router.push("/profile")}
+                className="border border-white rounded-full h-7 w-7 flex items-center justify-center"
+              >
                 <FaUserEdit />
               </span>
             </Typography>
@@ -90,9 +96,12 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
                 variant="middle"
                 className="border-slate-400"
               />
-              <button className="py-1" onClick={
-                () => router.push("/membership")
-              }>Manage</button>
+              <button
+                className="py-1"
+                onClick={() => router.push("/membership")}
+              >
+                Manage
+              </button>
             </Box>
           </Box>
         </Box>
@@ -134,16 +143,24 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         </Box>
         <Box className="border-b border-white !mt-1" />
         {[
-          { icon: <Image src={projectsIcon} alt="" />, text: "Leads", href: "/leads" },
+          {
+            icon: <Image src={projectsIcon} alt="" />,
+            text: isClientDashboard ? "My Projects" : "Leads",
+            href: isClientDashboard ? "/client/my-projects" : "/leads",
+          },
           {
             icon: <Image src={responsesIcon} alt="" />,
             text: isClientDashboard ? "Post new project" : "My Responses",
-            href: isClientDashboard ? "/client/place-request" : "/professional/my-responses",
+            href: isClientDashboard
+              ? "/client/place-request"
+              : "/professional/my-responses",
           },
           {
             icon: <Image src={settingsIcon} alt="" />,
             text: "Settings",
-            href: isClientDashboard ? "/client/account_settings" : "/professional/account_settings",
+            href: isClientDashboard
+              ? "/client/account_settings"
+              : "/professional/account_settings",
           },
         ].map((item, index) => (
           <Link

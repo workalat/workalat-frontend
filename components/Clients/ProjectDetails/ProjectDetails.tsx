@@ -46,7 +46,7 @@ export default function ProjectDetails({ params }: any) {
                                     <img className="w-12 h-12 object-cover" src={dynamicData?.userDetails?.profilePhoto} alt="work alat" />
                                     <div className="px-2">
                                         <p className="text-sm font-bold capitalize">{dynamicData?.userDetails?.user}</p>
-                                        <button className="text-sm text-black px-3 rounded-md mt-1 py-1 font-semibold bg-[#FFBE00]">Chat</button>
+                                        <Link href={"/client/chat"} className="text-sm text-black px-3 rounded-md mt-1 py-1 font-semibold bg-[#FFBE00]">Chat</Link>
                                     </div>
                                 </div>
                             </div>

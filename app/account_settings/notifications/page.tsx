@@ -8,7 +8,7 @@ import arrowRightWhiteIcon from "@/public/icons/arrow_right_white.svg";
 const NotificationsPage = () => {
   return (
     <>
-      <section className='bg-main text-white px-6 py-12 sm:p-12 rounded-lg'>
+      <section className='bg-main text-white px-6 py-12 sm:p-12 rounded-lg mt-8'>
         <h1 className='text-3xl sm:text-4xl font-bold'>Notifications</h1>
         <h2 className='text-lg font-semibold mt-3'>Choose your mail preference</h2>
         <form className='flex flex-col w-full gap-6 mt-6'>
