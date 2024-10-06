@@ -1,26 +1,24 @@
 "use client";
-import React from "react";
+import { Avatar, Box } from "@mui/material";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/navbar";
-import { Avatar, Box } from "@mui/material";
-import Link from "next/link";
 import Image from "next/image";
-import clsx from "clsx";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React from "react";
 
-import { fontSans } from "@/config/fonts";
-import logo_dark from "@/public/logo_dark.png";
-import logoutIcon from "@/public/icons/logout.svg";
-import settingsIcon from "@/public/icons/settings.svg";
-import notificationsIcon from "@/public/icons/notifications.svg";
-import switchIcon from "@/public/icons/switch.svg";
 import arrowDownWhiteIcon from "@/public/icons/arrow_down_white.svg";
-import testimonial3Img from "@/public/images/testimonial3.png";
 import businessIcon from "@/public/icons/business.svg";
+import logoutIcon from "@/public/icons/logout.svg";
+import notificationsIcon from "@/public/icons/notifications.svg";
+import settingsIcon from "@/public/icons/settings.svg";
+import switchIcon from "@/public/icons/switch.svg";
+import testimonial3Img from "@/public/images/testimonial3.png";
+import logo_dark from "@/public/logo_dark.png";
 
 const AuthNavbar = () => {
   const pathname = usePathname();
@@ -75,7 +73,7 @@ const AuthNavbar = () => {
     >
       <NavbarBrand>
         <Link href="/" className="flex justify-start text-white items-center gap-1">
-          <Image alt="WhatWorks" className="min-w-24 w-52" src={logo_dark} />
+          <Image alt="WhatWorks" className="min-w-24 w-52 -ml-8" src={logo_dark} />
           {/* <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
           </span> */}

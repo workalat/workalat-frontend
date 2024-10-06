@@ -1,29 +1,28 @@
 "use client";
-import { useEffect, useState } from "react";
-import {
-  Navbar as NextUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-} from "@nextui-org/navbar";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
+import {
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+  Navbar as NextUINavbar,
+} from "@nextui-org/navbar";
 import { link as linkStyles } from "@nextui-org/theme";
-import NextLink from "next/link";
 import clsx from "clsx";
 import Image from "next/image";
+import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import Dropdown from "./dropdown";
 
+import { siteConfig } from "@/config/site";
+import user_icon from "@/public/icons/user.svg";
 import logo_dark from "@/public/logo_dark.png";
 import logo_light from "@/public/logo_light.png";
-import user_icon from "@/public/icons/user.svg";
-import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
 
 
 export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
@@ -55,9 +54,9 @@ export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             {currentMode === "light" ? (
-              <Image alt="WhatWorks" className="min-w-24 w-36" src={logo_light} />
+              <Image alt="WhatWorks" className="min-w-24 w-36 -ml-2" src={logo_light} />
             ) : (
-              <Image alt="WhatWorks" className="min-w-24 w-52" src={logo_dark} />
+              <Image alt="WhatWorks" className="min-w-24 w-52 -ml-8" src={logo_dark} />
             )}
             {/* <p
               className={clsx(
@@ -139,11 +138,12 @@ export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
         />
       </NavbarContent>
 
-      <NavbarMenu className="!bg-white bg-opacity-5 mt-4">
+      {/* MOBILE MENU */}
+      <NavbarMenu className="!bg-white bg-opacity-5 mt-4 !z-50">
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link className="text-black" href="#" size="lg">
+              <Link className="text-black" href={item.href} size="lg">
                 {item.label}
               </Link>
             </NavbarMenuItem>
