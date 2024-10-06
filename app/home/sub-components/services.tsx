@@ -88,7 +88,7 @@ const CarouselItem = ({
           {service.name}
         </Typography>
         <Typography className="hover:underline">
-          <Link href="/">Post a job now {">"}</Link>
+          <Link className="text-secondary" href="/">Post a job now {">"}</Link>
         </Typography>
       </div>
     </div>

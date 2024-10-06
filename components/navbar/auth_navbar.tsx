@@ -56,7 +56,7 @@ const AuthNavbar = () => {
       key: "settings",
       icon: settingsIcon,
       text: "Settings",
-      href: "/settings",
+      href: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "/client/account_settings" : "/professional/account_settings"}`, // for now it is conditionally when enter the dashboard then. but it need to make with context user type
     },
     {
       key: "logout",
@@ -75,7 +75,7 @@ const AuthNavbar = () => {
     >
       <NavbarBrand className="overflow-hidden">
         <Link href="/" className="flex justify-start text-white items-center gap-1 overflow-hidden">
-          <Image alt="WhatWorks" className="min-w-24 w-52" src={logo_dark} />
+          <Image alt="WhatWorks" className="min-w-24 w-36" src={logo_dark} />
           {/* <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
           </span> */}

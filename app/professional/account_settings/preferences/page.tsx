@@ -33,7 +33,7 @@ const PreferenceSettings = () => {
   };
 
   return (
-    <>
+    <div>
       <Box className="mt-3 px-6 sm:px-12 py-12 border border-dark border-opacity-30 rounded-xl relative">
         <Grid container spacing={4} component={"form"}>
           {formItems.map((item) => (
@@ -82,7 +82,7 @@ const PreferenceSettings = () => {
           <Close />
         </Button>
       </Box>
-    </>
+    </div>
   );
 };
 

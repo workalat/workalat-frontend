@@ -23,7 +23,6 @@ import logo_dark from "@/public/logo_dark.png";
 import logo_light from "@/public/logo_light.png";
 import user_icon from "@/public/icons/user.svg";
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
 
 
 export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {

@@ -54,7 +54,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center">
               Anita Maika{" "}
-              <span className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
+              <span onClick={() => router.push("/profile")} className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
                 <FaUserEdit />
               </span>
             </Typography>
@@ -77,7 +77,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center">
               Anita Maika{" "}
-              <span className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
+              <span onClick={() => router.push("/profile")} className="border border-white rounded-full h-7 w-7 flex items-center justify-center">
                 <FaUserEdit />
               </span>
             </Typography>

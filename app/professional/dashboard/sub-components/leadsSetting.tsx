@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 const LeadsSetting = () => {
   const services = [
@@ -13,11 +14,13 @@ const LeadsSetting = () => {
 
   const locations = ['Nationwide', 'Newport'];
 
+  const router = useRouter();
+
   return (
     <Box className=" bg-[#EEEEEE] p-8 rounded-lg w-full max-w-2xl max-h-[600px] overflow-hidden">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography className='text-lg font-bold'>Leads Settings</Typography>
-        <Button className='text-sm' color='secondary'>Edit</Button>
+        <Button onClick={() => router.push("/professional/account_settings")} className='text-sm' color='secondary'>Edit</Button>
       </Box>
 
       <Divider />
@@ -42,7 +45,10 @@ const LeadsSetting = () => {
       <Divider />
 
       <Box mt={2} mb={3}>
-        <Typography className='text-lg font-bold' gutterBottom>Locations</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography className='text-lg font-bold' gutterBottom>Locations</Typography>
+          <Button onClick={() => router.push("/professional/account_settings")} className='text-sm' color='secondary'>Edit</Button>
+        </Box>
         <Typography className='text-sm mt-3' mb={1}>
           You&apos;re receiving customers within these locations
         </Typography>
@@ -66,7 +72,7 @@ const LeadsSetting = () => {
         </Typography>
         <Box display="flex" alignItems="center" gap={2} className='mt-3'>
           <Typography className='text-sm'>info@anitamika.site</Typography>
-          <Button className='bg-main text-white rounded-lg text-sm'>
+          <Button onClick={() => router.push("/professional/account_settings")} className='bg-main text-white rounded-lg text-sm'>
             Change
           </Button>
         </Box>

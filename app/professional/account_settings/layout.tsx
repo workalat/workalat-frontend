@@ -82,7 +82,7 @@ const AccountSettingsLayout = ({ children }: { children: React.ReactNode }) => {
         <Container maxWidth="lg">
           <Box className="relative flex justify-center items-center w-full border-b border-dark border-opacity-30">
             <Link
-              href="/dashboard"
+              href="/professional/dashboard"
               className="flex gap-2 absolute left-0 font-bold"
             >
               <Image
