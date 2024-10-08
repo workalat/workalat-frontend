@@ -1,13 +1,12 @@
-import Image from "next/image";
 import { Button } from "@mui/material";
-import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-import doneIcon from "@/public/icons/done.svg";
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import doneIcon from "@/public/icons/done.svg";
 
 const Done = () => {
   const router = useRouter();
-  const pathname = usePathname();
 
   const finish = () => {
     localStorage.removeItem("stepFormData");
@@ -15,10 +14,7 @@ const Done = () => {
     // alert(
     //   "Your project has been posted successfully, we are linking you to the qualified professional."
     // );
-    if(pathname === "/client") {
-      window.location.href = "/client";
-    }
-    router.push("/client");
+    router.push("/client/my-projects");
   };
 
   return (
