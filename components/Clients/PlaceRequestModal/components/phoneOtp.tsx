@@ -1,7 +1,9 @@
-import { Button, FormControl, OutlinedInput } from "@mui/material";
+import { Button, FormControl } from "@mui/material";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 import Image from "next/image";
 import { useState } from "react";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 
@@ -17,7 +19,7 @@ const PhoneOtp = ({
   updateFormData,
 }: PhoneOtpProps) => {
   const [phoneNumber, setPhoneNumber] = useState(
-    JSON.parse(localStorage.getItem("stepFormData") || "" )?.phone_number || ""
+    JSON.parse(localStorage.getItem("stepFormData") || "")?.phone_number || ""
   );
   const [error, setError] = useState("");
 
@@ -36,29 +38,31 @@ const PhoneOtp = ({
   const handleOtpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    updateFormData({ phone_number: phoneNumber });
+    // updateFormData({ phone_number: phoneNumber });
     handleNext();
   };
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-center max-w-[450px]">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center max-w-[450px]">
         Let&apos;s get your details
       </h1>
-      <form className="w-full px-12" onSubmit={handleOtpSubmit}>
+      <form className="w-full px-4 md:px-12" onSubmit={handleOtpSubmit}>
         <FormControl fullWidth>
-          <label htmlFor="service" className="sm:text-lg font-bold mb-2">
+          <label
+            htmlFor="service"
+            className="text-sm sm:text-lg font-bold mb-2"
+          >
             Enter phone number
           </label>
-          <OutlinedInput
-            required
-            type="tel"
-            placeholder="Phone number"
-            value={phoneNumber}
-            id="service"
-            className="rounded-md shadow-medium border-b-3 border-b-secondary"
-            error={!!error}
-            onChange={handlePhoneNumChange}
+          <PhoneInput
+            international
+            id="phone-input"
+            countryCallingCodeEditable={false}
+            defaultCountry="GB"
+            className="[&_.PhoneInputCountry]:!p-3 [&_.PhoneInputCountry]:bg-gray-200 [&_.PhoneInputCountry]:rounded-md [&_input]:bg-transparent [&_input:hover]:border-dark [&_input]:p-2  [&:has(input:focus)]:border-secondary [&_input:focus]:outline-none border px-4 py-2 rounded-md border-b-4 border-b-secondary shadow-md"
+            // value={value}
+            onChange={()=>{}}
           />
           <p className="text-red">{error}</p>
         </FormControl>

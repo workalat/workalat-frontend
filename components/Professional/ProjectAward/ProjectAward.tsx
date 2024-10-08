@@ -54,17 +54,17 @@ export default function ProjectAward() {
                   {data?.status}
                 </p>
 
-                <h3 className="font-bold text-2xl text-center">
+                <h3 className="font-bold text-2xl text-center mt-4 sm:mt-0">
                   {data?.title}
                 </h3>
-                <p className="text-center text-[#07242B] text-sm">
+                <p className="text-center text-[#07242B] text-sm mb-4 sm:mb-0">
                   {data?.date}
                 </p>
-                <p className="text-center text-[20px] text-[#323C47] px-3 md:px-8 xl:px-12">
+                <p className="text-justify sm:text-center text-[20px] text-[#323C47] text-base md:px-8 xl:px-12">
                   {data?.description?.firstViewDesc.substring(0, 210)}...
                 </p>
 
-                <div className="flex gap-5 flex-col md:flex-row justify-center pt-5">
+                <div className="flex gap-5 flex-col md:flex-row justify-center pt-5 gap-y-2">
                   <Link
                     className="flex items-center justify-center font-bold px-5 text-[15px] py-4 text-black gap-1 bg-white border-2 border-[#FFBE00]"
                     href={`/professional/my-responses/details/${data?.projectId}`}

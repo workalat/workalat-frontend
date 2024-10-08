@@ -53,7 +53,7 @@ const Page = () => {
     <ThemeProvider theme={theme}>
       <div className="md:hidden fixed bottom-4 right-4 z-50">
         <button
-          className="bg-main text-white p-2 rounded-full shadow-lg"
+          className="bg-secondary text-main p-2 rounded-full shadow-lg"
           onClick={toggleSideNav}
         >
           <MenuIcon />

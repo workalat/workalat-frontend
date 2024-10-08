@@ -23,11 +23,11 @@ export default function Hero() {
     <div className="relative z-10 pt-6 container mx-auto max-w-7xl px-6">
       <div className="w-full bg-main rounded-xl flex flex-col-reverse lg:flex-row mt-5">
         <div className="w-full lg:w-3/5">
-          <div className="px-12 py-12">
-            <h3 className="text-4xl text-white font-bold">
+          <div className="px-6 md:px-12 py-12">
+            <h3 className="text-2xl md:text-4xl text-white font-bold">
               Connect with the right professional for any task
             </h3>
-            <p className="text-lg text-white pt-5">
+            <p className="md:text-lg text-white pt-5">
               WorkAlat connects you with the top freelancers and service providers to get the job done right. From local specialists to remote experts, our platform simplifies the hiring process, saving you time and ensuring quality results.
             </p>
            
@@ -80,7 +80,7 @@ export default function Hero() {
         ))}
       </div>
       <div className="flex items-center justify-center">
-        <div className=" cursor-pointer rounded-[5px] bg-secondary text-[#242424] text-[10px] lg:text-[13px] md:text-[11px] sm:text-[10px] font-bold flex items-center justify-center space-x-2 group px-6 py-4">
+        <div className=" cursor-pointer rounded-[5px] bg-secondary text-[#242424] text-xs md:text-base font-bold flex items-center justify-center space-x-2 group px-6 py-4">
           <button>Get quotes from professional near you</button>
           <FaArrowRight />
         </div>

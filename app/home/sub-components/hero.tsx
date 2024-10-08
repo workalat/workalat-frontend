@@ -43,7 +43,7 @@ const Hero = ({ openModal }: { openModal: () => void }) => {
         <h1 className="text-white text-4xl md:text-5xl font-bold">
           Find verified professionals you can trust
         </h1>
-        <p className="text-white text-xl sm:text-xl">It takes a few clicks</p>
+        <p className="text-white text-xl sm:text-xl">It takes a few clicks...</p>
         <Box
           component={"form"}
           className="flex items-center flex-wrap gap-4 bg-white py-2 px-3 rounded-md border-2 border-transparent transition-all [&:has(input:focus)]:border-secondary max-w-3xl"
@@ -154,7 +154,6 @@ const Hero = ({ openModal }: { openModal: () => void }) => {
             )}
           />
           <Button
-            disabled={searchEnabled}
             className="bg-secondary text-main px-6 py-2 rounded-md disabled:text-opacity-40 flex-grow"
             type="submit"
           >
@@ -162,7 +161,7 @@ const Hero = ({ openModal }: { openModal: () => void }) => {
           </Button>
         </Box>
         <p className="text-white -mt-4">
-          Popular: House Cleaning, Web Design, Personal Trainers
+          Popular: House Cleaning, Web Design, Plumbing
         </p>
       </div>
       <img

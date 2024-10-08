@@ -17,6 +17,10 @@ import PhoneOtp from "./components/phoneOtp";
 import VerifyOTP from "./components/verifyOtp";
 import Done from "./components/done";
 import Step8 from "./components/step8";
+import Requirements from "./components/requirements";
+import SetupAccount from "./components/setupaccount";
+import EmailOTP from "./components/emailOTP";
+import UploadPicture from "./components/upload-pic";
 
 type formDataType = {
   service: string;
@@ -113,7 +117,7 @@ const PlaceRequestModal = ({
   }, [stepFormData]);
 
   const handleNext = () => {
-    if (activeStep === 8) return;
+    // if (activeStep === 8) return;
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -185,11 +189,18 @@ const PlaceRequestModal = ({
           handlePrev={handleBack}
         />
       );
+    // if (step === 7)
+    //   return (
+    //     <Step8
+    //       handleNext={handleNext}
+    //       updateFormData={updateFormData}
+    //       handlePrev={handleBack}
+    //     />
+    //   );
     if (step === 7)
       return (
-        <Step8
+        <Requirements
           handleNext={handleNext}
-          updateFormData={updateFormData}
           handlePrev={handleBack}
         />
       );
@@ -203,32 +214,44 @@ const PlaceRequestModal = ({
       );
     if (step === 9)
       return <VerifyOTP handleNext={handleNext} handlePrev={handleBack} />;
-    if (step === 10) return <Done />;
+    if (step === 10)
+      // Setup Account
+    return <SetupAccount handleNext={handleNext} handlePrev={handleBack} />;
+    if (step === 11)
+      // Email OTP
+      return <EmailOTP handleNext={handleNext} handlePrev={handleBack} />;
+    if (step === 12)
+      // Upload Picture
+      return <UploadPicture handleNext={handleNext} handlePrev={handleBack} />;
+    if (step === 13) return <Done />;
   };
 
   return (
     <Modal open={open} className="w-full h-full flex justify-center items-center" onClose={onClose}>
       <div
-        className={`bg-white text-main w-full max-w-xl py-10 ${activeStep === 8 || activeStep === 9 ? "pt-10" : "pt-20"} rounded-lg flex flex-col justify-center items-center gap-6 relative`}
+        className={`bg-white text-main w-full max-w-xl py-10 ${activeStep === 8 || activeStep === 9 ? "pt-10" : "pt-20"} rounded-lg flex flex-col justify-center items-center gap-6 relative mx-4 sm:mx-0`}
       >
-        {activeStep !== 8 && activeStep !== 9 && (
-          <Button className="absolute top-6 right-6 z-50" onClick={onClose} >
-            <Image src={closeIcon} alt="Close" title="close" />
+        {activeStep !== 9 && activeStep !== 10 && (
+          <Button className="absolute top-2 right-0 sm:top-6 sm:right-6 z-50" onClick={onClose} >
+            <Image src={closeIcon} alt="Close" title="close" className="w-6 sm:w-auto" />
           </Button>
         )}
         {activeStep !== 0 &&
-          activeStep !== 7 &&
           activeStep !== 8 &&
-          activeStep !== 9 && (
+          activeStep !== 9 &&
+          activeStep !== 10 &&
+          activeStep !== 11 &&
+          activeStep !== 12 &&
+          activeStep !== 13 && (
             <MobileStepper
               variant="progress"
-              steps={11}
+              steps={14}
               position="static"
               activeStep={activeStep}
-              sx={{ width: 700, background: "transparent", flexGrow: 1 }}
+              sx={{ background: "transparent", flexGrow: 1 }}
               nextButton={false}
               backButton={false}
-              className="absolute top-6 left-1/2 -translate-x-1/4 [&>*]:!bg-main [&>*]:!bg-opacity-20 [&>*]:!h-[7px] [&>*>*]:!bg-main [&>*>*]:!h-[7px] [&>*]:rounded-full [&>*>*]:rounded-full"
+              className="absolute top-4 md:top-6 left-1/2 -translate-x-1/4 [&>*]:!bg-main [&>*]:!bg-opacity-20 [&>*]:!h-[7px] [&>*>*]:!bg-main [&>*>*]:!h-[7px] [&>*]:rounded-full [&>*>*]:rounded-full w-[400px] md:w-[700px]"
             />
           )}
         {renderStep(activeStep)}

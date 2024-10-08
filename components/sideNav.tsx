@@ -177,7 +177,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
             <Box className="flex items-center justify-between p-3 hover:bg-gray-700 rounded-md mt-2 -ml-0.5">
               <Box className="flex items-center">
                 <AccountBalanceWalletIcon />
-                <Typography className="ml-3">Wallet (23 Credits)</Typography>
+                <Typography className="ml-3">Wallet (23 Points)</Typography>
               </Box>
               <Button
                 size="small"

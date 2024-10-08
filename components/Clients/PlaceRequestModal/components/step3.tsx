@@ -33,14 +33,14 @@ const Step3: React.FC<Step3Props> = ({ handleNext, handlePrev, updateFormData })
   
   return (
     <>
-      {/* <h1 className="text-3xl font-bold text-center">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">
         Number of Items to Dry Clean
       </h1>
-      <p className="-mt-4 mb-4">Indicate the number of laundry.</p> */}
-      <form className="flex flex-col gap-0 px-8 w-full" onSubmit={handleSubmit}>
+      <p className="-mt-4 mb-4">Indicate the number of laundry.</p>
+      <form className="flex flex-col gap-0 px-4 md:px-8 w-full" onSubmit={handleSubmit}>
         {/* this div will be removed */}
-        <div className="h-[400px]"></div>
-        {/* <FormControl fullWidth>
+        {/* <div className="h-[400px]"></div> */}
+        <FormControl fullWidth>
           <InputLabel id="no_of_items">Please select</InputLabel>
           <Select
             required
@@ -58,7 +58,7 @@ const Step3: React.FC<Step3Props> = ({ handleNext, handlePrev, updateFormData })
             <MenuItem value={"5"}>Five</MenuItem>
             <MenuItem value={"More"}>More</MenuItem>
           </Select>
-        </FormControl> */}
+        </FormControl>
         <div className="mt-8 flex justify-between">
             <Button
               variant="outlined"

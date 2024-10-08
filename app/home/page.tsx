@@ -19,7 +19,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-[clamp(50svh,631px,80svh)] sm:h-[680px] bg-main relative overflow-hidden">
+      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-[clamp(50svh,731px,90svh)] sm:h-[680px] bg-main relative overflow-hidden">
         <Hero openModal={doOpenPlaceReqModal}  />
       </section>
       <section className="bg-[#f2f2f2] pt-14 pb-9">

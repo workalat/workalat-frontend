@@ -11,7 +11,7 @@ interface VerifyOTPProps {
   handlePrev: () => void;
 }
 
-const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
+const EmailOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
   const [otp, setOtp] = useState<string>("");
 
   const handleChange = (newValue: string) => {
@@ -27,11 +27,10 @@ const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
   return (
     <>
       <h1 className="text-2xl font-bold text-center max-w-[450px]">
-        Confirm phone number
+        Verify Email
       </h1>
       <p className="mb-2 -mt-4 mx-2 text-center text-pretty">
-        Kindly enter the OTP sent to{" "}
-        {JSON.parse(localStorage.getItem("stepFormData") || "")?.phone_number || ""}
+        Kindly enter the OTP sent to your email
       </p>
       <form className="flex flex-col gap-4 px-4 md:px-12" onSubmit={handleSubmit}>
         <MuiOtpInput
@@ -70,4 +69,4 @@ const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
   );
 };
 
-export default VerifyOTP;
+export default EmailOTP;

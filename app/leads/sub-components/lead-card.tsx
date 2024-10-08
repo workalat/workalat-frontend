@@ -31,15 +31,15 @@ interface Lead {
 
 export default function LeadCard({ lead }: { lead: Lead }) {
   return (
-    <Box className="border rounded-md bg-[#F3F3F3] p-8 text-main space-y-4 lg:space-y-2">
+    <Box className="border rounded-md bg-[#F3F3F3] px-4 py-8 sm:p-8 text-main space-y-4 lg:space-y-2">
       <Box className="flex gap-x-4 gap-y-2 justify-between items-center flex-wrap">
         <h2 className="font-semibold text-lg">{lead.title}</h2>
-        <Box className="flex gap-4">
+        <Box className="flex gap-4 w-full sm:w-max justify-between sm:justify-start">
           <Box className="flex gap-2">
             <Image src={coinIcon} alt="Cost" />
             {lead.proposalCost} Points
           </Box>
-          <span className="font-bold">${lead.budget} GBP</span>
+          <span className="font-bold text-right sm:text-left">${lead.budget} GBP</span>
         </Box>
       </Box>
       <Box className="flex gap-4 items-start">
@@ -55,7 +55,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
             {lead.client.name}
             <span className="text-sm font-medium">{lead.location}</span>
           </h3>
-          <Box className="flex items-center gap-1 mt-0.5">
+          <Box className="flex items-center gap-1 mt-0.5 flex-wrap">
             {lead.tags.map((tag) => (
               <Box
                 key={tag.name}
@@ -78,13 +78,13 @@ export default function LeadCard({ lead }: { lead: Lead }) {
         </Box>
       </Box>
       <p className="">{lead.shortDescription}</p>
-      <Box className="!mt-4 flex justify-between items-center flex-wrap">
+      <Box className="!mt-4 flex justify-between items-center flex-wrap w-full">
         <Box>
-          <Box className="flex items-center gap-2 text-sm">
+          <Box className="flex items-center gap-2 text-sm flex-wrap">
             <LinearProgress
               variant="determinate"
               value={(lead.applications / lead.totalApplications) * 100}
-              className="w-24 h-2 rounded-full"
+              className="w-full sm:w-24 h-2 rounded-full"
               classes={{
                 bar: "bg-secondary rounded-full",
                 root: "bg-[#E0E0E0]",
@@ -93,16 +93,16 @@ export default function LeadCard({ lead }: { lead: Lead }) {
             {lead.applications} / {lead.totalApplications} professionals have
             bided
           </Box>
-          <p>{getPastTime(lead.created_at.toISOString().split("T")[0])}</p>
+          <p className="sm:text-base text-sm mt-4">{getPastTime(lead.created_at.toISOString().split("T")[0])}</p>
         </Box>
-        <Box className="flex gap-4">
-          <Link href={`/leads?job=${lead.id}`}>
-            <Button variant="outlined" color="secondary" className="!mt-4">
+        <Box className="flex gap-4 flex-wrap gap-y-2 mt-4 sm:mt-0 !w-full">
+          <Link href={`/leads?job=${lead.id}`} className="w-full sm:w-auto">
+            <Button variant="outlined" color="secondary" className="sm:!mt-4 w-full">
               View Details
             </Button>
           </Link>
-          <Link href={`/leads?job=${lead.id}&apply=true`}>
-            <Button variant="contained" color="secondary" className="!mt-4">
+          <Link href={`/leads?job=${lead.id}&apply=true`} className="w-full sm:w-auto">
+            <Button variant="contained" color="secondary" className="sm:!mt-4 w-full">
               Contact
             </Button>
           </Link>

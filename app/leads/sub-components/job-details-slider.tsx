@@ -110,7 +110,7 @@ export default function JobDetailsSlider({
           <ClientDetails job={job} />
           <Box className="flex justify-between">
             <h2 className="font-bold text-lg">Project Details</h2>
-            <Box className="flex items-center gap-2 text-sm">
+            <Box className="flex items-center flex-wrap justify-end gap-2 text-right sm:text-left text-xs sm:text-sm">
               <LinearProgress
                 variant="determinate"
                 value={
@@ -123,7 +123,7 @@ export default function JobDetailsSlider({
                   root: "bg-[#E0E0E0]",
                 }}
               />
-              {job?.applications} / {job?.totalApplications} professionals have
+              {job?.applications} / {job?.totalApplications} <br className="block sm:hidden"/> professionals have
               bided
             </Box>
           </Box>
@@ -145,13 +145,13 @@ export default function JobDetailsSlider({
               ))}
             </Box>
           </Box> */}
-          <Box className="flex gap-6">
-            <Link href={`/leads?job=${job?.id}&apply=true`}>
+          <Box className="flex gap-6 flex-wrap-reverse">
+            <Link href={`/leads?job=${job?.id}&apply=true`} className="flex-grow sm:flex-grow-0">
               <Button
                 variant="contained"
                 color="primary"
                 size="large"
-                className="font-bold !py-4"
+                className="font-bold !py-4 w-full sm:w-auto"
               >
                 Contact client
                 <ArrowForward className="ml-2" />
@@ -170,10 +170,10 @@ export default function JobDetailsSlider({
 
 const ClientDetails = ({ job }: { job: Job | null }) => {
   return (
-    <Box className="flex justify-between">
+    <Box className="flex justify-between flex-wrap sm:flex-nowrap gap-y-4">
       <Box className="flex gap-4 items-start w-full">
         <img src={job?.client.image} alt="" className="w-14 h-14 rounded-md object-cover" />
-        <Box className="flex gap-4 items-start">
+        <Box className="flex gap-4 items-start ">
           <h3 className="text-lg font-semibold flex flex-col gap-0 justify-center">
             {job?.client.name}
             <span className="text-sm font-medium">{job?.location}</span>

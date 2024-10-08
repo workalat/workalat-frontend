@@ -42,8 +42,8 @@ const formItems = [
 ];
 
 interface Step5Props {
-  handleNext: () => void;
   updateFormData: (data: any) => void;
+  handleNext: () => void;
   handlePrev: () => void;
 }
 
@@ -70,9 +70,9 @@ const Step6: React.FC<Step5Props> = ({
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-center">What is your budget?</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">What is your estimated budget?</h1>
       <p className="-mt-4">Please indicate your budget range.</p>
-      <form className="flex flex-col gap-0 px-8 w-full" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-0 pl-2 pr-8 md:px-8 md:pr-14 w-full" onSubmit={handleSubmit}>
         <FormControl>
           <RadioGroup
             aria-labelledby="additional service"
@@ -87,12 +87,12 @@ const Step6: React.FC<Step5Props> = ({
                 control={<Radio />}
                 label={<span>{item.label.text} <b>{item.label.amount}</b></span>}
                 labelPlacement="start"
-                className="flex-grow text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
+                className="flex-grow md:text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
               />
             ))}
           </RadioGroup>
         </FormControl>
-        <div className="mt-8 flex justify-between">
+        <div className="pl-4 sm:pl-4 mt-2 md:mt-8 flex justify-between">
           <Button
             variant="outlined"
             className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4"
@@ -108,7 +108,7 @@ const Step6: React.FC<Step5Props> = ({
           </Button>
           <Button
             variant="contained"
-            className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4"
+            className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4 md:-mr-2"
             type="submit"
           >
             <span className="font-bold">Next</span>

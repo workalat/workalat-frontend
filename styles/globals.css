@@ -18,6 +18,30 @@ body:has(.loader) footer {
   -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
   animation: l13 1s infinite linear;
 }
+
+
+/* SCROLLBAR */
+/* width */
+.chat-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+.chat-nav::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+.chat-nav::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+.chat-nav::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
 @keyframes l13{ 
   100%{transform: rotate(1turn)}
 }

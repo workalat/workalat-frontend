@@ -59,11 +59,11 @@ export default function ProjectAward() {
                                 <div key={i} className="bg-white shadow-md border border-[#07242B66] p-8 w-full rounded-md mb-3 relative overflow-hidden">
                                     <p className={`text-[12px] text-black/50 ${data?.status == "awarded" ? "bg-[#04842F33]" : "bg-[#EA740E33]"} absolute left-3 top-3 font-semibold capitalize px-2 py-1 rounded-[20px]`}>{data?.status}</p>
 
-                                    <h3 className="font-bold text-2xl text-center">{data?.title}</h3>
-                                    <p className="text-center text-[#07242B] text-sm">{data?.date}</p>
-                                    <p className="text-center text-[20px] text-[#323C47] px-3 md:px-8 xl:px-12">{data?.description?.firstViewDesc.substring(0, 210)}...</p>
+                                    <h3 className="font-bold text-2xl text-center mt-6 sm:mt-0">{data?.title}</h3>
+                                    <p className="text-center text-[#07242B] text-sm mb-4 sm:mb-0">{data?.date}</p>
+                                    <p className="sm:text-[20px] text-[#323C47] text-justify sm:text-center md:px-8 xl:px-12">{data?.description?.firstViewDesc.substring(0, 210)}...</p>
 
-                                    <div className="flex gap-5 flex-col sm:flex-row justify-center pt-5">
+                                    <div className="flex gap-5 gap-y-2 flex-col sm:flex-row justify-center pt-8 sm:pt-5">
                                         <Link className="flex items-center justify-center font-bold px-5 text-[15px] py-4 text-black gap-1 bg-[#FFBE00]" href={`/client/my-projects/details/${data?.projectId}`}>
                                             View Project Details
                                             <IoArrowForward className="text-black size-[20px]" />
@@ -91,11 +91,11 @@ export default function ProjectAward() {
                                         className={`ring-1 absolute right-3 top-10 flex flex-col shadow-lg rounded-lg ring-black/50 overflow-hidden justify-start ${activeStatusId === data?.id ? "visible" : "invisible"
                                             }`}
                                     >
-                                        <button onClick={() => openModal(data)} className="border-none border-black/40 py-2 px-2 flex items-center gap-1 hover:bg-slate-100 bg-white text-black text-start">
+                                        <button className="border-none border-black/40 py-2 px-2 flex items-center gap-1 hover:bg-slate-100 bg-white text-black text-start">
                                             <GoDotFill className="size-[15px] text-black" />
                                             Mark as awarded
                                         </button>
-                                        <button className="border-y border-black/40 py-2 px-2 flex items-center gap-1 hover:bg-slate-100 bg-white text-black text-start">
+                                        <button onClick={() => openModal(data)} className="border-y border-black/40 py-2 px-2 flex items-center gap-1 hover:bg-slate-100 bg-white text-black text-start">
                                             <GoDotFill className="size-[15px] text-black" />
                                             Mark as completed
                                         </button>
@@ -118,14 +118,14 @@ export default function ProjectAward() {
                         isOpen={isModalOpen}
                         onRequestClose={closeModal}
                         content={
-                            <div className="w-full max-h-[80vh] h-screen sm:max-h-full sm:h-auto overflow-y-auto">
+                            <div className="w-full max-h-[80vh] overflow-y-auto">
                                 <div className="bg-white w-full h-auto sm:w-[520px] p-3 rounded-md overflow-y-auto hiddenScroll mx-auto">
                                     <button className="ms-auto block" onClick={closeModal}>
                                         <IoCloseCircleOutline className="size-[20px]" />
                                     </button>
                                     <div className="w-full text-center">
                                         <h4 className="font-semibold text-[20px] capitalize">Leave a Review</h4>
-                                        <p>Project Title: <b>{modalData?.title}</b></p>
+                                        <p className="mt-4 sm:mt-0">Project Title: <br className="block sm:hidden" /> <strong>{modalData?.title}</strong></p>
 
                                         <div className="flex items-center justify-center py-3">
                                             <img className="w-14 h-14 object-cover" src={modalData?.userDetails?.profilePhoto} alt="work alat" />

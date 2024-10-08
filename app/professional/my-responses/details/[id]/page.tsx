@@ -7,7 +7,7 @@ export default function ProjectDetailsPage() {
     const pathname = useParams();
     
     return (
-        <div className="pt-20">
+        <div className="">
             <ProjectDetails params={pathname} />
         </div>
     )

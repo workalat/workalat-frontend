@@ -11,7 +11,7 @@ export default function ProjectsHeader({ data, isActive }: any) {
                     <div className="w-auto flex-grow">
                         <h3 className="text-lg lg:text-2xl font-bold text-black">Project Title: {data?.title}</h3>
 
-                        <div className="flex flex-wrap pt-5">
+                        <div className="flex pt-5 max-w-[87vw] overflow-x-auto">
                             <Link className={`${isActive == "details" ? "border-[#E88B00]" : "border-b-2"} py-2 px-3 text-[#E88B00] text-md lg:text-xl font-semibold transition-all duration-300 block border-b-2 hover:border-[#E88B00]`} href={`/professional/my-responses/details/${data?.projectId}`}>Details</Link>
                             <Link className={`${isActive == "proposal" ? "border-b-2 border-[#E88B00]" : "border-b-2"} py-2 px-3 text-[#E88B00] text-md lg:text-xl font-semibold transition-all duration-300 block border-b-2 hover:border-[#E88B00]`} href={`/professional/my-responses/proposal/${data?.projectId}`}>Proposals</Link>
                             <Link className={`${isActive == "files" ? "border-b-2 border-[#E88B00]" : "border-b-2"} py-2 px-3 text-[#E88B00] text-md lg:text-xl font-semibold transition-all duration-300 block border-b-2 hover:border-[#E88B00]`} href={`/professional/my-responses/files/${data?.projectId}`}>Files</Link>
@@ -20,9 +20,9 @@ export default function ProjectsHeader({ data, isActive }: any) {
                             {/* <Link className={`${isActive == "reviews" ? "border-b-2 border-[#E88B00]" : "border-b-2"} py-2 px-3 text-[#E88B00] text-xl font-semibold transition-all duration-300 block border-b-2 hover:border-[#E88B00]`} href={`/professional/my-responses/reviews/${data?.projectId}`}>Reviews</Link> */}
                         </div>
                     </div>
-                    <div className="w-5">
+                    {/* <div className="w-5">
                         <button><MdShare className="size-5" /></button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

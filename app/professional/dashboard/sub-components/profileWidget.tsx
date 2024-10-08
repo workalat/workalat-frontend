@@ -38,7 +38,7 @@ const ProfileWidget = ({
           <Typography className="text-lg font-bold">
             Anita Maika Services
           </Typography>
-          <Box>
+          <Box className="flex flex-wrap justify-end sm:justify-start">
             {(pathname!=="/client/dashboard" ) && (
               <IconButton onClick={() => router.push("/profile")} size="small" className={(pathname!=="/client/dashboard") ? "":"hidden"}>
                 <ShareIcon />

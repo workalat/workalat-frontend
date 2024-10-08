@@ -5,6 +5,7 @@ import MessageBoxForAll from "./MessageBoxForAll";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useState } from "react";
 import { messagesData } from "@/utils/messagesData";
+import Link from "next/link";
 
 export default function MessageBody() {
     const [searchQuery, setSearchQuery] = useState<string>(''); // To search by name or username
@@ -14,7 +15,7 @@ export default function MessageBody() {
 
   return (
       <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
-          <button type="button" onClick={() => setMessageListOpen(!messageListOpen)} className="m-0 p-0 relative z-[300]"><AiOutlineMenu className="size-5" /></button>
+          <button type="button" onClick={() => setMessageListOpen(!messageListOpen)} className="m-0 p-0 relative z-[300] md:hidden"><AiOutlineMenu className="size-5" /></button>
           <div className="w-auto flex-grow md:px-3 pt-2 md:py-2 overflow-hidden relative">
 
               {/* message box must be dynamic with chat socket io */}
@@ -29,7 +30,7 @@ export default function MessageBody() {
                               <label className="bg-[#C3F0FB] text-[#1D75DD] text-[8px] py-1 px-3 rounded-lg">{2} New</label>
                           </div>
 
-                          <button><IoSettingsOutline className="size-[18px] text-[#555758]" /></button>
+                          <Link href={'/account_settings/notifications'} ><IoSettingsOutline className="size-[18px] text-[#555758]" /></Link>
                       </div>
 
                       <div className="py-2">
@@ -47,7 +48,7 @@ export default function MessageBody() {
 
                       {/* message list */}
                       <div className="md:py-1 h-[76vh] md:h-full">
-                          <ul className="h-full bg-[#D1E6FF] rounded-xl overflow-x-hidden overflow-y-scroll hiddenScroll">
+                          <ul className="h-full bg-[#D1E6FF] rounded-xl overflow-x-hidden chat-nav">
                               {
                                   messagesData?.map((message: any, i: number) => (
                                       <li onClick={() => { setSelectedMessage(message); setMessageListOpen(false) }} key={i} className={`w-full ${selectedMessage?.id == message?.id ? "bg-[#07242B]" : "bg-[#F2F2F2]"} p-3 mb-[1px] cursor-pointer`}>

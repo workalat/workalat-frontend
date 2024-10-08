@@ -75,14 +75,14 @@ const Step4: React.FC<Step4Props> = ({
 
   return (
     <>
-      {/* <h1 className="text-3xl font-bold text-center">
+      <h1 className="text-2xl md:text-3xl font-bold text-center text-balance mx-2">
         Need any additional service?
       </h1>
-      <p className="-mt-4 mb-4">Pick an additional laundry service.</p> */}
-      <form className="flex flex-col gap-0 px-8 w-full" onSubmit={handleSubmit}>
+      <p className="-mt-4 sm:mb-4">Pick an additional laundry service.</p>
+      <form className="flex flex-col gap-0 px-2 pr-6 md:px-8 md:pr-16 w-full" onSubmit={handleSubmit}>
         {/* this div will be removed */}
-        <div className="h-[400px]"></div>
-        {/* <FormControl>
+        {/* <div className="h-[400px]"></div> */}
+        <FormControl>
           <RadioGroup
             aria-labelledby="additional service"
             name="additional service"
@@ -96,12 +96,12 @@ const Step4: React.FC<Step4Props> = ({
                 control={<Radio />}
                 label={item.label}
                 labelPlacement="start"
-                className="flex-grow text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
+                className="flex-grow text-base md:text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
               />
             ))}
           </RadioGroup>
-        </FormControl> */}
-        <div className="mt-8 flex justify-between">
+        </FormControl>
+        <div className="md:mt-8 flex justify-between pl-4 sm:pl-4">
           <Button
             variant="outlined"
             className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4"
@@ -117,7 +117,7 @@ const Step4: React.FC<Step4Props> = ({
           </Button>
           <Button
             variant="contained"
-            className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4"
+            className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4 md:-mr-2"
             type="submit"
           >
             <span className="font-bold">Next</span>

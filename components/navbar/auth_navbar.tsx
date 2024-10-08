@@ -24,13 +24,12 @@ const AuthNavbar = () => {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = React.useState(false);
 
-
   const avatarDropdownMenu = [
     {
       key: "dashboard",
       icon: "/icons/dashboard.png",
       text: "Dashboard",
-      href: "/client/dashboard"
+      href: "/client/dashboard",
     },
     {
       key: "projects",
@@ -42,7 +41,7 @@ const AuthNavbar = () => {
       key: "notifications",
       icon: notificationsIcon,
       text: "Notifications",
-      href: "/notifications",
+      href: "/account_settings/notifications",
     },
     {
       key: "switch",
@@ -64,7 +63,6 @@ const AuthNavbar = () => {
     },
   ];
 
-
   return (
     <Navbar
       className="bg-main border-b border-white border-opacity-20"
@@ -72,7 +70,10 @@ const AuthNavbar = () => {
       maxWidth="xl"
     >
       <NavbarBrand>
-        <Link href="/" className="flex justify-start text-white items-center gap-1">
+        <Link
+          href="/"
+          className="flex justify-start text-white items-center gap-1"
+        >
           <Image alt="WhatWorks" className="min-w-24 w-28" src={logo_dark} />
           {/* <span className={clsx("font-semibold font-sans", fontSans.variable)}>
             WhatWorks
@@ -83,9 +84,36 @@ const AuthNavbar = () => {
         <NavbarItem className="hidden md:inline text-white">
           <Link href="/client/my-projects">My Projects</Link>
         </NavbarItem>
-        <NavbarItem className="cursor-pointer ml-6 flex gap-2 text-white items-center" onClick={() => setOpenDropdown(!openDropdown)}>
+        <NavbarItem>
+          <Link
+            key={avatarDropdownMenu[2].key}
+            href={avatarDropdownMenu[2].href}
+            className="min-w-5"
+          >
+            <Box
+              className={`flex items-center gap-4 -mr-6 sm:mr-0 ${avatarDropdownMenu[2].key === "logout" ? "" : "border-b"} border-dark border-opacity-20  hover:rounded-lg`}
+            >
+              <div className="p-2 bg-main rounded-md">
+                <Image
+                  width={500}
+                  height={500}
+                  className="w-5 min-w-4"
+                  src={avatarDropdownMenu[2].icon}
+                  alt={avatarDropdownMenu[2].text}
+                />
+              </div>
+            </Box>
+          </Link>
+        </NavbarItem>
+        <NavbarItem 
+          className="cursor-pointer ml-6 flex gap-2 text-white items-center"
+          onClick={() => setOpenDropdown(!openDropdown)}
+        >
           <Avatar src={testimonial3Img.src} className="w-8 h-8" />
-          <span className="text-sm sm:text-base">Anita Maika</span>
+          <span className="text-sm sm:text-base">
+            <span>Anita</span>
+            <span className="hidden sm:inline">Maika</span>
+          </span>
           <Image
             src={arrowDownWhiteIcon}
             alt="arrow down"
@@ -96,12 +124,22 @@ const AuthNavbar = () => {
           {openDropdown && (
             <Box className="absolute right-0 top-14 bg-white border border-dark border-opacity-20 shadow-lg rounded-md px-4 py-2">
               {avatarDropdownMenu.map((menu) => (
-                <Link key={menu.key} href={menu.href} className={menu.key==="projects" ? "md:hidden":""}>
+                <Link
+                  key={menu.key}
+                  href={menu.href}
+                  className={menu.key === "projects" ? "md:hidden" : ""}
+                >
                   <Box
                     className={`flex items-center gap-4 p-2 px-3 ${menu.key === "logout" ? "" : "border-b"} border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
                   >
                     <div className="p-2 bg-main rounded-md">
-                      <Image width={500} height={500} className="w-5" src={menu.icon} alt={menu.text} />
+                      <Image
+                        width={500}
+                        height={500}
+                        className="w-5"
+                        src={menu.icon}
+                        alt={menu.text}
+                      />
                     </div>
                     <span
                       className={

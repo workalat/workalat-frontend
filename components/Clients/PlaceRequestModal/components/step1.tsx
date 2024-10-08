@@ -1,50 +1,70 @@
 import React, { useEffect } from "react";
-import { Autocomplete, Button, FormControl, OutlinedInput, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  FormControl,
+  OutlinedInput,
+  TextField,
+} from "@mui/material";
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import { siteConfig } from "@/config/site";
 
 interface Step1Props {
-    handleNext: () => void;
-    updateFormData: (data: any) => void;
+  handleNext: () => void;
+  updateFormData: (data: any) => void;
 }
 
 interface Option {
   label: string;
 }
 
+const postCodeOptions = [
+  "12345",
+  "78232",
+  "90912",
+  "78238",
+  "63172",
+  "52368",
+]
+
 const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
-    
   const [formData, setFormData] = React.useState({
     service: "",
     location: "",
   });
-  
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      if(formData.service === "" || formData.location === "") return alert("Please fill in all fields");
-      updateFormData(formData);
-      handleNext();
+    e.preventDefault();
+    // if (formData.service === "" || formData.location === "")
+    //   return alert("Please fill in all fields");
+    updateFormData(formData);
+    handleNext();
   };
 
   useEffect(() => {
-    if(localStorage.getItem("stepFormData") === null) return;
+    if (localStorage.getItem("stepFormData") === null) return;
     const formDataItem = localStorage.getItem("stepFormData");
-    const formData_ = formDataItem ? JSON.parse(formDataItem) : {
-      service: "",
-      location: "",
-    };
+    const formData_ = formDataItem
+      ? JSON.parse(formDataItem)
+      : {
+          service: "",
+          location: "",
+        };
 
     setFormData(formData_);
   }, []);
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-center">Place your request</h1>
-      <form className="flex flex-col items-center gap-6 w-full px-10" onSubmit={handleSubmit}>
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">Place your request</h1>
+      <form
+        className="flex flex-col items-center gap-6 w-full px-4 sm:px-10"
+        onSubmit={handleSubmit}
+      >
         <FormControl className="w-full">
-          <label htmlFor="service" className="sm:text-lg font-bold mb-2">
+          <label htmlFor="service" className="text-sm sm:text-lg font-bold mb-2">
             Services needed
           </label>
           {/* <OutlinedInput
@@ -59,43 +79,55 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
             }
           /> */}
           <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={siteConfig.categories}
+            disablePortal
+            id="combo-box-demo"
+            options={siteConfig.categories}
             className="[&_input]:pl-3 [&_input]:text-base w-full [&>*>*]:border-b-4 [&>*>*]:border-b-secondary [&>*>*]:rounded-b-sm"
-              onChange={(
-                event: React.SyntheticEvent,
-                newValue?: Option | null
-              ) => {
-                if (newValue) {
-                  setFormData((prev) => ({ ...prev, service: newValue.label }));
-                }
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  placeholder="What service are you looking for?"
-                  InputProps={{
-                    ...params.InputProps,
-                  }}
-                />
-              )}
-            />
+            onChange={(
+              event: React.SyntheticEvent,
+              newValue?: Option | null
+            ) => {
+              if (newValue) {
+                setFormData((prev) => ({ ...prev, service: newValue.label }));
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="What service are you looking for?"
+                InputProps={{
+                  ...params.InputProps,
+                }}
+              />
+            )}
+          />
         </FormControl>
         <FormControl className="w-full">
-          <label htmlFor="location" className="sm:text-lg font-bold mb-2">
+          <label htmlFor="location" className="text-sm sm:text-lg font-bold mb-2">
             Location of service
           </label>
-          <OutlinedInput
-            required
-            placeholder="Enter your postcode or town"
-            value={formData.location || ""}
-            id="location"
-            className="rounded-md shadow-medium border-b-3 border-b-secondary"
-            onChange={(e) => {
-              setFormData((prev) => ({ ...prev, location: e.target.value }));
-             }
-            }
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={postCodeOptions}
+            className="[&_input]:pl-3 [&_input]:text-base w-full [&>*>*]:border-b-4 [&>*>*]:border-b-secondary [&>*>*]:rounded-b-sm"
+            onChange={(
+              event: React.SyntheticEvent,
+              newValue?: string | null
+            ) => {
+              if (newValue) {
+                setFormData((prev) => ({ ...prev, service: newValue }));
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Post Code"
+                InputProps={{
+                  ...params.InputProps,
+                }}
+              />
+            )}
           />
         </FormControl>
         <Button

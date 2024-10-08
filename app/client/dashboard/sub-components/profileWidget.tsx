@@ -24,7 +24,7 @@ const ProfileWidget = () => {
           <Typography className='text-lg font-bold'>
             Anita Maika Services
           </Typography>
-          <Box>
+          <Box className="flex flex-wrap justify-end sm:justify-start">
             <IconButton size="small" href='/profile' >
               <ShareIcon />
             </IconButton>

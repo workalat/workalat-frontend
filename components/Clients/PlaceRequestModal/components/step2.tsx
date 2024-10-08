@@ -88,16 +88,16 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
   
   return (
     <>
-      {/* <h1 className="text-3xl font-bold text-center mt-8">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center md:mt-8">
         What do you need Dry Cleaning?
-      </h1> */}
-      <form className="flex flex-col gap-0 px-4 pr-8 w-full" onSubmit={handleSubmit} >
+      </h1>
+      <form className="flex flex-col gap-0 px-2 sm:px-4 pr-8 sm:pr-12 w-full" onSubmit={handleSubmit} >
         {/* this div will be removed */}
-        <div className="h-[400px]"></div>
-        {/* {formItems.map((item, index) => (
+        {/* <div className="h-[400px]"></div> */}
+        {formItems.map((item, index) => (
           <FormControlLabel
             key={index}
-            className="flex-grow text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
+            className="flex-grow text-base md:text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
             control={
               <Checkbox
                 checked={state[item.name]}
@@ -108,8 +108,8 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
             label={item.label}
             labelPlacement="start"
           />
-        ))} */}
-        <div className="mt-8 flex justify-between pl-4">
+        ))}
+        <div className="md:mt-8 flex justify-between pl-4">
             <Button
               variant="outlined"
               className="h-[50px] w-[110px] rounded-sm flex gap-2 mt-4"
@@ -128,7 +128,7 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
                 <Image src={arrowRightIcon} alt="Arrow right" />
             </Button>
         </div>
-        <button onClick={handleNext} className="flex items-center justify-center">Skip <IoIosArrowForward className="size-3" /></button>
+        <button onClick={handleNext} className="flex items-center justify-center mt-2">Skip <IoIosArrowForward className="size-3" /></button>
       </form>
     </>
   );
