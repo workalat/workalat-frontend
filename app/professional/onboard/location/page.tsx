@@ -32,7 +32,7 @@ export default function LocationPage() {
   const [postCode, setPostCode] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    setDistance([event.target.value as string]);
+    setDistance(event.target.value as string);
   };
 
   // handle submission
@@ -54,6 +54,7 @@ export default function LocationPage() {
     const {
       target: { value },
     } = event;
+
     setPersonName(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
