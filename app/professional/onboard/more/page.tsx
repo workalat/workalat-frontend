@@ -2,9 +2,13 @@
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import Close from "@mui/icons-material/Close";
 import { Box, Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function MoreInfoPage() {
+  // router
+  const router = useRouter();
+
   // more leads
   const [moreLeads, setMoreLeads] = useState<string[]>([]);
   const extraServiceRef = useRef<HTMLInputElement>(null);
@@ -73,7 +77,12 @@ export default function MoreInfoPage() {
             </Box>
           </Box> */}
           <div className="w-full flex justify-end">
-            <Button variant="contained" size="large" className="font-semibold">
+            <Button
+              variant="contained"
+              size="large"
+              className="font-semibold"
+              onClick={() => router.push("/leads")}
+            >
               See leads
               <ArrowForward className="w-5 ml-2" />
             </Button>

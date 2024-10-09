@@ -45,7 +45,7 @@ const GetProfessionalPhone = () => {
     }
 
     const goBack = () => {
-        return router.push("/dashboard");
+        return router.push("/professional/dashboard");
     }
 
     return (

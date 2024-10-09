@@ -11,6 +11,7 @@
 	"dependencies": {
 		"@emotion/react": "^11.11.4",
 		"@emotion/styled": "^11.11.5",
+		"@mui/base": "^5.0.0-beta.58",
 		"@mui/icons-material": "^5.16.0",
 		"@mui/material": "^5.15.21",
 		"@nextui-org/avatar": "^2.0.30",
@@ -34,6 +35,7 @@
 		"@typescript-eslint/eslint-plugin": "^7.10.0",
 		"@typescript-eslint/parser": "^7.10.0",
 		"autoprefixer": "10.4.19",
+		"autosuggest-highlight": "^3.3.4",
 		"chart.js": "^4.4.4",
 		"clsx": "2.1.1",
 		"crypto-js": "^4.2.0",

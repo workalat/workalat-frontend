@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CustomizedHook from "./locationInput";
+import GoogleMaps from "./locationInput";
 
 export default function LocationPage() {
   // router
@@ -50,15 +52,8 @@ export default function LocationPage() {
 
   const [personName, setPersonName] = useState<string[]>([]);
 
-  const handleChange2 = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+  const handleChange2 = (event: any) => {
+    console.log(event.target.value);
   };
 
   const names = ["Nationwise", "Cardiff", "Newport, NP20"];
@@ -80,45 +75,8 @@ export default function LocationPage() {
           >
             <Box className="flex gap-4 items-center">
               <FormControl fullWidth>
-                <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
-                  placeholder="Location"
-                  multiple
-                  value={personName}
-                  onChange={handleChange2}
-                  input={
-                    <OutlinedInput
-                      id="select-multiple-chip"
-                      label="Services"
-                      color="primary"
-                    />
-                  }
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip
-                          key={value}
-                          label={value}
-                          color="secondary"
-                          onDelete={() => {
-                            setPersonName((prev) =>
-                              prev.filter((name) => name !== value)
-                            );
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  )}
-                >
-                  {names.map((name) => (
-                    <MenuItem key={name} value={name}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <GoogleMaps />
               </FormControl>
-              <p className="font-semibold">from</p>
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
@@ -136,7 +94,7 @@ export default function LocationPage() {
                 className="[&_*]:pl-0 [&_input]:pl-3 [&_input]:text-base w-full"
                 onChange={(
                   event: React.SyntheticEvent,
-                  newValue?: {label: string} | null
+                  newValue?: { label: string } | null
                 ) => {
                   if (newValue) {
                     setPostCode(newValue.label);
@@ -148,9 +106,7 @@ export default function LocationPage() {
                     placeholder="Post Code"
                     InputProps={{
                       ...params.InputProps,
-                      startAdornment: (
-                        <PinDropIcon />
-                      ),
+                      startAdornment: <PinDropIcon />,
                     }}
                   />
                 )}
