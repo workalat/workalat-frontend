@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-jobs;
+jobs:
 FTP-Deploy-Action:
   name: FTP-Deploy-Action
   runs-on: ubuntu-latest
