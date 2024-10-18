@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -15,6 +15,7 @@ import {
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  Modal,
 } from "@mui/material";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -23,10 +24,14 @@ import "react-quill/dist/quill.snow.css";
 import cancelIcon from "@/public/icons/cancel.svg";
 import arrowRight from "@/public/icons/arrow_right.svg";
 import { siteConfig } from "@/config/site";
+import { useSnackbar } from "@/context/snackbar_context";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import VerifyEmail from "./verify-email/page";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const ProfessionalSettingsPage = () => {
+const ProfessionalSettingsPage = ({data1, data2}) => {
   const [personalInfo, setPersonalInfo] = useState({
     firstName: "",
     lastName: "",
@@ -43,6 +48,7 @@ const ProfessionalSettingsPage = () => {
     whyWorkWithMe: "",
   });
   const [newEmail, setNewEmail] = useState("");
+  let [userId, setUserId] = useState("");
 
   const handlePersonalInfoChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -77,6 +83,7 @@ const ProfessionalSettingsPage = () => {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+    console.log(personName);
   };
 
   const names = [
@@ -92,8 +99,189 @@ const ProfessionalSettingsPage = () => {
     "Roof Cleaning",
   ];
 
+  let [file, setFile] = useState({});
+  
+  // loading
+  const [loading2, setLoading2] = useState(true);
+  
+  // loading
+  const [loading, setLoading] = useState(false);
+
+  // loading
+  const [openVerifyModel, setOpenVerifyModel] = useState(false);
+
+  //Router
+  let router = useRouter();
+
+  let [form1,setForm1] = useState({
+    professionalFullName : "",
+    professionalEmail : "",
+    professionalPhoneNo : "",
+    professionalPictureLink : "",
+  })
+
+  let [form2,setForm2] = useState({
+    oldEmail : "",
+    newEmail : "",
+    confirmEmail : "",
+  })
+  
+  let [form3,setForm3] = useState({
+    professionalCompanyName : "",
+    professionalCompanyTitle :  "",
+    professionalServiceLocPostCodes : [],
+    professionalPrimaryService : "",
+    professionalBio : "",
+    professionalSkills : [],
+    professionalCompanywebsite : "",
+    professionalAddress : "",
+  })
+
+  let [avatar, setAvatar] = useState("")
+  const { generateSnackbar } = useSnackbar();
+  useEffect(() => {
+    // console.log(data1, data2);
+    setLoading2(true)
+
+    setForm1({
+      ...form1,
+      ["professionalFullName"] : data1.professionalFullName,
+      ["professionalEmail"] : data1.professionalEmail,
+      ["professionalPhoneNo"] : data1.professionalPhoneNo,
+      ["professionalPictureLink"] : data1.professionalPictureLink,
+    });
+    setAvatar(data1.professionalPictureLink);
+    setUserId(data1._id);
+    setForm2({
+      ...form2,
+      ["oldEmail"] : data1.professionalEmail,
+    });
+    setForm3({
+      ...form3,
+      ["professionalCompanyName"] : data2.professionalCompanyName,
+      ["professionalCompanyTitle"] :  data2.professionalCompanyTitle,
+      ["professionalServiceLocPostCodes"] : data2.professionalServiceLocPostCodes,
+      ["professionalPrimaryService"] : data2.professionalPrimaryService,
+      ["professionalBio"] : data2.professionalBio,
+      ["professionalSkills"] : data2.professionalSkills,
+      ["professionalCompanywebsite"] : data2.professionalCompanywebsite,
+      ["professionalAddress"]: data2.professionalAddress
+    })
+
+
+    setLoading2(false)
+  }, [data1, data2]);
+
+
+  function handleChangeForm1(e){
+    let name = e.target.name;
+    let value  = e.target.value;
+    setForm1({
+     ...form1,
+      [name]: value
+    });
+  };
+
+  function handleChangeForm2(e){
+    let name = e.target.name;
+    let value  = e.target.value;
+    setForm2({
+     ...form2,
+      [name]: value
+    });
+  };
+
+  function handleChangeForm3(e){
+    let name = e.target.name;
+    let value  = e.target.value;
+    setForm3({
+     ...form3,
+      [name]: value
+    });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result); // Update avatar with the selected file
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  async function handleChangeImage(e){
+    e.preventDefault();
+    try{
+      console.log(file);
+      if (!file) {
+        generateSnackbar("Please Select a File First", "warning");
+        return;
+      }
+      else{
+        setLoading(true);
+        const formDat = new FormData();
+        formDat.append('profilePic', file);
+        formDat.append('userId', userId);
+        formDat.append('userType', "professional");
+
+        const res = await axios.post('/changePicture', formDat, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        if (res.status !== 400 || res.data?.status === "success") {
+          generateSnackbar("Profile Picture Updated Successfully", "success");
+          setAvatar(res.data?.picture);
+          setLoading(false);
+        }
+        else {
+          generateSnackbar(res.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
+        }
+      }
+    }
+    catch(e){
+      generateSnackbar("Some Error occurs, please try again in a few minutes", "error");
+    }
+  }
+
+
+  function handleChangeEmail(e){
+    e.preventDefault();
+    if(form2.newEmail !== form2.confirmEmail){
+        generateSnackbar("Email Don't match.", "error")
+    }
+    else{
+      setOpenVerifyModel(true);
+    }
+  }
+
+  async function handleSubmitForm3(e){
+    e.preventDefault();
+    try{
+      console.log(form3);
+    
+    }
+    catch(e){
+      generateSnackbar("Some Error occurs, please try again in a few minutes", "error");
+    }
+  }
+
+
+
   return (
-    <Grid container spacing={3} className="mt-1">
+    <>
+      {
+            loading2 ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div>
+            )
+            :(
+              <>
+              <Grid container spacing={3} className="mt-1">
       <Grid item xs={12} md={6}>
         <Paper
           elevation={3}
@@ -108,27 +296,42 @@ const ProfessionalSettingsPage = () => {
           </Typography>
           <Box mb={3} className="flex flex-col gap-2">
             <Box className="flex items-center gap-4 mb-1">
-              <Avatar
+              {/* <Avatar
                 alt="Profile Picture"
-                src="/images/profile.png"
+                src={avatar}
                 sx={{ width: 100, height: 100 }}
-              />
-              <p className="max-w-xs font-semibold">
+              /> */}
+              <p className="max-w-xs font-semibold mb-[10%]">
                 Max file size is 5MB, Minimum dimension: 150x150 And Suitable
                 files are .jpg & .png
               </p>
             </Box>
-            <Button
-              variant="contained"
-              color="secondary"
-              className="font-bold text-lg w-full max-w-[350px] py-2"
-            >
-              Upload Photo
-            </Button>
+            <div className="w-40 h-40 border shadow-sm rounded-[100%] bg-white p-2 pb-0 -mt-14 rounded-[100%]">
+                      <img src={avatar} alt="User icon" className="w-full h-full object-fit rounded-[100%]" />
+            </div>
+            
+            <label htmlFor="file-upload" className="cursor-pointer">
+                     <Button
+                        variant="contained"
+                        component="span" // Ensures that the button works as a label for the file input
+                        className="font-bold text-lg w-full max-w-[300px] py-2"
+                      >
+                        Upload Photo
+                      </Button>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        name="profilePic"
+                        accept="image/*" 
+                        onChange={handleFileChange}
+                        className="hidden" // Hide the actual file input
+                      />
+                    </label>
             <Button
               variant="contained"
               color="primary"
               className="font-bold text-lg w-full max-w-[350px] py-2"
+              onClick={handleChangeImage}
             >
               Save
             </Button>
@@ -140,11 +343,11 @@ const ProfessionalSettingsPage = () => {
                   Full Name
                 </Typography>
                 <TextField
-                  name="Full Name"
-                  value={personalInfo.firstName}
-                  className="shadow-medium"
+                  className="shadow-medium capitalize"
+                  name="professionalFullName"
+                  value={form1.professionalFullName}
+                  onChange={handleChangeForm1}
                   placeholder="Jane"
-                  onChange={handlePersonalInfoChange}
                 />
               </FormControl>
             </div>
@@ -155,12 +358,12 @@ const ProfessionalSettingsPage = () => {
                   Email
                 </Typography>
                 <TextField
-                  name="email"
                   type="email"
-                  value={personalInfo.email}
                   className="shadow-medium"
                   placeholder="jane.doe@example.com"
-                  onChange={handlePersonalInfoChange}
+                  name="professionalEmail"
+                  disabled
+                  onChange={handleChangeForm1}
                 />
               </FormControl>
               <FormControl fullWidth margin="normal">
@@ -168,11 +371,11 @@ const ProfessionalSettingsPage = () => {
                   Phone Number
                 </Typography>
                 <TextField
-                  name="phoneNumber"
-                  value={personalInfo.phoneNumber}
                   className="shadow-medium"
                   placeholder="+1 (555) 123-4567"
-                  onChange={handlePersonalInfoChange}
+                  disabled
+                  name="professionalPhoneNo"
+                  onChange={handleChangeForm1}
                 />
               </FormControl>
             </div>
@@ -215,7 +418,9 @@ const ProfessionalSettingsPage = () => {
                 </Typography>
                 <TextField
                   className="shadow-medium"
-                  value={personalInfo.email}
+                  name="oldEmail"
+                  disabled
+                  value={form2.oldEmail}
                   placeholder="current@email.com"
                 />
               </FormControl>
@@ -224,10 +429,11 @@ const ProfessionalSettingsPage = () => {
                   New Email
                 </Typography>
                 <TextField
-                  value={newEmail}
                   className="shadow-medium"
                   placeholder="new@email.com"
-                  onChange={handleNewEmailChange}
+                  name="newEmail"
+                  value={form2.newEmail}
+                  onChange={handleChangeForm2}
                 />
               </FormControl>
               <FormControl fullWidth margin="normal" className="mt-4">
@@ -237,6 +443,9 @@ const ProfessionalSettingsPage = () => {
                 <TextField
                   className="shadow-medium"
                   placeholder="new@email.com"
+                  name="confirmEmail"
+                  value={form2.confirmEmail}
+                  onChange={handleChangeForm2}
                 />
               </FormControl>
             </FormGroup>
@@ -253,6 +462,7 @@ const ProfessionalSettingsPage = () => {
                 variant="contained"
                 color="primary"
                 className="gap-2 py-3 px-6"
+                onClick={handleChangeEmail}
               >
                 Save changes
                 <Image src={arrowRight} alt="Save changes" />
@@ -280,11 +490,11 @@ const ProfessionalSettingsPage = () => {
                 Business Name
               </Typography>
               <TextField
-                name="jobTitle"
-                value={jobInfo.jobTitle}
+                name="professionalCompanyName"
+                value={form3.professionalCompanyName}
+                onChange={handleChangeForm3}
                 className="shadow-medium"
                 placeholder="Dry Cleaner"
-                onChange={handleJobInfoChange}
               />
             </FormControl>
             <FormControl fullWidth margin="normal" className="mt-4">
@@ -292,11 +502,11 @@ const ProfessionalSettingsPage = () => {
                 Business Title
               </Typography>
               <TextField
-                name="languageKnown"
-                value={jobInfo.languageKnown}
                 className="shadow-medium"
                 placeholder="Dry Cleaner in Newport (NP20)"
-                onChange={handleJobInfoChange}
+                name="professionalCompanyTitle"
+                value={form3.professionalCompanyTitle}
+                onChange={handleChangeForm3}
               />
             </FormControl>
             <FormControl fullWidth margin="normal" className="mt-4">
@@ -316,11 +526,11 @@ const ProfessionalSettingsPage = () => {
                 Skill
               </Typography>
               <TextField
-                name="skillSet"
-                value={jobInfo.skillSet}
                 className="shadow-medium"
                 placeholder="Professional Dry Cleaner"
-                onChange={handleJobInfoChange}
+                name="professionalPrimaryService"
+                value={form3.professionalPrimaryService}
+                onChange={handleChangeForm3}
               />
             </FormControl>
             <FormControl>
@@ -332,6 +542,8 @@ const ProfessionalSettingsPage = () => {
                   theme="snow"
                   className="bg-white rounded-lg shadow-lg overflow-hidden border-2 h-[250px] [&_*]:!font-mono [&_*]:!text-base"
                   placeholder="Start typing here"
+                  value={form3.professionalBio}
+                  onChange={(e)=>{setForm3((prev) => ({ ...prev, ["professionalBio"]: e }));}}
                   modules={{
                     toolbar: [
                       ["bold", "italic", "underline", "strike"], // Bold, italic, underline, strike-through
@@ -401,16 +613,16 @@ const ProfessionalSettingsPage = () => {
                 ))}
               </Select>
             </FormControl>
+
             <FormControl fullWidth margin="normal" className="mt-4">
               <Typography gutterBottom variant="body1">
                 Comapny Website
               </Typography>
               <TextField
-                name="skillSet"
-                // value={jobInfo.skillSet}
                 className="shadow-medium"
-                placeholder="https://example.com"
-                // onChange={handleJobInfoChange}
+                name="professionalCompanywebsite"
+                value={form3.professionalCompanywebsite}
+                onChange={handleChangeForm3}
               />
             </FormControl>
             <FormControl fullWidth margin="normal" className="mt-4">
@@ -418,11 +630,11 @@ const ProfessionalSettingsPage = () => {
                 Address
               </Typography>
               <TextField
-                name="skillSet"
-                // value={jobInfo.skillSet}
                 className="shadow-medium"
                 placeholder="123 Main St, Anytown, AN 12345"
-                // onChange={handleJobInfoChange}
+                name="professionalAddress"
+                value={form3.professionalAddress}
+                onChange={handleChangeForm3}
               />
             </FormControl>
           </FormGroup>
@@ -439,6 +651,7 @@ const ProfessionalSettingsPage = () => {
               variant="contained"
               color="primary"
               className="gap-2 py-3 px-6"
+              onClick={handleSubmitForm3}
             >
               Save changes
               <Image src={arrowRight} alt="Save changes" />
@@ -447,6 +660,24 @@ const ProfessionalSettingsPage = () => {
         </Paper>
       </Grid>
     </Grid>
+    <Modal open={openVerifyModel}>
+              <VerifyEmail oldEmail={form2.oldEmail} newEmail={form2.newEmail} />
+          </Modal>
+
+    <Modal open={loading}>
+            <Box className="w-full h-full flex justify-center items-center">
+              <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+                <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                <h1 className="text-center font-bold text-xl ml-2">Updating Profile Picture...</h1>
+              </Box>
+            </Box>
+          </Modal>
+
+              </>
+            )
+      }
+    </>
+    
   );
 };
 

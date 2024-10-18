@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Typography,
@@ -24,12 +24,53 @@ import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { useSnackbar } from "@/context/snackbar_context";
 
+import { useUserContext } from "@/context/user_context";
+import VerifyUser from "@/app/middleware/VerifyUser";
+import Cookies from "js-cookie";
+import axios from "axios";
+
 export default function Form() {
   // router
   const router = useRouter();
 
+  //Context
+  let { addProfessionalDetails, tempUserData, setTempUserData, findAllServices } = useUserContext();
+  let [userData, setUserData] = useState({});
+  let [loading, setLoading]=  useState(true);
+  const [allServices, setAllServices] = useState<string[]>([]);
+
   // snackbar
   const { generateSnackbar } = useSnackbar();
+  useEffect(()=>{
+    async function getAllVerificationDone(){
+        try{
+          setLoading(true);
+            let token = Cookies.get("token");
+            let ver = await VerifyUser(token, "professional");
+            console.log(ver);
+            if(ver?.status === "success" && ver.userType === "professional" ){
+                if(ver.isRegistrationComplete !== true){
+                  setUserData(ver);
+                  const data = await findAllServices();
+                  setAllServices(data.data);
+                  // console.log(data.data)
+                  setLoading(false);
+                }
+                else{
+                    router.push("/leads")
+                 
+                }
+              }
+              else{
+                router.push("/login"); 
+              }
+        }
+        catch(e){
+            router.push("/login");
+        }
+    };
+    getAllVerificationDone();
+}, [])
 
   // form data
   const [formData, setFormData] = useState({
@@ -39,6 +80,8 @@ export default function Form() {
     bio: "",
     companySize: "",
     skills: [] as string[],
+    userId: "",
+    isData : false,
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +89,7 @@ export default function Form() {
 
     setFormData({ ...formData, [name]: value });
   };
+
 
   const handleSkillChange = (event: SelectChangeEvent<string[]>) => {
     const selectedSkills = event.target.value as string[];
@@ -56,33 +100,75 @@ export default function Form() {
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    
-    // form validation
-    if (!formData.name) {
-      return generateSnackbar("Name is required", "error");
-    }
-    if (!formData.companyName) {
-      return generateSnackbar("Company name is required", "error");
-    }
-    if (!formData.bio) {
-      return generateSnackbar("Bio is required", "error");
-    }
-    if (!formData.companySize) {
-      return generateSnackbar("Company size is required", "error");
-    }
-    if (formData.skills.length === 0) {
-      return generateSnackbar("Skills are required", "error");
-    }
-    
-    generateSnackbar("Form submitted successfully", "success");
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    try {
+      event.preventDefault();
 
-    return router.push("/professional/onboard/location");
+      let token = Cookies.get("token");
+      let ver = await VerifyUser(token, "professional");
+      console.log(ver);
+
+      if (ver.status === "success" || ver.status !== 400) {
+        setFormData({
+          ...formData,
+          ["userId"] : ver.userId,
+          ["isData"] : true
+        });
+
+        // form validation
+        if (!formData.name) {
+          return generateSnackbar("Name is required", "error");
+        }
+        if (!formData.companyName) {
+          return generateSnackbar("Company name is required", "error");
+        }
+        if (!formData.bio) {
+          return generateSnackbar("Bio is required", "error");
+        }
+        if (!formData.companySize) {
+          return generateSnackbar("Company size is required", "error");
+        }
+        if (formData.skills.length === 0) {
+          return generateSnackbar("Skills are required", "error");
+        }
+        console.log(formData);
+        addProfessionalDetails;
+
+        generateSnackbar("Data Added successfully", "success");
+        setTempUserData({
+          ...tempUserData,
+          professionalFormData : {...formData, userId : ver.userId, isData : true}
+        });
+        Cookies.set("name", formData?.name, { secure: true, sameSite: 'None', expires: 10 });
+        Cookies.set("companyName", formData?.companyName, { secure: true, sameSite: 'None',expires: 10 });
+        Cookies.set("website", formData?.website, { secure: true, sameSite: 'None',expires: 10 });
+        Cookies.set("bio", formData?.bio, { secure: true, sameSite: 'None',expires: 10 });
+        Cookies.set("companySize", formData?.companySize, { secure: true, sameSite: 'None',expires: 10 });
+        Cookies.set("userId",  ver.userId, { secure: true, sameSite: 'None' ,expires: 10});
+        Cookies.set("isData", true, { secure: true, sameSite: 'None',expires: 10 });
+        Cookies.set("skills", JSON.stringify(formData?.skills), { secure: true, sameSite: 'None',expires: 10 });
+
+        router.push("/professional/onboard/location");
+      } else {
+        generateSnackbar("No user Data Found, please login again.", "error");
+        router.push("/login");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 850, margin: "auto", mb: 1 }}>
+    <>
+    {
+      loading ? (
+          <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+          </div>
+      )
+      :
+      (
+        <Box sx={{ width: "100%", maxWidth: 850, margin: "auto", mb: 1 }}>
       <Box
         component={"form"}
         sx={{ color: "white", p: 4, borderRadius: 2 }}
@@ -329,12 +415,12 @@ export default function Form() {
               renderValue={(selected) => selected.join(", ")}
               onChange={handleSkillChange}
             >
-              {siteConfig.skillOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+              {allServices.map((option, i) => (
+                <MenuItem key={i} value={option}>
                   <Checkbox
-                    checked={formData.skills.indexOf(option.value) > -1}
+                    checked={formData.skills.indexOf(option) > -1}
                   />
-                  <ListItemText primary={option.label} />
+                  <ListItemText primary={option} className="capitalize" />
                 </MenuItem>
               ))}
             </Select>
@@ -369,5 +455,9 @@ export default function Form() {
         </Box>
       </Box>
     </Box>
+      )
+    }
+    </>
+    
   );
 }

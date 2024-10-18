@@ -36,7 +36,7 @@ export default function BuyPoints({
       >
         <Box className="bg-white w-full max-w-2xl rounded-md p-6">
           <Box className="flex justify-between items-center p-2 border-b border-b-main border-opacity-30">
-            <h1 className="font-bold text-2xl">Buy Points</h1>
+            <h1 className="font-bold text-2xl">Buy Point</h1>
             <Image src="/icons/close.svg" alt="Close" height={24} width={24} />
           </Box>
           <p className="pl-2 pt-2 font-semibold">

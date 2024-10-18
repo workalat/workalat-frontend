@@ -1,48 +1,65 @@
+
+
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 
+import { useUserContext } from "@/context/user_context";
+import VerifyUser from "@/app/middleware/VerifyUser";
+import { useSnackbar } from "@/context/snackbar_context";
 
 import searchIcon from "@/public/icons/search.svg";
 import heroIcon from "@/public/images/hero_img2.svg";
 import { siteConfig } from "@/config/site";
-
-interface Option {
-  label: string;
-}
+import Cookies from 'js-cookie';
 
 const Hero: React.FC = () => {
   const [inputFocus, setInputFocus] = useState<boolean>(false);
-
-
-  // State to manage category selection
-  const [category, setCategory] = useState<string>("");
-
-  // State to manage post code input
-
-
   const router = useRouter();
+  const { findAllServices, setTempUserData , tempUserData} = useUserContext();
+  const { generateSnackbar } = useSnackbar();
+
+  const [allServices, setAllServices] = useState<string[]>([]);
+  const [category, setCategory] = useState<string>(""); // For selected category
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    // eslint-disable-next-line no-console
-    console.log("searching...");
-    if (e) {
+
+    // Log or use the selected category (service)
+
+    if (category) {
+      // You can now use the selected category value here
+      setTempUserData({...tempUserData, userPrimaryService : category});
+      Cookies.set("userPrimaryService", category, { secure: true, sameSite: 'None', expires: 10 });
       router.push("/professional/signup");
+    } else {
+      generateSnackbar("Please Select a Service", "warning");
     }
   };
 
+  useEffect(() => {
+    async function getServices() {
+      try {
+        const data = await findAllServices();
+        setAllServices(data.data); // Assuming data.data is an array of service names (strings)
+      } catch (e) {
+        router.push("/login");
+      }
+    }
+    getServices();
+  }, []);
+
   return (
-    <div className=" flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6">
+    <div className="flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6">
       <div className="max-w-[796px] flex flex-col gap-9 relative z-10">
         <h1 className="text-black text-4xl md:text-5xl font-bold">
           Ready to grow your business?
         </h1>
         <p className="text-black text-xl sm:text-xl">
-        Join WorkAlat to grow your business and reach more clients
+          Join WorkAlat to grow your business and reach more clients
         </p>
         <Box
           component={"form"}
@@ -52,30 +69,32 @@ const Hero: React.FC = () => {
           <div className="flex w-full md:max-w-[340px]">
             <img
               alt=""
-              className={
-                inputFocus || category !== "" ? "opacity-100" : "opacity-40"
-              }
+              className={inputFocus || category !== "" ? "opacity-100" : "opacity-40"}
               src={searchIcon.src}
               width={18}
             />
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={siteConfig.categories}
-              className="[&_input]:pl-3 [&_input]:text-lg w-full sm:w-[400px] [&_*]:pl-0 [&_*]:!py-0 [&_*]:!border-0 md:!border-r"
-              // eslint-disable-next-line react/jsx-sort-props
-              onChange={(
-                event: React.SyntheticEvent,
-                newValue?: Option | null
-              ) => {
+              options={allServices} // Array of strings
+              className="[&_input]:pl-3 [&_input]:text-lg w-full sm:w-[400px] [&_*]:pl-0 [&_*]:!py-0 [&_*]:!border-0 md:!border-r capitalize"
+              onChange={(event: React.SyntheticEvent, newValue?: string | null) => {
                 if (newValue) {
-                  setCategory(newValue.label);
+                  setCategory(newValue); // Set the selected service as a string
+                } else {
+                  setCategory(""); // Clear the selection if no value is selected
                 }
               }}
+              renderOption={(props, option) => (
+                <li {...props} className="capitalize cursor-pointer m-[5px]">
+                  {option}
+                </li>
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   placeholder="What service do you provide?"
+                  className="capitalize"
                   InputProps={{
                     ...params.InputProps,
                     onFocus: () => setInputFocus(true),
@@ -98,9 +117,7 @@ const Hero: React.FC = () => {
         src={heroIcon.src}
         alt=""
         className="hidden md:block w-[850px] h-[750px] object-fill object-center"
-
       />
-
     </div>
   );
 };

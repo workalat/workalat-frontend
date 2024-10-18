@@ -1,27 +1,97 @@
 /* eslint-disable jsx-a11y/no-autofocus */
-import { useState } from "react";
+"use client"
+import { useEffect, useState } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { Button } from "@mui/material";
 import Image from "next/image";
+import Cookies from 'js-cookie';
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from '@/context/user_context';
+
+import VerifyUser from "@/app/middleware/VerifyUser";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { useRouter } from "next/router";
 
 interface VerifyOTPProps {
   handleNext: () => void;
   handlePrev: () => void;
+  Router : () => void;
 }
 
-const EmailOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
+const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
   const [otp, setOtp] = useState<string>("");
+  
+    // snackbar
+    const { generateSnackbar } = useSnackbar();
+    // let router = useRouter();
+
+    //context
+        let { userId, verifyOtp, tempUserData,sendEmailOtp, userData, setUserData } = useUserContext();
+
+         
+  const { projectData, setProjectData } = useUserContext();
+
+
+  const handleResend = async (e) => {
+    try { 
+        e.preventDefault();
+        if(Cookies.get("userId").length > 0) {
+
+            let res = await sendEmailOtp({
+            userId: Cookies.get("userId"),
+            userType: "professional",
+            email: tempUserData.userEmail || Cookies.get("userEmail"),
+          });
+    
+          if (res.status !== 400 || res.data?.status === "success") {
+            return generateSnackbar("OTP resend successfully", "success");
+          } else {
+            generateSnackbar("Please login again.", "error");
+          }
+        } 
+        else {
+          generateSnackbar("No user Data Found, please login again.", "error");
+        }
+        
+    } catch (error) {
+      generateSnackbar("An error occurred, please try again later.", "error");
+    }
+  };
 
   const handleChange = (newValue: string) => {
     setOtp(newValue);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit =async  (e: React.FormEvent<HTMLFormElement>) => {
+   try{
     e.preventDefault();
     if (otp.length !== 4) return alert("Enter valid OTP");
-    handleNext();
+    let userId = tempUserData.userId || Cookies.get("userId");
+
+    let res = await verifyOtp({otp, userId, userType : "client" })
+        console.log(res);
+
+        if(res.status === 200 || res.response.data?.status === "success"){
+          setUserData({
+            ...userData,
+            token : res.data?.token
+          });
+          
+            Cookies.set("token", res.data?.token ,{ secure: true, sameSite: 'None', expires: 30 });
+            generateSnackbar("Email verified.", "success")
+            handleNext();
+        }
+        else{
+            // OTP verification failed
+            generateSnackbar(res.response?.data?.message || "Some error occur, please Try Again." ,"error")
+        }
+
+   }
+   catch(e){
+    // console.log(e);
+    generateSnackbar("Some error occur, please Try Again." ,"error")
+   }
   };
 
   return (
@@ -43,14 +113,14 @@ const EmailOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
         <div className="flex justify-between items-center">
           <p className="text-xs md:text-lg">Didn&apos;t receive a code?</p>
           <div className="text-xs sm:text-sm flex gap-2 sm:gap-3 items-center">
-            <button className="text-secondary hover:text-main font-bold">
+            <button className="text-secondary hover:text-main font-bold" onClick={handleResend}>
               Resend
             </button>
             <button
               className="text-secondary hover:text-main font-bold"
               onClick={handlePrev}
             >
-              Change number
+              Change Email
             </button>
           </div>
         </div>

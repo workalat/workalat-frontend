@@ -21,6 +21,7 @@ import Requirements from "./components/requirements";
 import SetupAccount from "./components/setupaccount";
 import EmailOTP from "./components/emailOTP";
 import UploadPicture from "./components/upload-pic";
+import { useRouter } from "next/router";
 
 type formDataType = {
   service: string;
@@ -81,12 +82,6 @@ const PlaceRequestModal = ({
 }) => {
 
     const getInitialStep = () => {
-        if (typeof window !== "undefined") {
-          const activeStepItem = localStorage.getItem("activeStep");
-
-          return activeStepItem ? JSON.parse(activeStepItem) : 0;
-        }
-        
         return 0;
       };
     
@@ -100,7 +95,7 @@ const PlaceRequestModal = ({
         return initialFormData;
       };
     
-  const [activeStep, setActiveStep] = useState<number>(getInitialStep());
+  const [activeStep, setActiveStep] = useState<number>(0);
   const [stepFormData, setStepFormData] =
     useState<formDataType>(getInitialFormData());
 
@@ -140,7 +135,7 @@ const PlaceRequestModal = ({
 
   const renderStep = (step: number) => {
     if (step === 0)
-      return <Step1 handleNext={handleNext} updateFormData={updateFormData} />;
+      return <Step1 handleNext={handleNext} updateFormData={updateFormData} Router={useRouter} />;
     if (step === 1)
       return (
         <Step2
@@ -149,23 +144,23 @@ const PlaceRequestModal = ({
           handlePrev={handleBack}
         />
       );
+    // if (step === 2)
+    //   return (
+    //     <Step3
+    //       handleNext={handleNext}
+    //       updateFormData={updateFormData}
+    //       handlePrev={handleBack}
+    //     />
+    //   );
+    // if (step === 3)
+    //   return (
+    //     <Step4
+    //       handleNext={handleNext}
+    //       updateFormData={updateFormData}
+    //       handlePrev={handleBack}
+    //     />
+    //   );
     if (step === 2)
-      return (
-        <Step3
-          handleNext={handleNext}
-          updateFormData={updateFormData}
-          handlePrev={handleBack}
-        />
-      );
-    if (step === 3)
-      return (
-        <Step4
-          handleNext={handleNext}
-          updateFormData={updateFormData}
-          handlePrev={handleBack}
-        />
-      );
-    if (step === 4)
       return (
         <Step5
           handleNext={handleNext}
@@ -173,7 +168,7 @@ const PlaceRequestModal = ({
           handlePrev={handleBack}
         />
       );
-    if (step === 5)
+    if (step === 3)
       return (
         <Step6
           handleNext={handleNext}
@@ -181,7 +176,7 @@ const PlaceRequestModal = ({
           handlePrev={handleBack}
         />
       );
-    if (step === 6)
+    if (step === 4)
       return (
         <Step7
           handleNext={handleNext}
@@ -197,14 +192,14 @@ const PlaceRequestModal = ({
     //       handlePrev={handleBack}
     //     />
     //   );
-    if (step === 7)
+    if (step === 5)
       return (
         <Requirements
           handleNext={handleNext}
           handlePrev={handleBack}
         />
       );
-    if (step === 8)
+    if (step === 6)
       return (
         <PhoneOtp
           handleNext={handleNext}
@@ -212,22 +207,22 @@ const PlaceRequestModal = ({
           handlePrev={handleBack}
         />
       );
-    if (step === 9)
+    if (step === 7)
       return <VerifyOTP handleNext={handleNext} handlePrev={handleBack} />;
-    if (step === 10)
+    if (step === 8)
       // Setup Account
     return <SetupAccount handleNext={handleNext} handlePrev={handleBack} />;
-    if (step === 11)
+    if (step === 9)
       // Email OTP
-      return <EmailOTP handleNext={handleNext} handlePrev={handleBack} />;
-    if (step === 12)
+      return <EmailOTP handleNext={handleNext} handlePrev={handleBack} Router={useRouter} />;
+    if (step === 10)
       // Upload Picture
-      return <UploadPicture handleNext={handleNext} handlePrev={handleBack} />;
-    if (step === 13) return <Done />;
+      return <UploadPicture handleNext={handleNext} handlePrev={handleBack}  />;
+    if (step === 11) return <Done activeStep={setActiveStep} close={onClose} />;
   };
 
   return (
-    <Modal open={open} className="w-full h-full flex justify-center items-center" onClose={onClose}>
+    <Modal open={open} className="w-full h-full flex justify-center items-center" onClose={()=>{onClose(); setActiveStep(0);}}>
       <div
         className={`bg-white text-main w-full max-w-xl py-10 ${activeStep === 8 || activeStep === 9 ? "pt-10" : "pt-20"} rounded-lg flex flex-col justify-center items-center gap-6 relative mx-4 sm:mx-0`}
       >

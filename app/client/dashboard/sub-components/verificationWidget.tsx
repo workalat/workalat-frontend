@@ -5,15 +5,18 @@ import { Box, Typography, Button, List, ListItem, ListItemIcon, ListItemText } f
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/navigation';
 
-const VerificationWidget = ({ isClientDashboard } : {isClientDashboard: boolean}) => {
+const VerificationWidget = ({ isClientDashboard ,data, userType}) => {
   const theme = useTheme();
+  let router = useRouter();
+  console.log(data);
   const verifications = [
     { name: 'Top Professional', status: 'join' },
-    { name: 'Identity Verified', status: 'verified' },
-    { name: 'Phone Verified', status: 'verified' },
-    { name: 'Email Verified', status: 'verified' },
-    { name: 'Payment Verified', status: 'unverified' },
+    { name: 'Identity Verified', status: (data.isProfileComplete ? 'verified' :'unverified') },
+    { name: 'Phone Verified', status: (data.isPhoneVerify ? 'verified' :'unverified') },
+    { name: 'Email Verified', status: (data.isEmailVerify ? 'verified' :'unverified') },
+    { name: 'Payment Verified', status: (data.isPaymentVerify ? 'verified' :'unverified') },
   ];
 
   return (
@@ -56,19 +59,41 @@ const VerificationWidget = ({ isClientDashboard } : {isClientDashboard: boolean}
           </ListItem>
         )))}
       </List>
+      {
+        (userType === "client")
+        ?
+        
       <Button
-        variant="contained"
-        fullWidth
-        sx={{
-          backgroundColor: theme.palette.secondary.main,
-          color: theme.palette.secondary.contrastText,
-          
-          marginTop: 2,
-        }}
-        className='bg-secondary text-black'
-      >
-        Get Verified
-      </Button>
+      variant="contained"
+      fullWidth
+      sx={{
+        backgroundColor: theme.palette.secondary.main,
+        color: theme.palette.secondary.contrastText,
+        
+        marginTop: 2,
+      }}
+      className='bg-secondary text-black'
+      onClick={()=>{router.push(`/client/account_settings`)}}
+    >
+      Get Verified
+    </Button>
+    :
+    
+    <Button
+    variant="contained"
+    fullWidth
+    sx={{
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.secondary.contrastText,
+      
+      marginTop: 2,
+    }}
+    className='bg-secondary text-black'
+    onClick={()=>{router.push(`/professional/account_settings`)}}
+  >
+    Get Verified
+  </Button>
+      }
     </Box>
   );
 };

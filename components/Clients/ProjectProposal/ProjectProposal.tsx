@@ -4,7 +4,7 @@ import { projectsData } from "@/utils/projectClientsData"
 import ProjectsHeader from "../ProjectsHeader/ProjectsHeader";
 import { HiMiniCheckBadge } from "react-icons/hi2";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillCloseSquare, AiOutlineClose } from "react-icons/ai";
 import { IoCheckmarkSharp, IoFilter } from "react-icons/io5";
 import Link from "next/link";
@@ -14,8 +14,17 @@ import { MdEditSquare } from "react-icons/md";
 import CompositionLoader from "@/utils/CompositionLoader";
 import { IoMdArrowForward } from "react-icons/io";
 
+import { useUserContext } from "@/context/user_context";
+import { useParams, useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
+import Cookies from 'js-cookie';
+import VerifyUser from "@/app/middleware/VerifyUser"
+import { Rating, Typography } from "@mui/material";
+
 export default function ProjectProposal({ params }: any) {
     const dynamicData = projectsData?.find((data) => data?.projectId == params?.id);
+    // console.log(params.id);
+    // console.log(window.location.pathname);
 
     const [selectedRating, setSelectedRating] = useState(0);
 
@@ -29,6 +38,7 @@ export default function ProjectProposal({ params }: any) {
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    let [confirmedPrice, setConfirmedPrice] = useState(0);
     const [modalData, setModalData] = useState<any>();
     const openModal = (data: any) => {
         setModalData(data);
@@ -39,23 +49,110 @@ export default function ProjectProposal({ params }: any) {
         setIsModalOpen(false);
     };
 
+    
+    
+    const [loading2, setLoading2] = useState(true);
+    let router = useRouter();
+    let { singleProjectDetails, awardProject} = useUserContext();
+    const { generateSnackbar } = useSnackbar();
+    let [data, setData] = useState({});
+    let [userData, setUserData]= useState({});
+
+  
+      
 
     const [awardSending, setAwardSending] = useState<boolean>(false);
     const [awardSent, setAwardSent] = useState<boolean>(false);
 
-    const awardHandler = (e: any) => {
+    const awardHandler = async (e: any, id) => {
         e.preventDefault();
-        setAwardSending(true);
-
-        // Simulate sending message for 2 seconds for demo but it will dynamically with backend in real time
-        setTimeout(() => {
-            setAwardSending(false);
-            setAwardSent(true);
-        }, 2000); // 2 seconds i set as demo for now
+        try{
+            setAwardSending(true);
+            console.log(confirmedPrice);
+            let projectId = params.id;
+            let clientId = userData.userId;
+            let professionalId = id;
+            if(confirmedPrice <= 0){
+                return generateSnackbar("Please Enter the Amount.", "error")
+            }
+    
+            console.log(projectId,clientId,professionalId)
+            
+            setAwardSending(true);
+            let res = await awardProject({
+                projectId : projectId,
+                projectConfirmAmount : confirmedPrice,
+                clientId,
+                professionalId
+            });
+            console.log(res);
+            setAwardSending(true);
+            if(res.status !== 400 || res.data?.status == "success"){
+                generateSnackbar("Project Awarding Successfull.", "success")
+                
+                setTimeout(()=>{
+                    setAwardSent(true);
+                },1500);
+                setTimeout(()=>{
+                    router.push("/client/project-history")
+                }, 3000)
+            }
+            else{
+                generateSnackbar(res?.response?.data?.message ,"Some error occure, Please Try Again.", "error");
+                setTimeout(() =>{router.push("/client/my-projects/")},1500)
+            }
+            // Simulate sending message for 2 seconds for demo but it will dynamically with backend in real time
+            // 2 seconds i set as demo for now
+        }
+        catch(e){
+            console.log(e)
+        }
     };
 
+  useEffect(()=>{
+    async function getUser(){
+        try{
+            let projectId = params.id;
+            console.log(projectId);
+            console.log(window.location.pathname);
+            setLoading2(true);
+            let token = Cookies.get("token");
+                let ver = await VerifyUser(token, "client");
+                if(ver.status === "success" && ver.userType === "client"){
+                    setUserData(ver);
+                    let res = await singleProjectDetails({clientId   : ver.userId, projectId : projectId, need : "proposals"});
+                    console.log(res);
+                    if(res.status !== 400 || res.data?.status == "success"){
+                        setData(res?.data?.data);
+                        setLoading2(false);
+                    }
+                    else{
+                        generateSnackbar("Some error occure, Please Try Again.", "error");
+                        // router.push("/client/my-projects/")
+                    }
+                }
+                else{
+                    router.push("/login");
+                }
+        }
+        catch(e){
+            generateSnackbar("Some error occure, Please Try Again.", "error")
+        }
+    };
+    getUser();
+}, [window.location.pathname])
+
     return (
-        <div className="bg-white relative">
+        <>
+            {
+                loading2 ? (
+                    <div className="w-[100%] h-screen flex justify-center items-center">
+                    <div className="loader m-auto" />
+                    </div>
+                )
+                :(
+
+                    <div className="bg-white relative">
             {/* Left Image */}
             <img className="absolute z-0 left-0 top-[40px] w-[600px]" src="/CIRCLES.png" alt="workalat" />
             {/* Right Image */}
@@ -63,39 +160,53 @@ export default function ProjectProposal({ params }: any) {
 
             {/* Content */}
             {/* header for dynamic pages */}
-            <ProjectsHeader isActive={"proposal"} data={dynamicData} />
+            <ProjectsHeader isActive={"proposal"} data={data} />
             <div className="relative z-10 mt-6 container mx-auto max-w-7xl px-6">
                 <div className="pb-12">
                     {
-                        dynamicData?.proposal?.map((data: any, i: number) => (
+                        data?.proposals?.map((d: any, i: number) => (
                             <div className="flex items-end gap-2 flex-col lg:flex-row p-4 my-2 shadow bg-[#F3F3F3]" key={i}>
                                 <div className="w-full lg:w-3/4">
                                     <div className="flex">
-                                        <img className="w-[60px] h-[60px] object-cover" src={data?.userDetails?.profilePhoto} alt="work alat" />
+                                        <img className="w-[60px] h-[60px] object-cover" src={d?.professionalPicture} alt="work alat" />
 
                                         <div className="px-2">
-                                            <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{data?.userDetails?.user} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /></span></h2>
+                                            <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center capitalize">{d?.professionalName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /></span></h2>
                                             <div className="flex items-center gap-1">
                                                 <div className="flex gap-1">
-                                                    {
+                                                    {/* {
                                                         [...Array(data?.userDetails?.ratings)].map((_, i) => (
                                                             <FaStar key={i} className="size-[10px] text-amber-300" />
                                                         ))
-                                                    }
+                                                    } */}
+                                                     <Rating precision={0.1} value={`${(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }`} readOnly />
+                                                            <Typography  className='text-sm' color="text.secondary" ml={1}>
+                                                            {(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }
+                                                        </Typography>
                                                 </div>
                                                 <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]"><img className="size-[13px]" src="/flag.png" alt="workalat" />
-                                                    <p>{data?.userDetails?.location}</p>
+                                                    <p>United Kingdom</p>
                                                 </div>
                                             </div>
-                                            <p className="text-sm font-semibold capitalize">Project title: {dynamicData?.title}</p>
+                                            <p className="text-sm font-semibold capitalize">Project title: {data?.serviceNeeded} ( {data?.serviceLocationPostal} {(data?.serviceLocationTown) ? `,${data?.serviceLocationTown}` : ""}) </p>
                                         </div>
                                     </div>
-                                    <p className="leading-6 text-sm text-[#323C47] pt-3">{data?.content}</p>
+                                    <p className="leading-6 text-sm text-[#323C47] pt-3">{d?.proposal}</p>
                                 </div>
                                 <div className="w-full lg:w-1/4">
                                     <div className="flex justify-center gap-2">
-                                        <Link href="/client/chat" className="px-3 py-1 rounded-md font-semibold text-black bg-[#FFBE00]">Chat</Link>
-                                        <button onClick={() => openModal(data)} className="px-3 py-1 rounded-md font-semibold text-white bg-[#07242B]">Award</button>
+                                        <Link href={`/client/chat${d?.professionalChatId }`} className="px-3 py-1 rounded-md font-semibold text-black bg-[#FFBE00]">Chat</Link>
+                                        {
+                                            (data.awardedStatus  === "awarded")
+                                            ?
+                                            <>
+                                            
+                                            </>
+                                            :
+                                            <>
+                                            <button onClick={() => openModal(d)} className="px-3 py-1 rounded-md font-semibold text-white bg-[#07242B]">Award</button>
+                                            </>
+                                        }
                                     </div>
 
                                     <div className="flex items-center justify-center pt-3 space-x-4">
@@ -141,22 +252,22 @@ export default function ProjectProposal({ params }: any) {
                                 <div className="bg-white w-full h-auto sm:w-[520px] py-3 px-3 md:px-7 rounded-md overflow-y-auto hiddenScroll mx-auto">
                                     <button className="ms-auto block" onClick={closeModal}>
                                         <AiFillCloseSquare className="size-[20px]" />
-                                    </button>
+                                    </button>   
                                     <div className="w-full text-center">
                                         <div className="pt-4">
                                             <div className="text-center">
                                                 <h4 className="font-semibold uppercase text-[17px]">Award Project</h4>
-                                                <p className="py-2 capitalize">Award <b>{modalData?.userDetails?.user}</b> the <b>{dynamicData?.title}</b></p>
+                                                <p className="py-2 capitalize">Award <b>{modalData?.professionalName}</b> the <b>({data?.serviceLocationPostal}, {data?.serviceLocationTown})</b></p>
                                             </div>
 
                                             <div className="w-full h-full">
-                                                <form onSubmit={awardHandler} className="w-full">
+                                                <form onSubmit={(e)=>{awardHandler(e, modalData?.professionalId)}} className="w-full">
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="agreement" className="block pb-2 font-semibold">Agreement amount fee</label>
                                                         
                                                         <div className="flex bg-white items-center justify-between w-full ring-[1px] ring-gray-400 rounded-md px-3 outline-none border-none shadow-md">
                                                             <BsCurrencyPound className="size-5" />
-                                                            <input min={0} type="number" id="agreement" name="agreement" className="w-auto flex-grow px-3 py-3 outline-none bg-transparent text-black border-none" placeholder="0" />
+                                                            <input min={0} type="number" id="agreement" value={confirmedPrice} onChange={(e)=>{setConfirmedPrice(e.target.value)}} name="agreement" className="w-auto flex-grow px-3 py-3 outline-none bg-transparent text-black border-none" placeholder="0" />
                                                             <MdEditSquare className="size-5" />
                                                         </div>
                                                     </div>
@@ -213,5 +324,10 @@ export default function ProjectProposal({ params }: any) {
                 </div>
             )}
         </div>
-    )
+
+                )
+            }
+        
+        </>
+            )
 }

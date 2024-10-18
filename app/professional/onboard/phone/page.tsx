@@ -2,21 +2,69 @@
 import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
 import arrowRight from "@/public/icons/arrow_right.svg";
 import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import Cookies from 'js-cookie';
+import VerifyUser from "@/app/middleware/VerifyUser";
+
 
 const GetProfessionalPhone = () => {
-    // router
-    const router = useRouter();
+    let [loading, setLoading]=  useState(true);
 
     // snackbar
     const { generateSnackbar } = useSnackbar();
+    
+    //Context 
+    let { verifyToken, userData, sendPhoneOtp, setTempUserData, tempUserData } = useUserContext();
+    // router
+    const router = useRouter();
 
     const [value, setValue] = useState<string | undefined>();
+
+    useEffect(()=>{
+        async function getAllVerificationDone(){ 
+            setLoading(true);
+            try{
+                let token = Cookies.get("token");
+                let ver = await VerifyUser(token, "professional");
+                if(ver?.status === "success"){
+                    if(ver.userType === "professional" && ver.isRegistrationComplete !== true){
+                        if(ver.isPhoneVerify || ver.isPhoneVerify===true){
+                            if(ver.isRegistrationComplete === true){
+                                router.push("/leads")
+                            }
+                            else{
+                                router.push("/professional/onboard/formpage")
+                            }
+                        }
+                        else{
+                            setLoading(false);
+                        }
+                    }
+                    else{
+                      if(ver.userType === "professional"){
+                        router.push("/professional/dashboard")
+                      }
+                      else{
+                        router.push("/client/dashboard")
+                      }
+                    }
+                  }
+                  else{
+                    router.push("/professional/login");
+                  }
+            }
+            catch(e){
+                router.push("/professional/login");
+            }
+        };
+        getAllVerificationDone();
+    }, [])
 
     const handlePhoneNumberChange = (newValue?: string) => {
         if (newValue !== undefined) {
@@ -24,8 +72,9 @@ const GetProfessionalPhone = () => {
         }
     };
 
-    const handlePhoneSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        try{
+            e.preventDefault();
 
         // phone validation
         if (!value) {
@@ -36,12 +85,47 @@ const GetProfessionalPhone = () => {
 
         // OTP send failed
         // generateSnackbar("Failed to send OTP", "error")
+        
+        if(Cookies.get("token").length>0 || userData.token.length) { 
+            let verifyUser = await verifyToken(Cookies.get("token") || userData.token, "professional");
+            // console.log(verifyUser);
+
+            if(verifyUser.status !== 400 || verifyUser.data?.status === "success"){
+                setTempUserData({...tempUserData, userPhone : value});
+                let res = await sendPhoneOtp({
+                    userId : verifyUser.data.userId,
+                    userType    : verifyUser.data.userType,
+                    phoneNo : value
+                });
+
+                if(res.data.status === "success" && res.data.userStatus === "PENDING"){
+                    generateSnackbar("OTP sent, You'll shortly recieve a call on your Phone No.", "success");
+                    router.push("/professional/onboard/phone/verify");
+                }
+                else{
+                    return generateSnackbar("Some Error Occur, Please Try Again!", "error")
+                }
+
+            }
+            else{
+                router.push("/professional/login");
+                return generateSnackbar("Please login again", "error")
+            }
+        }
+        else{
+            router.push("/professional/login");
+            return generateSnackbar("Please login again", "error")
+        }
 
         // OTP send success
-        generateSnackbar("OTP sent", "success")
+        // generateSnackbar("OTP sent", "success")
 
         // navigate to OTP verification
-        router.push("/professional/onboard/phone/verify");
+        // router.push("/professional/onboard/phone/verify");
+        }
+        catch(e){
+            console.log(e);
+        }
     }
 
     const goBack = () => {
@@ -50,7 +134,15 @@ const GetProfessionalPhone = () => {
 
     return (
         <>
-            <Box className="h-full w-full flex justify-center items-center px-6" >
+        {
+            loading ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div>
+            )
+            :
+            (
+                <Box className="h-full w-full flex justify-center items-center px-6" >
                 <Box className="rounded-xl border border-dark border-opacity-30 px-4 py-4 pb-6 md:px-8 md:py-8 md:pb-10 space-y-4 bg-white shadow-md max-w-xl" component={"form"} onSubmit={handlePhoneSubmit}>
                     <Typography className="font-bold text-2xl text-center mb-4">Let&apos; get your details</Typography>
                     <Box className="flex flex-col gap-1" >
@@ -93,6 +185,9 @@ const GetProfessionalPhone = () => {
                     </Box>
                 </Box>
             </Box>
+            )
+        }
+            
         </>
     );
 };

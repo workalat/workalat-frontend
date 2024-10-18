@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -9,8 +9,10 @@ import {
 import Image from "next/image";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
 
-interface Step7Props {
+interface Step7Props { 
   handleNext: () => void;
   handlePrev: () => void;
   updateFormData: (data: any) => void;
@@ -25,19 +27,19 @@ interface FormDataType {
 const formItems = [
   {
     label: "Urgently",
-    value: "small",
+    value: "urgent",
   },
   {
     label: "Later",
-    value: "mini",
+    value: "later",
   },
   {
     label: "I'm Flexible",
-    value: "mega",
+    value: "flexible",
   },
   {
     label: "I am planning and researching",
-    value: "negotiable",
+    value: "planning",
   },
 ];
 
@@ -47,43 +49,37 @@ const Step7 = ({ handleNext, updateFormData, handlePrev }: Step7Props) => {
     description: "",
     file: null,
   });
+  
+  const { projectData, setProjectData,  } = useUserContext();
+  const { generateSnackbar } = useSnackbar();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleNext();
-    // if (
-    //   formData.title === "" ||
-    //   formData.description === "" ||
-    //   formData.file === null
-    // ) {
-    //   return alert("Please fill in all fields");
-    // }
-
-    // updateFormData({ summary: formData });
-  };
+ 
 
   useEffect(() => {
-    const formDataItem = localStorage.getItem("stepFormData");
-
-    if (formDataItem) {
-      const formData_: FormDataType = JSON.parse(formDataItem).summary || {
-        title: "",
-        description: "",
-        file: null,
-      };
-
-      setFormData(formData_);
+    if(!projectData.projectPriceString || !projectData.projectPriceTitle || !projectData.projectMaxPrice === 0 ||  !projectData.pointsNeeded){
+      handlePrev();
     }
   }, []);
 
-  const [budget, setBudget] = React.useState(
-    localStorage.getItem("stepFormData")
-      ? JSON.parse(localStorage.getItem("stepFormData")!).budget
-      : ""
-  );
-
+  const [budget, setBudget] = useState()
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBudget((event.target as HTMLInputElement).value);
+  }; 
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // console.log(budget.length);
+    if(!budget) {
+      generateSnackbar("Please select one option.", "error");
+    }
+    else{
+    setProjectData({
+      ...projectData,
+      ["projectUrgentStatus"] : budget
+    })
+    console.log(projectData);
+    handleNext();
+    }
   };
 
   return (

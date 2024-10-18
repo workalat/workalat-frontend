@@ -13,26 +13,57 @@ import Image from "next/image";
 import closeIcon from "@/public/icons/close.svg";
 import cancelIcon from "@/public/icons/cancel.svg";
 import arrowRight from "@/public/icons/arrow_right.svg";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
 
 interface ChangePassProps {
   open: boolean;
   onClose: () => void;
 }
-const ChangePasswordModal = ({ open, onClose }: ChangePassProps) => {
+const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProps) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  
+  const { generateSnackbar } = useSnackbar();
+  
+  let { changePassword } = useUserContext();
 
-    if (newPassword !== confirmPassword) {
-      return alert("Passwords do not match");
+  const handleSubmit = async (event: FormEvent) => {
+    try{
+      event.preventDefault();
+
+    if (!newPassword || !confirmPassword || !currentPassword) {
+      return generateSnackbar("Please Enter Password", "error");
     }
 
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    if (newPassword !== confirmPassword) {
+      return generateSnackbar("Passwords do not match", "error");
+    }
+    
+
+    let res = await changePassword({userId ,userType, oldPassword :currentPassword , newPassword : newPassword});
+    // console.log(res);
+    if(res.status === 200 || res.response.data?.status === "success"){
+
+      generateSnackbar("Password Changed Successfully.", "success")
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      onClose();
+  }
+  else{
+      generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+  }
+
+    console.log(newPassword);
+    console.log(userId, userType)
+
+    }
+    catch(e){
+      return generateSnackbar("Some Error Occur, Please Try Again.", "error");
+    }
   };
 
   return (
@@ -95,6 +126,7 @@ const ChangePasswordModal = ({ open, onClose }: ChangePassProps) => {
             variant="contained"
             color="primary"
             className="gap-2 py-3 px-6 flex-grow sm:flex-grow-0"
+            onClick={handleSubmit}
           >
             Save changes
             <Image src={arrowRight} alt="Save changes" />

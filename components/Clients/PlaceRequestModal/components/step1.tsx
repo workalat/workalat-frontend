@@ -1,33 +1,25 @@
-import React, { useEffect } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Autocomplete,
   Button,
   FormControl,
-  OutlinedInput,
   TextField,
 } from "@mui/material";
 import Image from "next/image";
-
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
-import { siteConfig } from "@/config/site";
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+// Import postcode and region data
+import postcodesData from "@/postcodes.json";
+import Cookies from 'js-cookie';
+import regionsData from "@/postcode_region.json";
+import VerifyUser from "@/app/middleware/VerifyUser";
 
 interface Step1Props {
   handleNext: () => void;
   updateFormData: (data: any) => void;
 }
-
-interface Option {
-  label: string;
-}
-
-const postCodeOptions = [
-  "12345",
-  "78232",
-  "90912",
-  "78238",
-  "63172",
-  "52368",
-]
 
 const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
   const [formData, setFormData] = React.useState({
@@ -35,26 +27,67 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
     location: "",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // if (formData.service === "" || formData.location === "")
-    //   return alert("Please fill in all fields");
-    updateFormData(formData);
-    handleNext();
-  };
+  // USE CONTEXT
+  const { projectData, setProjectData, findAllServices, findServiceCategory } = useUserContext();
+  let [service, setService] = useState([]);
+  const { generateSnackbar } = useSnackbar();
+  
+  // Store the service selected by the user (lowercase for backend)
+  const [selectedService, setSelectedService] = useState<string>(projectData.serviceNeeded || ""); // Set default value from projectData
+  const [selectedPostcode, setSelectedPostcode] = useState<string>(projectData.postCodeRegion || ""); // Set default value from projectData
+
+  const [postCode, setPostCode] = useState<string>(projectData.serviceLocationPostal || "");
+  const [filteredPostcodes, setFilteredPostcodes] = useState(postcodesData); // For filtering postcodes
 
   useEffect(() => {
-    if (localStorage.getItem("stepFormData") === null) return;
-    const formDataItem = localStorage.getItem("stepFormData");
-    const formData_ = formDataItem
-      ? JSON.parse(formDataItem)
-      : {
-          service: "",
-          location: "",
-        };
-
-    setFormData(formData_);
+    async function getServices() {
+      // console.log("Ajao 1")
+      try {
+        const data = await findAllServices();
+        // console.log(data);
+        setService(data.data);
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Some Error Occur, please Try Again.", "error");
+      }
+    }
+    getServices();
   }, []);
+
+  // Function to handle postcode selection
+  const handlePostcodeSelection = (event, newValue) => {
+    // console.log(newValue);
+    if (newValue) {
+      const postcode = newValue.label;
+      const region = regionsData[postcode] || ""; // Get region name
+      
+      // Set the selected postcode (display postcode + region in the input)
+      setSelectedPostcode(`${postcode} , ${region}`);
+      setPostCode(newValue.label);
+    }
+  };
+
+  async function handleSubmit(e) {
+    try {
+      e.preventDefault();
+      // console.log("Hello")
+     
+        let cat = await findServiceCategory({ serviceName: selectedService });
+        
+      setProjectData({
+        ...projectData,
+        serviceCategory: cat.data?.category,
+        serviceNeeded: selectedService,
+        serviceLocationPostal: postCode,
+        postCodeRegion: selectedPostcode,
+      });
+      handleNext();
+
+    } catch (e) {
+      generateSnackbar("Some Error Occur, please Try Again.", "error");
+      console.log(e);
+    }
+  }
 
   return (
     <>
@@ -67,37 +100,27 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
           <label htmlFor="service" className="text-sm sm:text-lg font-bold mb-2">
             Services needed
           </label>
-          {/* <OutlinedInput
-            required
-            placeholder="e.g Web Development, Dry Cleaning"
-            value={formData.service || ""}
-            id="service"
-            className="rounded-md shadow-medium border-b-3 border-b-secondary"
-            onChange={(e) => {
-              setFormData((prev) => ({ ...prev, service: e.target.value }));
-             }
-            }
-          /> */}
           <Autocomplete
             disablePortal
+            disabled
             id="combo-box-demo"
-            options={siteConfig.categories}
-            className="[&_input]:pl-3 [&_input]:text-base w-full [&>*>*]:border-b-4 [&>*>*]:border-b-secondary [&>*>*]:rounded-b-sm"
-            onChange={(
-              event: React.SyntheticEvent,
-              newValue?: Option | null
-            ) => {
+            className="w-full outline-none border-none"
+            options={service.map((serviceName: string) => ({
+              label: serviceName.charAt(0).toUpperCase() + serviceName.slice(1).toLowerCase(),
+              value: serviceName,
+            }))}
+            value={selectedService ? { label: selectedService.charAt(0).toUpperCase() + selectedService.slice(1).toLowerCase(), value: selectedService } : null} // Set the value correctly
+            isOptionEqualToValue={(option, value) => option.value === value.value} // Custom equality test
+            onChange={(event, newValue) => {
               if (newValue) {
-                setFormData((prev) => ({ ...prev, service: newValue.label }));
+                setSelectedService(newValue.value); // Save the lowercase value for backend
               }
             }}
             renderInput={(params) => (
               <TextField
                 {...params}
                 placeholder="What service are you looking for?"
-                InputProps={{
-                  ...params.InputProps,
-                }}
+                className="capitalize"
               />
             )}
           />
@@ -108,21 +131,16 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
           </label>
           <Autocomplete
             disablePortal
+            disabled
+            value={selectedPostcode ? { label: selectedPostcode } : null} // Set the value correctly
             id="combo-box-demo"
-            options={postCodeOptions}
+            options={filteredPostcodes.map((postcode) => ({ label: postcode }))}
             className="[&_input]:pl-3 [&_input]:text-base w-full [&>*>*]:border-b-4 [&>*>*]:border-b-secondary [&>*>*]:rounded-b-sm"
-            onChange={(
-              event: React.SyntheticEvent,
-              newValue?: string | null
-            ) => {
-              if (newValue) {
-                setFormData((prev) => ({ ...prev, service: newValue }));
-              }
-            }}
+            onChange={handlePostcodeSelection}  // When a postcode is selected
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder="Post Code"
+                placeholder="Search Postcode"
                 InputProps={{
                   ...params.InputProps,
                 }}

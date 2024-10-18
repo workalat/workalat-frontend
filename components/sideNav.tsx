@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Typography, Button, Divider } from "@mui/material";
+import { Box, Typography, Button, Divider, Modal } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SchoolIcon from "@mui/icons-material/School";
@@ -9,11 +10,21 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import HelpIcon from "@mui/icons-material/Help";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { FaUserEdit } from "react-icons/fa";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import CountryFlag from 'react-country-flag';
+import { getName } from 'country-flag-icons';
 
 import projectsIcon from "@/public/icons/projects.svg";
 import responsesIcon from "@/public/icons/responses.svg";
 import settingsIcon from "@/public/icons/settings_white.svg";
+
+import { useUserContext } from '@/context/user_context';
+import VerifyUser from '@/app/middleware/VerifyUser';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+
+import { useSnackbar } from "@/context/snackbar_context";
+
 
 interface SideNavProps {
   isClientDashboard: boolean;
@@ -22,8 +33,17 @@ interface SideNavProps {
 
 const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
   const pathname = usePathname();
-  const router = useRouter();
-
+  
+  // 
+  let [loading, setLoading] =useState(false);
+  const [loading2, setLoading2] = useState(true);
+  let router = useRouter();
+  let [userData,setUserData] = useState({});
+  const { generateSnackbar } = useSnackbar();
+  let { intoProfessoinal, intoClient} = useUserContext();
+  let [uType, setUType] = useState(Cookies.get("userType"));
+  
+ 
   useEffect(() => {
     if (
       pathname === "/client/dashboard" ||
@@ -37,23 +57,117 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
       setIsClientDashboard(false);
     }
   }, [pathname]);
+  
+
+  useEffect(() => {
+    async function verify(){
+      try{
+        setLoading2(true);
+        let token = Cookies.get("token");
+        console.log(uType);
+        let ver = await VerifyUser(token, uType);
+        // console.log(ver);
+        if(ver.status === "success"){
+          setUserData(ver);
+          if(ver.registerAs === "professional"){
+            // router.push("/professional/dashboard")
+            setLoading2(false);
+          }
+          else{
+            // router.push("/client/dashboard")
+            setLoading2(false);
+          }
+        }
+        else{
+          // router.push("/"); 
+        }
+      }
+      catch(e){
+        console.log(e);
+        generateSnackbar("Some Error Occur, Please try again", "error")
+      }
+    };
+    verify();
+  }, []);
+
+
+  async function handleIntoProfessional(){
+    try{
+      setLoading(true)
+      let changeToProfessional = await intoProfessoinal({userId : userData.userId});
+      console.log(changeToProfessional)
+      
+      if(changeToProfessional.status !== 400 || changeToProfessional.data?.status === "success"){
+        generateSnackbar(changeToProfessional.data?.message , "success");
+        Cookies.set("token", changeToProfessional.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+        setLoading(false);
+        setIsClientDashboard(false);
+        router.push("/professional/dashboard");
+    }
+    else{
+        generateSnackbar(changeToProfessional.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+    }
+      
+    }
+    catch(e){
+      console.log(e);
+      generateSnackbar("Some Error Occur, Please try again", "error")
+    }
+  }
+  
+  async function handleIntoClient(){
+    try{
+      setLoading(true)
+      let changeToClient = await intoClient({userId : userData.userId});
+      // console.log(changeToProfessional)
+      
+      if(changeToClient.status !== 400 || changeToClient.data?.status === "success"){
+        generateSnackbar(changeToClient.data?.message , "success");
+        Cookies.set("token", changeToClient.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+        setLoading(false);
+        setIsClientDashboard(true);
+        router.push("/client/dashboard");
+    }
+    else{
+        generateSnackbar(changeToClient.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+    }
+      
+    }
+    catch(e){
+      console.log(e);
+      generateSnackbar("Some Error Occur, Please try again", "error")
+    }
+  }
+
+  
+
 
   return (
-    <Box className="w-full md:w-80 bg-main text-white h-full md:h-max p-6 flex flex-col lg:ml-3 md:rounded-lg">
+    <>
+    {loading2 ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div>
+            )
+            :(
+              <>
+               <Box className="w-full md:w-80 bg-main text-white h-full md:h-max p-6 flex flex-col lg:ml-3 md:rounded-lg">
       {isClientDashboard ? (
         <Box className="flex items-center mb-5 mt-2">
           <Box className="flex items-center pr-4 border-r border-gray-600">
-            <Image
-              src="/images/profile.png"
-              alt="Anita Maika"
+            <img
+              src={userData.userPicture}
+              alt="User Avatar"
               width={70}
               height={70}
               className="rounded-full"
             />
           </Box>
           <Box className="ml-4 flex-grow">
-            <Typography className="font-semibold text-lg flex gap-2 items-center">
-              Anita Maika{" "}
+            <Typography className="font-semibold text-lg flex gap-2 items-center capitalize">
+            {userData.userName}{" "}
               <span
                 onClick={() => router.push("/profile")}
                 className="border border-white rounded-full h-7 w-7 flex items-center justify-center"
@@ -61,25 +175,26 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
                 <FaUserEdit />
               </span>
             </Typography>
-            <Typography className="text-secondary hover:text-secondary-light text-xs">
+            {/* <Typography className="text-secondary hover:text-secondary-light text-xs">
               United Kingdom
-            </Typography>
+              
+            </Typography> */}
           </Box>
         </Box>
       ) : (
         <Box className="flex items-center mb-5 mt-2">
           <Box className="flex items-center pr-4 border-r border-gray-600">
-            <Image
-              src="/images/profile.png"
-              alt="Anita Maika"
+            <img
+              src={userData.userPicture}
+              alt="User Avatar"
               width={70}
               height={70}
               className="rounded-full"
             />
           </Box>
           <Box className="ml-4 flex-grow">
-            <Typography className="font-semibold text-lg flex gap-2 items-center">
-              Anita Maika{" "}
+            <Typography className="font-semibold text-lg flex gap-2 items-center capitalize">
+              {userData.userName}{" "}
               <span
                 onClick={() => router.push("/profile")}
                 className="border border-white rounded-full h-7 w-7 flex items-center justify-center"
@@ -117,29 +232,55 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           <Typography>Dashboard</Typography>
         </Link>
 
-        <Box className="flex justify-between text-secondary mt-3">
-          <Button
+        <Box className="flex justify-end items-end text-secondary mt-3">
+          {
+            (userData.userType === "client")
+            ?
+            <Button
             onClick={() => {
-              setIsClientDashboard(false);
-              router.push("/professional/dashboard");
+              // setIsClientDashboard(false);
+              // router.push("/professional/dashboard");
+              handleIntoProfessional();
             }}
           >
             Professional
           </Button>
-          <Divider
+            :
+
+            <Button
+              onClick={() => {
+                // setIsClientDashboard(true);
+                // router.push("/client/dashboard");
+                handleIntoClient()
+              }}
+            >
+              Client
+            </Button>
+          }
+          {/* <Button
+            onClick={() => {
+              // setIsClientDashboard(false);
+              // router.push("/professional/dashboard");
+              handleIntoProfessional();
+            }}
+          >
+            Professional
+          </Button> */}
+          {/* <Divider
             flexItem
             orientation="vertical"
             variant="middle"
             className="border-white"
-          />
-          <Button
+          /> */}
+          {/* <Button
             onClick={() => {
-              setIsClientDashboard(true);
-              router.push("/client/dashboard");
+              // setIsClientDashboard(true);
+              // router.push("/client/dashboard");
+              handleIntoClient()
             }}
           >
             Client
-          </Button>
+          </Button> */}
         </Box>
         <Box className="border-b border-white !mt-1" />
         {[
@@ -215,6 +356,19 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         <Typography className="ml-3">Logout</Typography>
       </Link>
     </Box>
+          <Modal open={loading}>
+            <Box className="w-full h-full flex justify-center items-center">
+              <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+                <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                <h1 className="text-center font-bold text-xl ml-2">Switching to {(userData.userType === "client") ?"Professional" :"Client"}...</h1>
+              </Box>
+            </Box>
+          </Modal>
+              </>
+            )
+          }
+    </>
+   
   );
 };
 

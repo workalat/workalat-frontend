@@ -17,6 +17,9 @@ import {
 } from "@mui/material";
 
 import { siteConfig } from "@/config/site";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import moment from "moment";
 
 interface JobSearchCriteria {
   keyword: string;
@@ -42,7 +45,7 @@ interface JobSearchCriteria {
   };
 }
 
-export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSearchCriteria) => void }) {
+export default function LeadsFilter({setFilterProjects,professionalId }) {
   const [filters, setFilters] = React.useState<JobSearchCriteria>({
     keyword: "",
     services: [],
@@ -50,7 +53,7 @@ export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSe
       custom: "",
       within_30mi: false,
       nationwide: false,
-      all: true,
+      all: true, 
     },
     budget: {
       minBudget: 0,
@@ -67,9 +70,42 @@ export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSe
     },
   });
 
-  const handleFilterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFilterss(filters);
+
+  const { generateSnackbar } = useSnackbar();
+
+  let { filterLead } = useUserContext();
+  console.log(professionalId);
+
+  const handleFilterSubmit = async (e: React.FormEvent) => {
+    try{
+      e.preventDefault();
+      let service = filters.keyword;
+      let services = filters.services;
+      let min = filters.budget.minBudget;
+      let max = filters.budget.maxBudget;
+      let today = moment().toISOString()
+      let timeStamp = (filters.time.today ? moment().toISOString() : (filters.time.yesterday) ? moment().subtract(1, 'days').toISOString()  : (filters.time.lastHour) ?moment().subtract(1, 'hours').toISOString() :  (filters.time.threeDays) ? moment().subtract(3, 'days').toISOString() : (filters.time.sevenDays) ? moment().subtract(7, 'days').toISOString() : (filters.time.twoWeeks) ? moment().subtract(2, 'weeks').toISOString() : (filters.time.anytime) ? moment().subtract(2, 'years').toISOString() : moment().toISOString()  )
+      let location = (filters.location.nationwide) ? ["nationwide", filters.location.custom ] :  [filters.location.custom ]
+      console.log(service,services,min,max,today,timeStamp ,location )
+      // setFilterss(filters);
+      // let res = await showSingleLead()
+      let res = await filterLead({
+        service : service,
+        services : services,
+        minBudget: min,
+        maxBudget:  max,
+        todayTimeStamp : today,
+        timeStamp : timeStamp,
+        location : location,
+        professionalId : professionalId
+      });
+      console.log(res);
+
+    }
+    catch(e){
+      console.log(e);
+    }
+    
   };
 
   const clearFilters = () => {
@@ -79,9 +115,9 @@ export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSe
         services: [],
         location: {
           custom: "",
-          within_30mi: false,
+          // within_30mi: false,
           nationwide: false,
-          all: true,
+          // all: true,
         },
         budget: {
           minBudget: 0,
@@ -147,24 +183,39 @@ export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSe
           </Box>
           <Box className="mt-6">
             <p className="font-bold mb-1">Services</p>
-            {siteConfig.services.map((service) => (
-              <Box key={service.name} className="flex items-center">
+            
+             <Box  key={"house Cleaning"} className="flex items-center">
                 <Checkbox
-                  id={service.name}
-                  checked={filters.services.includes(service.name)}
+                id="house cleaning"
+                  checked={filters.services.includes("house cleaning")}
                   onChange={(_) => {
-                    const newServices = filters.services.includes(service.name)
-                      ? filters.services.filter(s => s !== service.name)
-                      : [...filters.services, service.name];
+                    const newServices = filters.services.includes("house cleaning")
+                      ? filters.services.filter(s => s !== "house cleaning")
+                      : [...filters.services, "house cleaning"];
 
                     setFilters(prev => ({ ...prev, services: newServices }));
                   }}
                 />
-                <label htmlFor={service.name} className="text-black text-opacity-60 cursor-pointer">
-                  {service.name} {"("}6,300{")"}
+                <label htmlFor={"house cleaning"} className="capitalize text-black text-opacity-60 cursor-pointer">
+                  {"house cleaning"} 
                 </label>
               </Box>
-            ))}
+              <Box key={"dry cleaning"} className="flex items-center">
+                <Checkbox
+                  id={"dry cleaning"}
+                  checked={filters.services.includes("dry cleaning")}
+                  onChange={(_) => {
+                    const newServices = filters.services.includes("dry cleaning")
+                      ? filters.services.filter(s => s !== "dry cleaning")
+                      : [...filters.services, "dry cleaning"];
+
+                    setFilters(prev => ({ ...prev, services: newServices }));
+                  }}
+                />
+                <label htmlFor={"dry cleaning"} className="capitalize text-black text-opacity-60 cursor-pointer">
+                  {"dry cleaning"} 
+                </label>
+              </Box>
           </Box>
           <Box className="mt-6">
             <Box>
@@ -182,13 +233,13 @@ export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSe
                 onChange={(e) => setFilters(prev => ({ ...prev, location: { ...prev.location, custom: e.target.value } }))}
               />
               <RadioGroup className="mt-4" defaultValue={"all"}>
-                <FormControlLabel
+                {/* <FormControlLabel
                   value="all"
                   control={<Radio color="secondary" />}
                   label="All"
                   checked={filters.location.all}
                   onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: true, within_30mi: false, nationwide: false } }))}
-                />
+                /> */}
                 <FormControlLabel
                   value="nationwide"
                   control={<Radio color="secondary" />}
@@ -196,13 +247,13 @@ export default function LeadsFilter({ setFilterss }: { setFilterss: (data: JobSe
                   checked={filters.location.nationwide}
                   onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: false, within_30mi: false, nationwide: true } }))}
                 />
-                <FormControlLabel
+                {/* <FormControlLabel
                   value="within_30mi"
                   control={<Radio color="secondary" />}
                   label="30 Miles from Newport"
                   checked={filters.location.within_30mi}
                   onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: false, within_30mi: true, nationwide: false } }))}
-                />
+                /> */}
               </RadioGroup>
             </Box>
           </Box>

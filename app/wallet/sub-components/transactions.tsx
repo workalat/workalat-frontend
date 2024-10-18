@@ -11,6 +11,7 @@ import {
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import NorthIcon from "@mui/icons-material/North";
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 interface row {
   id: number;
@@ -48,24 +49,11 @@ const FailButton = () => (
   </Box>
 );
 
-export default function Transactions() {
-  
+export default function Transactions({data}) {
+  console.log(data)
   const [rows, setRows] = useState<row[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(()=> {
-    const rows: row[] = [
-      createData(0, "30 wallet points", 12321311, new Date(), "success", "£42.50"),
-      createData(1, "30 wallet points", 12321311, new Date(), "success", "£85.00"),
-      createData(2, "30 wallet points", 12321311, new Date(), "fail", "£42.50"),
-      createData(3, "30 wallet points", 12321311, new Date(), "success", "£42.50"),
-      createData(4, "30 wallet points", 12321311, new Date(), "success", "£85.00"),
-    ];
-
-    setRows(rows);
-    setLoading(false);
-  }, [])
-    
   return (
     <Box className="!mb-8">
       <div style={{ width: "100%", overflowX: "auto" }}>
@@ -83,24 +71,24 @@ export default function Transactions() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading ? (rows.map((row) => (
+            {!loading ? (data.map((row, i) => (
               <TableRow
-                key={row.id}
+                key={row._id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="left" className="!pl-4 min-w-[120px]">
-                  #{row.id}
+                  #{i+1}
                 </TableCell>
-                <TableCell align="left" className="min-w-[120px]">
+                 <TableCell align="left" className="min-w-[120px]">
                   <AccountBalanceWalletIcon className="w-6 mr-2" />
-                  {row.details}
+                  {row.points} Wallet Points
                 </TableCell>
-                <TableCell align="left" className="min-w-[120px]">{row.transactionId}</TableCell>
-                <TableCell align="left" className="min-w-[120px]">{row.date.toUTCString()}</TableCell>
-                <TableCell align="left" className="min-w-[120px]">
-                  {row.type === "success" ? <SuccessButton /> : <FailButton />}
+                <TableCell align="left" className="min-w-[120px]">{`${row._id.slice(0,12)}...`}</TableCell>
+                <TableCell align="left" className="min-w-[120px]">{moment(parseInt(row.transactionTimeStamp)).format('DD MMM YYYY h:mmA')}</TableCell> 
+                 <TableCell align="left" className="min-w-[120px]">
+                  {row.transactionStatus === "success" ? <SuccessButton /> : <FailButton />}
                 </TableCell>
-                <TableCell align="left" className="min-w-[120px]">{row.amount}</TableCell>
+                <TableCell align="left" className="min-w-[120px]">£{row.transactionAmount}</TableCell>  
               </TableRow>
             )))
             : (

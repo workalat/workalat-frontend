@@ -9,11 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { IoIosAddCircle } from "react-icons/io";
 
 import loadingGif from "@/public/images/loader.gif";
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+import axios from "axios";
 
 interface SetupAccountProps {
   handleNext: () => void;
@@ -35,7 +38,7 @@ export default function UploadPicture({
     }, 3000);
   };
 
-  const [files, setFiles] = useState<File[] | null>(null);
+  // const [files, setFiles] = useState<File[] | null>(null);
 
   const picRef = React.useRef<HTMLInputElement>(null);
   const takePicInput = () => {
@@ -44,17 +47,141 @@ export default function UploadPicture({
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files as ArrayLike<File>);
 
-    if (files) {
-      setFiles(files);
+  
+  const { projectData, setProjectData, postProject } = useUserContext();
+  let [sessionData, setSessionData] = useState({});
+  let [projectId, setProjectId] = useState("");
+  let [files, setFiles ] = useState([]);
+
+  const { generateSnackbar } = useSnackbar();
+  console.log(projectData);
+
+  useEffect(()=>{
+   async function post(){
+      try{
+
+        let p = sessionStorage.getItem("projectData");
+        let project = JSON.parse(p);
+        console.log("SessionuserId);" ,project.userId);
+        setSessionData(project);
+        console.log( "projectID",projectData)
+        if(!project.userId){
+          handlePrev();
+          handlePrev();
+          handlePrev();
+          handlePrev();
+          handlePrev();
+        }
+
+      }
+      catch(e){
+        generateSnackbar("Some error occured, Please try Again.", "error");
+        console.log(e);
+      }
+   };
+   post();
+    
+  }, [])
+
+  function handleBack(){
+    if(projectData.userId || sessionData.userId){
+      handlePrev();
+      handlePrev();
+      handlePrev();
+      handlePrev();
+      handlePrev();
     }
-  };
-
-  if (loading) {
-    return <Loader />;
+    else{
+      handlePrev();
+    }
   }
+
+
+  // Handle file input change
+  const handleFileChange = (e) => {
+    setFiles(Array.from(e.target.files));
+  };
+  
+  
+  const handleProjectFileUpload = async (event) => {
+    try {
+      event.preventDefault();
+
+      if(!files || files.length<1){
+             generateSnackbar("Please Fill all Data.", "error");
+      }
+      else{
+      // console.log(userData);
+      setLoading(true);
+      let uploadProject = {
+        userId : projectData.userId || sessionData.userId,
+        serviceCategory : projectData.serviceCategory || sessionData.serviceCategory,
+        serviceNeeded : projectData.serviceNeeded || sessionData.serviceNeeded,
+        serviceLocationPostal : projectData.serviceLocationPostal || sessionData.serviceLocationPostal,
+        serviceLocationTown : projectData.serviceLocationTown || sessionData.serviceLocationTown,
+        serviceQuestions : projectData.serviceQuestions || sessionData.serviceQuestions,
+        serviceFrequency : projectData.serviceFrequency || sessionData.serviceFrequency,
+        serviceFrequencyDays : projectData.serviceFrequencyDays || sessionData.serviceFrequencyDays,
+        projectPriceString : projectData.projectPriceString || sessionData.projectPriceString,
+        projectPriceTitle : projectData.projectPriceTitle || sessionData.projectPriceTitle,
+        projectPriceString : projectData.projectPriceString || sessionData.projectPriceString,
+        projectMaxPrice : projectData.projectMaxPrice || sessionData.projectMaxPrice,
+        projectUrgentStatus : projectData.projectUrgentStatus || sessionData.projectUrgentStatus,
+        pointsNeeded : projectData.pointsNeeded || sessionData.pointsNeeded,
+        serviceTitle : projectData.serviceTitle || sessionData.serviceTitle,
+        serviceDes : projectData.serviceDes || sessionData.serviceDes
+      }
+      console.log("Upload", uploadProject);
+      console.log(files)
+      let res  = await postProject({project : uploadProject});
+      console.log(res);
+
+      if(res?.status !== 400 || res?.data.status === "success"){
+        setProjectId(res?.data?.projectId);
+        console.log(files);
+        console.log( projectData.userId || sessionData.userId)
+        console.log( res?.data?.projectId)
+
+        
+      const formData = new FormData();
+      formData.append('userId', projectData.userId || sessionData.userId);
+      formData.append('userType', "client");
+      formData.append('projectId', res?.data?.projectId);
+        
+
+      //       // // Append all selected files to the form data under the kycDocuments key
+        files.forEach((file) => {
+            formData.append('projectFiles', file);
+        });
+      
+      // // // Send the form data to the server to upload the files
+      // // setLoading(true);
+      console.log(formData);
+        const upload = await axios.post('/uploadProjectFile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        console.log(upload);
+        handleNext(); 
+
+      }
+      else{
+        setLoading(false)
+        generateSnackbar("Failed to Upload Project, Please try Again.", "error");
+      }
+      }
+    } catch (error) {
+      setLoading(false);
+        generateSnackbar("Some Error Occur, Please try Again." ,"error")
+    }
+};
+
+if (loading) {
+  return <Loader />;
+}
+
 
   return (
     <>
@@ -66,7 +193,7 @@ export default function UploadPicture({
         className="flex flex-col gap-0 px-4 md:px-8 w-full"
         onSubmit={handleSubmit}
       >
-        <input
+        {/* <input
           ref={picRef}
           multiple
           type="file"
@@ -74,7 +201,8 @@ export default function UploadPicture({
           className="hidden"
           id="file"
           onChange={handleImageUpload}
-        />
+        /> */}
+        <input ref={picRef} multiple type="file" accept="image/*, .pdf" className="hidden" id="projectFiles" onChange={handleFileChange} name="projectFiles"  />
         <Button
           color="secondary"
           variant="contained"
@@ -119,7 +247,7 @@ export default function UploadPicture({
             color="secondary"
             size="large"
             className=" flex gap-2"
-            onClick={handlePrev}
+            onClick={handleBack}
           >
             <FaArrowLeft />
             Back
@@ -129,6 +257,7 @@ export default function UploadPicture({
             size="large"
             className=" flex gap-2"
             type="submit"
+            onClick={handleProjectFileUpload}
           >
             Post project
             <FaArrowRight />

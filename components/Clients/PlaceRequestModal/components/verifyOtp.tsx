@@ -1,10 +1,13 @@
-/* eslint-disable jsx-a11y/no-autofocus */
-import { useState } from "react";
+"use client"
+import { useEffect, useState } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { Button } from "@mui/material";
 import Image from "next/image";
-
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+import { useUserContext } from "@/context/user_context";
+import Cookies from 'js-cookie';
+import { useSnackbar } from "@/context/snackbar_context";
+// import { verifyOtp, resendOtp } from "@/services/otpService"; // Example API service
 
 interface VerifyOTPProps {
   handleNext: () => void;
@@ -13,15 +16,67 @@ interface VerifyOTPProps {
 
 const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
   const [otp, setOtp] = useState<string>("");
+  
+  const {tempUserData, setTempUserData,verifyPhoneOtp,userData, setUserData,sendPhoneOtp} = useUserContext();
+  const { generateSnackbar } = useSnackbar();
 
   const handleChange = (newValue: string) => {
     setOtp(newValue);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+       
+  const { projectData, setProjectData } = useUserContext();
+ 
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (otp.length !== 4) return alert("Enter valid OTP");
-    handleNext();
+    
+    try {
+      console.log(otp);
+      let userId = tempUserData.userId || Cookies.get("userId");
+      let res = await  verifyPhoneOtp(userId, "client", otp);
+      console.log(res);
+
+      if(res.status !== 400 || res.data?.status === "success"){
+        Cookies.set("userId",res.data?.userId ,{ secure: true, sameSite: 'None', expires: 30 });
+        Cookies.set("token",res.data?.token ,{ secure: true, sameSite: 'None', expires: 30 });
+
+        setUserData({...userData, userId : res.data?.userId, token : res.data?.token});
+        generateSnackbar("Number Verified Successfully.", "success");
+        handleNext();
+      }
+      else{
+        generateSnackbar(res.response?.data?.message || "Some error Occur, please Try Again.", "error");
+      }
+    } catch (error) {
+      console.error("Error verifying OTP", error);
+      alert("Failed to verify OTP. Please try again.");
+    }
+  };
+
+  const handleResendOtp = async () => {
+    let userId = tempUserData.userId || Cookies.get("userId");
+    let phoneNo = tempUserData.userPhone || Cookies.get("userPhone");
+          try {
+            let res = await sendPhoneOtp({
+              userId : userId,
+              userType    : "client",
+              phoneNo : phoneNo
+          });
+          // console.log(res);
+
+      if(res.status !==400 || res.data?.status === "success"){
+          return generateSnackbar("OTP resent successfully", "success");
+      }
+      else{
+          generateSnackbar("Some error occur, please Try Again.", "error");
+      }
+    } 
+    catch (error) {
+      console.error("Error resending OTP", error);
+      generateSnackbar("Failed to resend OTP. Please try again.", "error")
+    }
   };
 
   return (
@@ -44,7 +99,11 @@ const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
         <div className="flex justify-between items-center">
           <p className="text-xs md:text-lg">Didn&apos;t receive a code?</p>
           <div className="text-xs sm:text-sm flex gap-2 sm:gap-3 items-center">
-            <button className="text-secondary hover:text-main font-bold">
+            <button
+              className="text-secondary hover:text-main font-bold"
+              onClick={handleResendOtp}
+              type="button"
+            >
               Resend
             </button>
             <button

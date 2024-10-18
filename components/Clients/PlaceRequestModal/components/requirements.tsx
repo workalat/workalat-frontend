@@ -1,7 +1,14 @@
+"use client"
+import VerifyUser from "@/app/middleware/VerifyUser";
+import { useUserContext } from "@/context/user_context";
 import { Box, Button, FormControl, OutlinedInput } from "@mui/material";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import "react-quill/dist/quill.snow.css";
+import Cookies from 'js-cookie';
+import { useSnackbar } from "@/context/snackbar_context";
+
 
 // Dynamically import React Quill to ensure it works with SSR in Next.js
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -11,12 +18,69 @@ interface ReqProps {
   handlePrev: () => void;
 }
 
-export default function Requirements({ handleNext, handlePrev }: ReqProps) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleNext();
-  };
 
+
+export default function Requirements({ handleNext, handlePrev }: ReqProps) {
+
+
+  const { projectData, setProjectData } = useUserContext();
+  let [projectDes, setProjectDes] = useState("");
+  let [project, setProject] = useState({});
+  let [clientId, setClientId] = useState("");
+  let [projectTitle, setProjectTitle] = useState("");
+  
+  useEffect(()=>{
+    if(!projectData.projectUrgentStatus){
+      handlePrev();
+    }
+    else{
+      console.log(projectData);
+      setProject(projectData);
+      setProjectTitle(`I need a ${projectData.serviceNeeded} in ${projectData.postCodeRegion}`)
+    }
+  },[])
+  
+  
+
+
+
+    // snackbar
+    const { generateSnackbar } = useSnackbar();
+    // let router = useRouter();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try{
+          e.preventDefault();
+          console.log(projectDes);
+          console.log(projectData)
+          if(!projectTitle || !projectDes){
+            return generateSnackbar("Please fill all Fields", "error")
+          }
+          
+          setProjectData({...projectData, ["serviceDes"] : projectDes,  ["serviceTitle"] : projectTitle});
+          handleNext();
+          let token = Cookies.get("token");
+          let ver = await VerifyUser(token, "client");
+          console.log(ver);
+          if(ver.status === "success" && ver.userType === "client"){
+            console.log("Sending request");
+            setProjectData({...projectData, ["userId"] : ver.userId});
+            sessionStorage.setItem("projectData", JSON.stringify(projectData));
+            handleNext();
+            handleNext();
+            handleNext();
+            handleNext();
+          }
+          else{
+            console.log("Creating Account");
+            // handleNext();
+          }
+
+    }
+    catch(e){
+      console.log(e);
+    }
+  };
+  
   return (
     <>
       <h1 className="text-2xl sm:text-3xl font-bold text-center md:mt-8 text-pretty">
@@ -32,8 +96,9 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
         <FormControl>
           <label className="font-semibold">Title</label>
           <OutlinedInput
-            defaultValue={"I need a dry cleaner in Cardiff, CF37"}
+            // defaultValue={"I need a dry cleaner in Cardiff, CF37"}
             className="border-b-4 border-b-secondary"
+            value={projectTitle}
           />
         </FormControl>
         <FormControl>
@@ -42,6 +107,8 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
             theme="snow"
             className="bg-white rounded-lg shadow-lg overflow-hidden border-2 h-[250px] [&_*]:!font-mono border-b-4 border-b-secondary"
             placeholder="Start typing here"
+            value={projectDes}
+            onChange={(e)=>{setProjectDes(e)}}
             modules={{
               toolbar: [
                 ["bold", "italic", "underline", "strike"], // Bold, italic, underline, strike-through

@@ -4,8 +4,12 @@ import { useRouter } from "next/navigation";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import doneIcon from "@/public/icons/done.svg";
+import { useEffect } from "react";
 
-const Done = () => {
+const Done = ({
+  activeStep,
+  close
+}) => {
   const router = useRouter();
 
   const finish = () => {
@@ -14,8 +18,11 @@ const Done = () => {
     // alert(
     //   "Your project has been posted successfully, we are linking you to the qualified professional."
     // );
+    activeStep(0)
+    close();
     router.push("/client/my-projects");
   };
+
 
   return (
     <>

@@ -2,14 +2,22 @@
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from "jwt-decode"; 
 import {
+  Box,
   Button,
   IconButton,
   InputAdornment,
+  Modal,
   TextField
 } from "@mui/material";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+
+import { useUserContext } from '@/context/user_context';
+import VerifyUser from '@/app/middleware/VerifyUser';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 import { useSnackbar } from "@/context/snackbar_context";
@@ -17,7 +25,17 @@ import gmailIcon from "@/public/icons/gmail.svg";
 import linkedInIcon from "@/public/icons/linkedin_logo.svg";
 import { useTheme } from '@/context/navbar_theme';
 
+
 const ProfessionalSignupForm = () => {
+  let { setSignupProfessional, signupProfessional, professionalSignupFunction, setUserId, continueWithGoogleProfessional } = useUserContext();
+
+  // loading
+  const [loading, setLoading] = useState(false);
+
+  
+  // loading
+  const [loading2, setLoading2] = useState(false);
+
 
   // router
   const router = useRouter();
@@ -25,36 +43,42 @@ const ProfessionalSignupForm = () => {
   // Theme
   const theme = useTheme();
 
-  useEffect(() => {
-    theme.toggleTheme();
-  }, []);
-
   // Alert
   const { generateSnackbar } = useSnackbar();
   
+  useEffect(() => {
+    theme.toggleTheme();
+    async function verify(){
+      try{
+        setLoading2(true);
+        let token = Cookies.get("token");
+        let ver = await VerifyUser(token, "professional");
+        // console.log(ver);
+        if(ver.status === "fail"){
+          setLoading2(false);
+        }
+        else{
+          if(ver.registerAs === "professional"){
+            router.push("/professional/dashboard")
+          }
+          else{
+            router.push("/client/dashboard")
+          }
+        }
+      }
+      catch(e){
+        generateSnackbar("Some Error Occur, Please try again", "error");
+      }
+    };
+    verify();
+  }, []);
+
+  
   // Form Inputs
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  let [googleData, setGoogleData] = useState({});
 
-  const handleFullNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFullName(event.target.value);
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(event.target.value);
-  };
 
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -64,34 +88,133 @@ const ProfessionalSignupForm = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
 
-    // Validate form inputs
-    if (fullName === "" || email === "" || password === "" || confirmPassword === "") {
-      return generateSnackbar("Please fill in all required fields.", "error");
+  function handleInput(e: any) {
+    let name = e.target.name;
+    let value = e.target.value;
+    // console.log(value)
+
+    setSignupProfessional({
+      ...signupProfessional,
+      [name]: value
+    })
+  }
+
+
+  
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    try {
+      event.preventDefault();
+
+      // Validate form inputs
+      if (signupProfessional.fullName === "" || signupProfessional.email === "" || signupProfessional.password === "" || signupProfessional.confirmPassword === "") {
+        return generateSnackbar("Please fill in all required fields.", "error");
+      }
+
+      if (signupProfessional.password !== signupProfessional.confirmPassword) {
+        return generateSnackbar("Passwords do not match.", "error");
+      }
+
+      setLoading(true);
+      let res = await professionalSignupFunction(signupProfessional);
+      // console.log(res);
+
+      setLoading(false);
+      if (res.status !== 400 || res.response.data?.status === "success") {
+        // Handle form submission
+        generateSnackbar(res.response?.data?.message || res.data?.message, "success");
+
+        setUserId(res.data?.data[0]?.userId);
+
+        // redirect
+        router.push("/professional/signup/verify-email");
+
+      }
+      else {
+        return generateSnackbar(res.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
+      }
+    }
+    catch (e) {
+      // console.log(e);
+      return generateSnackbar(e?.message || "Some Error occurs, please try again in a few minutes", "error");
+    }
+  };
+
+  async function handleContinueWithGoole(){
+    try{
+      if(Object.keys(googleData).length !== 0){
+          let res = await continueWithGoogleProfessional(googleData, "professional");
+      // console.log(res);
+      // console.log(res?.data?.userStatus);
+      // console.log(res.data?.newAccount, res.data?.newAccount);
+      if(res?.data?.userStatus === "SUCCESS"){
+
+        if(res.data?.newAccount === true || res.data?.newAccount ){
+          // redirect
+          generateSnackbar("Account Created Successfully", "success");
+          Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
+         router.push("/professional/onboard/phone");
+
+        }
+        else if(res.data?.newAccount === false || !res.data?.newAccount ){
+          generateSnackbar("Loggedin Successfully", "success"); 
+          Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
+         router.push("/professional/onboard/phone");
+        }
+        else{
+          generateSnackbar("Some error Occur, please Try Again.", "error"); 
+        }
+
+      }
+      else if(res?.data?.userStatus === "PENDING"){
+          setUserId(res?.data?.data[0]?.userId);
+          Cookies.set("userId", res?.data?.data[0]?.userId);
+          generateSnackbar("Please Verify OTP", "success");
+
+        // redirect
+        router.push("/professional/signup/verify-email");
+      }
+      else{
+        generateSnackbar("Some error Occur, please Try Again.", "error"); 
+      }
+    
+      }
+      else{
+        generateSnackbar("please Try Again.", "error"); 
+      }
+    }
+    catch(e){
+      generateSnackbar("Some error Occur, please Try Again.", "error"); 
     }
     
-    if (password !== confirmPassword) {
-      return generateSnackbar("Passwords do not match.", "error");
+  }
+
+   async function handleLinkedInLogin(){
+    try{
+          const clientId = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID;
+          const redirectUri = process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI;
+          const scope = 'r_liteprofile r_emailaddress'; // Requesting profile and email
+          const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI}&scope=r_liteprofile%20r_emailaddress`;
+          
+          // Redirect to LinkedIn login page
+          window.location.href = linkedInAuthUrl;
     }
-
-    // Handle form submission
-    generateSnackbar("Account created successfully!", "success");
-
-    // Reset form inputs
-    setFullName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-
-    // redirect
-    router.push("/professional/signup/verify-email");
-  };
+    catch(e){
+      generateSnackbar("Some error Occur, please Try Again.", "error"); 
+   }
+}
 
   return (
     <>
-      <div className="w-full min-h-[80svh] flex justify-center items-center mt-28 mb-10 px-6">
+    {
+            loading2 ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div>
+            )
+            :( 
+              <>
+              <div className="w-full min-h-[80svh] flex justify-center items-center mt-28 mb-10 px-6">
         <div className="w-full max-w-lg border border-main border-opacity-50 shadow-lg rounded-md sm:rounded-xl px-4 py-8 sm:p-8">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <h1 className="font-bold text-2xl text-center">Create Account</h1>
@@ -99,19 +222,21 @@ const ProfessionalSignupForm = () => {
               <p className="font-semibold text-sm">Full Name</p>
               <TextField
                 fullWidth
-                value={fullName}
+                name='fullName'
+                value={signupProfessional.fullName}
                 className=" border-main border-opacity-15 shadow-lg [&:has(Mui-focused)]:!border-secondary [&_*]:p-0 [&_input]:!p-3 [&_input]:!py-2"
-                onChange={handleFullNameChange}
+                onChange={handleInput}
               />
             </div>
             <div className="space-y-1">
               <p className="font-semibold text-sm">Email</p>
               <TextField
                 fullWidth
-                type="email"
-                value={email}
+                 type="email"
+                name='email'
+                value={signupProfessional.email}
                 className=" border-main border-opacity-15 shadow-lg [&:has(Mui-focused)]:!border-secondary [&_*]:p-0 [&_input]:!p-3 [&_input]:!py-2"
-                onChange={handleEmailChange}
+                onChange={handleInput}
               />
             </div>
             <div className="space-y-1">
@@ -120,7 +245,8 @@ const ProfessionalSignupForm = () => {
                 fullWidth
                 type={showPassword ? "text" : "password"}
                 margin="normal"
-                value={password}
+                name='password'
+                value={signupProfessional.password}
                 className="border-main border-opacity-15 shadow-lg [&:has(Mui-focused)]:!border-secondary [&_*]:p-0 [&>*]:!p-3 [&>*]:!py-2"
                 InputProps={{
                   endAdornment: (
@@ -131,7 +257,7 @@ const ProfessionalSignupForm = () => {
                     </InputAdornment>
                   ),
                 }}
-                onChange={handlePasswordChange}
+                onChange={handleInput}
               />
             </div>
             <div className="space-y-1">
@@ -140,7 +266,8 @@ const ProfessionalSignupForm = () => {
                 fullWidth
                 type={showConfirmPassword ? "text" : "password"}
                 margin="normal"
-                value={confirmPassword}
+                name='confirmPassword'
+                value={signupProfessional.confirmPassword}
                 className="border-main border-opacity-15 shadow-lg [&:has(Mui-focused)]:!border-secondary [&_*]:p-0 [&>*]:!p-3 [&>*]:!py-2"
                 InputProps={{
                   endAdornment: (
@@ -151,7 +278,7 @@ const ProfessionalSignupForm = () => {
                     </InputAdornment>
                   ),
                 }}
-                onChange={handleConfirmPasswordChange}
+                onChange={handleInput}
               />
             </div>
             <Button
@@ -170,20 +297,30 @@ const ProfessionalSignupForm = () => {
             </p>
           </div>
           <div className="flex flex-col gap-4 mt-6">
-            <Link
+            {/* <Link
               href={"/"}
-              className="border border-main border-opacity-30 transition-colors hover:bg-secondary shadow-md flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
-            >
-              <img src={gmailIcon.src} alt="" />
-              Continue with Google
-            </Link>
-            <Link
-              href={"/"}
+              className="border border-main border-opacity-30 transition-colors shadow-md flex font-semibold sm:text-lg rounded-md"
+            > */}
+              <div className='flex justify-center items-center'>
+              <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                    let decode = jwtDecode(credentialResponse.credential);
+                    setGoogleData(decode);
+                    handleContinueWithGoole();
+                }}
+                onError={() => {
+                    console.log('Login Failed');
+                }}
+                />
+              </div>
+            {/* </Link> */}
+            <button 
+            onClick={handleLinkedInLogin}
               className="bg-main hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
             >
               <img src={linkedInIcon.src} alt="" />
               Continue with LinkedIn
-            </Link>
+            </button>
           </div>
           <div className="text-sm text-center mt-10 font-bold">
             <p>
@@ -195,6 +332,18 @@ const ProfessionalSignupForm = () => {
           </div>
         </div>
       </div>
+      <Modal open={loading}>
+        <Box className="w-full h-full flex justify-center items-center">
+          <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+            <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+            <h1 className="text-center font-bold text-xl ml-2">Wait, while we proceed your details...</h1>
+          </Box>
+        </Box>
+      </Modal>
+      </>
+            )
+      }
+      
     </>
   );
 };

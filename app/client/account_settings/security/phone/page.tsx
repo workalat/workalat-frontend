@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import "react-phone-number-input/style.css";
 import Image from "next/image";
@@ -9,9 +9,34 @@ import OTPModal from "./otp_modal";
 
 import arrowRight from "@/public/icons/arrow_right.svg";
 
+
+
+import { useUserContext } from '@/context/user_context';
+import VerifyUser from '@/app/middleware/VerifyUser';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import { useSnackbar } from "@/context/snackbar_context";
+
+
 const PhonePage = () => {
   const [otpModal, setOtpModal] = useState(false);
   const [value, setValue] = useState<string | undefined>();
+
+  let [userData, setUserData] = useState({});
+  let { getPhoneNo } = useUserContext();
+  
+  // loading
+  const [loading, setLoading] = useState(false);
+
+  // loading
+  const [loading2, setLoading2] = useState(true);
+
+  // router
+  const router = useRouter();
+  
+  // Alert
+  const { generateSnackbar } = useSnackbar();
+
 
   const handlePhoneNumberChange = (newValue?: string) => {
     if (newValue !== undefined) {
@@ -19,9 +44,48 @@ const PhonePage = () => {
     }
   };
 
+
+  useEffect(() => {
+    async function verify(){
+      try{
+        setLoading2(true);
+        let token = Cookies.get("token");
+        let ver = await VerifyUser(token, "client");
+        console.log(ver);
+        if(ver.status === "success"){
+          if(ver.registerAs === "professional"){
+            router.push("/professional/dashboard")
+          }
+          else{
+            setUserData(ver);
+            let phoneDet = await getPhoneNo({userId : ver.userId, userType : "client"});
+            console.log(phoneDet.data.phoneNo); 
+            console.log(phoneDet.data.countryCode)
+            setLoading2(false);
+          }
+        }
+        else{
+          router.push("/"); 
+        }
+      }
+      catch(e){
+        console.log(e);
+      }
+    };
+    verify();
+  }, []);
+
   return (
     <>
-      <OTPModal open={otpModal} onClose={() => setOtpModal(false)} />
+     {
+            loading2 ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div>
+            )
+            :(
+              <>
+              <OTPModal open={otpModal} onClose={() => setOtpModal(false)} />
       <Grid container spacing={2} className="mt-3">
         <Grid item xs={12} md={7}>
           <Box className="rounded-xl border border-dark border-opacity-30 px-6 py-4 pb-6 space-y-4 bg-white md:bg-transparent">
@@ -39,13 +103,13 @@ const PhonePage = () => {
                   We will automatically send OTP. Please confirm your phone
                   number is correct.
                 </Typography>
-                <Button
+                {/* <Button
                   variant="text"
                   color="primary"
                   className="hover:text-main"
                 >
                   Change
-                </Button>
+                </Button> */}
               </Box>
             </Box>
             <Button
@@ -60,6 +124,10 @@ const PhonePage = () => {
           </Box>
         </Grid>
       </Grid>
+              </>
+            )
+      }
+      
     </>
   );
 };

@@ -19,6 +19,9 @@ import DoneIcon from "@mui/icons-material/Done";
 import Link from "next/link";
 
 import coin2Icon from "@/public/icons/coin2.svg";
+import {  useSearchParams } from "next/navigation";
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
 
 interface Job {
   id: number;
@@ -54,40 +57,44 @@ export default function JobDetailsSlider({
 }) {
   // loading
   const [loading, setLoading] = useState(true);
-
+  let [projectData, setProjectData] = useState({});
   // job details
   const [job, setJob] = useState<Job | null>(null);
 
+  const { generateSnackbar } = useSnackbar();
+
+  let { showSingleLead } = useUserContext();
+    let projectId = useSearchParams().get("job");
+    let apply = useSearchParams().get("apply");
+
+
   useEffect(() => {
     // simulate loading job details
-    const timer = setTimeout(() => {
-      setJob({
-        id: jobId,
-        title: "Need a website for my business",
-        description: description,
-        budget: 1000,
-        techStack: ["React", "Node.js"],
-        created_at: new Date(),
-        location: "London, UK",
-        applications: 2,
-        totalApplications: 5,
-        proposalCost: 25,
-        client: {
-          id: 1,
-          name: "John Doe",
-          isVerified: true,
-          isEmailVerified: true,
-          isPhoneVerified: true,
-          isPaymentVerified: true,
-          isIdentityVerified: true,
-          image: "/images/customer1.png",
-        },
-      });
-      setLoading(false);
-    }, 1000);
+    if(projectId !== null){
+      async function getJobData(){
+        try{
+          // console.log(apply.get("apply"));
+          setLoading(true);
+          let res = await showSingleLead({projectId : projectId});
+          if(res.status !== 400 || res.data?.status === "success"){
+            setProjectData(res.data?.data);
+            console.log(res.data?.data);
+            setLoading(false);
+          }
+          else{
+            // generateSnackbar("Some Error Occure, please try again", "error");
+          }
+        } 
+        catch(e){
+          // console.log(e);
+        }
+      }
+      getJobData();
 
-    return () => clearTimeout(timer);
-  }, []);
+    }
+
+
+  }, [projectId]);
 
   return (
     <Drawer
@@ -107,33 +114,45 @@ export default function JobDetailsSlider({
         </div>
       ) : (
         <>
-          <ClientDetails job={job} />
+          <ClientDetails job={projectData} />
           <Box className="flex justify-between">
             <h2 className="font-bold text-lg">Project Details</h2>
             <Box className="flex items-center flex-wrap justify-end gap-2 text-right sm:text-left text-xs sm:text-sm">
               <LinearProgress
                 variant="determinate"
-                value={
-                  ((job?.applications || 0) / (job?.totalApplications || 1)) *
-                  100
-                }
+                value={(-5+ projectData.maxBid)}
                 className="w-24 h-2 rounded-full"
                 classes={{
                   bar: "bg-secondary rounded-full",
                   root: "bg-[#E0E0E0]",
                 }}
               />
-              {job?.applications} / {job?.totalApplications} <br className="block sm:hidden"/> professionals have
+              {(-5+ projectData.maxBid)}<br className="block sm:hidden"/> professionals have
               bided
             </Box>
           </Box>
           <Box className="flex flex-col">
-            <h2 className="font-bold">Project Title:</h2>
-            <p>{job?.title}</p>
+            <h2 className="font-bold capitalize">Project Title:</h2>
+            <p className="capitalize">{projectData.serviceTitle}</p>
           </Box>
-          <Markdown className="[&>h1]:font-bold [&>h2]:font-bold [&>h2]:mt-3 [&>h3]:font-bold [&>h3]:mt-2 [&>li]:ml-2">{`${job?.description}`}</Markdown>
+          <Markdown className="[&>h1]:font-bold [&>h2]:font-bold [&>h2]:mt-3 [&>h3]:font-bold [&>h3]:mt-2 [&>li]:ml-2 capitalize">{`${projectData?.serviceDes}`}</Markdown>
+          {
+            projectData?.projectQuestions?.map((val,i)=>{
+              return (
+                <Box key={i}>
+                  <h2 className="font-bold capitalize">{val.questionTitle}</h2>
+                  <p>{val.answer}</p>
+                </Box>
+              )
+              
+            })
+          }
+           <Box >
+                  <h2 className="font-bold capitalize">How Frequent I need the Service?</h2>
+                  <p className="capitalize">{projectData.serviceFrequency}</p>
+                </Box>
           <Box>
-            <h2 className="font-bold">Budget: </h2>${job?.budget}
+            <h2 className="font-bold">Budget: </h2>${projectData?.projectPriceTitle}
           </Box>
           {/* <Box>
             <h2 className="font-bold">Skills Required: </h2>
@@ -146,7 +165,7 @@ export default function JobDetailsSlider({
             </Box>
           </Box> */}
           <Box className="flex gap-6 flex-wrap-reverse">
-            <Link href={`/leads?job=${job?.id}&apply=true`} className="flex-grow sm:flex-grow-0">
+            <Link href={`/leads?job=${projectData?._id}&apply=true`} className="flex-grow sm:flex-grow-0">
               <Button
                 variant="contained"
                 color="primary"
@@ -159,7 +178,7 @@ export default function JobDetailsSlider({
             </Link>
             <h2 className="flex gap-2 items-center">
               <img src={coin2Icon.src} alt="" className="w-6" />
-              {job?.proposalCost} points is reqiured to contact this client
+              {projectData?.pointsNeeded} points is reqiured to contact this client
             </h2>
           </Box>
         </>
@@ -172,16 +191,16 @@ const ClientDetails = ({ job }: { job: Job | null }) => {
   return (
     <Box className="flex justify-between flex-wrap sm:flex-nowrap gap-y-4">
       <Box className="flex gap-4 items-start w-full">
-        <img src={job?.client.image} alt="" className="w-14 h-14 rounded-md object-cover" />
+        <img src={job?.clientPictureLink} alt="" className="w-14 h-14 rounded-md object-cover" />
         <Box className="flex gap-4 items-start ">
           <h3 className="text-lg font-semibold flex flex-col gap-0 justify-center">
-            {job?.client.name}
-            <span className="text-sm font-medium">{job?.location}</span>
+            {job?.clientName}
+            <span className="text-sm font-medium">{job.serviceLocationPostal}   {(job.serviceLocationTown) ?(`| ${job.serviceLocationTown}`) :""}</span>
           </h3>
           <Box className="flex items-center gap-1 px-2 rounded-full mt-1 bg-[rgba(4,132,47,0.2)]">
             <CheckBoxIcon className="text-green-600 w-4 h-4" />
             <p className="text-sm text-center">
-              {job?.client.isVerified ? "Verified" : "Unverified"}
+              {(job?.isEmailVerify && job?.isPhoneVerify) ? "Verified" : "Unverified"}
             </p>
           </Box>
         </Box>
@@ -189,34 +208,34 @@ const ClientDetails = ({ job }: { job: Job | null }) => {
       <Box className="">
         <h2 className="text-main font-semibold">Verifications</h2>
         <Box className="flex gap-4">
-          {job?.client.isIdentityVerified && (
+          {(job?.kycStatus === "approved") && (
             <VerifiedCell
-              isVerified={job?.client.isIdentityVerified}
+              isVerified={job?.kycStatus === "approved" ?true : false}
               Icon={
                 <PersonOutlineOutlinedIcon className="text-[rgba(4,132,47,1)]" />
               }
               name="identity"
             />
           )}
-          {job?.client.isPhoneVerified && (
+          {job?.isClientPhoneNoVerify&& (
             <VerifiedCell
-              isVerified={job?.client.isPhoneVerified}
+              isVerified={job?.isClientPhoneNoVerify}
               Icon={
                 <LocalPhoneOutlinedIcon className="text-[rgba(4,132,47,1)]" />
               }
               name="phone"
             />
           )}
-          {job?.client.isEmailVerified && (
+          {job?.isClientEmailVerify&& (
             <VerifiedCell
-              isVerified={job?.client.isEmailVerified}
+              isVerified={job?.isClientEmailVerify}
               Icon={<EmailOutlinedIcon className="text-[rgba(4,132,47,1)]" />}
               name="email"
             />
           )}
-          {job?.client.isPaymentVerified && (
+          {job?.isPaymentVerify && (
             <VerifiedCell
-              isVerified={job?.client.isPaymentVerified}
+              isVerified={job?.isPaymentVerify}
               Icon={
                 <CreditCardOutlinedIcon className="text-[rgba(4,132,47,1)]" />
               }

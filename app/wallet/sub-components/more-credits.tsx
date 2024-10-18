@@ -30,42 +30,53 @@ function createData(points: string, price: string): row {
 }
 
 export default function MoreCredits(
-    { openBuyModal }: { openBuyModal: () => void }
+    { openBuyModal, data, buy, payGoValue }
 ) {
   
   const router = useRouter()
   
   return (
     <Box>
-      <Table className="[&_*]:!font-mono border !rounded-lg md:[&_*]:!text-lg shadow-md">
-        {/* <TableHead>
-          <TableRow>
-            <TableCell align="center">Points</TableCell>
-            <TableCell align="center">Price</TableCell>
-            <TableCell align="center">Action</TableCell>
-          </TableRow>
-        </TableHead> */}
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell align="center">{row.points}</TableCell>
-              <TableCell align="center">{row.price}</TableCell>
-              <TableCell align="center">
-                <Button variant="contained" onClick={openBuyModal} >Buy Points</Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Button className="text-main font-bold text-center w-full md:text-lg mt-2"
-        onClick={() => router.push('/contact')}
-      >
-        Buy more credits
-        <ArrowForward className="w-5 ml-2" />
-      </Button>
+      {
+            !payGoValue &&  
+            (
+              <>
+              
+                  <Table className="[&_*]:!font-mono border !rounded-lg md:[&_*]:!text-lg shadow-md">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center">Points</TableCell>
+                        <TableCell align="center">Price</TableCell>
+                        <TableCell align="center">Action</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      
+                      {data.map((row) => (
+                        <TableRow
+                          key={row._id}
+                          sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                        >
+                          <TableCell align="center">{row.point} Points</TableCell>
+                          <TableCell align="center">£{row.amount} + VAT</TableCell>
+                          <TableCell align="center">
+                            <Button variant="contained" onClick={()=>{buy({amount :row.amount, points : row.point })}} >Buy Points</Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <Button className="text-main font-bold text-center w-full md:text-lg mt-2"
+                    onClick={() => router.push('/contact')}
+                  >
+                    Buy more credits
+                    <ArrowForward className="w-5 ml-2" />
+                  </Button>
+              
+              </>
+            )
+      }
+
     </Box>
   );
 }

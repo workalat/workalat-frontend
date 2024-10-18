@@ -9,11 +9,19 @@ import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import DoneIcon from "@mui/icons-material/Done";
-import { Box, Tooltip } from "@mui/material"
+import { Box, Rating, Tooltip, Typography } from "@mui/material"
 import { ReactNode, useState } from "react"
-
-export default function Profile() {
-
+import DOMPurify from 'dompurify';
+import { useRouter } from 'next/navigation';
+import moment from "moment"
+export default function Profile({data, isData}) {
+    console.log(data);
+    const sanitizedBio = DOMPurify.sanitize(data.professionalBio);
+    let profile = 20;
+    (data.isEmailVerify ? profile +=20 : profile +=0);
+    (data.isPhoneVerify ? profile +=20 : profile +=0);
+    (data.isRegistrationComplete ? profile +=20 : profile +=0);
+    (data.isPaymentVerify ? profile +=20 : profile +=0);
     // user profile data
     const userData = {
         name: "Anita Backer",
@@ -118,6 +126,7 @@ export default function Profile() {
                         {Icon}
                         {name} {isVerified ? "Verified" : "Unverified"}
                         <DoneIcon className="text-green-600 w-4 h-4 -mt-0.5" />
+                        {data.isprofessionalEmailVerify }
                     </span>
                 }
                 classes={{
@@ -156,51 +165,61 @@ export default function Profile() {
                 <div className="flex flex-col lg:flex-row">
                     <div className="w-full lg:w-1/2 px-2">
                         <div className="flex flex-col md:flex-row gap-5 md:gap-0 w-full">
-                            <img className="w-[80px] mx-auto md:mx-0 h-[80px] sm:w-[100px] sm:h-[100px] object-cover object-top -mt-12 shadow rounded" src="https://img.freepik.com/free-photo/young-businesswoman-wearing-glasses_329181-11694.jpg?size=626&ext=jpg&ga=GA1.1.1819120589.1726704000&semt=ais_hybrid" alt="work alat" />
+                            <img className="w-[80px] mx-auto md:mx-0 h-[80px] sm:w-[100px] sm:h-[100px] object-cover object-top -mt-12 shadow rounded" src={data.professionalPictureLink} alt="work alat" />
 
                             <div className="px-3 -mt-4 sm:flex-grow">
                                 <div className="flex justify-between items-start">
                                     <div className="flex-grow">
-                                        <h4 className="text-sm sm:text-lg font-semibold flex gap-2 items-center">{userData?.name}
+                                        <h4 className="text-sm sm:text-lg font-semibold flex gap-2 items-center capitalize">{data?.professionalFullName}
                                             <span className="text-sm font-thin lowercase flex gap-1 items-center">
-                                                <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
-                                                <GiCheckedShield className="size-[12px] text-[#F76C10]" />
+                                                {
+                                                    (data.isprofessionalEmailVerify && data.isprofessionalPhoneNoVerify)
+                                                    ?
+                                                    <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
+                                                    :
+                                                    ""
+                                                }
+                                                 {
+                                                    (data.kycStatus === "appproved")
+                                                    ?
+                                                    <GiCheckedShield className="size-[12px] text-[#F76C10]" />
+                                                    :
+                                                    ""
+                                                }
                                             </span>
                                         </h4>
                                         <div className="flex gap-2">
                                             <div className="flex gap-1 items-center">
-                                                {
-                                                    [...Array(userData?.rate)].map((_, i) => (
-                                                        <FaStar className="size-3 text-secondary" key={i} />
-                                                    ))
-                                                }
-                                                <p className="text-xs">{Number(userData?.rate).toFixed(1)}</p>
+                                               
+                                                <Rating precision={0.1} value={(data.totalRatings / data.totalReviews )} readOnly />
+                                                    {/* {console.log(data.totalReviews , data.totalRatings)} */}
+                                                <p className="text-xs">{Number((data.totalRatings / data.totalReviews )).toFixed(1)}</p>
                                             </div>
                                             <div className="sm:flex gap-1 items-center hidden">
                                                 <IoMdChatboxes className="size-4 text-[#EA740E]" />
-                                                <p className="text-xs">553</p>
+                                                <p className="text-xs">{data.totalProjectsCompleted}</p>
                                             </div>
                                             <div className="flex gap-2 flex-col sm:flex-row items-center">
-                                                <p className="text-xs">Level {userData?.level}</p>
+                                                <p className="text-xs">Level {data.professional_level}</p>
                                                 <div className="flex space-x-2">
                                                     {[...Array(5)].map((_, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`w-[5px] h-[5px] sm:w-[8px] sm:h-[8px] rounded-sm border border-black rotate-45 overflow-hidden ${index < userData?.level ? 'bg-black' : 'bg-transparent'} transition-colors duration-300 ease-in-out`}
+                                                            className={`w-[5px] h-[5px] sm:w-[8px] sm:h-[8px] rounded-sm border border-black rotate-45 overflow-hidden ${index < parseInt(data.professional_level) ? 'bg-black' : 'bg-transparent'} transition-colors duration-300 ease-in-out`}
                                                         >
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
                                         </div>
-                                        <h4 className="font-semibold text-sm sm:text-md py-1">{userData?.title}</h4>
+                                        <h4 className="font-semibold text-sm sm:text-md py-1">{data?.professionalPrimaryService}</h4>
                                         <div className="flex justify-start">
-                                            <p className="text-xs capitalize flex gap-1 items-center">
+                                            {/* <p className="text-xs capitalize flex gap-1 items-center"> */}
 
-                                                <img className="size-[13px]" src="/flag.png" alt="workalat" />
+                                                {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
 
-                                                {userData?.location}</p>
-                                            <p className="text-xs capitalize ps-4">joined on {userData?.joined}</p>
+                                                {/* {userData?.location}</p> */}
+                                            <p className="text-xs capitalize ps-4">joined on {moment(data.accountCreationDate).format('MMMM D, YYYY')}</p>
                                         </div>
                                     </div>
 
@@ -256,51 +275,52 @@ export default function Profile() {
                         <div className="w-full">
                             <h4 className="font-semibold pb-3 pt-2">Verifications</h4>
                             <Box className="flex gap-4">
-                                {userData?.userIdentity && (
+                                {data.kycStatus && (
                                     <VerifiedCell
-                                        isVerified={userData?.userIdentity}
+                                        isVerified={(data.kycStatus === "approved") ? true : false}
                                         Icon={
-                                            <PersonOutlineOutlinedIcon className="text-[rgba(4,132,47,1)]" />
+                                            <PersonOutlineOutlinedIcon className={(data.kycStatus === "approved") ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />
                                         }
                                         name="identity"
                                     />
                                 )}
-                                {userData?.phoneNumber && (
+                                {true && (
                                     <VerifiedCell
-                                        isVerified={userData?.phoneNumber}
+                                        isVerified={data.isprofessionalPhoneNoVerify}
                                         Icon={
-                                            <LocalPhoneOutlinedIcon className="text-[rgba(4,132,47,1)]" />
+                                            <LocalPhoneOutlinedIcon className={(data.isprofessionalPhoneNoVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}   />
                                         }
                                         name="phone"
                                     />
                                 )}
-                                {userData?.email && (
+                                {true && (
                                     <VerifiedCell
-                                        isVerified={userData?.email}
-                                        Icon={<EmailOutlinedIcon className="text-[rgba(4,132,47,1)]" />}
+                                        isVerified={data?.isprofessionalEmailVerify}
+                                        Icon={<EmailOutlinedIcon className={(data.isprofessionalEmailVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />}
                                         name="email"
                                     />
                                 )}
-                                {userData?.wallet && (
+                                {true && (
                                     <VerifiedCell
-                                        isVerified={userData?.wallet}
+                                        isVerified={data?.isPaymentVerify}
                                         Icon={
-                                            <CreditCardOutlinedIcon className="text-[rgba(4,132,47,1)]" />
+                                            <CreditCardOutlinedIcon className={(data.isPaymentVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}/>
                                         }
                                         name="payment"
                                     />
                                 )}
                             </Box>
 
-                            <div className="py-2">
+                            {/* <div className="py-2">
                                 {
                                     userData?.desc?.map((para, i) => (
                                         <p className="py-2 text-md text-justify" key={i}>{para}</p>
                                     ))
                                 }
-                            </div>
+                            </div> */}
+                            <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: sanitizedBio }} />
 
-                            <div className="py-2">
+                            {/* <div className="py-2">
                                 <h2 className="text-lg font-semibold pb-3">Expertise</h2>
 
                                 <ul className="list-disc ps-5">
@@ -310,42 +330,50 @@ export default function Profile() {
                                         ))
                                     }
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="w-full lg:w-1/2 px-2">
-                        <h5 className="text-end font-semibold pb-2 -mt-4">Reviews {userData?.reviews?.length}</h5>
+                        <h5 className="text-end font-semibold pb-2 -mt-4">Reviews {data?.reviews?.length}</h5>
                         <div className="w-full overflow-y-scroll hiddenScroll h-[800px]">
-                            {
-                                userData?.reviews?.map((review, i) => (
-                                    <div key={i} className="w-full py-2 px-4">
+                           
+                        {
+                                data?.reviews?.map((review, i) => {
+                                    return(
+                                        <div key={i} className="w-full py-2 px-4">
                                         <div className="flex justify-between items-center flex-col gap-2 md:flex-row md:gap-0">
                                             <div className="flex">
                                                 <div className="w-16 h-12 flex items-center justify-center bg-secondary">
-                                                    <p className="text-xl font-bold">{review?.profile}</p>
+                                                    {/* <p className="text-xl font-bold">{review?.profile}</p> */}
                                                 </div>
                                                 <div className="px-3">
                                                     <div className="flex gap-2 items-center">
-                                                        {
+                                                        {/* {
                                                             [...Array(review?.rate)].map((_, i) => (
                                                                 <FaStar className="size-4 text-secondary" key={i} />
                                                             ))
                                                         }
-                                                        <p className="text-md">{Number(review?.rate).toFixed(1)}</p>
+                                                        <p className="text-md">{Number(review?.rate).toFixed(1)}</p> */}
+                                                        <Rating precision={0.1} value={review.giverRating} readOnly />
+                                                            <Typography  className='text-sm' color="text.secondary" ml={1}>
+                                                            {review.giverRating}
+                                                        </Typography>
                                                     </div>
-                                                    <p className="font-bold">{review?.title}</p>
-                                                    <p className="capitalize">{review?.location}</p>
+                                                    <p className="font-bold caption-top capitalize">{review?.projectName.slice(0,45)}...</p>
+                                                    {/* <p className="capitalize">{review?.location}</p> */}
                                                 </div>
                                             </div>
                                             <div className="flex gap-2 pb-2">
-                                                <p className="font-bold text-sm">{review?.name}</p>
-                                                <p className="text-sm">{review?.date}</p>
+                                                <p className="font-bold text-sm capitalize">{review?.giverName}</p>
+                                                <p className="text-sm">{moment(review?.revieTimeStamp).fromNow()}</p>
                                             </div>
                                         </div>
 
-                                        <p>{review?.comment}</p>
+                                        <p className="capitalize py-[8px]">{review?.giverReview}</p>
                                     </div>
-                                ))
+                                    )
+                                    
+                                })
                             }
                         </div>
                     </div>

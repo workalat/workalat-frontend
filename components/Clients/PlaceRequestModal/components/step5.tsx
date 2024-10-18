@@ -5,10 +5,14 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-
+ 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
+
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import { useRouter } from "next/navigation";
 
 const formItems = [
   {
@@ -44,20 +48,32 @@ const Step5: React.FC<Step5Props> = ({
   updateFormData,
   handlePrev,
 }) => {
-  const [frequency, setFrequency] = React.useState(
-    localStorage.getItem("stepFormData")
-      ? JSON.parse(localStorage.getItem("stepFormData")!).frequency
-      : ""
-  );
+  const [frequency, setFrequency] = useState();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFrequency((event.target as HTMLInputElement).value);
   };
 
+
+  //My Workflow
+  const { projectData, setProjectData, searchJobQuestions } = useUserContext();
+  const { generateSnackbar } = useSnackbar();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+
+  
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateFormData({ frequency: frequency });
-    handleNext();
+    if(!frequency){
+      generateSnackbar("Please Choose One Option.", "error");
+    }
+    else{
+      setProjectData({ ...projectData, ["serviceFrequency"] :  frequency });
+      console.log(projectData);
+      handleNext();
+    }
   };
 
   return (

@@ -4,7 +4,7 @@ import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-const LeadsSetting = () => {
+const LeadsSetting = ({data, skills}) => {
   const services = [
     'Search Engine Optimization (SEO) Specialists',
     'E Commerce',
@@ -31,10 +31,10 @@ const LeadsSetting = () => {
           You&apos;ll receive leads in these categories
         </Typography>
         <Box className='mt-3 flex flex-wrap gap-2'>
-          {services.map((service, index) => (
+          {skills.map((service, index) => (
             <div
               key={index}
-              className="bg-main text-white text-sm rounded-lg px-3 py-1"
+              className="bg-main text-white text-sm rounded-lg px-3 py-1 capitalize"
             >
               {service}
             </div>
@@ -53,7 +53,7 @@ const LeadsSetting = () => {
           You&apos;re receiving customers within these locations
         </Typography>
         <Box className='mt-3 flex flex-wrap gap-2'>
-          {locations.map((location, index) => (
+          {data.map((location, index) => (
             <div
               key={index}
               className="bg-main text-white text-sm rounded-lg px-3 py-1"

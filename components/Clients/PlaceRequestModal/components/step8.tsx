@@ -3,6 +3,7 @@ import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/m
 import Image from "next/image";
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import loadingGif from "@/public/images/loader.gif";
+import { useUserContext } from "@/context/user_context";
 
 interface Step7Props {
     handleNext: () => void;
@@ -15,6 +16,7 @@ interface FormDataType {
     description: string;
     file: File | null;
 }
+
 
 
 const formItems = [
