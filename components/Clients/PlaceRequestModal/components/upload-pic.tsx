@@ -63,10 +63,10 @@ export default function UploadPicture({
 
         let p = sessionStorage.getItem("projectData");
         let project = JSON.parse(p);
-        console.log("SessionuserId);" ,project.userId);
+        console.log("SessionuserId);" ,project);
         setSessionData(project);
         console.log( "projectID",projectData)
-        if(!project.userId){
+        if(!project?.userId){
           handlePrev();
           handlePrev();
           handlePrev();
@@ -111,15 +111,15 @@ export default function UploadPicture({
       if(!files || files.length<1){
              generateSnackbar("Please Fill all Data.", "error");
       }
-      else{
+      else{ 
       // console.log(userData);
       setLoading(true);
       let uploadProject = {
-        userId : projectData.userId || sessionData.userId,
+        userId : projectData?.userId || sessionData?.userId,
         serviceCategory : projectData.serviceCategory || sessionData.serviceCategory,
         serviceNeeded : projectData.serviceNeeded || sessionData.serviceNeeded,
         serviceLocationPostal : projectData.serviceLocationPostal || sessionData.serviceLocationPostal,
-        serviceLocationTown : projectData.serviceLocationTown || sessionData.serviceLocationTown,
+        postCodeRegion : projectData.postCodeRegion || sessionData.postCodeRegion,
         serviceQuestions : projectData.serviceQuestions || sessionData.serviceQuestions,
         serviceFrequency : projectData.serviceFrequency || sessionData.serviceFrequency,
         serviceFrequencyDays : projectData.serviceFrequencyDays || sessionData.serviceFrequencyDays,
@@ -155,8 +155,8 @@ export default function UploadPicture({
             formData.append('projectFiles', file);
         });
       
-      // // // Send the form data to the server to upload the files
-      // // setLoading(true);
+      // // Send the form data to the server to upload the files
+      // setLoading(true);
       console.log(formData);
         const upload = await axios.post('/uploadProjectFile', formData, {
             headers: {

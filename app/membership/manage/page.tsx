@@ -40,13 +40,14 @@ export default function ManageMembershipPage() {
                 setLoading2(true);
                 let token = Cookies.get("token");
                 let ver = await VerifyUser(token, "professional");
+                console.log(ver)
                 if(ver.status === "success"){
                     let res = await getMembershipData({userId : ver.userId});
-                    // console.log(res);
+                    console.log(res);
                     if(res.status !== 400 && res.data?.status === "success"){
                         setUserData(ver);
                         setMembershipData(res.data?.data);
-                        setLastTransactionId(res.data?.data.membershipTransactionHistory[res.data?.data.membershipTransactionHistory.length - 1]._id);
+                        setLastTransactionId(res.data?.data.membershipTransactionHistory[res.data?.data.membershipTransactionHistory?.length - 1]?._id);
                         setLoading2(false);
                     }
                     else{
@@ -59,6 +60,7 @@ export default function ManageMembershipPage() {
                 }
             }
             catch(e){
+                console.log(e);
                 generateSnackbar("Some error occurr, Please try again", "error");
             }
         }

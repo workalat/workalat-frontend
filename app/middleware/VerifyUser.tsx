@@ -29,7 +29,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     isTwoFactAuth : verifyToken.data?.data[0].isTwoFactAuth,
                     isRegistrationComplete : verifyToken.data?.data[0].isRegsitrationComplete,
                     statusCode : verifyToken.status,
-                    country : verifyToken.data?.data[0].country
+                    country : verifyToken.data?.data[0].country,
+                    bidPoints: verifyToken?.data?.data[0]?.totalBidPoints
                 }
                 return(data);
             }

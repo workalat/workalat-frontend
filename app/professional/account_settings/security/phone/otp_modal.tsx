@@ -6,18 +6,73 @@ import { useState } from "react";
 
 import closeIcon from "@/public/icons/close.svg";
 import arrowRight from "@/public/icons/arrow_right.svg";
+import { useUserContext } from "@/context/user_context";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
 
 interface OTPModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const OTPModal = ({ open, onClose }: OTPModalProps) => {
+
+const OTPModal = ({ open, onClose,userId, userType,phoneNo }: OTPModalProps) => {
   const [otp, setOtp] = useState("");
 
   const handleChange = (newValue: string) => {
     setOtp(newValue);
   };
+  let {verifyPhoneOtp,sendPhoneOtp } = useUserContext();
+  let router = useRouter();
+  
+  // Alert
+  const { generateSnackbar } = useSnackbar();
+
+
+
+  async function handleverifytp(){
+    try{
+     let res = await verifyPhoneOtp(userId ,userType,otp);
+     console.log(res);
+      if(res?.status !== 400  || res?.data?.status === "success"){
+        generateSnackbar("Phone Number Verified Successfully.", "success");
+        router.push("/professional/account_settings/security");
+      }
+      else{
+        generateSnackbar(res?.response?.data?.message || "Please Try Again.", "error");
+      }
+    }
+    catch(e){
+      console.log(e);
+    }
+  };
+
+ 
+  const handleResend = async (e) => {
+    try{ 
+      e.preventDefault();
+            let res = await sendPhoneOtp({
+                userId : userId,
+                userType    : userType,
+                phoneNo : phoneNo
+            });
+            console.log(res)
+
+        if(res.status !==400 || res.data?.status === "success"){
+            
+          generateSnackbar("OTP resent successfully", "success");
+        }
+        else{
+            generateSnackbar("Please login again.", "error");
+        }
+    }
+    catch(e){
+        // console.log(e);
+        generateSnackbar("Please login again.", "error");
+        // router.push("/login");
+    }
+};
+  
 
   return (
     <Modal
@@ -44,7 +99,7 @@ const OTPModal = ({ open, onClose }: OTPModalProps) => {
           />
           <Typography className="font-bold text-sm text-center">
             If you didn&apos;t receive the code?
-            <a href="/" className="text-secondary ml-2">
+            <a href="/" onClick={handleResend} className="text-secondary ml-2">
               Resend
             </a>
           </Typography>
@@ -53,6 +108,7 @@ const OTPModal = ({ open, onClose }: OTPModalProps) => {
           variant="contained"
           color="primary"
           className="gap-2 py-3 px-6 font-semibold w-full max-w-max mx-auto"
+          onClick={handleverifytp}
         >
           Confirm
           <Image alt="Change password" src={arrowRight} />

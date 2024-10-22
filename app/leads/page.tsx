@@ -341,6 +341,7 @@ export default function LeadsPage() {
             return;
           }
           let res = await showLeads({ userId: ver.userId });
+          console.log(res);
           if (res.status !== 400 || res.data?.status === "success") {
             setLeadsData(res.data?.data);
           } else {

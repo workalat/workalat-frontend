@@ -73,12 +73,10 @@ export default function JobDetailsSlider({
     if(projectId !== null){
       async function getJobData(){
         try{
-          // console.log(apply.get("apply"));
           setLoading(true);
           let res = await showSingleLead({projectId : projectId});
-          if(res.status !== 400 || res.data?.status === "success"){
-            setProjectData(res.data?.data);
-            console.log(res.data?.data);
+          if(res?.status !== 400 || res?.data?.status === "success"){
+            setProjectData(res?.data?.data);
             setLoading(false);
           }
           else{
@@ -112,7 +110,7 @@ export default function JobDetailsSlider({
           <Skeleton className="w-full h-8 my-0" />
           <Skeleton className="w-1/2 h-8 my-0" />
         </div>
-      ) : (
+      ) : ( 
         <>
           <ClientDetails job={projectData} />
           <Box className="flex justify-between">
@@ -120,14 +118,14 @@ export default function JobDetailsSlider({
             <Box className="flex items-center flex-wrap justify-end gap-2 text-right sm:text-left text-xs sm:text-sm">
               <LinearProgress
                 variant="determinate"
-                value={(-5+ projectData.maxBid)}
+                value={(5- projectData.maxBid) *20}
                 className="w-24 h-2 rounded-full"
                 classes={{
-                  bar: "bg-secondary rounded-full",
+                  bar: "bg-secondary rounded-full", 
                   root: "bg-[#E0E0E0]",
                 }}
               />
-              {(-5+ projectData.maxBid)}<br className="block sm:hidden"/> professionals have
+              {5- projectData.maxBid}<br className="block sm:hidden"/> professionals have
               bided
             </Box>
           </Box>
@@ -136,13 +134,27 @@ export default function JobDetailsSlider({
             <p className="capitalize">{projectData.serviceTitle}</p>
           </Box>
           <Markdown className="[&>h1]:font-bold [&>h2]:font-bold [&>h2]:mt-3 [&>h3]:font-bold [&>h3]:mt-2 [&>li]:ml-2 capitalize">{`${projectData?.serviceDes}`}</Markdown>
-          {
+          { 
             projectData?.projectQuestions?.map((val,i)=>{
-              return (
-                <Box key={i}>
-                  <h2 className="font-bold capitalize">{val.questionTitle}</h2>
-                  <p>{val.answer}</p>
-                </Box>
+              return(
+                <>{
+                  val.answer.length > 0 ?
+                  <>
+                 <h2 className="font-bold capitalize">{val.questionTitle}</h2>
+                 {
+                  val.answer.map((val, i)=>{
+                    return (
+                                <Box key={i}>
+                                  <p className="capitalize">{val}</p>
+                                </Box>
+                              )
+                  })
+                 }
+                  </>
+                  : 
+                  ""
+                }
+                </>
               )
               
             })
@@ -154,16 +166,6 @@ export default function JobDetailsSlider({
           <Box>
             <h2 className="font-bold">Budget: </h2>${projectData?.projectPriceTitle}
           </Box>
-          {/* <Box>
-            <h2 className="font-bold">Skills Required: </h2>
-            <Box className="divide-x-1 divide-main">
-              {job?.techStack.map((tech) => (
-                <span key={tech} className="px-2">
-                  {tech}
-                </span>
-              ))}
-            </Box>
-          </Box> */}
           <Box className="flex gap-6 flex-wrap-reverse">
             <Link href={`/leads?job=${projectData?._id}&apply=true`} className="flex-grow sm:flex-grow-0">
               <Button
@@ -193,16 +195,30 @@ const ClientDetails = ({ job }: { job: Job | null }) => {
       <Box className="flex gap-4 items-start w-full">
         <img src={job?.clientPictureLink} alt="" className="w-14 h-14 rounded-md object-cover" />
         <Box className="flex gap-4 items-start ">
-          <h3 className="text-lg font-semibold flex flex-col gap-0 justify-center">
+          <h3 className="text-lg font-semibold flex flex-col gap-0 justify-center capitalize">
             {job?.clientName}
-            <span className="text-sm font-medium">{job.serviceLocationPostal}   {(job.serviceLocationTown) ?(`| ${job.serviceLocationTown}`) :""}</span>
+            <span className="text-sm font-medium"> {(job.serviceLocationTown) ?(`${job?.serviceLocationTown}`) :  (`${job?.serviceLocationPostal}`)} </span>
           </h3>
-          <Box className="flex items-center gap-1 px-2 rounded-full mt-1 bg-[rgba(4,132,47,0.2)]">
-            <CheckBoxIcon className="text-green-600 w-4 h-4" />
-            <p className="text-sm text-center">
-              {(job?.isEmailVerify && job?.isPhoneVerify) ? "Verified" : "Unverified"}
-            </p>
-          </Box>
+          {
+            job?.isEmailVerify && job?.isPhoneVerify
+              ?
+              <Box className={`flex items-center gap-1 px-2 rounded-full mt-1 bg-[rgba(4,132,47,0.2)]`}>
+                {
+                  job?.isEmailVerify && job?.isPhoneVerify
+                  
+                  ?
+                  <CheckBoxIcon className={`text-green-600 w-4 h-4`} />
+                  :
+                  ""
+                }
+                <p className="text-sm text-center">
+                  {(job?.isEmailVerify && job?.isPhoneVerify) ? "Verified" : "Unverified"}
+                </p>
+              </Box>
+              :
+              <></>
+          }
+
         </Box>
       </Box>
       <Box className="">
@@ -278,49 +294,3 @@ const VerifiedCell = ({
     </Tooltip>
   );
 };
-
-const description = `
-## Project Overview
-
-We will be developing a modern e-commerce website aimed at providing a seamless shopping experience for users interested in fashion apparel. The website will feature a user-friendly interface, secure payment gateways, and robust backend management to handle inventory, orders, and customer interactions efficiently.
-
-## Project Objectives
-
-### 1. Design and User Interface
-
-- Create a visually appealing and responsive design that enhances user experience across devices.
-- Implement intuitive navigation and search functionalities to help users find products easily.
-- Ensure accessibility standards are met for inclusivity.
-
-### 2. E-commerce Functionality
-
-- Develop a secure user authentication and authorization system.
-- Implement a shopping cart and checkout process with multiple payment options (credit card, PayPal, etc.).
-- Enable order tracking and status updates for customers.
-
-### 3. Backend Management
-
-- Set up an admin dashboard to manage products, categories, and inventory.
-- Implement tools for order management, shipping, and returns handling.
-- Integrate analytics to monitor site traffic, sales performance, and customer behavior.
-
-### 4. Performance and Scalability
-
-- Optimize website performance for fast loading times and smooth navigation.
-- Ensure scalability to handle increased traffic and transactions during peak periods.
-- Conduct thorough testing to identify and resolve any performance bottlenecks.
-
-### 5. Security
-
-- Implement SSL certification and secure HTTPS protocols.
-- Apply best practices for data encryption, user privacy, and protection against cyber threats.
-- Regularly update and maintain security measures to safeguard customer information.
-
-## Budget Estimate
-
-- The estimated budget for the project is $XX,XXX, inclusive of development, testing, deployment, and initial support.
-
-## Conclusion
-
-The development of this e-commerce website aims to provide a cutting-edge platform for online retail, focusing on user experience, security, and scalability. By leveraging modern technologies and best practices, we aim to deliver a robust solution that meets both business and customer expectations.
-`;

@@ -55,26 +55,29 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
           if(!projectTitle || !projectDes){
             return generateSnackbar("Please fill all Fields", "error")
           }
-          
-          setProjectData({...projectData, ["serviceDes"] : projectDes,  ["serviceTitle"] : projectTitle});
-          handleNext();
+         
           let token = Cookies.get("token");
+          console.log(token);
           let ver = await VerifyUser(token, "client");
           console.log(ver);
           if(ver.status === "success" && ver.userType === "client"){
             console.log("Sending request");
-            setProjectData({...projectData, ["userId"] : ver.userId});
+            setProjectData({
+              ...projectData,
+               "userId" : ver.userId,
+              "serviceTitle" : projectTitle,
+              "serviceDes" : projectDes});
+            console.log(projectData);
             sessionStorage.setItem("projectData", JSON.stringify(projectData));
+            handleNext();
             handleNext();
             handleNext();
             handleNext();
             handleNext();
           }
           else{
-            console.log("Creating Account");
-            // handleNext();
+            handleNext();
           }
-
     }
     catch(e){
       console.log(e);
@@ -102,7 +105,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
           />
         </FormControl>
         <FormControl>
-          <label className="font-semibold">Your Bio.</label>
+          <label className="font-semibold">Description</label>
           <ReactQuill
             theme="snow"
             className="bg-white rounded-lg shadow-lg overflow-hidden border-2 h-[250px] [&_*]:!font-mono border-b-4 border-b-secondary"

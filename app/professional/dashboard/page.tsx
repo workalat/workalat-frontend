@@ -55,23 +55,14 @@ const Page = () => {
         if(ver.status === "success" && ver.userType === "professional"){
           setUserData(ver);
           let dash = await dashboardData({userId : ver.userId, userType : ver.userType});
-          // console.log(dash)
           setDashData(dash.data?.data)
           setLoading2(false);
-
-          // if(ver.registerAs === "professional"){
-          //   // router.push("/professional/dashboard")
-          // }
-          // else{
-          //   setLoading2(false);
-          // }
         }
         else{
           router.push("/"); 
         }
       }
       catch(e){
-        // console.log(e);
         generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
     };

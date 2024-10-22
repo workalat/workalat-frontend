@@ -57,6 +57,8 @@ export default function ProjectProposal({ params }: any) {
     const { generateSnackbar } = useSnackbar();
     let [data, setData] = useState({});
     let [userData, setUserData]= useState({});
+    
+  const [currentPath, setCurrentPath] = useState("");
 
   
       
@@ -109,39 +111,41 @@ export default function ProjectProposal({ params }: any) {
         }
     };
 
-  useEffect(()=>{
-    async function getUser(){
-        try{
-            let projectId = params.id;
-            console.log(projectId);
-            console.log(window.location.pathname);
-            setLoading2(true);
-            let token = Cookies.get("token");
-                let ver = await VerifyUser(token, "client");
-                if(ver.status === "success" && ver.userType === "client"){
-                    setUserData(ver);
-                    let res = await singleProjectDetails({clientId   : ver.userId, projectId : projectId, need : "proposals"});
-                    console.log(res);
-                    if(res.status !== 400 || res.data?.status == "success"){
-                        setData(res?.data?.data);
-                        setLoading2(false);
-                    }
-                    else{
-                        generateSnackbar("Some error occure, Please Try Again.", "error");
-                        // router.push("/client/my-projects/")
-                    }
+    useEffect(() => {
+        setCurrentPath(window.location.pathname);
+        getUser();
+      }, []);
+
+
+async function getUser(){
+    try{
+        let projectId = params.id;
+        console.log(projectId);
+        console.log(window.location.pathname);
+        setLoading2(true);
+        let token = Cookies.get("token");
+            let ver = await VerifyUser(token, "client");
+            if(ver.status === "success" && ver.userType === "client"){
+                setUserData(ver);
+                let res = await singleProjectDetails({userId   : ver.userId, userType: ver.userType ,projectId : projectId, need : "proposals"});
+                console.log(res);
+                if(res.status !== 400 || res.data?.status == "success"){
+                    setData(res?.data?.data); 
+                    setLoading2(false);
                 }
                 else{
-                    router.push("/login");
+                    generateSnackbar("Some error occure, Please Try Again.", "error");
+                    // router.push("/client/my-projects/")
                 }
-        }
-        catch(e){
-            generateSnackbar("Some error occure, Please Try Again.", "error")
-        }
-    };
-    getUser();
-}, [window.location.pathname])
-
+            }
+            else{
+                router.push("/login");
+            }
+    }
+    catch(e){
+        generateSnackbar("Some error occure, Please Try Again.", "error")
+    }
+};
     return (
         <>
             {
@@ -174,21 +178,17 @@ export default function ProjectProposal({ params }: any) {
                                             <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center capitalize">{d?.professionalName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /></span></h2>
                                             <div className="flex items-center gap-1">
                                                 <div className="flex gap-1">
-                                                    {/* {
-                                                        [...Array(data?.userDetails?.ratings)].map((_, i) => (
-                                                            <FaStar key={i} className="size-[10px] text-amber-300" />
-                                                        ))
-                                                    } */}
+                                                   
                                                      <Rating precision={0.1} value={`${(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }`} readOnly />
                                                             <Typography  className='text-sm' color="text.secondary" ml={1}>
-                                                            {(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }
+                                                            { d?.professionalTotalReviews > 0 ?  (d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) : "0" }
                                                         </Typography>
                                                 </div>
                                                 <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]"><img className="size-[13px]" src="/flag.png" alt="workalat" />
                                                     <p>United Kingdom</p>
                                                 </div>
                                             </div>
-                                            <p className="text-sm font-semibold capitalize">Project title: {data?.serviceNeeded} ( {data?.serviceLocationPostal} {(data?.serviceLocationTown) ? `,${data?.serviceLocationTown}` : ""}) </p>
+                                            <p className="text-sm font-semibold capitalize">Project title: {data?.serviceNeeded} {data?.serviceLocationTown ? `(${data?.serviceLocationTown})` :  `(${data?.serviceLocationPostal})`} </p>
                                         </div>
                                     </div>
                                     <p className="leading-6 text-sm text-[#323C47] pt-3">{d?.proposal}</p>

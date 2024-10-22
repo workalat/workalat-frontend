@@ -11,6 +11,7 @@ import theme from "@/config/theme";
 import { SnackbarProvider } from "@/context/snackbar_context";
 import { UserProvider } from "@/context/user_context";
 import axios from "axios";
+import { ReCaptchaProvider } from "next-recaptcha-v3";
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 export interface ProvidersProps {
@@ -25,6 +26,8 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   return (
     <NextUIProvider navigate={router.push}>
+      
+      <ReCaptchaProvider reCaptchaKey="6LcBYycqAAAAAJ2TLYgKkSUDcGGul6R0B69BSZun">
       <GoogleOAuthProvider clientId="352243422391-07gkviln5jmfp9v8qscsgbu002v9os37.apps.googleusercontent.com">
       <NextThemesProvider {...themeProps}>
         <SnackbarProvider>
@@ -36,6 +39,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
         </SnackbarProvider>
       </NextThemesProvider>
       </GoogleOAuthProvider>
+      </ReCaptchaProvider>
     </NextUIProvider>
   );
 }

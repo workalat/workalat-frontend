@@ -9,8 +9,10 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/user_context";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/snackbar_context";
+import DOMPurify from 'dompurify';
 import Cookies from 'js-cookie';
 import VerifyUser from "@/app/middleware/VerifyUser"
+import { Typography } from "@mui/material";
 
 export default function ProjectDetails({ params }: any) {
     const dynamicData = projectsData?.find((data) => data?.projectId == params?.id);
@@ -33,11 +35,11 @@ export default function ProjectDetails({ params }: any) {
         try{
             let projectId = await params.id;
             setLoading2(true);
-            let token = Cookies.get("token");
+            let token = Cookies.get("token"); 
                 let ver = await VerifyUser(token, "client");
                 if(ver.status === "success" && ver.userType === "client"){
                     setUserData(ver);
-                    let res = await singleProjectDetails({clientId   : ver.userId, projectId : projectId, need : "details"});
+                    let res = await singleProjectDetails({userId   : ver.userId, userType: ver.userType ,projectId : projectId, need : "details"});
                     console.log(res);
                     if(res.status !== 400 || res.data?.status == "success"){
                         setData(res?.data?.data);
@@ -45,11 +47,11 @@ export default function ProjectDetails({ params }: any) {
                     }
                     else{
                         generateSnackbar("Some error occure, Please Try Again.", "error");
-                        // router.push("/client/my-projects/")
+                        router.push("/client/my-projects/")
                     }
                 }
                 else{
-                    // router.push("/login");
+                    router.push("/login");
                 }
         }
         catch(e){
@@ -88,17 +90,17 @@ export default function ProjectDetails({ params }: any) {
                             </div>
                             <p className="text-md leading-[1.4] py-3 capitalize">{data?.projectTitle}</p>
                             <p className="text-black text-md font-bold pb-4">Project overview:</p>
-                            <p className="text-md leading-[1.4] py-3 capitalize">{data?.projectDes}</p>
+                            <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.projectDes)}` }} />
                             <div className="px-2">
                                 {
                                     data?.projectQuestions?.map((overview: string, i: number) => {
                                         return(
                                             <>        
-                                                <p className="flex items-center gap-2 leading-8 font-bold" key={i}> {overview.questionTitle}</p>
-                                                    {overview?.answer?.map((val, i)=>{
+                                                <p className="flex items-center gap-2 leading-8 font-bold capitalize" key={i}> {overview.questionTitle}</p>
+                                                    {(overview?.answer.length>0)  && overview?.answer?.map((val, i)=>{
                                                         return(
                                                             <>
-                                                            <p className="flex items-center gap-2 leading-8 list-none " key={i}> {val}
+                                                            <p className="flex items-center gap-2 leading-8 list-none capitalize " key={i}> {val}
                                                             </p>
                                                             </>
                                                         )

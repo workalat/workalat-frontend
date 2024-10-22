@@ -19,8 +19,8 @@ const Done = ({
     //   "Your project has been posted successfully, we are linking you to the qualified professional."
     // );
     activeStep(0)
+    router.push("/client/project-history");
     close();
-    router.push("/client/my-projects");
   };
 
 

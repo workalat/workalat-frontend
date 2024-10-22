@@ -35,7 +35,7 @@ export default function MoreCredits(
   
   const router = useRouter()
   
-  return (
+  return ( 
     <Box>
       {
             !payGoValue &&  

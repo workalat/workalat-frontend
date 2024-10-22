@@ -46,7 +46,7 @@ export default function VerifyEmail({oldEmail, newEmail}) {
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "professional");
         console.log(ver);
-        if(ver.status === "fail"){
+        if(ver?.status === "fail"){
             generateSnackbar("Please login again.", "error");
             router.push("/login");
             return;
@@ -54,7 +54,6 @@ export default function VerifyEmail({oldEmail, newEmail}) {
         else{
             setData(ver);
             if(ver.userId.length > 0) {
-
                 let res = await sendEmailOtp({
                 userId: ver.userId,
                 userType: "professional",
@@ -82,7 +81,7 @@ export default function VerifyEmail({oldEmail, newEmail}) {
     const handleResend = async (e) => {
         try { 
             e.preventDefault();
-            // console.log(data);
+            console.log(data);
             if(data.userId.length > 0) {
 
                 let res = await sendEmailOtp({
@@ -90,7 +89,7 @@ export default function VerifyEmail({oldEmail, newEmail}) {
                 userType: "professional",
                 email: data.userEmail,
               });
-        
+              console.log(res);
               if (res.status !== 400 || res.data?.status === "success") {
                 return generateSnackbar("OTP resend successfully", "success");
               } else {
@@ -111,18 +110,18 @@ export default function VerifyEmail({oldEmail, newEmail}) {
         e.preventDefault();
         // console.log(userId);
 
-        if(!userId || userId.length === 0){
+        if(!data?.userId || data?.userId?.length === 0){
             generateSnackbar("Please Login Again.", "error");
             router.push("/professional/login");
         }
-        
+         
 
         // OTP validation
         if (otp.length !== 4) return generateSnackbar("Enter valid OTP", "error");
         
         // TODO: Implement OTP verification
-        let res = await verifyOtp({otp, userId, userType})
-        // console.log(res);
+        let res = await verifyOtp({otp,userId : data?.userId, userType})
+        console.log(res);
 
         if(res.status === 200 || res.data?.status === "success"){
             let c = await changeEmail({

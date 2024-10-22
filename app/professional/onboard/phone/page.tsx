@@ -85,19 +85,20 @@ const GetProfessionalPhone = () => {
 
         // OTP send failed
         // generateSnackbar("Failed to send OTP", "error")
-        
-        if(Cookies.get("token").length>0 || userData.token.length) { 
-            let verifyUser = await verifyToken(Cookies.get("token") || userData.token, "professional");
-            // console.log(verifyUser);
+        let token = Cookies.get("token") || userData.token;
+        if(token || token.length>0) { 
+            console.log(Cookies.get("token"))
+            let verifyUser = await verifyToken(token, "professional",true );
+            console.log(verifyUser);
 
-            if(verifyUser.status !== 400 || verifyUser.data?.status === "success"){
+            if(verifyUser?.status !== 400 || verifyUser?.data?.status === "success"){
                 setTempUserData({...tempUserData, userPhone : value});
                 let res = await sendPhoneOtp({
                     userId : verifyUser.data.userId,
                     userType    : verifyUser.data.userType,
                     phoneNo : value
                 });
-
+                console.log(res);
                 if(res.data.status === "success" && res.data.userStatus === "PENDING"){
                     generateSnackbar("OTP sent, You'll shortly recieve a call on your Phone No.", "success");
                     router.push("/professional/onboard/phone/verify");

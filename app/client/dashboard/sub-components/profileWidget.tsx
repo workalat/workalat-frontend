@@ -33,7 +33,7 @@ const ProfileWidget = ({data, userType}) => {
           </Typography>
           <Box className="flex flex-wrap justify-end sm:justify-start">
             <IconButton size="small" href='/profile' >
-              <ShareIcon />
+              {/* <ShareIcon /> */}
             </IconButton>
             <Button 
               variant="contained" 

@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, Modal } from "@mui/material";
 import {
   Navbar,
   NavbarBrand,
@@ -8,8 +8,8 @@ import {
 } from "@nextui-org/navbar";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 import arrowDownWhiteIcon from "@/public/icons/arrow_down_white.svg";
 import businessIcon from "@/public/icons/business.svg";
@@ -19,52 +19,161 @@ import settingsIcon from "@/public/icons/settings.svg";
 import switchIcon from "@/public/icons/switch.svg";
 import testimonial3Img from "@/public/images/testimonial3.png";
 import logo_dark from "@/public/logo_dark.png";
+import { useSnackbar } from "@/context/snackbar_context";
+import Cookies from 'js-cookie';
+import VerifyUser from "../middleware/VerifyUser";
+import { useUserContext } from "@/context/user_context";
+import { Navbar as NavMain} from "@/components/navbar/navbar";
 
 const AuthNavbar = () => {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = React.useState(false);
+  let [userData,setUserData] = useState({});
+  const { generateSnackbar } = useSnackbar();
+  let { intoProfessoinal, intoClient,logout} = useUserContext();
+  let [loadingMessage, setLoadingMessage] = useState("");
 
   const avatarDropdownMenu = [
-    {
-      key: "dashboard",
-      icon: "/icons/dashboard.png",
-      text: "Dashboard",
-      href: "/client/dashboard",
-    },
-    {
-      key: "projects",
-      icon: businessIcon,
-      text: "My Projects",
-      href: "/my-projects",
-    },
+   
     {
       key: "notifications",
       icon: notificationsIcon,
       text: "Notifications",
-      href: "/account_settings/notifications",
-    },
-    {
-      key: "switch",
-      icon: switchIcon,
-      text: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "Switch to Seller" : "Switch to Client"}`,
-      href: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "/professional/dashboard" : "/client/dashboard"}`,
-    },
-    {
-      key: "settings",
-      icon: settingsIcon,
-      text: "Settings",
-      href: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "/client/account_settings" : "/professional/account_settings"}`, // for now it is conditionally when enter the dashboard then. but it need to make with context user type
-    },
-    {
-      key: "logout",
-      icon: logoutIcon,
-      text: "Logout",
-      href: "/logout",
+      href: `/${userData?.userType}/account_settings/notifications`,
     },
   ];
 
+  let [loading2, setLoading2] = useState(true);
+  let [loading, setLoading] = useState(false);
+  let router = useRouter();
+  
+  async function handleIntoProfessional(){
+    try{
+      setLoading(true)
+      setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
+      let changeToProfessional = await intoProfessoinal({userId : userData.userId});
+      console.log(changeToProfessional)
+      
+      if(changeToProfessional.status !== 400 || changeToProfessional.data?.status === "success"){
+        generateSnackbar(changeToProfessional.data?.message , "success");
+        Cookies.set("token", changeToProfessional.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+        setLoading(false);
+        router.push("/professional/dashboard");
+    }
+    else{
+        setLoading(false);
+        generateSnackbar(changeToProfessional.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+    }
+      
+    }
+    catch(e){
+      console.log(e);
+      generateSnackbar("Some Error Occur, Please try again", "error")
+    }
+  }
+  
+  async function handleIntoClient(){
+    try{
+      setLoading(true)
+      setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
+      let changeToClient = await intoClient({userId : userData.userId});
+      
+      if(changeToClient.status !== 400 || changeToClient.data?.status === "success"){
+        generateSnackbar(changeToClient.data?.message , "success");
+        Cookies.set("token", changeToClient.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+        setLoading(false);
+        router.push("/client/dashboard");
+    }
+    else{
+        generateSnackbar(changeToClient.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        setLoading(false);
+    }
+      
+    }
+    catch(e){
+      // console.log(e);
+      generateSnackbar("Some Error Occur, Please try again", "error")
+    }
+  }
+
+
+  useEffect(() => {
+    async function verify(){
+      console.log()
+      try{
+        setLoading2(true);
+        let token = Cookies.get("token");
+        let ver = await VerifyUser(token, pathname.split("/")[1]);
+        console.log(ver);
+        if(ver.status === "success"){
+          setUserData(ver);
+          setLoading2(false);
+
+        }
+        else{
+          setLoading2(false);
+          // router.push("/"); 
+        }
+      }
+      catch(e){
+        setLoading2(false);
+        // console.log(e);
+        // generateSnackbar("Some Error Occur, Please try Again." ,"error")
+      }
+    };
+    verify();
+  }, []);
+
+  async function handleLogout(){
+    try{
+      setLoading(true)
+      setLoadingMessage("Logging out...")
+      let token = Cookies.get("token")
+      if(!token){
+          router.push("/")
+      }
+      else{
+        let log = await logout({
+          token: token,
+          userType : userData.userType
+        });
+      // console.log(changeToProfessional)
+      
+      if(log.status !== 400 || log.data?.status === "success"){
+        generateSnackbar("Logged Out Successfully." , "success");
+        Cookies.remove("token");
+        setLoading(false);
+        router.push("/");
+    }
+    else{
+        generateSnackbar(log.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+    }
+      }
+      
+    }
+    catch(e){
+      // console.log(e);
+      generateSnackbar("Some Error Occur, Please try again", "error")
+    }
+  }
+
+
   return (
-    <Navbar
+    <>
+    {
+      loading2 ? (
+        <> 
+        </>
+    )
+    :(
+      <>
+      {
+        userData.userId
+        ?
+        <>
+         <Navbar
       className="bg-main border-b border-white border-opacity-20"
       position="sticky"
       maxWidth="xl"
@@ -82,37 +191,39 @@ const AuthNavbar = () => {
       </NavbarBrand>
       <NavbarContent as="div" justify="end">
         <NavbarItem className="hidden md:inline text-white">
-          <Link href="/client/my-projects">My Projects</Link>
+          <Link href={(userData?.userType ==="client") ? "/client/my-projects" : "/professional/my-responses/"}>My Projects</Link>
         </NavbarItem>
+        
         <NavbarItem>
           <Link
-            key={avatarDropdownMenu[2].key}
-            href={avatarDropdownMenu[2].href}
+            key={avatarDropdownMenu[0].key}
+            href={avatarDropdownMenu[0].href}
             className="min-w-5"
           >
             <Box
-              className={`flex items-center gap-4 -mr-6 sm:mr-0 ${avatarDropdownMenu[2].key === "logout" ? "" : "border-b"} border-dark border-opacity-20  hover:rounded-lg`}
+              className={`flex items-center gap-4 -mr-6 sm:mr-0 ${avatarDropdownMenu[0].key === "logout" ? "" : "border-b"} border-dark border-opacity-20  hover:rounded-lg`}
             >
               <div className="p-2 bg-main rounded-md">
                 <Image
                   width={500}
                   height={500}
                   className="w-5 min-w-4"
-                  src={avatarDropdownMenu[2].icon}
-                  alt={avatarDropdownMenu[2].text}
+                  src={avatarDropdownMenu[0].icon}
+                  alt={avatarDropdownMenu[0].text}
                 />
               </div>
             </Box>
           </Link>
         </NavbarItem>
+
         <NavbarItem 
           className="cursor-pointer ml-6 flex gap-2 text-white items-center"
           onClick={() => setOpenDropdown(!openDropdown)}
         >
-          <Avatar src={testimonial3Img.src} className="w-8 h-8" />
+          <img src={userData?.userPicture} className="w-8 h-8 rounded-[100%]" />
           <span className="text-sm sm:text-base">
-            <span>Anita</span>
-            <span className="hidden sm:inline">Maika</span>
+            <span className="capitalize">{userData.userName}</span>
+            {/* <span className="hidden sm:inline">Maika</span> */}
           </span>
           <Image
             src={arrowDownWhiteIcon}
@@ -123,39 +234,139 @@ const AuthNavbar = () => {
         <Box>
           {openDropdown && (
             <Box className="absolute right-0 top-14 bg-white border border-dark border-opacity-20 shadow-lg rounded-md px-4 py-2">
-              {avatarDropdownMenu.map((menu) => (
-                <Link
-                  key={menu.key}
-                  href={menu.href}
-                  className={menu.key === "projects" ? "md:hidden" : ""}
+                   <Link
+                  href={`/${userData.userType}/dashboard`}
                 >
                   <Box
-                    className={`flex items-center gap-4 p-2 px-3 ${menu.key === "logout" ? "" : "border-b"} border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
+                    className={`flex items-center gap-4 p-2 px-3  border-b border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
                   >
                     <div className="p-2 bg-main rounded-md">
                       <Image
                         width={500}
                         height={500}
                         className="w-5"
-                        src={menu.icon}
-                        alt={menu.text}
+                        src={"/icons/dashboard.png"}
+                        alt={"Dashboard"}
                       />
                     </div>
                     <span
-                      className={
-                        menu.key === "logout" ? " !text-red font-semibold" : ""
-                      }
                     >
-                      {menu.text}
+                      Dashboard
                     </span>
                   </Box>
                 </Link>
-              ))}
+                <Link
+                  href={`/${userData?.userType}/account_settings/notifications`}
+                >
+                  <Box
+                    className={`flex items-center gap-4 p-2 px-3 border-b border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
+                  >
+                    <div className="p-2 bg-main rounded-md">
+                      <Image
+                        width={500}
+                        height={500}
+                        className="w-5"
+                        src={notificationsIcon}
+                        alt={"Dashboard"}
+                      />
+                    </div>
+                    <span
+                    >
+                      Notifications
+                    </span>
+                  </Box>
+                </Link>
+                <Link
+                href={""}
+                  onClick={()=>{{pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? handleIntoProfessional() : handleIntoClient();}}}
+                >
+                  <Box
+                    className={`flex items-center gap-4 p-2 px-3  border-b border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
+                  >
+                    <div className="p-2 bg-main rounded-md">
+                      <Image
+                        width={500}
+                        height={500}
+                        className="w-5"
+                        src={notificationsIcon}
+                        alt={"Dashboard"}
+                      />
+                    </div>
+                    <span
+                    >
+                      {pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "Switch to Seller" : "Switch to Client"}
+                    </span>
+                  </Box>
+                </Link>
+                <Link
+                  href={`/${userData?.userType}/account_settings/notifications`}
+                >
+                  <Box
+                    className={`flex items-center gap-4 p-2 px-3 border-b  border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
+                  >
+                    <div className="p-2 bg-main rounded-md">
+                      <Image
+                        width={500}
+                        height={500}
+                        className="w-5"
+                        src={settingsIcon}
+                        alt={"Settings"}
+                      />
+                    </div>
+                    <span
+                    >
+                      Settings
+                    </span>
+                  </Box>
+                </Link>
+
+                <Link
+                href={""}
+                onClick={handleLogout}
+                >
+                  <Box
+                  onClick={handleLogout}
+                    className={`flex items-center gap-4 p-2 px-3    border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
+                  >
+                    <div className="p-2 bg-main rounded-md">
+                      <Image
+                        width={500}
+                        height={500}
+                        className="w-5"
+                        src={notificationsIcon}
+                        alt={"Dashboard"}
+                      />
+                    </div>
+                    <span className="text-red font-bold"
+                    >
+                     Logout
+                    </span>
+                  </Box>
+                </Link>
             </Box>
           )}
         </Box>
       </NavbarContent>
     </Navbar>
+    <Modal open={loading}>
+            <Box className="w-full h-full flex justify-center items-center">
+              <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+                <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                <h1 className="text-center font-bold text-xl ml-2">{loadingMessage}</h1>
+              </Box>
+            </Box>
+          </Modal>
+      </>
+        :
+        <> 
+        
+          <NavMain mode="light" />
+        </>
+      }
+    </>
+    )
+    }
+    </>
   );
 };
 

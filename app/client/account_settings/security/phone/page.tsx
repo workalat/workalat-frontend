@@ -23,13 +23,13 @@ const PhonePage = () => {
   const [value, setValue] = useState<string | undefined>();
 
   let [userData, setUserData] = useState({});
-  let { getPhoneNo } = useUserContext();
+  let { getPhoneNo,phoneVerifyPage } = useUserContext();
   
-  // loading
-  const [loading, setLoading] = useState(false);
 
   // loading
   const [loading2, setLoading2] = useState(true);
+  let [phoneNo, setPhoneNo] = useState("");
+  let [phoneCountry, setPhoneCountry] = useState("");
 
   // router
   const router = useRouter();
@@ -59,8 +59,8 @@ const PhonePage = () => {
           else{
             setUserData(ver);
             let phoneDet = await getPhoneNo({userId : ver.userId, userType : "client"});
-            console.log(phoneDet.data.phoneNo); 
-            console.log(phoneDet.data.countryCode)
+            setPhoneNo(phoneDet.data.phoneNo)
+            setPhoneCountry(phoneDet?.data?.countryCode)
             setLoading2(false);
           }
         }
@@ -73,7 +73,36 @@ const PhonePage = () => {
       }
     };
     verify();
-  }, []);
+  }, []); 
+
+
+  async function handleSendOtp(){
+    try{
+      if(!phoneNo){
+        return generateSnackbar("Please Enter Phone Number.", "error");
+      }
+     let res = await phoneVerifyPage({
+        userId : userData?.userId,
+        userType : userData?.userType,
+        phoneNo : phoneNo
+     });
+     console.log(res);
+      if(res?.status !== 400  || res?.data?.status === "success"){
+        generateSnackbar("OTP sent successfully", "success");
+        setOtpModal(true)
+      }
+      else{
+        generateSnackbar(res?.response?.data?.message || "Please Try Again.", "error");
+      }
+    }
+    catch(e){
+      console.log(e);
+    }
+  };
+
+
+  
+
 
   return (
     <>
@@ -85,7 +114,7 @@ const PhonePage = () => {
             )
             :(
               <>
-              <OTPModal open={otpModal} onClose={() => setOtpModal(false)} />
+              <OTPModal open={otpModal} onClose={() => setOtpModal(false)} userId={userData?.userId} userType={userData?.userType} phoneNo={phoneNo} />
       <Grid container spacing={2} className="mt-3">
         <Grid item xs={12} md={7}>
           <Box className="rounded-xl border border-dark border-opacity-30 px-6 py-4 pb-6 space-y-4 bg-white md:bg-transparent">
@@ -95,7 +124,7 @@ const PhonePage = () => {
                 countryCallingCodeEditable={false}
                 defaultCountry="GB"
                 className="[&_.PhoneInputCountry]:!p-3 [&_.PhoneInputCountry]:bg-gray-200 [&_.PhoneInputCountry]:rounded-md [&_input]:bg-transparent [&_input]:border-b [&_input:hover]:border-dark [&_input]:p-2  [&_input:focus]:outline-secondary"
-                value={value}
+                value={`+${phoneNo}`}
                 onChange={handlePhoneNumberChange}
               />
               <Box className="flex justify-between items-center">
@@ -116,7 +145,7 @@ const PhonePage = () => {
               variant="contained"
               color="primary"
               className="gap-2 py-3 px-6 font-semibold"
-              onClick={() => setOtpModal(true)}
+              onClick={handleSendOtp}
             >
               Send OTP
               <Image alt="Change password" src={arrowRight} />

@@ -97,6 +97,11 @@ SetupAccountProps) {
     setShowPassword(!showPassword);
   };
 
+  const [confirmShowPassword, setConfirmShowPassword] = useState(false);
+  const handleConfirmShowPasswordToggle = () => {
+    setConfirmShowPassword(!confirmShowPassword);
+  };
+
   return (
     <>
       <h1 className="text-2xl font-bold text-center max-w-[450px] -mt-8">
@@ -160,7 +165,7 @@ SetupAccountProps) {
           <label>Re-enter password</label>
           <TextField
             fullWidth
-            type={showPassword ? "text" : "password"}
+            type={confirmShowPassword ? "text" : "password"}
             margin="normal"
             name="confirmPassword"
             value={userDetails.confirmPassword}
@@ -171,8 +176,8 @@ SetupAccountProps) {
               className: "border-b-4 border-b-secondary",
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleShowPasswordToggle}>
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  <IconButton onClick={handleConfirmShowPasswordToggle}>
+                    {confirmShowPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                   </IconButton>
                 </InputAdornment>
               ),

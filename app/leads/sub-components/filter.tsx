@@ -1,6 +1,389 @@
-"use client";
+// "use client";
 
-import React, { useState } from "react";
+// import React, { useState } from "react";
+// import ArrowForward from "@mui/icons-material/ArrowForward";
+// import Close from "@mui/icons-material/Close";
+// import PinDrop from "@mui/icons-material/PinDrop";
+// import SearchIcon from "@mui/icons-material/Search";
+// import FilterListIcon from '@mui/icons-material/FilterList';
+// import {
+//   Box,
+//   Button,
+//   Checkbox,
+//   FormControlLabel,
+//   Radio,
+//   RadioGroup,
+//   TextField,
+// } from "@mui/material";
+
+// import { siteConfig } from "@/config/site";
+// import { useSnackbar } from "@/context/snackbar_context";
+// import { useUserContext } from "@/context/user_context";
+// import moment from "moment";
+
+// interface JobSearchCriteria {
+//   keyword: string;
+//   services: string[];
+//   location: {
+//     custom: string;
+//     within_30mi: boolean;
+//     nationwide: boolean;
+//     all: boolean;
+//   };
+//   budget: {
+//     minBudget: number;
+//     maxBudget: number;
+//   };
+//   time: {
+//     anytime: boolean;
+//     lastHour: boolean;
+//     today: boolean;
+//     yesterday: boolean;
+//     threeDays: boolean;
+//     sevenDays: boolean;
+//     twoWeeks: boolean;
+//   };
+// }
+
+// export default function LeadsFilter({setFilterProjects,professionalId }) {
+//   const [filters, setFilters] = React.useState<JobSearchCriteria>({
+//     keyword: "",
+//     services: [],
+//     location: {
+//       custom: "",
+//       within_30mi: false,
+//       nationwide: false,
+//       all: true, 
+//     },
+//     budget: {
+//       minBudget: 0,
+//       maxBudget: 999999,
+//     },
+//     time: {
+//       anytime: true,
+//       lastHour: false,
+//       today: false,
+//       yesterday: false,
+//       threeDays: false,
+//       sevenDays: false,
+//       twoWeeks: false,
+//     },
+//   });
+
+
+//   const { generateSnackbar } = useSnackbar();
+
+//   let { filterLead } = useUserContext();
+//   console.log(professionalId);
+
+//   const handleFilterSubmit = async (e: React.FormEvent) => {
+//     try{
+//       e.preventDefault();
+//       let service = filters.keyword;
+//       let services = (filters.services.length>0) ? filters.services : [""];
+//       let min = filters.budget.minBudget;
+//       let max = filters.budget.maxBudget;
+//       let today = moment().toISOString()
+//       let timeStamp = (filters.time.today ? moment().toISOString() : (filters.time.yesterday) ? moment().subtract(1, 'days').toISOString()  : (filters.time.lastHour) ?moment().subtract(1, 'hours').toISOString() :  (filters.time.threeDays) ? moment().subtract(3, 'days').toISOString() : (filters.time.sevenDays) ? moment().subtract(7, 'days').toISOString() : (filters.time.twoWeeks) ? moment().subtract(2, 'weeks').toISOString() : (filters.time.anytime) ? moment().subtract(2, 'years').toISOString() : moment().toISOString()  )
+//       let location = (filters.location.nationwide) ? ["nationwide", filters.location.custom ] :  [filters.location.custom ]
+//       console.log(service,services,min,max,today,timeStamp ,location )
+//       // setFilterss(filters);
+//       // let res = await showSingleLead()
+//       let res = await filterLead({
+//         service : service,
+//         services : services,
+//         minBudget: min,
+//         maxBudget:  max,
+//         todayTimeStamp : today,
+//         timeStamp : timeStamp,
+//         location : location,
+//         professionalId : professionalId
+//       });
+//       console.log(res);
+
+//     }
+//     catch(e){
+//       console.log(e);
+//     }
+    
+//   };
+
+//   const clearFilters = () => {
+//     setFilterss(
+//       {
+//         keyword: "",
+//         services: [],
+//         location: {
+//           custom: "",
+//           // within_30mi: false,
+//           nationwide: false,
+//           // all: true,
+//         },
+//         budget: {
+//           minBudget: 0,
+//           maxBudget: 999999,
+//         },
+//         time: {
+//           anytime: true,
+//           lastHour: false,
+//           today: false,
+//           yesterday: false,
+//           threeDays: false,
+//           sevenDays: false,
+//           twoWeeks: false,
+//         },
+//       }
+//     )
+//   }
+
+//   const [open, setOpen] = useState(false);
+
+//   return (
+//     <>
+//       <Button
+//         variant="contained"
+//         color="info"
+//         className="mt-4 sticky top-32 lg:hidden"
+//         onClick={() => setOpen(true)}
+//       >
+//         <FilterListIcon className="mr-2" />
+//         Filters
+//       </Button>
+//       <div
+//         className={`overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden pointer-events-none ${open ? "opacity-100" : "opacity-0"} transition-opacity`}
+//       />
+//       <Box
+//         className={`py-5 lg:pr-4 px-4 border-r w-full max-w-xs overflow-auto h-svh lg:h-auto bg-white fixed lg:static lg:z-0 z-50 left-0 lg:!translate-x-0 ${open ? " translate-x-0" : "-translate-x-full"} top-0 transition-all`}
+//       >
+//         <form onSubmit={handleFilterSubmit}>
+//           <Box className="flex justify-between">
+//             <h2 className="text-2xl font-bold">Filters</h2>
+//             <Close
+//               className="block lg:hidden"
+//               role="button"
+//               onClick={() => setOpen(false)}
+//             />
+//           </Box>
+//           <Box className="mt-6">
+//             <label htmlFor="keyword" className="block font-semibold mb-1">
+//               Keyword search
+//             </label>
+//             <TextField
+//               fullWidth
+//               type="text"
+//               id="keyword"
+//               value={filters.keyword}
+//               InputProps={{
+//                 startAdornment: <SearchIcon className="text-gray-300" />,
+//                 placeholder: "Keyword (e.g. name)",
+//                 className: "gap-2",
+//               }}
+//               onChange={(e) => setFilters(prev => ({ ...prev, keyword: e.target.value }))}
+//             />
+//           </Box>
+//           <Box className="mt-6">
+//             <p className="font-bold mb-1">Services</p>
+            
+//              <Box  key={"house Cleaning"} className="flex items-center">
+//                 <Checkbox
+//                 id="house cleaning"
+//                   checked={filters.services.includes("house cleaning")}
+//                   onChange={(_) => {
+//                     const newServices = filters.services.includes("house cleaning")
+//                       ? filters.services.filter(s => s !== "house cleaning")
+//                       : [...filters.services, "house cleaning"];
+
+//                     setFilters(prev => ({ ...prev, services: newServices }));
+//                   }}
+//                 />
+//                 <label htmlFor={"house cleaning"} className="capitalize text-black text-opacity-60 cursor-pointer">
+//                   {"house cleaning"} 
+//                 </label>
+//               </Box>
+//               <Box key={"dry cleaning"} className="flex items-center">
+//                 <Checkbox
+//                   id={"dry cleaning"}
+//                   checked={filters.services.includes("dry cleaning")}
+//                   onChange={(_) => {
+//                     const newServices = filters.services.includes("dry cleaning")
+//                       ? filters.services.filter(s => s !== "dry cleaning")
+//                       : [...filters.services, "dry cleaning"];
+
+//                     setFilters(prev => ({ ...prev, services: newServices }));
+//                   }}
+//                 />
+//                 <label htmlFor={"dry cleaning"} className="capitalize text-black text-opacity-60 cursor-pointer">
+//                   {"dry cleaning"} 
+//                 </label>
+//               </Box>
+//           </Box>
+//           <Box className="mt-6">
+//             <Box>
+//               <p className="font-bold mb-1">Project Location</p>
+//               <TextField
+//                 fullWidth
+//                 type="text"
+//                 id="location"
+//                 value={filters.location.custom}
+//                 InputProps={{
+//                   endAdornment: <PinDrop className="text-gray-300" />,
+//                   placeholder: "Enter your location",
+//                   className: "gap-2",
+//                 }}
+//                 onChange={(e) => setFilters(prev => ({ ...prev, location: { ...prev.location, custom: e.target.value } }))}
+//               />
+//               <RadioGroup className="mt-4" defaultValue={"all"}>
+//                 {/* <FormControlLabel
+//                   value="all"
+//                   control={<Radio color="secondary" />}
+//                   label="All"
+//                   checked={filters.location.all}
+//                   onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: true, within_30mi: false, nationwide: false } }))}
+//                 /> */}
+//                 <FormControlLabel
+//                   value="nationwide"
+//                   control={<Radio color="secondary" />}
+//                   label="Nationwide"
+//                   checked={filters.location.nationwide}
+//                   onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: false, within_30mi: false, nationwide: true } }))}
+//                 />
+//                 {/* <FormControlLabel
+//                   value="within_30mi"
+//                   control={<Radio color="secondary" />}
+//                   label="30 Miles from Newport"
+//                   checked={filters.location.within_30mi}
+//                   onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: false, within_30mi: true, nationwide: false } }))}
+//                 /> */}
+//               </RadioGroup>
+//             </Box>
+//           </Box>
+//           <Box className="mt-6">
+//             <Box className="flex justify-between items-center">
+//               <p className="font-bold mb-1">Client Budget</p>
+//               <Button variant="text" color="secondary">
+//                 Clear
+//               </Button>
+//             </Box>
+//             <Box>
+//               <label htmlFor="min_budget" className="block font-semibold mb-1">
+//                 min
+//               </label>
+//               <TextField
+//                 fullWidth
+//                 type="text"
+//                 id="min_budget"
+//                 defaultValue={0}
+//                 value={filters.budget.minBudget}
+//                 InputProps={{
+//                   startAdornment: (
+//                     <span className="text-gray-400 font-semibold">£</span>
+//                   ),
+//                   endAdornment: (
+//                     <span className="font-semibold text-gray-400">GBP</span>
+//                   ),
+//                   placeholder: "0",
+//                   className: "gap-2",
+//                 }}
+//                 onChange={(e) => setFilters(prev => ({ ...prev, budget: { ...prev.budget, minBudget: Number(e.target.value) } }))}
+//               />
+//             </Box>
+//             <Box className="mt-3">
+//               <label htmlFor="max_budget" className="block font-semibold mb-1">
+//                 max
+//               </label>
+//               <TextField
+//                 fullWidth
+//                 type="text"
+//                 id="max_budget"
+//                 defaultValue={9999999}
+//                 value={filters.budget.maxBudget}
+//                 InputProps={{
+//                   startAdornment: (
+//                     <span className="text-gray-400 font-semibold">£</span>
+//                   ),
+//                   endAdornment: (
+//                     <span className="font-semibold text-gray-400">GBP</span>
+//                   ),
+//                   placeholder: "0",
+//                   className: "gap-2",
+//                 }}
+//                 onChange={(e) => setFilters(prev => ({ ...prev, budget: { ...prev.budget, maxBudget: Number(e.target.value) } }))}
+//               />
+//             </Box>
+//           </Box>
+//           <Box className="mt-6">
+//             <p className="font-bold mb-1">When the lead was submitted</p>
+//             <RadioGroup className="mt-2" defaultValue={"anytime"}>
+//               <FormControlLabel
+//                 value="anytime"
+//                 control={<Radio color="secondary" />}
+//                 label="Anytime"
+//                 checked={filters.time.anytime}
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: true, lastHour: false, today: false, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: false } }))}
+//               />
+//               <FormControlLabel
+//                 value="last_hour"
+//                 control={<Radio color="secondary" />}
+//                 label="Last Hour"
+//                 checked={filters.time.lastHour}
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: true, today: false, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: false } }))}
+//               />
+//               <FormControlLabel
+//                 value="today"
+//                 control={<Radio color="secondary" />}
+//                 label="Today"
+//                 checked={filters.time.today}
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: true, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: false } }))}
+//               />
+//               <FormControlLabel
+//                 value="yesterday"
+//                 control={<Radio color="secondary" />}
+//                 label="Yesterday"
+//                 checked={filters.time.yesterday}
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: true, threeDays: false, sevenDays: false, twoWeeks: false } }))}
+//               />
+//               <FormControlLabel
+//                 value="threeDays"
+//                 control={<Radio color="secondary" />}
+//                 label="Less than 3 Days"
+//                 checked={filters.time.threeDays}
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: false, threeDays: true, sevenDays: false, twoWeeks: false } }))}
+//               />
+//               <FormControlLabel
+//                 value="sevenDays"
+//                 control={<Radio color="secondary" />}
+//                 checked={filters.time.sevenDays}
+//                 label="Less than 7 Days"
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: false, threeDays: false, sevenDays: true, twoWeeks: false } }))}
+//               />
+//               <FormControlLabel
+//                 value="twoWeeks"
+//                 control={<Radio color="secondary" />}
+//                 checked={filters.time.twoWeeks}
+//                 label="Within the last 2 Weeks"
+//                 onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: true } }))}
+//               />
+//             </RadioGroup>
+//           </Box>
+//           <Box className="mt-6 flex gap-2">
+//             <Button fullWidth variant="contained" color="secondary" size="large" onClick={clearFilters}>
+//               Clear
+//               <Close />
+//             </Button>
+//             <Button fullWidth type="submit" variant="contained" color="primary" size="large">
+//               Apply
+//               <ArrowForward />
+//             </Button>
+//           </Box>
+//         </form>
+//       </Box>
+//     </>
+//   );
+// }
+
+
+"use client";
+import React, { useState, useEffect } from "react";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import Close from "@mui/icons-material/Close";
 import PinDrop from "@mui/icons-material/PinDrop";
@@ -14,21 +397,42 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Autocomplete,
 } from "@mui/material";
-
 import { siteConfig } from "@/config/site";
 import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
 import moment from "moment";
+// Import postcode data
+import postcodesData from "@/postcodes.json";
+import regionsData from "@/postcode_region.json";
+
+// Services list
+const SERVICES_LIST = [
+  "end of tenancy cleaning",
+  "general plumbing",
+  "house cleaning",
+  "office cleaning",
+  "gas safety check",
+  "carpet cleaning",
+  "window cleaners",
+  "phone repair",
+  "water heater installation",
+  "oven cleaning",
+  "dry cleaning",
+  "water heater maintenance",
+  "chimney cleaning",
+  "rug cleaning",
+  "warehouse cleaning",
+  "ironing"
+];
 
 interface JobSearchCriteria {
   keyword: string;
   services: string[];
   location: {
     custom: string;
-    within_30mi: boolean;
     nationwide: boolean;
-    all: boolean;
   };
   budget: {
     minBudget: number;
@@ -45,15 +449,14 @@ interface JobSearchCriteria {
   };
 }
 
-export default function LeadsFilter({setFilterProjects,professionalId }) {
-  const [filters, setFilters] = React.useState<JobSearchCriteria>({
+export default function LeadsFilter({setFilterProjects, professionalId }) {
+  // Main filter state
+  const [filters, setFilters] = useState<JobSearchCriteria>({
     keyword: "",
     services: [],
     location: {
       custom: "",
-      within_30mi: false,
       nationwide: false,
-      all: true, 
     },
     budget: {
       minBudget: 0,
@@ -70,73 +473,125 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
     },
   });
 
-
+  // UI States
+  const [open, setOpen] = useState(false);
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [selectedPostcode, setSelectedPostcode] = useState("");
+  const [selectedPostcodeRegion, setSelectedPostcodeRegion] = useState("");
+  
+  // Services fetching state
+  const [availableServices, setAvailableServices] = useState<string[]>([]);
+  
+  // Context hooks
   const { generateSnackbar } = useSnackbar();
+  const { filterLead, findAllServices } = useUserContext();
 
-  let { filterLead } = useUserContext();
-  console.log(professionalId);
-
-  const handleFilterSubmit = async (e: React.FormEvent) => {
-    try{
-      e.preventDefault();
-      let service = filters.keyword;
-      let services = filters.services;
-      let min = filters.budget.minBudget;
-      let max = filters.budget.maxBudget;
-      let today = moment().toISOString()
-      let timeStamp = (filters.time.today ? moment().toISOString() : (filters.time.yesterday) ? moment().subtract(1, 'days').toISOString()  : (filters.time.lastHour) ?moment().subtract(1, 'hours').toISOString() :  (filters.time.threeDays) ? moment().subtract(3, 'days').toISOString() : (filters.time.sevenDays) ? moment().subtract(7, 'days').toISOString() : (filters.time.twoWeeks) ? moment().subtract(2, 'weeks').toISOString() : (filters.time.anytime) ? moment().subtract(2, 'years').toISOString() : moment().toISOString()  )
-      let location = (filters.location.nationwide) ? ["nationwide", filters.location.custom ] :  [filters.location.custom ]
-      console.log(service,services,min,max,today,timeStamp ,location )
-      // setFilterss(filters);
-      // let res = await showSingleLead()
-      let res = await filterLead({
-        service : service,
-        services : services,
-        minBudget: min,
-        maxBudget:  max,
-        todayTimeStamp : today,
-        timeStamp : timeStamp,
-        location : location,
-        professionalId : professionalId
-      });
-      console.log(res);
-
+  // Fetch services on mount
+  useEffect(() => {
+    async function getServices() {
+      try {
+        const data = await findAllServices();
+        setAvailableServices(data.data);
+      } catch (e) {
+        console.log(e);
+        generateSnackbar("Failed to fetch services", "error");
+      }
     }
-    catch(e){
-      console.log(e);
-    }
-    
+    getServices();
+  }, []);
+
+  // Display services (7 or all based on showAllServices)
+  const displayedServices = showAllServices 
+    ? SERVICES_LIST 
+    : SERVICES_LIST.slice(0, 7);
+
+  // Utility function to convert to camelCase
+  const toCamelCase = (str: string) => {
+    return str.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   };
 
-  const clearFilters = () => {
-    setFilterss(
-      {
-        keyword: "",
-        services: [],
-        location: {
-          custom: "",
-          // within_30mi: false,
-          nationwide: false,
-          // all: true,
-        },
-        budget: {
-          minBudget: 0,
-          maxBudget: 999999,
-        },
-        time: {
-          anytime: true,
-          lastHour: false,
-          today: false,
-          yesterday: false,
-          threeDays: false,
-          sevenDays: false,
-          twoWeeks: false,
-        },
-      }
-    )
-  }
+  // Handle postcode selection
+  const handlePostcodeSelection = (event: any, newValue: any) => {
+    if (newValue) {
+      const postcode = newValue.label;
+      const region = regionsData[postcode] || "";
+      setSelectedPostcodeRegion(region);
+      setSelectedPostcode(postcode);
+      setFilters(prev => ({
+        ...prev,
+        location: { ...prev.location, custom: postcode }
+      }));
+    }
+  };
 
-  const [open, setOpen] = useState(false);
+  // Form submission handler
+  const handleFilterSubmit = async (e: React.FormEvent) => {
+    try {
+      e.preventDefault();
+      const service = filters.keyword;
+      const services = (filters.services.length > 0) ? filters.services : [""];
+      const min = filters.budget.minBudget;
+      const max = filters.budget.maxBudget;
+      const today = moment().toISOString();
+      const timeStamp = filters.time.today ? moment().toISOString() :
+        filters.time.yesterday ? moment().subtract(1, 'days').toISOString() :
+        filters.time.lastHour ? moment().subtract(1, 'hours').toISOString() :
+        filters.time.threeDays ? moment().subtract(3, 'days').toISOString() :
+        filters.time.sevenDays ? moment().subtract(7, 'days').toISOString() :
+        filters.time.twoWeeks ? moment().subtract(2, 'weeks').toISOString() :
+        moment().subtract(2, 'years').toISOString();
+      
+      const location = filters.location.nationwide 
+        ? ["nationwide", filters.location.custom] 
+        : [filters.location.custom];
+
+      const res = await filterLead({
+        service,
+        services,
+        minBudget: min,
+        maxBudget: max,
+        todayTimeStamp: today,
+        timeStamp,
+        location,
+        professionalId
+      });
+      console.log(res);
+      setFilterProjects(res?.data?.data);
+    } catch(e) {
+      console.log(e);
+      generateSnackbar("Failed to apply filters", "error");
+    }
+  };
+
+  // Clear filters
+  const clearFilters = () => {
+    setFilters({
+      keyword: "",
+      services: [],
+      location: {
+        custom: "",
+        nationwide: false,
+      },
+      budget: {
+        minBudget: 0,
+        maxBudget: 999999,
+      },
+      time: {
+        anytime: true,
+        lastHour: false,
+        today: false,
+        yesterday: false,
+        threeDays: false,
+        sevenDays: false,
+        twoWeeks: false,
+      },
+    });
+    setSelectedPostcode("");
+    setSelectedPostcodeRegion("");
+  };
+
 
   return (
     <>
@@ -150,10 +605,14 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
         Filters
       </Button>
       <div
-        className={`overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden pointer-events-none ${open ? "opacity-100" : "opacity-0"} transition-opacity`}
+        className={`overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden pointer-events-none ${
+          open ? "opacity-100" : "opacity-0"
+        } transition-opacity`}
       />
       <Box
-        className={`py-5 lg:pr-4 px-4 border-r w-full max-w-xs overflow-auto h-svh lg:h-auto bg-white fixed lg:static lg:z-0 z-50 left-0 lg:!translate-x-0 ${open ? " translate-x-0" : "-translate-x-full"} top-0 transition-all`}
+        className={`py-5 lg:pr-4 px-4 border-r w-full max-w-xs overflow-auto h-svh lg:h-auto bg-white fixed lg:static lg:z-0 z-50 left-0 lg:!translate-x-0 ${
+          open ? " translate-x-0" : "-translate-x-full"
+        } top-0 transition-all`}
       >
         <form onSubmit={handleFilterSubmit}>
           <Box className="flex justify-between">
@@ -164,103 +623,136 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
               onClick={() => setOpen(false)}
             />
           </Box>
+
+          {/* Keyword Search with Autocomplete */}
           <Box className="mt-6">
             <label htmlFor="keyword" className="block font-semibold mb-1">
               Keyword search
             </label>
-            <TextField
+            <Autocomplete
               fullWidth
-              type="text"
               id="keyword"
-              value={filters.keyword}
-              InputProps={{
-                startAdornment: <SearchIcon className="text-gray-300" />,
-                placeholder: "Keyword (e.g. name)",
-                className: "gap-2",
+              options={availableServices.map((service) => ({
+                label: toCamelCase(service),
+                value: service.toLowerCase(),
+              }))}
+              value={filters.keyword ? { label: toCamelCase(filters.keyword), value: filters.keyword } : null}
+              onChange={(_, newValue) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  keyword: newValue ? newValue.value : "",
+                }));
               }}
-              onChange={(e) => setFilters(prev => ({ ...prev, keyword: e.target.value }))}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: <SearchIcon className="text-gray-300 mr-2" />,
+                  }}
+                  placeholder="Search services"
+                />
+              )}
             />
           </Box>
+
+          {/* Services Section */}
           <Box className="mt-6">
             <p className="font-bold mb-1">Services</p>
-            
-             <Box  key={"house Cleaning"} className="flex items-center">
-                <Checkbox
-                id="house cleaning"
-                  checked={filters.services.includes("house cleaning")}
-                  onChange={(_) => {
-                    const newServices = filters.services.includes("house cleaning")
-                      ? filters.services.filter(s => s !== "house cleaning")
-                      : [...filters.services, "house cleaning"];
-
-                    setFilters(prev => ({ ...prev, services: newServices }));
-                  }}
-                />
-                <label htmlFor={"house cleaning"} className="capitalize text-black text-opacity-60 cursor-pointer">
-                  {"house cleaning"} 
-                </label>
-              </Box>
-              <Box key={"dry cleaning"} className="flex items-center">
-                <Checkbox
-                  id={"dry cleaning"}
-                  checked={filters.services.includes("dry cleaning")}
-                  onChange={(_) => {
-                    const newServices = filters.services.includes("dry cleaning")
-                      ? filters.services.filter(s => s !== "dry cleaning")
-                      : [...filters.services, "dry cleaning"];
-
-                    setFilters(prev => ({ ...prev, services: newServices }));
-                  }}
-                />
-                <label htmlFor={"dry cleaning"} className="capitalize text-black text-opacity-60 cursor-pointer">
-                  {"dry cleaning"} 
-                </label>
-              </Box>
+            <Box className="flex flex-col gap-1">
+              {displayedServices.map((service) => (
+                <Box key={service} className="flex items-center">
+                  <Checkbox
+                    id={service}
+                    checked={filters.services.includes(service)}
+                    onChange={(_) => {
+                      const newServices = filters.services.includes(service)
+                        ? filters.services.filter((s) => s !== service)
+                        : [...filters.services, service];
+                      setFilters((prev) => ({ ...prev, services: newServices }));
+                    }}
+                  />
+                  <label
+                    htmlFor={service}
+                    className="capitalize text-black text-opacity-60 cursor-pointer"
+                  >
+                    {toCamelCase(service)}
+                  </label>
+                </Box>
+              ))}
+              {SERVICES_LIST.length > 7 && (
+                <Button
+                  variant="text"
+                  color="secondary"
+                  onClick={() => setShowAllServices(!showAllServices)}
+                  className="mt-2"
+                >
+                  {showAllServices ? "Show Less" : "Show More"}
+                </Button>
+              )}
+            </Box>
           </Box>
+
+          {/* Location Section */}
           <Box className="mt-6">
             <Box>
               <p className="font-bold mb-1">Project Location</p>
-              <TextField
+              <Autocomplete
                 fullWidth
-                type="text"
-                id="location"
-                value={filters.location.custom}
-                InputProps={{
-                  endAdornment: <PinDrop className="text-gray-300" />,
-                  placeholder: "Enter your location",
-                  className: "gap-2",
-                }}
-                onChange={(e) => setFilters(prev => ({ ...prev, location: { ...prev.location, custom: e.target.value } }))}
+                options={postcodesData.map((postcode) => ({
+                  label: postcode,
+                }))}
+                value={selectedPostcode ? { label: selectedPostcode } : null}
+                onChange={handlePostcodeSelection}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    placeholder="Enter postcode"
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: <PinDrop className="text-gray-300" />,
+                    }}
+                  />
+                )}
               />
+              {selectedPostcodeRegion && (
+                <p className="mt-2 text-sm text-gray-600">
+                  Region: {selectedPostcodeRegion}
+                </p>
+              )}
               <RadioGroup className="mt-4" defaultValue={"all"}>
-                {/* <FormControlLabel
-                  value="all"
-                  control={<Radio color="secondary" />}
-                  label="All"
-                  checked={filters.location.all}
-                  onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: true, within_30mi: false, nationwide: false } }))}
-                /> */}
                 <FormControlLabel
                   value="nationwide"
                   control={<Radio color="secondary" />}
                   label="Nationwide"
                   checked={filters.location.nationwide}
-                  onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: false, within_30mi: false, nationwide: true } }))}
+                  onChange={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      location: { ...prev.location, nationwide: true },
+                    }))
+                  }
                 />
-                {/* <FormControlLabel
-                  value="within_30mi"
-                  control={<Radio color="secondary" />}
-                  label="30 Miles from Newport"
-                  checked={filters.location.within_30mi}
-                  onChange={() => setFilters(prev => ({ ...prev, location: { ...prev.location, all: false, within_30mi: true, nationwide: false } }))}
-                /> */}
               </RadioGroup>
             </Box>
           </Box>
+
+          {/* Budget Section */}
           <Box className="mt-6">
             <Box className="flex justify-between items-center">
               <p className="font-bold mb-1">Client Budget</p>
-              <Button variant="text" color="secondary">
+              <Button
+                variant="text"
+                color="secondary"
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    budget: { minBudget: 0, maxBudget: 999999 },
+                  }))
+                }
+              >
                 Clear
               </Button>
             </Box>
@@ -270,9 +762,8 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
               </label>
               <TextField
                 fullWidth
-                type="text"
+                type="number"
                 id="min_budget"
-                defaultValue={0}
                 value={filters.budget.minBudget}
                 InputProps={{
                   startAdornment: (
@@ -281,10 +772,16 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
                   endAdornment: (
                     <span className="font-semibold text-gray-400">GBP</span>
                   ),
-                  placeholder: "0",
-                  className: "gap-2",
                 }}
-                onChange={(e) => setFilters(prev => ({ ...prev, budget: { ...prev.budget, minBudget: Number(e.target.value) } }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    budget: {
+                      ...prev.budget,
+                      minBudget: Number(e.target.value),
+                    },
+                  }))
+                }
               />
             </Box>
             <Box className="mt-3">
@@ -293,9 +790,8 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
               </label>
               <TextField
                 fullWidth
-                type="text"
+                type="number"
                 id="max_budget"
-                defaultValue={9999999}
                 value={filters.budget.maxBudget}
                 InputProps={{
                   startAdornment: (
@@ -304,73 +800,76 @@ export default function LeadsFilter({setFilterProjects,professionalId }) {
                   endAdornment: (
                     <span className="font-semibold text-gray-400">GBP</span>
                   ),
-                  placeholder: "0",
-                  className: "gap-2",
                 }}
-                onChange={(e) => setFilters(prev => ({ ...prev, budget: { ...prev.budget, maxBudget: Number(e.target.value) } }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    budget: {
+                      ...prev.budget,
+                      maxBudget: Number(e.target.value),
+                    },
+                  }))
+                }
               />
             </Box>
           </Box>
+
+          {/* Time Section */}
           <Box className="mt-6">
             <p className="font-bold mb-1">When the lead was submitted</p>
             <RadioGroup className="mt-2" defaultValue={"anytime"}>
-              <FormControlLabel
-                value="anytime"
-                control={<Radio color="secondary" />}
-                label="Anytime"
-                checked={filters.time.anytime}
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: true, lastHour: false, today: false, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: false } }))}
-              />
-              <FormControlLabel
-                value="last_hour"
-                control={<Radio color="secondary" />}
-                label="Last Hour"
-                checked={filters.time.lastHour}
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: true, today: false, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: false } }))}
-              />
-              <FormControlLabel
-                value="today"
-                control={<Radio color="secondary" />}
-                label="Today"
-                checked={filters.time.today}
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: true, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: false } }))}
-              />
-              <FormControlLabel
-                value="yesterday"
-                control={<Radio color="secondary" />}
-                label="Yesterday"
-                checked={filters.time.yesterday}
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: true, threeDays: false, sevenDays: false, twoWeeks: false } }))}
-              />
-              <FormControlLabel
-                value="threeDays"
-                control={<Radio color="secondary" />}
-                label="Less than 3 Days"
-                checked={filters.time.threeDays}
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: false, threeDays: true, sevenDays: false, twoWeeks: false } }))}
-              />
-              <FormControlLabel
-                value="sevenDays"
-                control={<Radio color="secondary" />}
-                checked={filters.time.sevenDays}
-                label="Less than 7 Days"
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: false, threeDays: false, sevenDays: true, twoWeeks: false } }))}
-              />
-              <FormControlLabel
-                value="twoWeeks"
-                control={<Radio color="secondary" />}
-                checked={filters.time.twoWeeks}
-                label="Within the last 2 Weeks"
-                onChange={() => setFilters(prev => ({ ...prev, time: { ...prev.time, anytime: false, lastHour: false, today: false, yesterday: false, threeDays: false, sevenDays: false, twoWeeks: true } }))}
-              />
+              {[
+                { value: "anytime", label: "Anytime" },
+                { value: "last_hour", label: "Last Hour" },
+                { value: "today", label: "Today" },
+                { value: "yesterday", label: "Yesterday" },
+                { value: "threeDays", label: "Less than 3 Days" },
+                { value: "sevenDays", label: "Less than 7 Days" },
+                { value: "twoWeeks", label: "Within the last 2 Weeks" },
+              ].map((option) => (
+                <FormControlLabel
+                  key={option.value}
+                  value={option.value}
+                  control={<Radio color="secondary" />}
+                  label={option.label}
+                  checked={filters.time[option.value === "last_hour" ? "lastHour" : option.value]}
+                  onChange={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      time: {
+                        ...Object.fromEntries(
+                          Object.keys(prev.time).map((key) => [
+                            key,
+                            key === (option.value === "last_hour" ? "lastHour" : option.value),
+                          ])
+                        ),
+                      },
+                    }))
+                  }
+                />
+              ))}
             </RadioGroup>
           </Box>
+
+          {/* Action Buttons */}
           <Box className="mt-6 flex gap-2">
-            <Button fullWidth variant="contained" color="secondary" size="large" onClick={clearFilters}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={clearFilters}
+            >
               Clear
               <Close />
             </Button>
-            <Button fullWidth type="submit" variant="contained" color="primary" size="large">
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+            >
               Apply
               <ArrowForward />
             </Button>

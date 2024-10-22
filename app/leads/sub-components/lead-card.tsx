@@ -1,5 +1,5 @@
 "use client"
-import { Box, Button, LinearProgress } from "@mui/material";
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -9,6 +9,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import coinIcon from "@/public/icons/coin.svg";
 import { getPastTime } from "@/utils/helper";
 import moment from "moment";
+import DOMPurify from 'dompurify';
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 interface Lead {
@@ -55,7 +56,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
       <Link href={`/client/profile/${lead.clientId}`}  className="cursor-pointer">
       <Box className="flex gap-4 items-start">
         {/* Clinet image */}
-        <img
+        <img 
           src={lead.clientPictureLink}
           alt=""
           width={64}
@@ -66,7 +67,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
           <h3 className="text-lg font-semibold flex flex-col gap-0 justify-center capitalize">
             {/* Name  */}
             {lead.clientName}
-            <span className="text-sm font-medium capitalize">{lead.serviceLocationPostal}   {(lead.serviceLocationTown) ?(`| ${lead.serviceLocationTown}`) :""}</span>
+            <span className="text-sm font-medium capitalize">   {(lead.serviceLocationTown) ?(`${lead?.serviceLocationTown}`) :  (`${lead?.serviceLocationPostal}`)}</span>
             {/* <span className="text-sm font-medium">UK</span> */}
           </h3>
           <Box className="flex items-center gap-1 mt-0.5 flex-wrap">
@@ -124,21 +125,21 @@ export default function LeadCard({ lead }: { lead: Lead }) {
       </Link>
 
       {/* Title  */}
-      <p className="capitalize">{`${lead.serviceDes}...`}</p>
-      <Box className="!mt-4 flex justify-between items-center flex-wrap w-full">
+      <Typography className='text-sm capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: ` ${DOMPurify.sanitize(lead.serviceDes).slice(0,350)}...`}} />
+            <Box className="!mt-4 flex justify-between items-center flex-wrap w-full">
         <Box>
           <Box className="flex items-center gap-2 text-sm flex-wrap">
             <LinearProgress
               variant="determinate"
-              value={(-5+ lead.maxBid)}
+              value={(5- lead.maxBid) *20}
               className="w-full sm:w-24 h-2 rounded-full"
               classes={{
                 bar: "bg-secondary rounded-full",
                 root: "bg-[#E0E0E0]",
-              }}
+              }} 
             />
             {/* Leads Number */}
-            {-5+ lead.maxBid} professionals have
+            {5- lead.maxBid} professionals have
             bided
           </Box>
           {/* Date  */}

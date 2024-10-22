@@ -4,12 +4,12 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Box, Button } from "@mui/material";
 
-import locIcon from "@/public/icons/location.svg";
 import searchIcon from "@/public/icons/search.svg";
 import heroIcon from "@/public/images/hero_img.svg";
 import { siteConfig } from "@/config/site";
 import { useUserContext } from "@/context/user_context";
 import PinDropIcon from "@mui/icons-material/PinDrop";
+import locIcon from "@/public/icons/location.svg";
 
 // Import postcode and region data 
 import postcodesData from "@/postcodes.json";
@@ -71,7 +71,7 @@ const [selectedService, setSelectedService] = useState<string>("");
       }
        catch (e) {
         // console.log(e);
-        router.push("/login");
+        // router.push("/login");
       }
     }
     getServices();
@@ -187,6 +187,7 @@ const [selectedService, setSelectedService] = useState<string>("");
 
       {/* Postcode Input */}
       <div className="flex w-full md:max-w-[300px]">
+
         <Autocomplete
           disablePortal
           id="postcode-autocomplete"
@@ -213,7 +214,18 @@ const [selectedService, setSelectedService] = useState<string>("");
               placeholder="Search Postcode"
               InputProps={{
                 ...params.InputProps,
-                startAdornment: <PinDropIcon />,
+                startAdornment:(
+                  <img
+                      alt=""
+                      className={
+                        zipFocus || postCode !== ""
+                          ? "opacity-100"
+                          : "opacity-40"
+                      }
+                      src={locIcon.src}
+                      width={18}
+                    />
+                ),
               }}
             />
           )}

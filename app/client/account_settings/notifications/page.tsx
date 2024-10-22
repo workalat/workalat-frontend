@@ -146,13 +146,13 @@ const NotificationsPage = () => {
                 className='flex justify-between ml-0'
             />
             <div className='flex justify-center gap-4 flex-col sm:flex-row gap-y-0'>
-                <Button
+                {/* <Button
                     variant="outlined"
                     className="h-[50px] sm:max-w-[130px] rounded-sm flex gap-2 mt-4 flex-grow text-white border-white hover:border-white hover:bg-white hover:bg-opacity-10" 
                 >
                     <span className="font-bold">More</span>
                     <Image src={arrowRightWhiteIcon} alt="Arrow right" />
-                </Button>
+                </Button> */}
                 <Button
                     variant="contained"
                     className="h-[50px] sm:max-w-[130px] rounded-sm flex gap-2 mt-4 flex-grow"

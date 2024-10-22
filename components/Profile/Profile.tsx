@@ -189,11 +189,11 @@ export default function Profile({data, isData}) {
                                             </span>
                                         </h4>
                                         <div className="flex gap-2">
-                                            <div className="flex gap-1 items-center">
+                                            <div className="flex gap-1 items-center"> 
                                                
                                                 <Rating precision={0.1} value={(data.totalRatings / data.totalReviews )} readOnly />
                                                     {/* {console.log(data.totalReviews , data.totalRatings)} */}
-                                                <p className="text-xs">{Number((data.totalRatings / data.totalReviews )).toFixed(1)}</p>
+                                                <p className="text-xs">{  data?.totalReviews>0 ? Number((data?.totalRatings / data?.totalReviews )).toFixed(1) : 0}</p>
                                             </div>
                                             <div className="sm:flex gap-1 items-center hidden">
                                                 <IoMdChatboxes className="size-4 text-[#EA740E]" />
@@ -343,9 +343,10 @@ export default function Profile({data, isData}) {
                                         <div key={i} className="w-full py-2 px-4">
                                         <div className="flex justify-between items-center flex-col gap-2 md:flex-row md:gap-0">
                                             <div className="flex">
-                                                <div className="w-16 h-12 flex items-center justify-center bg-secondary">
+                                            <img src={review?.giverPictureLink} className="w-16 h-12 flex items-center justify-center bg-secondary" />
+                                                {/* <div className="w-16 h-12 flex items-center justify-center bg-secondary"> */}
                                                     {/* <p className="text-xl font-bold">{review?.profile}</p> */}
-                                                </div>
+                                                {/* </div> */}
                                                 <div className="px-3">
                                                     <div className="flex gap-2 items-center">
                                                         {/* {

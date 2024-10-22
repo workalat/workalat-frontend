@@ -24,6 +24,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 import { useSnackbar } from "@/context/snackbar_context";
+import { setMinutes } from "date-fns";
 
 
 interface SideNavProps {
@@ -37,14 +38,16 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
   // 
   let [loading, setLoading] =useState(false);
   const [loading2, setLoading2] = useState(true);
+  let [loadingMessage, setLoadingMessage] = useState("");
   let router = useRouter();
   let [userData,setUserData] = useState({});
   const { generateSnackbar } = useSnackbar();
-  let { intoProfessoinal, intoClient} = useUserContext();
+  let { intoProfessoinal, intoClient,logout} = useUserContext();
   let [uType, setUType] = useState(Cookies.get("userType"));
   
  
   useEffect(() => {
+    console.log(window.location.pathname.split("/")[1])
     if (
       pathname === "/client/dashboard" ||
       pathname.startsWith("/client/dashboard")
@@ -64,9 +67,8 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
       try{
         setLoading2(true);
         let token = Cookies.get("token");
-        console.log(uType);
-        let ver = await VerifyUser(token, uType);
-        // console.log(ver);
+        let ver = await VerifyUser(token, window.location.pathname.split("/")[1]);
+        console.log(ver);
         if(ver.status === "success"){
           setUserData(ver);
           if(ver.registerAs === "professional"){
@@ -78,7 +80,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
             setLoading2(false);
           }
         }
-        else{
+        else{ 
           // router.push("/"); 
         }
       }
@@ -94,6 +96,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
   async function handleIntoProfessional(){
     try{
       setLoading(true)
+      setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
       let changeToProfessional = await intoProfessoinal({userId : userData.userId});
       console.log(changeToProfessional)
       
@@ -106,6 +109,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         router.push("/professional/dashboard");
     }
     else{
+      setLoading(false);
         generateSnackbar(changeToProfessional.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }
       
@@ -119,6 +123,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
   async function handleIntoClient(){
     try{
       setLoading(true)
+      setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
       let changeToClient = await intoClient({userId : userData.userId});
       // console.log(changeToProfessional)
       
@@ -131,12 +136,48 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         router.push("/client/dashboard");
     }
     else{
+      setLoading(false);
         generateSnackbar(changeToClient.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }
       
     }
     catch(e){
-      console.log(e);
+      // console.log(e);
+      generateSnackbar("Some Error Occur, Please try again", "error")
+    }
+  }
+
+  
+
+  async function handleLogout(){
+    try{
+      setLoading(true)
+      setLoadingMessage("Logging out...")
+      let token = Cookies.get("token")
+      if(!token){
+          router.push("/")
+      }
+      else{
+        let log = await logout({
+          token: token,
+          userType : userData.userType
+        });
+      // console.log(changeToProfessional)
+      
+      if(log.status !== 400 || log.data?.status === "success"){
+        generateSnackbar("Logged Out Successfully." , "success");
+        Cookies.remove("token");
+        setLoading(false);
+        router.push("/");
+    }
+    else{
+        generateSnackbar(log.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+    }
+      }
+      
+    }
+    catch(e){
+      // console.log(e);
       generateSnackbar("Some Error Occur, Please try again", "error")
     }
   }
@@ -213,7 +254,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
               />
               <button
                 className="py-1"
-                onClick={() => router.push("/membership")}
+                onClick={() => router.push("/membership/manage")}
               >
                 Manage
               </button>
@@ -284,7 +325,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         </Box>
         <Box className="border-b border-white !mt-1" />
         {[
-          {
+          { 
             icon: <Image src={projectsIcon} alt="" />,
             text: isClientDashboard ? "My Projects" : "Leads",
             href: isClientDashboard ? "/client/my-projects" : "/leads",
@@ -293,7 +334,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
             icon: <Image src={responsesIcon} alt="" />,
             text: isClientDashboard ? "Post new project" : "My Responses",
             href: isClientDashboard
-              ? "/client/place-request"
+              ? "/"
               : "/professional/my-responses",
           },
           {
@@ -318,7 +359,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
             <Box className="flex items-center justify-between p-3 hover:bg-gray-700 rounded-md mt-2 -ml-0.5">
               <Box className="flex items-center">
                 <AccountBalanceWalletIcon />
-                <Typography className="ml-3">Wallet (23 Points)</Typography>
+                <Typography className="ml-3">Wallet ({userData?.bidPoints}) Points</Typography>
               </Box>
               <Button
                 size="small"
@@ -349,23 +390,24 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
       </Box>
 
       <Link
-        href="/logout"
+        href="/"
         className="flex items-center p-3 hover:bg-gray-700 rounded-md mt-4"
+        onClick={handleLogout}
       >
         <ExitToAppIcon />
         <Typography className="ml-3">Logout</Typography>
       </Link>
-    </Box>
+    </Box> 
           <Modal open={loading}>
             <Box className="w-full h-full flex justify-center items-center">
               <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
                 <img src="/images/loader.gif" alt="Loading..." className="w-60" />
-                <h1 className="text-center font-bold text-xl ml-2">Switching to {(userData.userType === "client") ?"Professional" :"Client"}...</h1>
+                <h1 className="text-center font-bold text-xl ml-2">{loadingMessage}</h1>
               </Box>
             </Box>
           </Modal>
               </>
-            )
+            ) 
           }
     </>
    

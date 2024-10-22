@@ -24,6 +24,8 @@ interface UserContextType {
   uType : String | null;
   setUType : (userId : String) => void;
   userData : String | null;
+  payPayment : String | null;
+  setPayPayment : (payPayment : String) => void;
   setUserData : (userData : object) => void;
   user: User | null;
   setUser: (user: User) => void;
@@ -46,12 +48,15 @@ interface UserContextType {
   continueWithGoogleProfessional : (data : object) => object;
   forgotPassword : (data : object) => object;
   changeForgotPassword : (data : object) => object;
+  logout : (data : object) => object;
 
   //PRofessional
   intoClient : (data : object) => object;
   professionalDetails : (data : object) => object;
   professionalDetailsP1 : (data : object) => object;
+  addProfessionalDetailsP1 : (data : object) => object;
   professionalDetailsP2 : (data : object) => object;
+  addProfessionalDetailsP2  : (data : object) => object;
   changeEmail : (data : object) => object;
   purchaseMembership : (data : object) => object;
   confirmMembership : (data : object) => object;
@@ -66,6 +71,9 @@ interface UserContextType {
   filterLead : (data : object) => object;
   checkBid : (data : object) => object;
   applyJob : (data : object) => object;
+  payAsGoSession : (data : object) => object;
+  payAsGoSessionData : (data : object) => object
+  
 
 
   //GENERAL
@@ -91,6 +99,7 @@ interface UserContextType {
   getPointsBudget : (data : object) => object;
   generateInvoice : (data : object) => object;
   walletPointsData : (data : object) => object;
+  phoneVerifyPage : (data : object) => object;
 
   
 
@@ -99,6 +108,7 @@ interface UserContextType {
   clientDetailsAdd : (data : object) => object;
   getClientsData : (data : object) => object;
   addClientsData : (data : object) => object;
+  clientDetails : (data : object) => object;
   getPhoneNo : (data : object) => object;
   intoProfessoinal  : (data : object) => object;
   searchJobQuestions : (data : object) => object;
@@ -106,9 +116,17 @@ interface UserContextType {
 
   // Files
   allActiveProjectsClient :  (data : object) => object;
+  allActiveProjectsProfessoinal : (data : object) => object
   markAsAwardedClient : (data : object) => object;
   singleProjectDetails : (data : object) => object;
   awardProject : (data : object) => object;
+  addProjectTasks : (data : object) => object;
+  markAsCompleted : (data : object) => object;
+  clientGivingReview : (data : object) => object;
+  professionalGivingReview : (data : object) => object;
+  clientCancelProject : (data : object) => object;
+  professionlalAwardedChoice : (data : object) => object;
+  AllProjectHistory : (data : object) => object;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -166,6 +184,12 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   })
   let [userId, setUserId] = useState(Cookies.get('userId') || "" );
   let [uType, setUType] = useState(Cookies.get('uType') || "" );
+  let [payPayment,setPayPayment] = useState("unpaid");
+
+  useEffect(()=>{
+    setPayPayment(payPayment);
+  },[payPayment])
+
 
   let[tempUserData, setTempUserData] = useState({
     userId : Cookies.get("userId") || "" ,
@@ -184,7 +208,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       isData : Cookies.get("isData")  ||  false,
     },
   });
-
+ 
 
   let [projectData, setProjectData]= useState({
     userId : "",
@@ -210,13 +234,13 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   async function verifyToken(token :string ,userType : string, auth ){
     try{  
       console.log(token, userType, auth);
-      // const verifyToken = await axios.post('/verify', {
-      //   type : userType,
-      //   token : token,
-      //   auth
-      // });
-      // // console.log(verifyToken);
-      // return(verifyToken);
+      const verifyToken = await axios.post('/verify', {
+        type : userType,
+        token : token,
+        auth
+      });
+      // console.log(verifyToken);
+      return(verifyToken);
       
     }
     catch(e){
@@ -436,6 +460,7 @@ async function signinProfessional({email, password, userType}){
   async function addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes}){
     // console.log("REached");
     // console.log(name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes);
+    console.log(userId)
     try{
       const response = await axios.post('/addDetailsProfessionals', {
         userId : userId,
@@ -447,7 +472,7 @@ async function signinProfessional({email, password, userType}){
         skills,
         postCode : selectedPostcodes
         });
-        // console.log(response);  
+        console.log(response);  
         return(response)
       }
       catch(e){
@@ -488,7 +513,7 @@ async function continueWithGoogleProfessional(data  : object, userType : string)
           professionalService : tempUserData.userPrimaryService || Cookies.get("userPrimaryService")
         }
         const response = await axios.post('/signinGoogle', d);
-          // console.log(response);  
+          console.log(response);  
           return(response)
         }
         else{
@@ -504,7 +529,7 @@ async function continueWithGoogleProfessional(data  : object, userType : string)
             professionalService : ""
           }
           const response = await axios.post('/signinGoogle', d);
-            // console.log(response);  
+            console.log(response);  
             return(response)
         }
       }
@@ -605,6 +630,20 @@ async function getClientsData({userId}){
     return(e);
   }
 
+}
+
+async function clientDetails({ userId}){
+  try{
+    const response = await axios.post('/clientDetails', {
+      clientId : userId,
+      });
+      // console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
 }
 
 async function addClientsData({userId, name, bio}){
@@ -727,6 +766,23 @@ async function kycDocumentDetailsUpload(formData){
   console.log(formData);
   try{
     const response = await axios.post('/kycDocuments', formData);
+      console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function phoneVerifyPage({userId, userType, phoneNo}){
+  try{
+    const response = await axios.post('/phoneVerifyPage', {
+      userId,
+      userType,
+      phoneNo
+    });
       console.log(response);
       return(response);
   }
@@ -932,6 +988,43 @@ async function professionalDetailsP2({ userId}){
       userId : userId,
       });
       // console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function addProfessionalDetailsP1({ userId, name}){
+  try{
+    const response = await axios.post('/addPersonalnfoProfP1', {
+      userId : userId,
+      name : name
+      });
+      // console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function addProfessionalDetailsP2({ userId, companyName,companyTitle,postalCode  ,primaryService,services,bio,companyWebsite,address}){
+  try{
+    const response = await axios.post('/addPersonalInfoProfP2', {
+      userId : userId,
+      companyName : companyName,
+      companyTitle : companyTitle,
+      postalCode : postalCode,
+      primaryService : primaryService,
+      services : services,
+      bio : bio,
+      companyWebsite : companyWebsite,
+      address : address,
+      completeProfileRegistration : true
+      });
       return(response);
   }
   catch(e){
@@ -1241,6 +1334,37 @@ async function showSingleLead({ projectId}){
   }
 }
 
+async function payAsGoSession({projectId ,professionalId}){
+  try{
+    const response = await axios.post('/payAsYouGoProject', {
+      professionalId,
+      projectId
+      });
+      // console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function payAsGoSessionData({sessionId}){
+  try{
+    const response = await axios.post('/addPayAsYouGoProjectDetails', {
+      sessionId
+      });
+      // console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+
 async function filterLead({ service, services, location,minBudget,maxBudget,timeStamp,todayTimeStamp,professionalId}){
   try{
     const response = await axios.post('/projectFilter', {
@@ -1282,7 +1406,6 @@ async function postProject({project} ){
       serviceDes : project.serviceDes,
       });
       
-      // console.log(response);
       return(response);
   }
   catch(e){
@@ -1340,6 +1463,19 @@ async function allActiveProjectsClient({ clientId, }){
   }
 }
 
+async function allActiveProjectsProfessoinal({ userId, }){
+  try{
+    const response = await axios.post('/showAllAwardedProf', {
+      userId
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
 
 async function markAsAwardedClient({ clientId,projectId }){
   console.log(clientId,projectId )
@@ -1356,11 +1492,50 @@ async function markAsAwardedClient({ clientId,projectId }){
   }
 }
 
-async function singleProjectDetails({ projectId,clientId,need }){
-  console.log(clientId,projectId )
+async function markAsCompleted({ userId,userType,projectId }){
+  try{
+    const response = await axios.post('/markAsCompleted', {
+      userId,userType,projectId,
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function clientGivingReview({ professionalId,projectId,rating,review }){
+  try{
+    const response = await axios.post('/clientReviewSubmitting', {
+      professionalId,projectId,rating,review,
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function professionalGivingReview({ clientId,projectId,rating,review }){
+  try{
+    const response = await axios.post('/professionalReviewSubmitting', {
+      clientId,projectId,rating,review,
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function singleProjectDetails({ projectId,userId,need , userType}){
+  // console.log(clientId,projectId )
   try{
     const response = await axios.post('/getSingleProjectClient', {
-      projectId,clientId,need 
+      projectId,userId,need ,userType
       });
       return(response);
   }
@@ -1384,6 +1559,76 @@ async function awardProject({ projectId,professionalId,clientId,projectConfirmAm
     return(e);
   }
 }
+
+
+async function clientCancelProject({ clientId,projectId}){
+  try{
+    const response = await axios.post('/cancelProject', {
+      projectId,clientId
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function professionlalAwardedChoice({ professionalId,projectId,choice}){
+  try{
+    const response = await axios.post('/acceptAwardedProjects', {
+      professionalId,projectId,choice
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function addProjectTasks({ userId,userType,projectId,taskListName,taskListDes }){
+  try{
+    const response = await axios.post('/addProjectTaskList', {
+      userId,userType,projectId,taskListName,taskListDes 
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function AllProjectHistory({ userId,userType }){
+  try{
+    const response = await axios.post('/projectHistory', {
+      userId,userType
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function logout({ token,userType }){
+  try{
+    const response = await axios.post('/logout', {
+      token,userType
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
 
 
 
@@ -1450,6 +1695,9 @@ async function awardProject({ projectId,professionalId,clientId,projectConfirmAm
       getPointsBudget,
       generateInvoice,
       walletPointsData,
+      markAsCompleted,
+      logout,
+      phoneVerifyPage ,
 
       //PRofessional
       intoClient,
@@ -1472,21 +1720,35 @@ async function awardProject({ projectId,professionalId,clientId,projectConfirmAm
       filterLead,
       checkBid,
       applyJob,
+      payPayment,
+      setPayPayment,
+      payAsGoSession,
+      payAsGoSessionData,
+      addProfessionalDetailsP2,
+      addProfessionalDetailsP1,
 
       //Clietn Context
       clientSignup,
       clientDetailsAdd,
       getClientsData,
       addClientsData,
+      clientDetails ,
       intoProfessoinal,
       searchJobQuestions,
 
 
       //Files
       allActiveProjectsClient,
+      allActiveProjectsProfessoinal,
       markAsAwardedClient,
       singleProjectDetails,
-      awardProject
+      awardProject,
+      addProjectTasks,
+      clientGivingReview,
+      clientCancelProject,
+      professionalGivingReview,
+      professionlalAwardedChoice,
+      AllProjectHistory
        }}>
       {children}
     </UserContext.Provider>

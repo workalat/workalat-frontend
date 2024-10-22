@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
     let router = useRouter();
-    let params = useParams();
+    let params = useParams(); 
     let { professionalDetails } = useUserContext();
     const [loading2, setLoading2] = useState(true);
-    let id = params.id;
+    let id = params.id; 
     let [data,setData] = useState({});
     let [isData,setIsData] = useState(false);
 
@@ -43,7 +43,7 @@ export default function ProfilePage() {
                {loading2 ? (
                 <div className="w-[100%] h-screen flex justify-center items-center">
                 <div className="loader m-auto" />
-                </div>
+                </div> 
             )
             :(
                 <>

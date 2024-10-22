@@ -11,7 +11,6 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-
 import { useTheme } from "@/context/navbar_theme";
 import { Navbar } from "@/components/navbar/navbar";
 import lockIcon from "@/public/icons/hide.svg";
@@ -130,7 +129,7 @@ const LoginPage = () => {
             }
         }
         else{
-          generateSnackbar("Some error Occur, please Try Again.", "error"); 
+          generateSnackbar( res?.response?.data?.message ||  "Some error Occur, please Try Again.", "error"); 
         }
       }
       else if(res?.data?.userStatus === "PENDING"){

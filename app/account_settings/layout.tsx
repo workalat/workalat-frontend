@@ -35,15 +35,9 @@ const AccountSettingsLayout = ({ children }: { children: React.ReactNode }) => {
       case "/account_settings/preferences":
         setTabValue(2);
         break;
-      // case "/account_settings/plan_billing":
-      //   setTabValue(3);
-      //   break;
       case "/account_settings/notifications":
         setTabValue(3);
         break;
-      // case "/account_settings/integrations":
-      //   setTabValue(5);
-      //   break;
       default:
         setTabValue(0);
         break;
@@ -65,18 +59,10 @@ const AccountSettingsLayout = ({ children }: { children: React.ReactNode }) => {
         // Preferences
         router.push("/account_settings/preferences");
         break;
-      // case 3:
-      //   // Plan & Billing
-      //   router.push("/account_settings/plan_billing");
-      //   break;
       case 3:
         // Notifications
         router.push("/account_settings/notifications");
         break;
-      // case 5:
-      //   // Integrations
-      //   router.push("/account_settings/integrations");
-      //   break;
       default:
         break;
     }

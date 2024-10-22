@@ -107,10 +107,12 @@ import MailIcon from '@mui/icons-material/Mail';
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ClientDetails({ open, onClose, job, applied }) {
   const [showPhone, setShowPhone] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
+  let router = useRouter();
 
   if (!job) {
     return null;
@@ -130,7 +132,6 @@ export default function ClientDetails({ open, onClose, job, applied }) {
             <p className="text-sm font-semibold capitalize">Project Title: {job.serviceTitle}</p>
           </Box>
         </Box>
-        <p>{job.serviceDes}</p>
         <Box className="w-full bg-secondary bg-opacity-5 p-2 rounded-md flex divide-x space-x-2">
           <Box className="flex gap-2 items-center">
             <LocalPhoneIcon className="text-secondary w-5 h-5" />
@@ -164,11 +165,11 @@ export default function ClientDetails({ open, onClose, job, applied }) {
           </Box>
         </Box>
         <Box className="flex justify-center gap-4">
-          <Button variant="contained" color="primary" onClick={() => { onClose(); applied(false); }}>
+          <Button variant="contained" color="primary" onClick={() => { onClose(); applied(false); router.refresh();}}>
             <CloseIcon className="mr-2 w-4 h-4" />
             Close
           </Button>
-          <Button variant="contained" color="secondary" onClick={() => { console.log(job.clientChatId); }}>
+          <Button variant="contained" color="secondary" onClick={() => { router.push(`/professional/chat/${job.clientChatId}`) }}>
             <QuestionAnswerIcon className="mr-2 w-4 h-4" />
             Chat Now
           </Button>

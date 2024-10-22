@@ -26,24 +26,16 @@ const SettingsPage = () => {
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        // console.log(ver);
         if(ver.status === "success"){
-          // if(ver.registerAs === "professional"){
-          //   setUser("/professional/account_settings")
-          // }
-          // else{
             let data = await getClientsData({ userId : ver.userId});
-            // console.log(data);
             setData(data?.data?.data);
             setLoading2(false);
-          // }
         }
         else{
           router.push("/");
         }
       }
       catch(e){
-        console.log(e);
       }
     };
     verify();

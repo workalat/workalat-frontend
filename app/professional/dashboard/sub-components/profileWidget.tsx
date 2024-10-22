@@ -16,7 +16,7 @@ import DOMPurify from 'dompurify';
 import { useRouter } from 'next/navigation';
 
 const ProfileWidget = ({data, userType}) => {
-  // console.log(data);
+  console.log(data);
   const router = useRouter();
   const sanitizedBio = DOMPurify.sanitize(data.userBio);
   let profile = 20;
@@ -58,7 +58,7 @@ const ProfileWidget = ({data, userType}) => {
         <Box display="flex" alignItems="center" mb={2}>
           <Rating precision={0.1} value={(data.totalRatings / data.totalReviews )} readOnly />
           <Typography  className='text-sm' color="text.secondary" ml={1}>
-          {((data.totalRatings  === 0)? 0 :  data.totalRatings / data.totalReviews )} ( {(data.totalReviews)} reviews)
+          {((data.totalRatings  === 0)? 0 :  (data.totalRatings / data.totalReviews).toFixed(1) )} ( {(data.totalReviews)} reviews)
           </Typography>
         </Box>
 

@@ -99,6 +99,10 @@ const PhoneOtp = ({
       console.error(e);
     }
   };
+  function handleBack(e){
+    e.preventDefault();
+    handlePrev();
+  }
 
   return (
     <>
@@ -147,7 +151,7 @@ const PhoneOtp = ({
               src={arrowRightIcon}
               alt="Arrow right"
               className="rotate-180"
-              onClick={handlePrev}
+              onClick={handleBack}
             />
             <span className="font-bold">Back</span>
           </Button>

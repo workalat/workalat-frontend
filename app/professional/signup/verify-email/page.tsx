@@ -51,6 +51,7 @@ export default function VerifyEmail() {
                 userType: "professional",
                 email: tempUserData.userEmail || Cookies.get("userEmail"),
               });
+              console.log(res);
         
               if (res.status !== 400 || res.data?.status === "success") {
                 return generateSnackbar("OTP resend successfully", "success");
@@ -122,11 +123,12 @@ export default function VerifyEmail() {
                     <div className="flex justify-between items-center">
                         <p >Didn&apos;t receive a code?</p>
                         <div className="text-sm flex gap-3 items-center">
-                            <button className="text-secondary hover:text-main font-bold" onClick={(e)=>{e.preventDefault(); handleResend()}}>
+                            <button className="text-secondary hover:text-main font-bold" onClick={(e)=>{e.preventDefault(); handleResend(e)}}>
                                 Resend
                             </button>
                             <button
                                 className="text-secondary hover:text-main font-bold"
+                                onClick={(e)=>{e.preventDefault(); router.push("/professional/signup/")}}
                             >
                                 Change email
                             </button>

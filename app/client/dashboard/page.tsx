@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { usePathname } from "next/navigation";
 
 import SideNav from "../../../components/sideNav";
-
+ 
 import ProfileWidget from "./sub-components/profileWidget";
 import VerificationWidget from "./sub-components/verificationWidget";
 import LeadsSetting from "./sub-components/leadsSetting";

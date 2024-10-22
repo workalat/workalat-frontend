@@ -66,6 +66,7 @@
 		"mui-file-input": "^4.0.4",
 		"mui-one-time-password-input": "^2.0.2",
 		"next": "14.2.3",
+		"next-recaptcha-v3": "^1.4.1",
 		"next-themes": "^0.2.1",
 		"postcss": "8.4.38",
 		"react": "18.3.1",

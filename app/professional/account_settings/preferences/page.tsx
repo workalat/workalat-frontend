@@ -180,14 +180,14 @@ const PreferenceSettings = () => {
             </Grid>
           <Grid item xs={12}>
             <Box mt={2} className="flex gap-2 mt-8 flex-wrap">
-              <Button
+              {/* <Button
                 variant="contained"
                 color="secondary"
                 className="gap-2 py-3 px-6 flex-grow md:flex-grow-0"
               >
                 Cancel
                 <Image src={cancelIcon} alt="Cancel" />
-              </Button>
+              </Button> */}
               <Button
                 variant="contained"
                 color="primary"

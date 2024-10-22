@@ -34,7 +34,7 @@ const LoginPage = () => {
 
   // Theme
   const theme = useTheme();
-
+  
   useEffect(() => {
     theme.toggleTheme();
     async function verify(){

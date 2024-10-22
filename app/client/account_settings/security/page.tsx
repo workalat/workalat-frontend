@@ -64,6 +64,7 @@ let [kycDocumentData, setKycDocumentData] = useState({
   };
   
   const [loading2, setLoading2] = useState(true);
+  let [kycStatus, setKycStatus] = useState("pending");
   
   const { generateSnackbar } = useSnackbar();
   
@@ -86,20 +87,13 @@ let [kycDocumentData, setKycDocumentData] = useState({
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        // console.log(ver);
         if(ver.status === "success"){
-          // if(ver.registerAs === "professional"){
-          //   router.push("/professional/dashboard")
-          // }
-          // else{
             let data = await lastDatesDetails({userId : ver.userId, userType : "client"});
-            // console.log(data);
             setPageDate(data.data?.data?.ChangingDates[0]);
             setTwoFact(data.data?.data?.isTwoFactAuth);
-            // console.log(ver);
+            setKycStatus(data.data?.data?.kycStatus)
             setUserData(ver);
             setLoading2(false);
-          // }
         }
         else{
           router.push("/"); 
@@ -155,12 +149,8 @@ let [kycDocumentData, setKycDocumentData] = useState({
       setKycData({
         ...kycData
       })
-      // console.log(userData);
-      // console.log(kycData);
       let res = await kycDetailsUpload({data : kycData, userId : userData.userId, userType : userData.userType});
-      // console.log(res);
       if(res.status === 200 || res.response.data?.status === "success"){
-        // generateSnackbar(res.data?.msg , "success");
         setIsNext(true); 
     }
     else{
@@ -195,8 +185,6 @@ let [kycDocumentData, setKycDocumentData] = useState({
       }
       else{
         event.preventDefault();
-      // console.log(userData);
-      // console.log(files);
   
       const formData = new FormData();
       formData.append('userId', userData.userId);
@@ -216,7 +204,6 @@ let [kycDocumentData, setKycDocumentData] = useState({
                 'Content-Type': 'multipart/form-data',
             },
         });
-        // console.log(res);
         if(res.status === 200 || res.response.data?.status === "success"){
           // generateSnackbar(res.data?.msg , "success");
           generateSnackbar("Your KYC has been submitted successfully,We will let you know once approved." ,"success");
@@ -322,15 +309,20 @@ let [kycDocumentData, setKycDocumentData] = useState({
                       KYC
                     </Typography>
                     <Typography>Last Changed {formatDate(pageDate.kycLast)}</Typography>
-                    <Button
-                      variant="contained"
-                      onClick={openModal}
-                      color="primary"
-                      className="gap-2 py-3 px-6 font-semibold"
-                    >
-                      Enable
-                      <Image alt="Change password" src={arrowRight} />
-                    </Button>
+                    {
+                      (kycStatus !== "pending" && kycStatus !== "approved") &&(
+                        
+                        <Button
+                        variant="contained"
+                        onClick={openModal}
+                        color="primary"
+                        className="gap-2 py-3 px-6 font-semibold"
+                      >
+                        Enable
+                        <Image alt="Change password" src={arrowRight} />
+                      </Button>
+                      )
+                    }
                   </Box>
                 </Grid>
               </Grid>

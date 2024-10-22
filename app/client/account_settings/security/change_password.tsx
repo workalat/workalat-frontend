@@ -44,7 +44,6 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProp
     
 
     let res = await changePassword({userId ,userType, oldPassword :currentPassword , newPassword : newPassword});
-    // console.log(res);
     if(res.status === 200 || res.response.data?.status === "success"){
 
       generateSnackbar("Password Changed Successfully.", "success")

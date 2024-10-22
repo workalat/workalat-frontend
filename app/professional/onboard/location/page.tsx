@@ -67,7 +67,7 @@ export default function LocationPage() {
       let userId = tempUserData.userId || Cookies.get("userId") || userData.userId;
   
       let res = await addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes});
-      // console.log(res);
+      console.log(res);
       if(res.status !==400 || res.data?.status === "success"){
         setTempUserData({});
         Cookies.remove('name');

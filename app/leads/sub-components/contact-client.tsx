@@ -1,208 +1,9 @@
-// "use client";
-// import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-// import WalletIcon from '@mui/icons-material/Wallet';
-// import { Box, Button, Modal, TextField } from "@mui/material";
-// import Link from "next/link";
-// import { useState } from 'react';
-
-// import doneIcon from "@/public/icons/done.svg";
-// import { useUserContext } from '@/context/user_context';
-// import { useSnackbar } from '@/context/snackbar_context';
-// import VerifyUser from '@/app/middleware/VerifyUser';
-// import Cookies from 'js-cookie';
-// import { useRouter, useSearchParams } from 'next/navigation';
-// import ClientDetails from './client-details';
-
-// interface Lead {
-//   id: number;
-//   title: string;
-//   shortDescription: string;
-//   proposalCost: number;
-//   budget: number;
-//   techStack: string[];
-//   created_at: Date;
-//   location: string;
-//   client: {
-//     id: number;
-//     name: string;
-//     isVerified: boolean;
-//     image: string;
-//   };
-// }
-
-
-
-// export default function ContactClient({ open, onClose, job, openClientDetails, applied, setApplied, data}) {
-
-//   // application
-//   const [loading, setLoading] = useState(false);
-//   let [proposalMessage, setProposalMessage] = useState("");
-
-//   let [applied2, setApplied2] = useState(false);
-//   let [clientData,setClientData] = useState({});
-
-//   const closeApplied = () => {
-//     router.push("/leads");
-//   }
-
-  
-// const { generateSnackbar } = useSnackbar();
-
-// let { checkBid , applyJob} = useUserContext();
-// let router = useRouter();
-// let projectId = useSearchParams().get("job");
-
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     try{
-//       let token = Cookies.get("token");
-//         let ver = await VerifyUser(token, "professional");
-//         if(ver.status === "success"){
-//           // Check if bid already exists for this job
-//           let bid = await checkBid({userId : ver.userId, projectId : projectId});
-//           console.log(bid);
-
-//           let data = bid?.data;
-//           let professionalData = bid?.data?.data;
-//           setClientData(bid?.data.data[0])
-
-//           // console.log(professionalData);
-          
-//           if(data.eligible === false || !data.eligible){
-//              return generateSnackbar("Can not apply on this project.", "warning");
-//           }
-//           else if(data.projectAvailableBids <1) {
-//             return generateSnackbar("Maximum bidding limit is reached.", "warning");
-//           }
-//           else if(professionalData.adminAccessProfessional === false){
-//             return generateSnackbar("You cannot apply on this project.", "warning");
-//           }
-//           else if(professionalData.isMembership === true || professionalData.isMembership) {
-//               if(professionalData.membershipLeads < 1){
-//                 return generateSnackbar("Your membership limit has exceeded.", "warning");
-//               } 
-//               else{
-//                     //Apply using leads
-//                     console.log("LEads");
-//                     let res = await applyJob({
-//                       professionalId : professionalData._id,
-//                       projectId : data.projectId,
-//                       proposal : proposalMessage,
-//                       proposalType : "leads",
-//                     });
-//                     console.log(res);
-//                     if(res.status !== 400 || res.data?.status === "success"){
-//                       generateSnackbar("Bid Sent successfully.", "success");
-//                       setLoading(false);
-//                       setApplied(true);
-//                       setClientData(res?.data?.data[0])
-//                       setTimeout(()=>{setApplied(false);},1000);
-//                       setTimeout(()=>{setApplied2(true);},1000)
-//                       // router.forward(<openClientDetails />)
-//                     }
-//               }
-//           }
-//           else{ 
-//             if(professionalData.professionalTotalBidPoints < data.pointsNeeded){
-//             return generateSnackbar("Not Enough Points.", "warning");
-//           } 
-//           else{
-//                 //Apply using leads
-//                 console.log("Poits")
-//           }
-
-//           }
-          
-//         }
-//         else{
-//           generateSnackbar("Please login again.", "error");
-//           router.push("/professional/login");
-//           return;
-//         }
-//     }
-//     catch(e){
-//       console.log(e);
-//       generateSnackbar("Failed to contact client. Please try again.", "error");
-//     }
-//   //   // TODO: add contact client logic
-//   //   // simulate form submission
-//   //   setLoading(false);
-//   //   setApplied(true);
-
-//   //   // show client contact details after 3 sec
-//   //   setTimeout(() => {
-//   //     openClientDetails();
-//   //   }, 2000)
-//   }
-
-  
-//   const JobDoneModal = (
-//     <div>
-//       <img src={doneIcon.src} alt='' className='w-20 mx-auto mb-2' />
-//       <h1 className='text-lg font-bold'>Done!</h1>
-//       {/* <p>You can now contact {job?.client.name}</p> */}
-      
-//       <p>You can now contact Arham</p>
-//     </div>
-//   )
-
-//   return (
-//     <>
-//     <Modal open={open} className="flex justify-center items-center" onClose={onClose}>
-//       <Box className="bg-white w-full max-w-screen-sm text-center rounded-md p-6 pb-12 shadow-md">
-//         {
-//           loading ? <div className="loader m-auto" /> : (
-//             applied ? JobDoneModal : (
-//               <>
-//                 <WalletIcon className="text-secondary text-7xl" />
-//                 <h1 className="font-bold">Contacting Arham will cost you 20 points</h1>
-//                 {/* <h1 className="font-bold">Contacting {job?.client.name} will cost you {job?.proposalCost} points</h1> */}
-//                 <p>You have 20 points in your wallet.{" "}
-//                   <Link href="/wallet" className="text-red font-bold hover:underline">Top up!</Link>
-//                 </p>
-//                 <form className="mt-6 max-w-md mx-auto" onSubmit={handleSubmit}>
-//                   <TextField
-//                     fullWidth
-//                     multiline
-//                     label="Type your proposal"
-//                     rows={4}
-//                     className="shadow-md"
-//                     value={proposalMessage}
-//                     onChange={(e)=>{setProposalMessage(e.target.value)}}
-//                   />
-//                   <Button variant="contained" type="submit" className="mt-4 font-semibold" size="large" >
-//                     Contact client
-//                     <ArrowForwardIcon className="ml-2 text-2xl" />
-//                   </Button>
-//                 </form>
-//               </>
-//             )
-//           )
-//         }
-//       </Box>
-//       </Modal>
-//         {
-//           (applied2)
-//           ?
-//             <ClientDetails open={applied2} onClose={closeApplied} job={clientData}  applied={setApplied2} />
-//           :
-//           ""
-//         }
-//       </>
-
-    
-//   )
-// }
-
-
-
 "use client";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { Box, Button, Modal, TextField } from "@mui/material";
 import Link from "next/link";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import doneIcon from "@/public/icons/done.svg";
 import { useUserContext } from '@/context/user_context';
 import { useSnackbar } from '@/context/snackbar_context';
@@ -214,9 +15,13 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
   const [proposalMessage, setProposalMessage] = useState("");
   const [applied2, setApplied2] = useState(false);
   const [clientData, setClientData] = useState({});
+  let [loaderMessage, setLoaderMessage] = useState("");
+
+
+  console.log(job, userData);
 
   const { generateSnackbar } = useSnackbar();
-  const { checkBid, applyJob } = useUserContext();
+  const { checkBid, applyJob ,setPayPayment ,payPayment,payAsGoSession} = useUserContext();
   const router = useRouter();
   let projectId = useSearchParams().get("job")
 
@@ -224,24 +29,89 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
     router.push("/leads");
   };
 
+  window.addEventListener("message", (event) => {
+    // Check the origin to ensure it matches
+    if (event.origin !== "http://localhost:3001") {
+        return; // Ignore messages from untrusted origins
+    }
+    
+    if (event.data.paymentStatus === 'success') {
+        // console.log("Payment successful!");
+        setPayPayment("paid")
+        // Display success message or handle it accordingly
+    } else {
+        // console.log("Payment failed or no status received");
+    }
+});
+
+
+  async function payAsGenerate(projectId, professionalId){
+    try{
+      console.log(projectId, professionalId)
+      setLoaderMessage("Generating Payment Sesstion, Please Wait...");
+      setLoading(true);
+
+      let res = await payAsGoSession({
+        projectId : projectId,
+        professionalId : professionalId
+      });
+      console.log(res);
+      if(res?.status !== 400 || res?.data?.status === "success"){
+      setLoading(false);
+      // window.open(res?.data?.session?.url, "_blank");
+      const paymentWindow = window.open(res?.data?.session?.url, '_blank', 'width=500,height=600');
+
+     
+      }
+      else{
+        generateSnackbar("Failed to Generate Payment Session.", "error");
+      }
+    }
+    catch(e){
+      generateSnackbar("Failed to Generate Payment Session.", "error");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log(payPayment)
     try {
+      if(!proposalMessage){
+        return generateSnackbar("Please Write a proposal.", "warning")
+      }
       let bid = await checkBid({ userId: userData.userId, projectId: projectId });
       console.log(bid);
       let data = bid?.data;
       let professionalData = bid?.data?.data;
+      console.log(professionalData);
 
       if (!data.eligible) {
         generateSnackbar("Cannot apply on this project.", "warning");
-      } else if (data.projectAvailableBids < 1) {
-        generateSnackbar("Maximum bidding limit is reached.", "warning");
       } else if (!professionalData.adminAccessProfessional) {
-        generateSnackbar("You cannot apply on this project.", "warning");
+        generateSnackbar("Admin has restricted your Account.", "error");
       }
-      else if(payAsGo === true){
-        
+      else if(professionalData.payAsGo === true && payPayment === "unpaid"){
+          payAsGenerate(projectId,userData.userId);
+      }
+      else if(professionalData.payAsGo === true && payPayment === "paid"){
+          let res = await applyJob({
+            professionalId: professionalData._id,
+            projectId: data.projectId,
+            proposal: proposalMessage,
+            proposalType: "points",
+          });
+          if (res.status !== 400 || res.data?.status === "success") {
+            generateSnackbar("Bid Sent successfully.", "success");
+            setClientData(res?.data?.data[0]);
+            setApplied(true);
+            setTimeout(() => {
+              setApplied(false);
+              setApplied2(true);
+              setPayPayment("unpaid")
+              router.push("/leads");
+            }, 3000);
+          }
       }
       else if (professionalData.isMembership) {
         if (professionalData.membershipLeads < 1) {
@@ -260,9 +130,12 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
             setTimeout(() => {
               setApplied(false);
               setApplied2(true);
-            }, 1000);
+              router.push("/leads");
+            }, 3000);
           }
         }
+      } else if (data.projectAvailableBids < 1) {
+        generateSnackbar("Maximum bidding limit is reached.", "warning");
       } else if (professionalData.professionalTotalBidPoints < data.pointsNeeded) {
         generateSnackbar("Not Enough Points.", "warning");
       } else {
@@ -280,7 +153,8 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
           setTimeout(() => {
             setApplied(false);
             setApplied2(true);
-          }, 1000);
+            router.push("/leads");
+          }, 3000);
         }
       }
     } catch (e) {
@@ -295,7 +169,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
     <div>
       <img src={doneIcon.src} alt='' className='w-20 mx-auto mb-2' />
       <h1 className='text-lg font-bold'>Done!</h1>
-      <p>You can now contact {clientData?.clientName}</p>
+      <p className='capitalize'>You can now contact {clientData?.clientName} </p>
     </div>
   );
 
@@ -310,9 +184,10 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
           ) : (
             <>
               <WalletIcon className="text-secondary text-7xl" />
-              <h1 className="font-bold">Contacting {job?.clientName} will cost you {job?.proposalCost} points</h1>
+              {/* <h1 className="font-bold">Contacting {job?.clientName} will cost you {?.proposalCost} points</h1> */}
+              {/* <h1 className="font-bold">This project will cost you {?.proposalCost} points</h1> */}
               <p>
-                You have {userData.professionalTotalBidPoints} points in your wallet.{" "}
+                Don't have enough points? {" "}
                 <Link href="/wallet" className="text-red font-bold hover:underline">
                   Top up!
                 </Link>
@@ -327,10 +202,13 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
                   value={proposalMessage}
                   onChange={(e) => setProposalMessage(e.target.value)}
                 />
-                <Button variant="contained" type="submit" className="mt-4 font-semibold" size="large">
-                  Contact client
+                
+               
+                  <Button variant="contained" type="submit" className="mt-4 font-semibold" size="large">
+                    Contact Client
                   <ArrowForwardIcon className="ml-2 text-2xl" />
                 </Button>
+               
               </form>
             </>
           )}
@@ -339,6 +217,14 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
       {applied2 && (
         <ClientDetails open={applied2} onClose={closeApplied} job={clientData} applied={setApplied2} />
       )}
+      <Modal open={loading}>
+            <Box className="w-full h-full flex justify-center items-center">
+              <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+                <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                <h1 className="text-center font-bold text-xl ml-2">{loaderMessage}</h1>
+              </Box>
+            </Box>
+          </Modal>
     </>
   );
 }

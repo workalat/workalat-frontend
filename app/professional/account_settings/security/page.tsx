@@ -33,6 +33,7 @@ const SecuritySettings = () => {
   let [userData, setUserData] =useState({});
   let [twoFact, setTwoFact] =useState({});
   let [files, setFiles] =useState([]);
+  let [kycStatus, setKycStatus] = useState("pending");
   let [loading, setLoading] =useState(false);
 
   let[pageDate, setPageDate] = useState({
@@ -93,9 +94,10 @@ let [kycDocumentData, setKycDocumentData] = useState({
           // }
           // else{
             let data = await lastDatesDetails({userId : ver.userId, userType : "professional"});
-            // console.log(data);
+            console.log(data);
             setPageDate(data.data?.data?.ChangingDates[0]);
             setTwoFact(data.data?.data?.isTwoFactAuth);
+            setKycStatus(data.data?.data?.kycStatus)
             // console.log(ver);
             setUserData(ver);
             setLoading2(false);
@@ -323,15 +325,20 @@ let [kycDocumentData, setKycDocumentData] = useState({
                       KYC
                     </Typography>
                     <Typography>Last Changed {formatDate(pageDate.kycLast)}</Typography>
-                    <Button
-                      variant="contained"
-                      onClick={openModal}
-                      color="primary"
-                      className="gap-2 py-3 px-6 font-semibold"
-                    >
-                      Enable
-                      <Image alt="Change password" src={arrowRight} />
-                    </Button>
+                    {
+                      (kycStatus !== "pending" && kycStatus !== "approved") &&(
+                        
+                        <Button
+                        variant="contained"
+                        onClick={openModal}
+                        color="primary"
+                        className="gap-2 py-3 px-6 font-semibold"
+                      >
+                        Enable
+                        <Image alt="Change password" src={arrowRight} />
+                      </Button>
+                      )
+                    }
                   </Box>
                 </Grid>
               </Grid>
@@ -461,7 +468,7 @@ let [kycDocumentData, setKycDocumentData] = useState({
               <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
                 <img src="/images/loader.gif" alt="Loading..." className="w-60" />
                 <h1 className="text-center font-bold text-xl ml-2">Updating KYC Documents...</h1>
-              </Box>
+              </Box> 
             </Box>
           </Modal>
             </div>
