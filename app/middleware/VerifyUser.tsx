@@ -4,17 +4,16 @@ import { useUserContext } from "@/context/user_context";
 import axios from "axios";
 
 async function VerifyUser (token: string, userType : string, auth=false){
-    console.log(token , userType);
+    console.log(token , userType, auth, token !== undefined);
     try{
-        if(token.length>0 || !token ){
+        if( token || token !== undefined ){
             const verifyToken = await axios.post('/verify', {
               type : userType,
               token : token,
               auth
             });
-            console.log(verifyToken);
-            // return(verifyToken);
-            if(verifyToken.status !== 400 || verifyToken.data?.status === "success"){
+
+            if(verifyToken?.data?.status === "success"){
                 let data = {
                     status : verifyToken.data.status,
                     message : verifyToken.data?.msg || "User verified successfully",
@@ -50,7 +49,6 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     isRegistrationComplete : null,
                     statusCode : verifyToken.status,
                     country : null,
-                    status : 400
                 }
                 return(data);
             }
@@ -77,7 +75,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
         }
     }
     catch(e){
-        // console.log( "Error ", e);
+        console.log( "Error ", e);
         let data = {
             status : "fail",
             message :  "Some Error Occur, please login again",

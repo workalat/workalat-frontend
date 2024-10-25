@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 const VerificationWidget = ({ isClientDashboard ,data, userType}) => {
   const theme = useTheme();
   let router = useRouter();
-  console.log(data);
   const verifications = [
     { name: 'Top Professional', status: 'join' },
     { name: 'Identity Verified', status: (data.isProfileComplete ? 'verified' :'unverified') },

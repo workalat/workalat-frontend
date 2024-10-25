@@ -24,6 +24,8 @@ import { useSnackbar } from "@/context/snackbar_context";
 import gmailIcon from "@/public/icons/gmail.svg";
 import linkedInIcon from "@/public/icons/linkedin_logo.svg";
 import { useTheme } from '@/context/navbar_theme';
+import { db } from '@/context/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 
 const ProfessionalSignupForm = () => {
@@ -118,11 +120,17 @@ const ProfessionalSignupForm = () => {
       setLoading(true);
       let res = await professionalSignupFunction(signupProfessional);
       // console.log(res);
+      
+       
 
       setLoading(false);
       if (res.status !== 400 || res.response.data?.status === "success") {
         // Handle form submission
         generateSnackbar(res.response?.data?.message || res.data?.message, "success");
+          // Add a new document in collection "cities"
+          await setDoc(doc(db, "usersChats", res.data?.data[0]?.userId), {
+            chats : [],
+          });
 
         setUserId(res.data?.data[0]?.userId);
 

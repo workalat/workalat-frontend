@@ -11,6 +11,8 @@ import { useSnackbar } from "@/context/snackbar_context";
 import Cookies from 'js-cookie';
 import VerifyUser from "@/app/middleware/VerifyUser";
 import { useRouter } from "next/router";
+import { db } from "@/context/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 interface PhoneOtpProps {
   handleNext: () => void;
@@ -82,6 +84,9 @@ const PhoneOtp = ({
     if(res.status !== 400 || res.data?.status === 'success'){
       setTempUserData({...tempUserData, userId : res.data?.data?.userId, userPhone : phoneNumber,});
       
+      await setDoc(doc(db, "usersChats", res.data?.data?.userId), {
+        chats : [],
+      });
       Cookies.set("userId", res.data?.data?.userId ,{ secure: true, sameSite: 'None', expires: 10 });
       Cookies.set("userPhone",phoneNumber ,{ secure: true, sameSite: 'None', expires: 10 });
       generateSnackbar("OTP sent successfully.", "success");

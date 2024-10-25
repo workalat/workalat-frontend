@@ -56,8 +56,7 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProp
       generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
   }
 
-    console.log(newPassword);
-    console.log(userId, userType)
+    
 
     }
     catch(e){

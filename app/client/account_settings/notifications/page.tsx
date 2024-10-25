@@ -37,16 +37,10 @@ const NotificationsPage = () => {
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        // console.log(ver);
         if(ver.status === "success"){
           setUserData(ver);
-          // if(ver.registerAs === "professional"){
-          //   router.push("/professional/dashboard")
-          // }
-          // else{
             let data = await getNotificationPage({userId : ver.userId, userType : "client"});
             if(data.status === 200 || data.data?.status === "success"){
-              // console.log(data);
               
               setRequestValue(data.data?.data?.request);
               setReminderValue(data.data?.data?.reminder);
@@ -56,7 +50,6 @@ const NotificationsPage = () => {
           else{
               generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
           }  
-          // }
         }
         else{
           router.push("/"); 
@@ -72,16 +65,10 @@ const NotificationsPage = () => {
 
   async function handleSave(){
     try{
-    //   console.log(userData);
       let re = await setRequest({userId : userData.userId,userType : userData.userType,current_value : !requestValue});
       let rem = await setReminder({userId : userData.userId,userType : userData.userType,current_value : !reminderValue});
       let chatN = await setChatNotification({userId : userData.userId,userType : userData.userType,current_value : !chatNotificationValue});
-
-    //   console.log(re);
-    //   console.log(rem);
-    //   console.log(chatN);
       if((re.status !== 400 && rem.status !== 400 && chatN.status !== 400 ) || (re.data?.status === "success" && rem.data?.status === "success" && chatN.data?.status === "success" )){
-        // console.log(data);
         generateSnackbar("Status Updated Successfully." ,"success");
         
     }

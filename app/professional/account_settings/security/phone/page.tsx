@@ -37,7 +37,7 @@ const PhonePage = () => {
 
   const handlePhoneNumberChange = (newValue?: string) => {
     if (newValue !== undefined) {
-      setValue(newValue);
+      setPhoneNo(newValue);
     }
   };
 
@@ -57,7 +57,8 @@ const PhonePage = () => {
           else{
             setUserData(ver);
             let phoneDet = await getPhoneNo({userId : ver.userId, userType : "professional"});
-            setPhoneNo(phoneDet.data.phoneNo)
+            console.log(phoneDet)
+            setPhoneNo(phoneDet?.data?.phoneNo)
             setPhoneCountry(phoneDet?.data?.countryCode)
             setLoading2(false);
           }
@@ -115,7 +116,7 @@ const PhonePage = () => {
                 countryCallingCodeEditable={false}
                 defaultCountry="GB"
                 className="[&_.PhoneInputCountry]:!p-3 [&_.PhoneInputCountry]:bg-gray-200 [&_.PhoneInputCountry]:rounded-md [&_input]:bg-transparent [&_input]:border-b [&_input:hover]:border-dark [&_input]:p-2  [&_input:focus]:outline-secondary"
-                value={value}
+                value={phoneNo}
                 onChange={handlePhoneNumberChange}
               />
               <Box className="flex justify-between items-center">

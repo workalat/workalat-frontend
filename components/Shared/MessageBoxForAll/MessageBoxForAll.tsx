@@ -2,17 +2,21 @@
 
 import { BsThreeDotsVertical } from "react-icons/bs"
 import './Message.css'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { HiOutlineFaceSmile } from "react-icons/hi2"
 import EmojiPicker from "emoji-picker-react"
 import { FiSend } from "react-icons/fi"
 import { ImAttachment } from "react-icons/im"
+import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
+import { db } from "@/context/firebase"
+import upload from "@/context/upload"
+import moment from "moment"
 
 type PropsType = {
     data: any
 }
 
-export default function MessageBoxForAll({ data }: PropsType) {
+export default function MessageBoxForAll({ data, currentUser }) {
 
     const [demoMessageCollection, setDemoMessageCollection] = useState<any[]>([]); // here it is for the demo message collection fot the message box
     const [messageCollection, setMessageCollection] = useState<string>("");
@@ -21,10 +25,12 @@ export default function MessageBoxForAll({ data }: PropsType) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalImage, setModalImage] = useState<string | null>(null);
 
+    
+
     const toggleEmojiPicker = () => setShowEmojiPicker(prev => !prev);
 
     const handleEmojiClick = (emojiObject: any) => {
-        setMessageCollection(prev => prev + emojiObject.emoji);
+        setText(prev => prev + emojiObject.emoji);
     };
 
     const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,13 +40,17 @@ export default function MessageBoxForAll({ data }: PropsType) {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setSelectedFile(URL.createObjectURL(e.target.files[0]));
+                setImg({
+                  file : e.target.files[0],
+                  url : URL.createObjectURL(e.target.files[0])
+                })
         }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const message = {
-            message: messageCollection,
+            message: text,
             file: selectedFile
         };
 
@@ -67,34 +77,114 @@ export default function MessageBoxForAll({ data }: PropsType) {
             setScreenWidth(window.innerWidth);
         };
 
-        // Initial call to set screen width on component mount
         handleResize();
 
-        // Add event listener to handle window resize
         window.addEventListener('resize', handleResize);
 
-        // Cleanup event listener on component unmount
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
 
+    let [chat,setChat] = useState(false);
+    let [text, setText] = useState("");
+    let [img, setImg] = useState({
+      file : null,
+      url : ""
+    });
+  
+    let endRef = useRef(null);
+
+    useEffect(()=>{
+        endRef?.current?.scrollIntoView({behavior: "smooth"})
+      }, []);
+
+    useEffect(()=>{
+        let unSub = onSnapshot(doc(db, "chats", data?.chatId), (res)=>{
+          setChat(res?.data());
+        });
+    
+        return() =>{
+          unSub();
+        }
+      }, [data]);
+
+
+
+      
+  let handleSend = async (e) =>{
+    e.preventDefault();
+    if (text === "" && !img) return;
+    let imgUrl = null;
+    try{
+        if(img.file){
+            imgUrl = await upload(img.file);
+        }
+      await updateDoc(doc(db, "chats", data?.chatId), {
+        messages : arrayUnion({
+          senderId : currentUser.id,
+          text,
+          createdAt : new Date(),
+          ...(imgUrl && {img : imgUrl})
+        })
+      });
+      let userIDs = [currentUser.id, data?.receiverId];
+
+      userIDs.forEach(async (id)=>{
+        
+        let userChatRef = doc(db, "usersChats", id);
+        let userChatsSnapShot = await getDoc(userChatRef);
+        
+        if(userChatsSnapShot.exists()){
+          let userChatsData = userChatsSnapShot.data();
+          
+          let chatIndex = userChatsData.chats.findIndex(c => c.chatId === data?.chatId);
+
+          userChatsData.chats[chatIndex].lastMessage = text;
+          userChatsData.chats[chatIndex].isSeen = id === currentUser.id ? true : false;
+          userChatsData.chats[chatIndex].updatedAt = Date.now();
+          
+          await updateDoc(userChatRef, {
+            chats :userChatsData.chats
+          })
+          
+        }
+      })
+
+
+    }
+    catch(e){
+    //   console.log(e);
+    };
+
+    setImg({
+      file : null,
+      url : ""
+    });
+    setSelectedFile(null);
+
+    setText("");
+  }
+
+
   return (
       <div className="w-full h-full relative">
+        {console.log(data)}
           {/* Header */}
           <div className="w-full flex justify-between bg-[#EDEDED] p-3 rounded-md">
               <div className="flex items-center">
                   <img
                       className="w-10 h-10 object-cover object-top rounded-full border shadow"
-                      src={data?.photoURL}
+                      src={data?.user?.data?.avatar}
                       alt=""
                   />
                   <div className="px-2">
                       <p className="text-[17px] text-[#989BA1] font-semibold tracking-wide capitalize">
-                          {data?.projectTitle}
+                          
+                          {data?.user?.data?.username}
                       </p>
-                      <p className="text-[13px] text-[#989BA1] font-semibold tracking-wide">
-                          {data?.displayName}
+                      <p className="text-[13px] text-[#989BA1] font-semibold tracking-wide capitalize">
+                        {data?.projectTitle.slice(0,45)}...
                       </p>
                   </div>
               </div>
@@ -104,30 +194,65 @@ export default function MessageBoxForAll({ data }: PropsType) {
           </div>
 
           {/* Chat box with messages */}
-          <div className="w-full h-[540px] justify-between bg-[#EDEDED] p-3 mt-3 rounded-md relative">
+          <div className="w-full h-[540px] justify-between  bg-[#EDEDED] p-3 mt-3 rounded-md relative border-4 border-red-400">
               <div className="w-full h-full overflow-x-hidden overflow-y-scroll custom-scroll-of-message pb-12">
-                  <div className="flex items-center gap-2 w-full justify-center">
-                      <div className="w-[45%] h-[1px] bg-[#989BA1]"></div>
-                      <p className="text-[13px] text-[#989BA1]">August 09</p>
-                      <div className="w-[45%] h-[1px] bg-[#989BA1]"></div>
-                  </div>
-
-                  <div className="2xl:w-[700px] xl:w-[550px] lg:w-[400px] w-11/12 flex-col md:flex-row md:w-[350px] flex items-start gap-5 py-2 max-md:mx-auto">
-                      <img
-                          className="w-10 h-10 rounded-full border shadow object-cover object-top flex-shrink-0"
-                          src={data?.photoURL}
-                          alt="work alat"
-                      />
-                      <div>
-                          <div className="flex-grow flex flex-col bg-white ring-[2px] shadow ring-[#1D75DD]/50 rounded-md p-2 h-full overflow-hidden">
-                              <p className="text-[15px] px-5">{data?.message}</p>
-                          </div>
-                          <p className="text-[#989BA1] text-[12px] pt-1">12:25 pm</p>
-                      </div>
-                  </div>
-
+                
 
                   {/* Display Demo Messages */}
+
+                  {chat?.messages?.map((messageData: any, i: number) => (
+                    <>
+                    {
+                        messageData.senderId === currentUser.id 
+                        ?
+                        <div key={i} className="2xl:w-[700px] xl:w-[550px] lg:w-[400px] w-11/12 flex-col md:w-[350px] flex md:flex-row-reverse items-start ms-auto gap-5 py-2 max-md:mx-auto">
+                        <div>
+                            {messageData?.text && (
+                                <div className="flex-grow flex flex-col justify-start bg-[#C3F0FB] shadow rounded-md p-2 h-full overflow-hidden" >
+                                    <p className="text-[15px] px-5 ">
+                                           {messageData?.text}
+                                      </p>
+                                </div>
+                            )}
+                            {messageData?.img && (
+                                <div
+                                    className="w-[200px] mt-1 bg-[#C3F0FB] shadow rounded-md p-2 h-full overflow-hidden cursor-pointer"
+                                    onClick={() => handleImageClick(messageData.img)}
+                                >
+                                    <img className="w-full h-auto" src={messageData.img} alt="work alat" />
+                                </div>
+                            )}
+                            <p className="text-[#989BA1] text-[12px] pt-1 text-end">{moment(new Date(messageData?.createdAt?.seconds * 1000 + messageData?.createdAt?.nanoseconds / 1000000)).format('h:mm A')}</p>
+                        </div>
+                        
+                    </div>
+                        :
+                        <div className="2xl:w-[700px] xl:w-[550px] lg:w-[400px] w-11/12 flex-col md:flex-row md:w-[350px] flex items-start gap-5 py-2 max-md:mx-auto">
+                      <div>
+                      {messageData?.text && (                       
+                        <div className="flex-grow flex flex-col bg-white ring-[2px] shadow ring-[#1D75DD]/50 rounded-md p-2 h-full overflow-hidden">
+                        <p className="text-[15px] px-5">{messageData?.text}</p>
+                        </div>
+                      )}
+                          {messageData?.img && (
+                                <div
+                                    className="w-[200px] mt-1 bg-[#C3F0FB] shadow rounded-md p-2 h-full overflow-hidden cursor-pointer"
+                                    onClick={() => handleImageClick(messageData.img)}
+                                >
+                                    <img className="w-full h-auto" src={messageData.img} alt="work alat" />
+                                </div>
+                            )}
+                          <p className="text-[#989BA1] text-[12px] pt-1">{moment(new Date(messageData?.createdAt?.seconds * 1000 + messageData?.createdAt?.nanoseconds / 1000000)).format('h:mm A')}</p>
+                      </div>
+                  </div>
+                    }
+                    
+                    </>
+                     
+                  ))}
+                  {/* <div ref={endRef}></div> */}
+
+
                   {demoMessageCollection.map((messageData: any, i: number) => (
                       <div key={i} className="2xl:w-[700px] xl:w-[550px] lg:w-[400px] w-11/12 flex-col md:w-[350px] flex md:flex-row-reverse items-start ms-auto gap-5 py-2 max-md:mx-auto">
                           <img
@@ -153,16 +278,19 @@ export default function MessageBoxForAll({ data }: PropsType) {
                           </div>
                       </div>
                   ))}
+
+                  
               </div>
 
               <div>
                   {/* Input Section (Inside Chat Box) */}
                   <div className="absolute bottom-2 left-0 right-0 px-3">
-                      <form onSubmit={handleSubmit}>
+                      <form>
+                        
                           <div className="bg-white w-full flex max-sm:justify-between items-center p-1 rounded-md shadow-md border border-gray-300 box-border overflow-hidden">
                               <input
-                                  value={messageCollection}
-                                  onChange={handleMessageChange}
+                                  value={text}
+                                  onChange={(e)=>{setText(e.target.value)}}
                                   type="text"
                                   name="messageTxt"
                                   className="sm:w-auto w-[160px] py-1 px-3 sm:flex-grow rounded-none border-none outline-none bg-transparent"
@@ -205,6 +333,7 @@ export default function MessageBoxForAll({ data }: PropsType) {
                                   {/* Submit Button */}
                                   <button
                                       type="submit"
+                                      onClick={handleSend}
                                       className="bg-[#07242B] p-2 rounded flex items-center justify-center text-white hover:bg-[#0A2F36] transition-all"
                                   >
                                       <FiSend className="w-4 h-4" />

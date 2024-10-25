@@ -59,7 +59,6 @@ export default function SupportTickets() {
     };
 
     useEffect(() => {
-        console.log("Current pathname:", pathname); // Check what's being logged
 
         if (pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")) {
             setIsClientDashboard(true);
@@ -80,11 +79,9 @@ export default function SupportTickets() {
             setLoading2(true);
             let token = Cookies.get("token");
             let ver = await VerifyUser(token, "client");
-            console.log(ver);
             if(ver.status === "success"){
               setUserData(ver);
               let res = await findAllTickets({userId :ver.userId, userType : ver.userType});
-              console.log(res);
               if(res.status !== 400 || res.data?.status === "success"){
                     setAllTicketData(res.data?.data);
                     sessionStorage.setItem('projectData', JSON.stringify(res.data?.projectData));
@@ -99,7 +96,6 @@ export default function SupportTickets() {
             }
           }
           catch(e){
-            // console.log(e);
             generateSnackbar("Some Error Occur, Please try Again." ,"error")
           }
         };

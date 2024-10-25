@@ -1,5 +1,9 @@
-'use client'
-
+"use client"
+import AuthNavbar from "@/components/navbar/auth_navbar";
+import Profile from "@/components/Profile/Profile";
+import { useUserContext } from "@/context/user_context";
+import { useParams, useRouter } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
 import { FaFacebookF, FaLink, FaStar, FaTwitter, FaWhatsapp } from "react-icons/fa6"
 import { GiCheckedShield } from "react-icons/gi"
 import { HiMiniCheckBadge } from "react-icons/hi2"
@@ -10,20 +14,55 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import DoneIcon from "@mui/icons-material/Done";
 import { Box, Rating, Tooltip, Typography } from "@mui/material"
-import { ReactNode, useState } from "react"
 import DOMPurify from 'dompurify';
-import { useRouter } from 'next/navigation';
 import moment from "moment"
-export default function Profile({data, isData}) {
+
+
+export default function ProfilePage() {
+    let router = useRouter();
+    let params = useParams(); 
+    let { clientDetails } = useUserContext();
+    const [loading2, setLoading2] = useState(true);
+    let id = params.id; 
+    let [data,setData] = useState({});
+    let [isData,setIsData] = useState(false);
+
+  
+
+    useEffect(()=>{
+        async function getData (){
+            try{ 
+                let data = await  clientDetails({userId : id});
+                console.log(data);  
+                if(data.status !== 400 || data.data?.status === "success"){
+                    setData(data.data?.data);
+                    setIsData(true);
+                    setLoading2(false);
+                }
+                else{
+                    setData({});
+                    setIsData(false);
+                    setLoading2(false);
+                }
+            }
+            catch(e){
+                console.log(e);
+                router.push("/error");
+            }
+        }
+        getData();
+    },[id])
+
+
     console.log(data);
-    const sanitizedBio = DOMPurify.sanitize(data.professionalBio);
     let profile = 20;
-    (data.isEmailVerify ? profile +=20 : profile +=0);
-    (data.isPhoneVerify ? profile +=20 : profile +=0);
-    (data.isRegistrationComplete ? profile +=20 : profile +=0);
-    (data.isPaymentVerify ? profile +=20 : profile +=0);
+    (data?.isEmailVerify ? profile +=20 : profile +=0);
+    (data?.isPhoneVerify ? profile +=20 : profile +=0);
+    (data?.isRegistrationComplete ? profile +=20 : profile +=0);
+    (data?.isPaymentVerify ? profile +=20 : profile +=0);
     
 
+    
     const VerifiedCell = ({
         isVerified,
         Icon,
@@ -56,6 +95,7 @@ export default function Profile({data, isData}) {
         );
     };
 
+
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -67,8 +107,23 @@ export default function Profile({data, isData}) {
         alert('Link copied to clipboard!');
         setIsOpen(false); // Close the dropdown after copying
     };
+    
+
+
     return (
-        <div className="bg-white relative pb-12">
+        <>
+               {loading2 ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div> 
+            )
+            :(
+                <>
+                {
+                    (isData)
+                    ?
+                    <>  
+                              <div className="bg-white relative pb-12">
             {/* Left Image */}
             <img className="absolute z-0 left-0 top-[40px] w-[600px]" src="/CIRCLES.png" alt="workalat" />
             {/* Right Image */}
@@ -80,15 +135,15 @@ export default function Profile({data, isData}) {
                 <div className="flex flex-col lg:flex-row">
                     <div className="w-full lg:w-1/2 px-2">
                         <div className="flex flex-col md:flex-row gap-5 md:gap-0 w-full">
-                            <img className="w-[80px] mx-auto md:mx-0 h-[80px] sm:w-[100px] sm:h-[100px] object-cover object-top -mt-12 shadow rounded" src={data.professionalPictureLink} alt="work alat" />
+                            <img className="w-[80px] mx-auto md:mx-0 h-[80px] sm:w-[100px] sm:h-[100px] object-cover object-top -mt-12 shadow rounded" src={data.clientPictureLink} alt="work alat" />
 
                             <div className="px-3 -mt-4 sm:flex-grow">
                                 <div className="flex justify-between items-start">
                                     <div className="flex-grow">
-                                        <h4 className="text-sm sm:text-lg font-semibold flex gap-2 items-center capitalize">{data?.professionalFullName}
+                                        <h4 className="text-sm sm:text-lg font-semibold flex gap-2 items-center capitalize">{data?.clientFullName}
                                             <span className="text-sm font-thin lowercase flex gap-1 items-center">
                                                 {
-                                                    (data.isprofessionalEmailVerify && data.isprofessionalPhoneNoVerify)
+                                                    (data.isClientEmailVerify && data.isClientPhoneNoVerify)
                                                     ?
                                                     <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
                                                     :
@@ -110,30 +165,14 @@ export default function Profile({data, isData}) {
                                                     {/* {console.log(data.totalReviews , data.totalRatings)} */}
                                                 <p className="text-xs">{  data?.totalReviews>0 ? Number((data?.totalRatings / data?.totalReviews )).toFixed(1) : 0}</p>
                                             </div>
-                                            <div className="sm:flex gap-1 items-center hidden">
-                                                <IoMdChatboxes className="size-4 text-[#EA740E]" />
-                                                <p className="text-xs">{data.totalProjectsCompleted}</p>
-                                            </div>
-                                            <div className="flex gap-2 flex-col sm:flex-row items-center">
-                                                <p className="text-xs">Level {data.professional_level}</p>
-                                                <div className="flex space-x-2">
-                                                    {[...Array(5)].map((_, index) => (
-                                                        <div
-                                                            key={index}
-                                                            className={`w-[5px] h-[5px] sm:w-[8px] sm:h-[8px] rounded-sm border border-black rotate-45 overflow-hidden ${index < parseInt(data.professional_level) ? 'bg-black' : 'bg-transparent'} transition-colors duration-300 ease-in-out`}
-                                                        >
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
+                                           
                                         </div>
-                                        <h4 className="font-semibold text-sm sm:text-md py-1 capitalize">{data?.professionalPrimaryService}</h4>
                                         <div className="flex justify-start">
                                             <p className="text-xs capitalize flex gap-1 items-center">
 
                                                 {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
 
-                                                {data?.professionalCountry}</p>
+                                                {data?.clientCountry}</p>
                                             <p className="text-xs capitalize ps-4">joined on {moment(data.accountCreationDate).format('MMMM D, YYYY')}</p>
                                         </div>
                                     </div>
@@ -201,17 +240,17 @@ export default function Profile({data, isData}) {
                                 )}
                                 {true && (
                                     <VerifiedCell
-                                        isVerified={data.isprofessionalPhoneNoVerify}
+                                        isVerified={data.isClientPhoneNoVerify}
                                         Icon={
-                                            <LocalPhoneOutlinedIcon className={(data.isprofessionalPhoneNoVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}   />
+                                            <LocalPhoneOutlinedIcon className={(data.isClientPhoneNoVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}   />
                                         }
                                         name="phone"
                                     />
                                 )}
                                 {true && (
                                     <VerifiedCell
-                                        isVerified={data?.isprofessionalEmailVerify}
-                                        Icon={<EmailOutlinedIcon className={(data.isprofessionalEmailVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />}
+                                        isVerified={data?.isClientEmailVerify}
+                                        Icon={<EmailOutlinedIcon className={(data.isClientEmailVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />}
                                         name="email"
                                     />
                                 )}
@@ -233,19 +272,19 @@ export default function Profile({data, isData}) {
                                     ))
                                 }
                             </div> */}
-                            <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: sanitizedBio }} />
+                            <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.clientBio) }} />
 
-                            <div className="py-2">
+                            {/* <div className="py-2">
                                 <h2 className="text-lg font-semibold pb-3">Expertise</h2>
 
                                 <ul className="list-disc ps-5">
                                     {
-                                        data?.professionalSkills?.map((list, i) => (
-                                            <li className="py-1 capitalize" key={i}>{list}</li>
+                                        userData?.expertise?.map((list, i) => (
+                                            <li className="py-1" key={i}>{list}</li>
                                         ))
                                     }
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="w-full lg:w-1/2 px-2">
@@ -259,17 +298,8 @@ export default function Profile({data, isData}) {
                                         <div className="flex justify-between items-center flex-col gap-2 md:flex-row md:gap-0">
                                             <div className="flex">
                                             <img src={review?.giverPictureLink} className="w-16 h-12 flex items-center justify-center bg-secondary" />
-                                                {/* <div className="w-16 h-12 flex items-center justify-center bg-secondary"> */}
-                                                    {/* <p className="text-xl font-bold">{review?.profile}</p> */}
-                                                {/* </div> */}
                                                 <div className="px-3">
                                                     <div className="flex gap-2 items-center">
-                                                        {/* {
-                                                            [...Array(review?.rate)].map((_, i) => (
-                                                                <FaStar className="size-4 text-secondary" key={i} />
-                                                            ))
-                                                        }
-                                                        <p className="text-md">{Number(review?.rate).toFixed(1)}</p> */}
                                                         <Rating precision={0.1} value={review.giverRating} readOnly />
                                                             <Typography  className='text-sm' color="text.secondary" ml={1}>
                                                             {review.giverRating}
@@ -296,5 +326,13 @@ export default function Profile({data, isData}) {
                 </div>
             </div>
         </div>
+                    </>
+                    :
+                    "No Data Found"
+                }
+                </>
+            )
+        }
+        </>
     )
 }

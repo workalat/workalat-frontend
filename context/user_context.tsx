@@ -100,6 +100,7 @@ interface UserContextType {
   generateInvoice : (data : object) => object;
   walletPointsData : (data : object) => object;
   phoneVerifyPage : (data : object) => object;
+  userChatDetilas : (data : object) => object;
 
   
 
@@ -313,7 +314,7 @@ async function findAllServices(){
 
 
 async function signinProfessional({email, password, userType}){
-  // console.log(email, password,userType)
+  console.log(email, password,userType)
   try{
     if(userType === "professional"){
       const response = await axios.post('/signinEmail', {
@@ -322,28 +323,25 @@ async function signinProfessional({email, password, userType}){
         userType : userType
       });
   
-      console.log(response);
-  
       if(response.data.userStatus === 'success' || response.data.userStatus === 'SUCCESS'){
         const verifyToken = await axios.post('/verify', {
           type : "professional",
           token : response.data?.token,
           auth : true
         });
-        console.log(verifyToken);
+        
         setUserData({
           token : response.data?.token,
           userId : verifyToken.data?.userId,
           userName : verifyToken.data?.data[0]?.fullName,
           userPicture : verifyToken.data?.data[0]?.pictureLink,
-          userType : verifyToken.data?.data[0]?.userType,
+          userType : verifyToken.data?.userType,
           userRegisterAs : verifyToken.data?.data[0]?.registerAs,
         })
     
-        // console.log( verifyToken.data?.userType);
         Cookies.set("token", response.data?.token, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userType", userType, { secure: true, sameSite: 'None',expires: 30 });
-        userType
+        Cookies.set("userType", verifyToken.data?.userType, { secure: true, sameSite: 'None',expires: 30 });
+
         return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
       }
       else if(response.data.userStatus === 'PENDING'){
@@ -351,9 +349,9 @@ async function signinProfessional({email, password, userType}){
           userId : response.data?.data[0]?.userId,
           userType : response.data?.data[0]?.userType,
         });
-        setTempUserData({...tempUserData, "userEmail" :response.data?.data[0]?.email});
+        setTempUserData({...tempUserData, "userEmail" : response.data?.data[0]?.email});
         setUserId(response.data?.data[0]?.userId);
-        Cookies.set("userType", verifyToken.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", response.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
         Cookies.set("userId", response.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         return({response : response , isTwoFactAuth : true});
       }   
@@ -365,26 +363,27 @@ async function signinProfessional({email, password, userType}){
         userType : userType
       });
   
-      console.log(response);
+      // console.log("Response", response);
   
-      if(response.data.userStatus === 'SUCCESS'){
+      if(response.data.userStatus === 'success' || response.data.userStatus === 'SUCCESS'){
         const verifyToken = await axios.post('/verify', {
           type : "client",
           token : response.data?.token,
           auth : true
         });
+        // console.log("Token", verifyToken)
         setUserData({
           token : response.data?.token,
           userId : verifyToken.data?.userId,
           userName : verifyToken.data?.data[0]?.fullName,
           userPicture : verifyToken.data?.data[0]?.pictureLink,
-          userType : verifyToken.data?.data[0]?.userType,
+          userType : verifyToken.data?.userType,
           userRegisterAs : verifyToken.data?.data[0]?.registerAs,
         })
     
         // console.log( verifyToken.data?.userType);
-        Cookies.set("userType", verifyToken.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
         Cookies.set("token", response.data?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", verifyToken.data?.userType,  { secure: true, sameSite: 'None',expires: 30 });
         return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
       }
       else if(response.data.userStatus === 'PENDING'){
@@ -394,7 +393,7 @@ async function signinProfessional({email, password, userType}){
         });
         setTempUserData({...tempUserData, "userEmail" :response.data?.data[0]?.email});
         setUserId(response.data?.data[0]?.userId);
-        Cookies.set("userType", verifyToken.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType",response.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
         Cookies.set("userId", response.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         // Cookies.set("userType", response.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         return({response : response , isTwoFactAuth : true});
@@ -974,7 +973,7 @@ async function professionalDetailsP1({ userId}){
       userId : userId,
       });
       // console.log(response);
-      return(response);
+      return(response); 
   }
   catch(e){
     // console.log(e);
@@ -1629,6 +1628,19 @@ async function logout({ token,userType }){
   }
 }
 
+async function userChatDetilas({ userId ,userType }){
+  try{
+    const response = await axios.post('/userChatDetails', {
+      userId,userType
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
 
 
 
@@ -1698,6 +1710,7 @@ async function logout({ token,userType }){
       markAsCompleted,
       logout,
       phoneVerifyPage ,
+      userChatDetilas,
 
       //PRofessional
       intoClient,

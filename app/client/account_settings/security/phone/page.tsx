@@ -40,7 +40,7 @@ const PhonePage = () => {
 
   const handlePhoneNumberChange = (newValue?: string) => {
     if (newValue !== undefined) {
-      setValue(newValue);
+      setPhoneNo(newValue);
     }
   };
 
@@ -51,7 +51,6 @@ const PhonePage = () => {
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        console.log(ver);
         if(ver.status === "success"){
           if(ver.registerAs === "professional"){
             router.push("/professional/dashboard")
@@ -69,7 +68,7 @@ const PhonePage = () => {
         }
       }
       catch(e){
-        console.log(e);
+        generateSnackbar("Some error occur, please Try Again.", "error");
       }
     };
     verify();
@@ -86,7 +85,6 @@ const PhonePage = () => {
         userType : userData?.userType,
         phoneNo : phoneNo
      });
-     console.log(res);
       if(res?.status !== 400  || res?.data?.status === "success"){
         generateSnackbar("OTP sent successfully", "success");
         setOtpModal(true)
@@ -96,7 +94,7 @@ const PhonePage = () => {
       }
     }
     catch(e){
-      console.log(e);
+        generateSnackbar("Some Error Occur, Please Try Again.", "error");
     }
   };
 
@@ -124,7 +122,7 @@ const PhonePage = () => {
                 countryCallingCodeEditable={false}
                 defaultCountry="GB"
                 className="[&_.PhoneInputCountry]:!p-3 [&_.PhoneInputCountry]:bg-gray-200 [&_.PhoneInputCountry]:rounded-md [&_input]:bg-transparent [&_input]:border-b [&_input:hover]:border-dark [&_input]:p-2  [&_input:focus]:outline-secondary"
-                value={`+${phoneNo}`}
+                value={phoneNo}
                 onChange={handlePhoneNumberChange}
               />
               <Box className="flex justify-between items-center">

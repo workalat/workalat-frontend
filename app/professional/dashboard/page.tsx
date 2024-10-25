@@ -50,7 +50,7 @@ const Page = () => {
       try{
         setLoading2(true);
         let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional", true);
+        let ver = await VerifyUser(token, "professional");
         console.log(ver);
         if(ver.status === "success" && ver.userType === "professional"){
           setUserData(ver);
@@ -59,7 +59,7 @@ const Page = () => {
           setLoading2(false);
         }
         else{
-          router.push("/"); 
+          // router.push("/"); 
         }
       }
       catch(e){

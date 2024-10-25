@@ -33,14 +33,12 @@ export default function projects() {
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        console.log(ver);
         if (ver.status === "success" && ver.userType === "client") {
           setUserData(ver);
           let data = await AllProjectHistory({
             userId: ver.userId,
             userType: ver.userType,
           });
-          console.log(data);
           if (data?.status !== 400 || data?.data?.status === "success") {
             setProjectData(data?.data?.data);
             setLoading2(false);

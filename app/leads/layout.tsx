@@ -14,7 +14,7 @@ export default function LeadsLayout({ children }: { children: ReactNode }) {
       <main className="w-full max-w-screen-xl mx-auto mt-8 px-6">
         <Box className="sticky top-[65px] pt-2 z-10 bg-white flex justify-center items-center w-full border-b border-dark border-opacity-30">
           <Link
-            href="/client/dashboard"
+            href="/professional/dashboard"
             className="flex gap-2 absolute left-0 font-bold"
           >
             <Image

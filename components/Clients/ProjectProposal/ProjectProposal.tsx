@@ -181,7 +181,7 @@ async function getUser(){
                                                    
                                                      <Rating precision={0.1} value={`${(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }`} readOnly />
                                                             <Typography  className='text-sm' color="text.secondary" ml={1}>
-                                                            { d?.professionalTotalReviews > 0 ?  (d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) : "0" }
+                                                             { d?.professionalTotalReviews > 0 ?  (d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) : "0" }
                                                         </Typography>
                                                 </div>
                                                 <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]"><img className="size-[13px]" src="/flag.png" alt="workalat" />
@@ -314,10 +314,8 @@ async function getUser(){
                         <h4 className="text-center text-[24px] font-semibold tracking-wider py-2">
                             Done
                         </h4>
-                        <p className="text-center text-md pb-4 px-5">We are waiting for Anita Baker to accept the awarded project</p>
-                        <Link href={`/client/my-projects/proposal/${dynamicData?.projectId}`} onClick={() => {
-                            window.location.reload()
-                        }} className="flex items-center bg-[#FFBE00] px-5 py-2 w-8/12 mx-auto justify-center gap-3">
+                        <p className="text-center text-md pb-4 px-5 capitalize">We are waiting for {modalData?.professionalName} to accept the awarded project</p>
+                        <Link href={`/client/my-projects/`} className="flex items-center bg-[#FFBE00] px-5 py-2 w-8/12 mx-auto justify-center gap-3">
                             Project Dashboard <IoMdArrowForward className="size-[15px] text-black" />
                         </Link>
                     </div>

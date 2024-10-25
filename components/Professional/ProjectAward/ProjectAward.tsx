@@ -13,6 +13,7 @@ import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import DOMPurify from 'dompurify';
 import VerifyUser from "@/app/middleware/VerifyUser";
 import moment from "moment";
 
@@ -99,7 +100,8 @@ export default function ProjectAward() {
       });
       if (submit.status !== 400 || submit.data?.status === "success") {
         generateSnackbar("Review Submitted Successfully", "success");
-        router.push("/professional/my-responses");
+        // router.push("/professional/my-responses");
+        window.location.reload();
       } else {
         generateSnackbar("Failed Submitting Review.", "error");
       }
@@ -161,10 +163,11 @@ export default function ProjectAward() {
                       </h3>
                       <p className="text-center text-[#07242B] text-sm mb-4 sm:mb-0">
                         {moment(data?.projectTimeStamp).format("dddd, D MMMM")}
-                      </p>
-                      <p className="sm:text-[20px] text-[#323C47] text-justify sm:text-center md:px-8 xl:px-12">
-                        {data?.serviceDes?.substring(0, 210)}...
-                      </p>
+                      </p> 
+                      {/* <p className="sm:text-[20px] text-[#323C47] text-justify sm:text-center md:px-8 xl:px-12"> */}
+                      <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.serviceDes?.substring(0, 210))}...` }} />
+                        {/* {data?.serviceDes?.substring(0, 210)}... */}
+                      {/* </p> */}
 
                       <div className="flex gap-5 gap-y-2 flex-col sm:flex-row justify-center pt-8 sm:pt-5">
                         <Link
@@ -204,6 +207,7 @@ export default function ProjectAward() {
                           {(data?.projectStatus === "cancelled" ||
                           data?.projectStatus === "completed" ||
                           data?.projectStatusProfessional === "completed"  ||
+                          data?.projectStatusProfessional === "pending" ||
                           data?.projectStatusAdmin === false
                           ) ? (
                             <></>

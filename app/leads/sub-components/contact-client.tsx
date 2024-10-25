@@ -9,6 +9,8 @@ import { useUserContext } from '@/context/user_context';
 import { useSnackbar } from '@/context/snackbar_context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ClientDetails from './client-details';
+import { arrayUnion, collection, doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/context/firebase';
 
 export default function ContactClient({ open, onClose, job, openClientDetails, applied, setApplied, userData }) {
   const [loading, setLoading] = useState(false);
@@ -18,10 +20,10 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
   let [loaderMessage, setLoaderMessage] = useState("");
 
 
-  console.log(job, userData);
+
 
   const { generateSnackbar } = useSnackbar();
-  const { checkBid, applyJob ,setPayPayment ,payPayment,payAsGoSession} = useUserContext();
+  const { checkBid, applyJob ,setPayPayment ,payPayment,payAsGoSession, userChatDetilas} = useUserContext();
   const router = useRouter();
   let projectId = useSearchParams().get("job")
 
@@ -29,14 +31,16 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
     router.push("/leads");
   };
 
+
   window.addEventListener("message", (event) => {
     // Check the origin to ensure it matches
-    if (event.origin !== "http://localhost:3001") {
+    console.log( "Checking",event.origin !== process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN)
+    if (event.origin !== process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN) {
+      console.log("Payment Unsuccess")
         return; // Ignore messages from untrusted origins
     }
     
     if (event.data.paymentStatus === 'success') {
-        // console.log("Payment successful!");
         setPayPayment("paid")
         // Display success message or handle it accordingly
     } else {
@@ -44,6 +48,60 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
     }
 });
 
+
+
+async function handleAdd(current, user2, projectTitle){
+  console.log(current,user2)
+  try{
+    let chatRef = collection(db, "chats")
+    let userChatRef = collection(db, "usersChats");
+
+    let currentUser = await userChatDetilas({
+      userId : current.userId,
+      userType : current.userType === "client" ? "client" : "professional"
+    })
+    let user = await userChatDetilas({
+      userId : user2.clientId,
+      userType : current.userType === "client" ? "professional" : "client"
+    });
+
+
+    let newChatRef = doc(chatRef);
+    await setDoc(newChatRef, {
+      createdAt : serverTimestamp(),
+      message : [],
+    });
+
+    await updateDoc(doc(userChatRef, user?.data?.data?.id  ), {//RECIEVER ID / jisko bhej rha hu
+      chats : arrayUnion({
+        chatId : newChatRef?.id,
+        lastMessage : "",
+        flag : false,
+        projectTitle : projectTitle,
+        activeChat : currentUser?.data?.data?.activeChat,
+        chatNotifications : currentUser?.data?.data?.chatNotifications,
+        receiverId : currentUser?.data?.data?.id,  //My ID / SENDER ID
+        updatedAt : Date.now()
+      })
+    });
+    
+    await updateDoc(doc(userChatRef, currentUser?.data?.data?.id,), { //My ID / SENDER ID
+      chats : arrayUnion({
+        chatId : newChatRef?.id,
+        lastMessage : "",
+        flag : false,
+        projectTitle : projectTitle,
+        activeChat : user?.data?.data?.activeChat,
+        chatNotifications : user?.data?.data?.chatNotifications,
+        receiverId : user?.data?.data?.id, //RECIEVER ID / jisko bhej rha hu
+        updatedAt : Date.now()
+      })
+    });
+  } 
+  catch(e){
+    console.log(e);
+  }
+};
 
   async function payAsGenerate(projectId, professionalId){
     try{
@@ -58,10 +116,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
       console.log(res);
       if(res?.status !== 400 || res?.data?.status === "success"){
       setLoading(false);
-      // window.open(res?.data?.session?.url, "_blank");
       const paymentWindow = window.open(res?.data?.session?.url, '_blank', 'width=500,height=600');
-
-     
       }
       else{
         generateSnackbar("Failed to Generate Payment Session.", "error");
@@ -80,11 +135,14 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
       if(!proposalMessage){
         return generateSnackbar("Please Write a proposal.", "warning")
       }
+      if(!proposalMessage){
+        return generateSnackbar("Please Write a proposal.", "warning")
+      }
       let bid = await checkBid({ userId: userData.userId, projectId: projectId });
       console.log(bid);
+      console.log(payPayment);
       let data = bid?.data;
       let professionalData = bid?.data?.data;
-      console.log(professionalData);
 
       if (!data.eligible) {
         generateSnackbar("Cannot apply on this project.", "warning");
@@ -104,6 +162,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
           if (res.status !== 400 || res.data?.status === "success") {
             generateSnackbar("Bid Sent successfully.", "success");
             setClientData(res?.data?.data[0]);
+            handleAdd(userData, res?.data?.data[0],data?.projectTitle);
             setApplied(true);
             setTimeout(() => {
               setApplied(false);
@@ -126,6 +185,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
           if (res.status !== 400 || res.data?.status === "success") {
             generateSnackbar("Bid Sent successfully.", "success");
             setClientData(res?.data?.data[0]);
+            handleAdd(userData, res?.data?.data[0] ,data?.projectTitle);
             setApplied(true);
             setTimeout(() => {
               setApplied(false);
@@ -149,6 +209,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
         if (res.status !== 400 || res.data?.status === "success") {
           generateSnackbar("Bid Sent successfully.", "success");
           setClientData(res?.data?.data[0]);
+          handleAdd(userData, res?.data?.data[0] ,data?.projectTitle);
           setApplied(true);
           setTimeout(() => {
             setApplied(false);
@@ -186,6 +247,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
               <WalletIcon className="text-secondary text-7xl" />
               {/* <h1 className="font-bold">Contacting {job?.clientName} will cost you {?.proposalCost} points</h1> */}
               {/* <h1 className="font-bold">This project will cost you {?.proposalCost} points</h1> */}
+              {/* <h1 className="font-bold">Contacting {job?.clientName} will cost you {?.proposalCost} points</h1> */}
               <p>
                 Don't have enough points? {" "}
                 <Link href="/wallet" className="text-red font-bold hover:underline">
@@ -204,10 +266,12 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
                 />
                 
                
+                  
                   <Button variant="contained" type="submit" className="mt-4 font-semibold" size="large">
                     Contact Client
                   <ArrowForwardIcon className="ml-2 text-2xl" />
                 </Button>
+               
                
               </form>
             </>

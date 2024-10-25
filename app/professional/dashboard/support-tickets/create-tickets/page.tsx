@@ -75,11 +75,10 @@ export default function CreateSupportTicket() {
     
   useEffect(() => {
     async function verify(){
-      try{
+      try{ 
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "professional");
-        // setProjects(ticketProjects);
         if(ver.status === "success"){
           setUserData(ver);
           const storedData = JSON.parse(sessionStorage.getItem('projectData'));
@@ -100,7 +99,7 @@ export default function CreateSupportTicket() {
         generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
     };
-    verify();
+    verify(); 
   }, []);
 
 
@@ -154,6 +153,7 @@ export default function CreateSupportTicket() {
   }
 
 
+  console.log("projects", projects);
     return (
         <div>
             <div className="md:hidden fixed bottom-4 right-4 z-50">

@@ -125,7 +125,7 @@ async function getUser(){
                     {
                         data?.proposals?.map((d: any, i: number) => (
                             <div className="flex items-end gap-2 flex-col lg:flex-row p-4 my-2 shadow bg-[#F3F3F3]" key={i}>
-                                <div className="w-full lg:w-3/4">
+                                <div className="w-full lg:w-3/4"> 
                                     <div className="flex">
                                         <img className="w-[60px] h-[60px] object-cover" src={d?.professionalPicture} alt="work alat" />
 
@@ -136,7 +136,7 @@ async function getUser(){
                                                    
                                                      <Rating precision={0.1} value={`${(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }`} readOnly />
                                                             <Typography  className='text-sm' color="text.secondary" ml={1}>
-                                                            {(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }
+                                                            { d?.professionalTotalReviews > 0 ?  (d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) : "0" }
                                                         </Typography>
                                                 </div>
                                                 <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]"><img className="size-[13px]" src="/flag.png" alt="workalat" />

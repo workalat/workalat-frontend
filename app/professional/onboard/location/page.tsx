@@ -64,17 +64,19 @@ export default function LocationPage() {
       let companySize = tempUserData.companySize || Cookies.get("companySize");
       let skills = tempUserData.skills || JSON.parse(Cookies.get("skills"));
       let isData = tempUserData.isData || Cookies.get("isData") || true;
-      let userId = tempUserData.userId || Cookies.get("userId") || userData.userId;
+      let userId = userData.userId || tempUserData.userId || Cookies.get("userId") ;
   
+      console.log(userId);
+
       let res = await addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes});
       console.log(res);
       if(res.status !==400 || res.data?.status === "success"){
         setTempUserData({});
-        Cookies.remove('name');
+        Cookies.remove('name'); 
         Cookies.remove('companyName');
         Cookies.remove('website');
         Cookies.remove('bio');
-        Cookies.remove('companySize');
+        Cookies.remove('companySize'); 
         Cookies.remove('skills');
         Cookies.remove('isData');
         router.push("/professional/onboard/more");

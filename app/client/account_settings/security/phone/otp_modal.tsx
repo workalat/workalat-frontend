@@ -31,7 +31,6 @@ const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
   async function handleverifytp(){
     try{
      let res = await verifyPhoneOtp(userId ,userType,otp);
-     console.log(res);
       if(res?.status !== 400  || res?.data?.status === "success"){
         generateSnackbar("Phone Number Verified Successfully.", "success");
         router.push("/client/account_settings/security");
@@ -41,7 +40,7 @@ const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
       }
     }
     catch(e){
-      console.log(e);
+      generateSnackbar("Some Error Occur, Please Try Again.", "error");
     }
   };
 
@@ -54,8 +53,6 @@ const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
                 userType    : userType,
                 phoneNo : phoneNo
             });
-            console.log(res)
-
         if(res.status !==400 || res.data?.status === "success"){
             
           generateSnackbar("OTP resent successfully", "success");
@@ -65,7 +62,6 @@ const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
         }
     }
     catch(e){
-        // console.log(e);
         generateSnackbar("Please login again.", "error");
         // router.push("/login");
     }

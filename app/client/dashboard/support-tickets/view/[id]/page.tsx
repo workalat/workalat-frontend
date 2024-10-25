@@ -214,7 +214,7 @@ export default function ViewSupportTickets() {
                                     allTicketMessages.length > 0 && 
                                     <div>
                                             {
-                                                allTicketMessages.reverse().map((val, i)=>{
+                                                allTicketMessages.map((val, i)=>{
                                                     return(
                                                         <div className="pb-2 pt-4 border-b border-black/30" key={i}>
                                                             <p className="text-[15px] font-bold capitalize">{val.message_name} <span className="normal-case">{(val.message_email)}</span> <span className="text-[12px] font-normal">on {moment(val.messageTimeStamp).format('MMMM DD, YYYY hh:mm A')} <span className="text-[#FFBE00]">{(val.message_email)  ? "(WorkAlat Staff)" : ""}</span></span></p>

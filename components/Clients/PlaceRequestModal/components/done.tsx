@@ -20,7 +20,7 @@ const Done = ({
     // );
     activeStep(0)
     router.push("/client/project-history");
-    close();
+    // close();
   };
 
 
@@ -34,7 +34,7 @@ const Done = ({
       </p>
       <div className="flex justify-center items-center">
         <Button
-          variant="contained"
+          variant="contained" 
           className="h-[50px] w-[240px] rounded-sm flex gap-2"
 					onClick={finish}
         >

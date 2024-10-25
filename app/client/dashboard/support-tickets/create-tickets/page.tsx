@@ -78,11 +78,13 @@ export default function CreateSupportTicket() {
       try{
         setLoading2(true);
         let token = Cookies.get("token");
+        console.log(token);
         let ver = await VerifyUser(token, "client");
         console.log(ver);
         if(ver.status === "success"){
           setUserData(ver);
           const storedData = JSON.parse(sessionStorage.getItem('projectData'));
+          console.log(storedData);
           setProjects([...storedData,...projects])
           setTicketData({
             ...ticketData,
@@ -96,7 +98,6 @@ export default function CreateSupportTicket() {
         }
       }
       catch(e){
-        console.log(e);
         router.push("/client/dashboard/support-tickets"); 
         generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
@@ -124,7 +125,6 @@ export default function CreateSupportTicket() {
   async function handleCreateTicket(e){
     try{
         e.preventDefault();
-        console.log(ticketData.subject ,ticketData.relatedProject ,ticketData.creatorId ,ticketData.message)
         if(!ticketData.subject || !ticketData.relatedProject || !ticketData.creatorId || !ticketData.message){
             generateSnackbar( "Please fill all the Required Field." ,"error")
         }

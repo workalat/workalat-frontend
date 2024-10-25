@@ -57,16 +57,10 @@ const PreferenceSettings = () => {
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        console.log(ver);
         if(ver.status === "success"){
           setUserData(ver);
-          // if(ver.registerAs === "professional"){
-          //   router.push("/professional/dashboard")
-          // }
-          // else{
             let data = await getChatPage({userId : ver.userId, userType : "client"});
             if(data.status === 200 || data.data?.status === "success"){
-              // console.log(data);
               
               setMarkUnavailable(data.data?.data?.mark);
               setActivateChat(data.data?.data?.chat);
@@ -75,7 +69,6 @@ const PreferenceSettings = () => {
           else{
               generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
           }  
-          // }
         }
         else{
           router.push("/"); 
@@ -89,17 +82,11 @@ const PreferenceSettings = () => {
   }, []);
 
   async function handleSave(){
-    console.log(userData.userId);
     try{
-      // console.log(markUnavailable, activateChat)
       let m = await setMark({userId : userData.userId,userType : userData.userType,current_value : !markUnavailable});
       let a = await setChat({userId : userData.userId,userType : userData.userType,current_value : !activateChat});
-      // console.log(m);
-      // console.log(a);
       if((a.status === 200 && m.status === 200 )|| (a.data?.status === "success" && m.data?.status === "success" )){
-        // console.log(data);
         generateSnackbar("Status Updated Successfully." ,"success");
-        
     }
     else{
         generateSnackbar(a.response?.data?.message || m.response?.data?.message   || "Some Error Occur, Please try Again." ,"error")

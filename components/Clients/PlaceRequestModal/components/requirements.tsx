@@ -36,6 +36,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
     else{
       console.log(projectData);
       setProject(projectData);
+      setProjectDes(projectData.serviceDes);
       setProjectTitle(`I need a ${projectData.serviceNeeded} in ${projectData.postCodeRegion}`)
     }
   },[])
@@ -67,7 +68,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
                "userId" : ver.userId,
               "serviceTitle" : projectTitle,
               "serviceDes" : projectDes});
-            console.log(projectData);
+            setProjectDes(projectDes);
             sessionStorage.setItem("projectData", JSON.stringify(projectData));
             handleNext();
             handleNext();

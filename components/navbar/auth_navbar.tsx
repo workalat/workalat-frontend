@@ -101,11 +101,20 @@ const AuthNavbar = () => {
 
   useEffect(() => {
     async function verify(){
-      console.log()
       try{
-        setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, pathname.split("/")[1]);
+        const token = Cookies.get("token");
+        const userType = Cookies.get("userType");
+        const pathSegment = pathname.split("/")[1];
+        const typeToVerify = pathSegment || userType;
+  
+        if (!token || !typeToVerify) {
+          console.log("No token");
+          setLoading2(false);
+          return;
+        }
+  
+  
+        let ver = await VerifyUser(token, typeToVerify);
         console.log(ver);
         if(ver.status === "success"){
           setUserData(ver);

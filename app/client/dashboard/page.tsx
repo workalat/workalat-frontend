@@ -51,11 +51,9 @@ const Page = () => {
         setLoading2(true);
         let token = Cookies.get("token");
         let ver = await VerifyUser(token, "client");
-        console.log(ver);
         if(ver.status === "success" && ver.userType === "client"){
           setUserData(ver);
           let dash = await dashboardData({userId : ver.userId, userType : ver.userType});
-          console.log(dash)
           setDashData(dash.data?.data)
           setLoading2(false);
 
@@ -71,7 +69,6 @@ const Page = () => {
         }
       }
       catch(e){
-        // console.log(e);
         generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
     };
@@ -88,7 +85,6 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Current pathname:", pathname); // Check what's being logged
 
     if (pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")) {
       setIsClientDashboard(true);
