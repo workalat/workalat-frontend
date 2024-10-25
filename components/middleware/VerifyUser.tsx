@@ -3,10 +3,10 @@
 import { useUserContext } from "@/context/user_context";
 import axios from "axios";
 
-async function VerifyUser (token: any, userType : string){
+async function VerifyUser (token: any , userType : string){
     // console.log(token);
     try{
-        if(token?.length>0 || !token? ){
+        if(token?.length>0 || !token ){
             const verifyToken : any = await axios.post('/verify', {
               type : userType,
               token : token
