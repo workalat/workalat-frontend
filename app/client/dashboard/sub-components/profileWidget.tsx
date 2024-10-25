@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DOMPurify from 'dompurify';
 import { useRouter } from 'next/navigation';
 
-const ProfileWidget = ({data, userType}) => {
+const ProfileWidget = ({data, userType} : any) => {
   const router = useRouter();
   const sanitizedBio = DOMPurify.sanitize(data.userBio);
   let profile = 20;

@@ -21,22 +21,22 @@ import axios from "axios";
 
 
 const SecuritySettings = () => {
-  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const router = useRouter();
-  let { lastDatesDetails, kycDetailsUpload,changeTwoFact, kycDocumentDetailsUpload } = useUserContext();
+  const [isPasswordModalOpen, setIsPasswordModalOpen] : any  = useState(false);
+  const router : any  = useRouter();
+  let { lastDatesDetails, kycDetailsUpload,changeTwoFact, kycDocumentDetailsUpload } : any  = useUserContext();
   
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isNext, setIsNext] = useState(false);
-  const [isProceed, setIsProceed] = useState(false);
-  const [isUploading, setIsUploading] = useState(true);
-  let [userData, setUserData] =useState({});
-  let [twoFact, setTwoFact] =useState({});
-  let [files, setFiles] =useState([]);
-  let [kycStatus, setKycStatus] = useState("pending");
-  let [loading, setLoading] =useState(false);
+  const [isModalOpen, setIsModalOpen] : any  = useState(false);
+  const [isNext, setIsNext] : any  = useState(false);
+  const [isProceed, setIsProceed] : any  = useState(false);
+  const [isUploading, setIsUploading] : any  = useState(true);
+  let [userData, setUserData] : any  =useState({});
+  let [twoFact, setTwoFact] : any  =useState({});
+  let [files, setFiles] : any  =useState([]);
+  let [kycStatus, setKycStatus] : any  = useState("pending");
+  let [loading, setLoading] : any  =useState(false);
 
-  let[pageDate, setPageDate] = useState({
+  let[pageDate, setPageDate] : any  = useState({
     kycLast : "",
     passwordLast : "",
     phoneLast : "",
@@ -44,7 +44,7 @@ const SecuritySettings = () => {
   });
 
 
-let [kycData, setKycData] = useState({
+let [kycData, setKycData] : any  = useState({
   firstName : "",
   lastName : "",
   email : "",
@@ -55,21 +55,21 @@ let [kycData, setKycData] = useState({
   userType : "",
 })
 
-let [kycDocumentData, setKycDocumentData] = useState({
+let [kycDocumentData, setKycDocumentData] : any  = useState({
   documentType : "Passport",
   idNumber : "",
 })
 
-  const formatDate = (isoDate: string) => {
+  const formatDate : any  = (isoDate: string) => {
     return moment(isoDate).format('DD MMM YYYY, hh:mm A');
   };
   
-  const [loading2, setLoading2] = useState(true);
+  const [loading2, setLoading2] : any  = useState(true);
   
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any  = useSnackbar();
   
 
-  const openModal = () => {
+  const openModal : any  = () => {
     setIsModalOpen(true)
   }
   const closeModal = () => {
@@ -85,30 +85,21 @@ let [kycDocumentData, setKycDocumentData] = useState({
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        // console.log(ver);
-        if(ver.status === "success"){
-          // if(ver.registerAs === "client"){
-          //   router.push("/client/dashboard")
-          // }
-          // else{
-            let data = await lastDatesDetails({userId : ver.userId, userType : "professional"});
-            console.log(data);
-            setPageDate(data.data?.data?.ChangingDates[0]);
-            setTwoFact(data.data?.data?.isTwoFactAuth);
-            setKycStatus(data.data?.data?.kycStatus)
-            // console.log(ver);
+        let token : any  = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "professional");
+        if(ver?.status === "success"){
+            let data : any  = await lastDatesDetails({userId : ver.userId, userType : "professional"});
+            setPageDate(data?.data?.data?.ChangingDates[0]);
+            setTwoFact(data?.data?.data?.isTwoFactAuth);
+            setKycStatus(data?.data?.data?.kycStatus)
             setUserData(ver);
             setLoading2(false);
-          // }
         }
         else{
           router.push("/"); 
         }
       }
       catch(e){
-        console.loge
         generateSnackbar("Some Error Occur, Please try Again.", "error");
       }
     };
@@ -118,17 +109,17 @@ let [kycDocumentData, setKycDocumentData] = useState({
   async function handleTwoFact(){
     try{
       setTwoFact(!twoFact);
-      let res =  await changeTwoFact({
+      let res : any  =  await changeTwoFact({
         userId : userData.userId,
         userType : "professional",
         current_value : twoFact
       })
-      if(res.status === 200 || res.response.data?.status === "success"){
-        generateSnackbar(res.data?.msg , "success");
-        setTwoFact(res.data.current_value);
+      if(res?.status === 200 || res?.response.data?.status === "success"){
+        generateSnackbar(res?.data?.msg , "success");
+        setTwoFact(res?.data.current_value);
     }
     else{
-        generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }
     }
     catch(e){
@@ -158,16 +149,12 @@ let [kycDocumentData, setKycDocumentData] = useState({
       setKycData({
         ...kycData
       })
-      // console.log(userData);
-      // console.log(kycData);
-      let res = await kycDetailsUpload({data : kycData, userId : userData.userId, userType : userData.userType});
-      // console.log(res);
-      if(res.status === 200 || res.response.data?.status === "success"){
-        // generateSnackbar(res.data?.msg , "success");
+      let res : any  = await kycDetailsUpload({data : kycData, userId : userData.userId, userType : userData.userType});
+      if(res?.status === 200 || res?.response.data?.status === "success"){
         setIsNext(true); 
     }
     else{
-        generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }      
     }
     catch(e){

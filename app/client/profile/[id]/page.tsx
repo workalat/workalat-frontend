@@ -19,23 +19,22 @@ import moment from "moment"
 
 
 export default function ProfilePage() {
-    let router = useRouter();
-    let params = useParams(); 
-    let { clientDetails } = useUserContext();
-    const [loading2, setLoading2] = useState(true);
+    let router : any  = useRouter();
+    let params : any  = useParams(); 
+    let { clientDetails } : any  = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
     let id = params.id; 
-    let [data,setData] = useState({});
-    let [isData,setIsData] = useState(false);
+    let [data,setData] : any  = useState({});
+    let [isData,setIsData]  : any = useState(false);
 
   
 
     useEffect(()=>{
         async function getData (){
             try{ 
-                let data = await  clientDetails({userId : id});
-                console.log(data);  
-                if(data.status !== 400 || data.data?.status === "success"){
-                    setData(data.data?.data);
+                let data : any  = await  clientDetails({userId : id});
+                if(data?.status !== 400 || data?.data?.status === "success"){
+                    setData(data?.data?.data);
                     setIsData(true);
                     setLoading2(false);
                 }
@@ -54,7 +53,6 @@ export default function ProfilePage() {
     },[id])
 
 
-    console.log(data);
     let profile = 20;
     (data?.isEmailVerify ? profile +=20 : profile +=0);
     (data?.isPhoneVerify ? profile +=20 : profile +=0);

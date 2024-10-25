@@ -20,22 +20,22 @@ import { useUserContext } from "@/context/user_context";
 import moment from "moment";
 
 export default function projects() {
-  const [loading2, setLoading2] = useState(true);
-  let [userData, setUserData] = useState({});
-  let [projectData, setProjectData] = useState([]);
-  let { AllProjectHistory } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  let router = useRouter();
+  const [loading2, setLoading2] : any  = useState(true);
+  let [userData, setUserData] : any  = useState({});
+  let [projectData, setProjectData] : any  = useState([]);
+  let { AllProjectHistory } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
+  let router : any  = useRouter();
 
   useEffect(() => {
     async function verify() {
       try {
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client");
-        if (ver.status === "success" && ver.userType === "client") {
+        let token : any  = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "client");
+        if (ver?.status === "success" && ver?.userType === "client") {
           setUserData(ver);
-          let data = await AllProjectHistory({
+          let data : any  = await AllProjectHistory({
             userId: ver.userId,
             userType: ver.userType,
           });
