@@ -22,23 +22,23 @@ const PhonePage = () => {
   const [otpModal, setOtpModal] = useState(false);
   const [value, setValue] = useState<string | undefined>();
 
-  let [userData, setUserData] = useState({});
-  let { getPhoneNo,phoneVerifyPage } = useUserContext();
+  let [userData, setUserData] : any = useState({});
+  let { getPhoneNo,phoneVerifyPage } : any = useUserContext();
   
 
   // loading
-  const [loading2, setLoading2] = useState(true);
-  let [phoneNo, setPhoneNo] = useState("");
-  let [phoneCountry, setPhoneCountry] = useState("");
+  const [loading2, setLoading2] : any = useState(true);
+  let [phoneNo, setPhoneNo] : any = useState("");
+  let [phoneCountry, setPhoneCountry] : any = useState("");
 
   // router
   const router = useRouter();
   
   // Alert
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any = useSnackbar();
 
 
-  const handlePhoneNumberChange = (newValue?: string) => {
+  const handlePhoneNumberChange : any = (newValue?: string) => {
     if (newValue !== undefined) {
       setPhoneNo(newValue);
     }
@@ -49,16 +49,16 @@ const PhonePage = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client");
-        if(ver.status === "success"){
-          if(ver.registerAs === "professional"){
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "client");
+        if(ver?.status === "success"){
+          if(ver?.registerAs === "professional"){
             router.push("/professional/dashboard")
           }
           else{
             setUserData(ver);
-            let phoneDet = await getPhoneNo({userId : ver.userId, userType : "client"});
-            setPhoneNo(phoneDet.data.phoneNo)
+            let phoneDet : any = await getPhoneNo({userId : ver.userId, userType : "client"});
+            setPhoneNo(phoneDet?.data.phoneNo)
             setPhoneCountry(phoneDet?.data?.countryCode)
             setLoading2(false);
           }
@@ -80,7 +80,7 @@ const PhonePage = () => {
       if(!phoneNo){
         return generateSnackbar("Please Enter Phone Number.", "error");
       }
-     let res = await phoneVerifyPage({
+     let res : any = await phoneVerifyPage({
         userId : userData?.userId,
         userType : userData?.userType,
         phoneNo : phoneNo

@@ -28,10 +28,10 @@ import { Navbar as NavMain} from "@/components/navbar/navbar";
 const AuthNavbar = () => {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = React.useState(false);
-  let [userData,setUserData] = useState({});
+  let [userData,setUserData] : any = useState({});
   const { generateSnackbar } = useSnackbar();
-  let { intoProfessoinal, intoClient,logout} = useUserContext();
-  let [loadingMessage, setLoadingMessage] = useState("");
+  let { intoProfessoinal, intoClient,logout} : any = useUserContext();
+  let [loadingMessage, setLoadingMessage]: any = useState("");
 
   const avatarDropdownMenu = [
    
@@ -50,20 +50,20 @@ const AuthNavbar = () => {
   async function handleIntoProfessional(){
     try{
       setLoading(true)
-      setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
-      let changeToProfessional = await intoProfessoinal({userId : userData.userId});
+      setLoadingMessage(`Switching to ${(userData?.userType === "client") ?"Professional" :"Client"}...`)
+      let changeToProfessional : any = await intoProfessoinal({userId : userData?.userId});
       console.log(changeToProfessional)
       
-      if(changeToProfessional.status !== 400 || changeToProfessional.data?.status === "success"){
-        generateSnackbar(changeToProfessional.data?.message , "success");
-        Cookies.set("token", changeToProfessional.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+      if(changeToProfessional?.status !== 400 || changeToProfessional?.data?.status === "success"){
+        generateSnackbar(changeToProfessional?.data?.message , "success");
+        Cookies.set("token", changeToProfessional?.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData?.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
         setLoading(false);
         router.push("/professional/dashboard");
     }
     else{
         setLoading(false);
-        generateSnackbar(changeToProfessional.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(changeToProfessional?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }
       
     }
@@ -77,7 +77,7 @@ const AuthNavbar = () => {
     try{
       setLoading(true)
       setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
-      let changeToClient = await intoClient({userId : userData.userId});
+      let changeToClient : any = await intoClient({userId : userData.userId});
       
       if(changeToClient.status !== 400 || changeToClient.data?.status === "success"){
         generateSnackbar(changeToClient.data?.message , "success");
@@ -102,10 +102,10 @@ const AuthNavbar = () => {
   useEffect(() => {
     async function verify(){
       try{
-        const token = Cookies.get("token");
-        const userType = Cookies.get("userType");
-        const pathSegment = pathname.split("/")[1];
-        const typeToVerify = pathSegment || userType;
+        const token  : any = Cookies.get("token");
+        const userType  : any = Cookies.get("userType");
+        const pathSegment  : any = pathname.split("/")[1];
+        const typeToVerify  : any = pathSegment || userType;
   
         if (!token || !typeToVerify) {
           console.log("No token");
@@ -114,22 +114,18 @@ const AuthNavbar = () => {
         }
   
   
-        let ver = await VerifyUser(token, typeToVerify);
-        console.log(ver);
-        if(ver.status === "success"){
+        let ver : any= await VerifyUser(token, typeToVerify);
+        if(ver?.status === "success"){
           setUserData(ver);
           setLoading2(false);
 
         }
         else{
           setLoading2(false);
-          // router.push("/"); 
         }
       }
       catch(e){
         setLoading2(false);
-        // console.log(e);
-        // generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
     };
     verify();
@@ -139,18 +135,17 @@ const AuthNavbar = () => {
     try{
       setLoading(true)
       setLoadingMessage("Logging out...")
-      let token = Cookies.get("token")
+      let token : any = Cookies.get("token")
       if(!token){
           router.push("/")
       }
       else{
-        let log = await logout({
+        let log : any = await logout({
           token: token,
           userType : userData.userType
         });
-      // console.log(changeToProfessional)
       
-      if(log.status !== 400 || log.data?.status === "success"){
+      if(log?.status !== 400 || log?.data?.status === "success"){
         generateSnackbar("Logged Out Successfully." , "success");
         Cookies.remove("token");
         setLoading(false);
@@ -179,7 +174,7 @@ const AuthNavbar = () => {
     :(
       <>
       {
-        userData.userId
+        userData?.userId
         ?
         <>
          <Navbar

@@ -20,7 +20,7 @@ interface ChangePassProps {
   open: boolean;
   onClose: () => void;
 }
-const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProps) => {
+const ChangePasswordModal = ({ open, onClose ,userId , userType} : any) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -43,8 +43,8 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProp
     }
     
 
-    let res = await changePassword({userId ,userType, oldPassword :currentPassword , newPassword : newPassword});
-    if(res.status === 200 || res.response.data?.status === "success"){
+    let res :any = await changePassword({userId ,userType, oldPassword :currentPassword , newPassword : newPassword});
+    if(res?.status === 200 || res?.response.data?.status === "success"){
 
       generateSnackbar("Password Changed Successfully.", "success")
       setCurrentPassword("");

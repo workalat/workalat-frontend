@@ -49,7 +49,7 @@ const LinkedInCallback = () => {
     //     // Handle token exchange error
     //     router.push('/professional/signup');
     //   }
-    // };
+    };
 
     handleLinkedInCallback();
   }, [router]);

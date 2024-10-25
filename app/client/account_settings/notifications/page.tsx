@@ -18,17 +18,17 @@ const NotificationsPage = () => {
 
     
   //Loading
-  const [loading2, setLoading2] = useState(true);
-  const { generateSnackbar } = useSnackbar();
+  const [loading2, setLoading2] : any = useState(true);
+  const { generateSnackbar } : any = useSnackbar();
   
-  let [requestValue, setRequestValue] =useState(true);
-  let [chatNotificationValue, setChatNotificationValue] = useState(true);
-  let [reminderValue,setReminderValue] = useState({});
-  let [userData, setUserData] = useState({});
+  let [requestValue, setRequestValue] : any =useState(true);
+  let [chatNotificationValue, setChatNotificationValue] : any = useState(true);
+  let [reminderValue,setReminderValue] : any = useState({});
+  let [userData, setUserData] : any = useState({}) ;
 
 
   const router = useRouter();
-  let { getNotificationPage , setRequest, setReminder, setChatNotification} = useUserContext();
+  let { getNotificationPage , setRequest, setReminder, setChatNotification} : any = useUserContext();
   
   
   useEffect(() => {
@@ -39,7 +39,7 @@ const NotificationsPage = () => {
         let ver = await VerifyUser(token, "client");
         if(ver.status === "success"){
           setUserData(ver);
-            let data = await getNotificationPage({userId : ver.userId, userType : "client"});
+            let data : any = await getNotificationPage({userId : ver.userId, userType : "client"}) ;
             if(data?.data?.status === "success"){
               
               setRequestValue(data?.data?.data?.request);
@@ -65,9 +65,9 @@ const NotificationsPage = () => {
 
   async function handleSave(){
     try{
-      let re = await setRequest({userId : userData?.userId,userType : userData?.userType,current_value : !requestValue});
-      let rem = await setReminder({userId : userData?.userId,userType : userData?.userType,current_value : !reminderValue});
-      let chatN = await setChatNotification({userId : userData?.userId,userType : userData?.userType,current_value : !chatNotificationValue});
+      let re : any = await setRequest({userId : userData?.userId,userType : userData?.userType,current_value : !requestValue});
+      let rem : any = await setReminder({userId : userData?.userId,userType : userData?.userType,current_value : !reminderValue});
+      let chatN : any = await setChatNotification({userId : userData?.userId,userType : userData?.userType,current_value : !chatNotificationValue});
       if((re?.status !== 400 && rem?.status !== 400 && chatN?.status !== 400 ) || (re?.data?.status === "success" && rem?.data?.status === "success" && chatN?.data?.status === "success" )){
         generateSnackbar("Status Updated Successfully." ,"success");
         
@@ -77,7 +77,7 @@ const NotificationsPage = () => {
     }  
     }
     catch(e){
-
+      generateSnackbar("Some Error Occur, Please try Again." ,"error");
     }
   }
   

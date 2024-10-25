@@ -23,19 +23,19 @@ import axios from "axios";
 const SecuritySettings = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const router = useRouter();
-  let { lastDatesDetails, kycDetailsUpload,changeTwoFact, kycDocumentDetailsUpload } = useUserContext();
+  let { lastDatesDetails, kycDetailsUpload,changeTwoFact, kycDocumentDetailsUpload }  : any  = useUserContext();
   
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isNext, setIsNext] = useState(false);
-  const [isProceed, setIsProceed] = useState(false);
-  const [isUploading, setIsUploading] = useState(true);
-  let [userData, setUserData] =useState({});
-  let [twoFact, setTwoFact] =useState({});
-  let [files, setFiles] =useState([]);
-  let [loading, setLoading] =useState(false);
+  const [isModalOpen, setIsModalOpen]  : any  = useState(false);
+  const [isNext, setIsNext]  : any  = useState(false);
+  const [isProceed, setIsProceed]  : any  = useState(false);
+  const [isUploading, setIsUploading]   : any = useState(true);
+  let [userData, setUserData]  : any  =useState({});
+  let [twoFact, setTwoFact]  : any  =useState({});
+  let [files, setFiles]  : any  =useState([]);
+  let [loading, setLoading]  : any  =useState(false);
 
-  let[pageDate, setPageDate] = useState({
+  let[pageDate, setPageDate]  : any  = useState({
     kycLast : "",
     passwordLast : "",
     phoneLast : "",
@@ -43,7 +43,7 @@ const SecuritySettings = () => {
   });
 
 
-let [kycData, setKycData] = useState({
+let [kycData, setKycData]  : any  = useState({
   firstName : "",
   lastName : "",
   email : "",
@@ -54,19 +54,19 @@ let [kycData, setKycData] = useState({
   userType : "",
 })
 
-let [kycDocumentData, setKycDocumentData] = useState({
+let [kycDocumentData, setKycDocumentData]  : any  = useState({
   documentType : "Passport",
   idNumber : "",
 })
 
-  const formatDate = (isoDate: string) => {
+  const formatDate  : any  = (isoDate: string) => {
     return moment(isoDate).format('DD MMM YYYY, hh:mm A');
   };
   
-  const [loading2, setLoading2] = useState(true);
-  let [kycStatus, setKycStatus] = useState("pending");
+  const [loading2, setLoading2]  : any   = useState(true);
+  let [kycStatus, setKycStatus]  : any  = useState("pending");
   
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar }  : any  = useSnackbar();
   
 
   const openModal = () => {
@@ -85,13 +85,13 @@ let [kycDocumentData, setKycDocumentData] = useState({
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client");
+        let token  : any  = Cookies.get("token");
+        let ver  : any  = await VerifyUser(token, "client");
         if(ver.status === "success"){
             let data = await lastDatesDetails({userId : ver.userId, userType : "client"});
-            setPageDate(data.data?.data?.ChangingDates[0]);
-            setTwoFact(data.data?.data?.isTwoFactAuth);
-            setKycStatus(data.data?.data?.kycStatus)
+            setPageDate(data?.data?.data?.ChangingDates[0]);
+            setTwoFact(data?.data?.data?.isTwoFactAuth);
+            setKycStatus(data?.data?.data?.kycStatus)
             setUserData(ver);
             setLoading2(false);
         }
@@ -109,14 +109,14 @@ let [kycDocumentData, setKycDocumentData] = useState({
   async function handleTwoFact(){
     try{
       setTwoFact(!twoFact);
-      let res =  await changeTwoFact({
+      let res  : any  =  await changeTwoFact({
         userId : userData.userId,
         userType : "client",
         current_value : twoFact
       })
-      if(res.status === 200 || res.response.data?.status === "success"){
-        generateSnackbar(res.data?.msg , "success");
-        setTwoFact(res.data.current_value);
+      if(res?.status === 200 || res?.response.data?.status === "success"){
+        generateSnackbar(res?.data?.msg , "success");
+        setTwoFact(res?.data?.current_value);
     }
     else{
         generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
@@ -149,12 +149,12 @@ let [kycDocumentData, setKycDocumentData] = useState({
       setKycData({
         ...kycData
       })
-      let res = await kycDetailsUpload({data : kycData, userId : userData.userId, userType : userData.userType});
-      if(res.status === 200 || res.response.data?.status === "success"){
+      let res : any = await kycDetailsUpload({data : kycData, userId : userData.userId, userType : userData.userType});
+      if(res?.status === 200 || res?.response.data?.status === "success"){
         setIsNext(true); 
     }
     else{
-        generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }      
     }
     catch(e){
@@ -187,10 +187,10 @@ let [kycDocumentData, setKycDocumentData] = useState({
         event.preventDefault();
   
       const formData = new FormData();
-      formData.append('userId', userData.userId);
-      formData.append('userType', userData.userType);
-      formData.append('documentType', kycDocumentData.documentType);
-      formData.append('idNumber', kycDocumentData.idNumber);
+      formData.append('userId', userData?.userId);
+      formData.append('userType', userData?.userType);
+      formData.append('documentType', kycDocumentData?.documentType);
+      formData.append('idNumber', kycDocumentData?.idNumber);
       
       // Append all selected files to the form data under the kycDocuments key
       files.forEach((file) => {
@@ -199,12 +199,12 @@ let [kycDocumentData, setKycDocumentData] = useState({
       
       // Send the form data to the server to upload the files
       setLoading(true);
-        const res = await axios.post('/kycDocuments', formData, {
+        const res  : any  = await axios.post('/kycDocuments', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        if(res.status === 200 || res.response.data?.status === "success"){
+        if(res?.status === 200 || res?.response.data?.status === "success"){
           // generateSnackbar(res.data?.msg , "success");
           generateSnackbar("Your KYC has been submitted successfully,We will let you know once approved." ,"success");
           setLoading(false);

@@ -11,8 +11,6 @@ import HelpIcon from "@mui/icons-material/Help";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { FaUserEdit } from "react-icons/fa";
 import { usePathname } from "next/navigation";
-import CountryFlag from 'react-country-flag';
-import { getName } from 'country-flag-icons';
 
 import projectsIcon from "@/public/icons/projects.svg";
 import responsesIcon from "@/public/icons/responses.svg";
@@ -32,17 +30,17 @@ interface SideNavProps {
   setIsClientDashboard: (value: boolean) => void;
 }
 
-const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
-  const pathname = usePathname();
+const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
+  const pathname : any = usePathname();
   
   // 
-  let [loading, setLoading] =useState(false);
-  const [loading2, setLoading2] = useState(true);
-  let [loadingMessage, setLoadingMessage] = useState("");
-  let router = useRouter();
-  let [userData,setUserData] = useState({});
-  const { generateSnackbar } = useSnackbar();
-  let { intoProfessoinal, intoClient,logout} = useUserContext();
+  let [loading, setLoading] : any =useState(false);
+  const [loading2, setLoading2] : any = useState(true);
+  let [loadingMessage, setLoadingMessage] : any = useState("");
+  let router : any = useRouter();
+  let [userData,setUserData] : any = useState({});
+  const { generateSnackbar } : any = useSnackbar();
+  let { intoProfessoinal, intoClient,logout} : any = useUserContext();
   let [uType, setUType] = useState(Cookies.get("userType"));
   
  
@@ -66,12 +64,11 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, window.location.pathname.split("/")[1]);
-        console.log(ver);
-        if(ver.status === "success"){
+        let token: any  = Cookies.get("token");
+        let ver : any = await VerifyUser(token, window.location.pathname.split("/")[1]);
+        if(ver?.status === "success"){
           setUserData(ver);
-          if(ver.registerAs === "professional"){
+          if(ver?.registerAs === "professional"){
             // router.push("/professional/dashboard")
             setLoading2(false);
           }
@@ -85,7 +82,6 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
         }
       }
       catch(e){
-        console.log(e);
         generateSnackbar("Some Error Occur, Please try again", "error")
       }
     };
@@ -97,13 +93,12 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
     try{
       setLoading(true)
       setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
-      let changeToProfessional = await intoProfessoinal({userId : userData.userId});
-      console.log(changeToProfessional)
+      let changeToProfessional : any = await intoProfessoinal({userId : userData.userId});
       
-      if(changeToProfessional.status !== 400 || changeToProfessional.data?.status === "success"){
-        generateSnackbar(changeToProfessional.data?.message , "success");
-        Cookies.set("token", changeToProfessional.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+      if(changeToProfessional?.status !== 400 || changeToProfessional?.data?.status === "success"){
+        generateSnackbar(changeToProfessional?.data?.message , "success");
+        Cookies.set("token", changeToProfessional?.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData?.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
         setLoading(false);
         setIsClientDashboard(false);
         router.push("/professional/dashboard");
@@ -124,20 +119,19 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
     try{
       setLoading(true)
       setLoadingMessage(`Switching to ${(userData.userType === "client") ?"Professional" :"Client"}...`)
-      let changeToClient = await intoClient({userId : userData.userId});
-      // console.log(changeToProfessional)
+      let changeToClient : any = await intoClient({userId : userData.userId});
       
-      if(changeToClient.status !== 400 || changeToClient.data?.status === "success"){
-        generateSnackbar(changeToClient.data?.message , "success");
-        Cookies.set("token", changeToClient.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userType", (userData.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
+      if(changeToClient?.status !== 400 || changeToClient?.data?.status === "success"){
+        generateSnackbar(changeToClient?.data?.message , "success");
+        Cookies.set("token", changeToClient?.data?.data[0]?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", (userData?.userType === "client") ? "professional" : "client", { secure: true, sameSite: 'None',expires: 30 });
         setLoading(false);
         setIsClientDashboard(true);
         router.push("/client/dashboard");
     }
     else{
       setLoading(false);
-        generateSnackbar(changeToClient.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(changeToClient?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }
       
     }
@@ -158,13 +152,13 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: SideNavProps) => {
           router.push("/")
       }
       else{
-        let log = await logout({
+        let log : any = await logout({
           token: token,
           userType : userData.userType
         });
       // console.log(changeToProfessional)
       
-      if(log.status !== 400 || log.data?.status === "success"){
+      if(log?.status !== 400 || log?.data?.status === "success"){
         generateSnackbar("Logged Out Successfully." , "success");
         Cookies.remove("token");
         setLoading(false);

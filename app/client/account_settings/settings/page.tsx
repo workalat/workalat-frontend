@@ -24,10 +24,10 @@ const SettingsPage = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client");
-        if(ver.status === "success"){
-            let data = await getClientsData({ userId : ver.userId});
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "client");
+        if(ver?.status === "success"){
+            let data : any = await getClientsData({ userId : ver.userId});
             setData(data?.data?.data);
             setLoading2(false);
         }

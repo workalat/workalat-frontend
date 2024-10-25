@@ -22,17 +22,17 @@ export default function ViewSupportTickets() {
     const [filteredTicketsData, setFilteredTicketsData] = useState<any>();
     let params = useParams();
 
-    let [userData,setUserData] = useState({});
+    let [userData,setUserData] : any = useState({});
     let [allTicketData, setAllTicketData] = useState([]);
 
     // loading
     const [loading2, setLoading2] = useState(true);
-    let router = useRouter();
-    let { findSingleTicket, respondTicket } = useUserContext();
-    let [ticketData, setTicketData] = useState({});
-    let [allTicketMessages, setAllTicketMessages] = useState([]);
-    let [ticketMessages, setTicketMessages] = useState("")
-    const { generateSnackbar } = useSnackbar();
+    let router : any = useRouter();
+    let { findSingleTicket, respondTicket } : any = useUserContext();
+    let [ticketData, setTicketData] : any = useState({});
+    let [allTicketMessages, setAllTicketMessages] : any = useState([]);
+    let [ticketMessages, setTicketMessages] : any = useState("")
+    const { generateSnackbar } : any = useSnackbar();
   
   
 
@@ -41,18 +41,18 @@ export default function ViewSupportTickets() {
         async function getTicketData(){
             try{
                 setLoading2(true);
-            let token = Cookies.get("token");
-            let ver = await VerifyUser(token, "client");
-            if(ver.status === "success"){
+            let token : any = Cookies.get("token");
+            let ver : any = await VerifyUser(token, "client");
+            if(ver?.status === "success"){
               setUserData(ver);
-              let res = await findSingleTicket({ticketId : params.id});
-              if(res.status !== 400 || res.data?.status === 'success'){
-              setTicketData(res.data?.data);
-              setAllTicketMessages(res.data?.data?.ticketMessages.reverse());
+              let res : any = await findSingleTicket({ticketId : params.id});
+              if(res?.status !== 400 || res?.data?.status === 'success'){
+              setTicketData(res?.data?.data);
+              setAllTicketMessages(res?.data?.data?.ticketMessages.reverse());
               setLoading2(false);
               }
               else{
-                  generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again.", "error")
+                  generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again.", "error")
                   router.push("/professional/dashboard/support-tickets")
               }
             }
@@ -75,9 +75,9 @@ export default function ViewSupportTickets() {
             }
             else{
                 let res = await respondTicket({
-                    ticketId : params.id,
-                    userId : userData.userId,
-                    userType : userData.userType,
+                    ticketId : params?.id,
+                    userId : userData?.userId,
+                    userType : userData?.userType,
                     ticketStatus : "customer",
                     userMessage : ticketMessages,
                 });
@@ -85,10 +85,10 @@ export default function ViewSupportTickets() {
                     let message = {
                         messageTimeStamp : Date.now(),
                         message_email : "",
-                        message_name : userData.userName,
+                        message_name : userData?.userName,
                         ticketMessages : ticketMessages,
-                        userType : userData.userType,
-                        userId : userData.userId
+                        userType : userData?.userType,
+                        userId : userData?.userId
                     }
                     setAllTicketMessages([message,...allTicketMessages]);
                     setTicketMessages("");

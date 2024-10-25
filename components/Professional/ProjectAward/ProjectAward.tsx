@@ -19,17 +19,17 @@ import moment from "moment";
 import { Typography } from "@mui/material";
 
 export default function ProjectAward() {
-  const [loading2, setLoading2] = useState(true);
-  const router = useRouter();
-  const { allActiveProjectsProfessoinal, markAsCompleted,professionalGivingReview } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const [allProjects, setAllProjects] = useState([]);
-  const [review, setReview] = useState("");
-  const [activeStatusId, setActiveStatusId] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalData, setModalData] = useState<any>();
-  const [userData, setUserData] = useState({});
-  const [rating, setRating] = useState(0);
+  const [loading2, setLoading2] : any = useState(true);
+  const router : any = useRouter();
+  const { allActiveProjectsProfessoinal, markAsCompleted,professionalGivingReview } : any = useUserContext();
+  const { generateSnackbar } : any = useSnackbar();
+  const [allProjects, setAllProjects] : any = useState([]);
+  const [review, setReview] : any = useState("");
+  const [activeStatusId, setActiveStatusId] : any = useState(null);
+  const [isModalOpen, setIsModalOpen] : any = useState<boolean>(false);
+  const [modalData, setModalData] : any = useState<any>();
+  const [userData, setUserData] : any = useState({});
+  const [rating, setRating] : any = useState(0);
 
   const handleToggleStatus = (id: any) => {
     setActiveStatusId((prevId) => (prevId === id ? null : id));
@@ -81,27 +81,25 @@ export default function ProjectAward() {
     if (!review || review.length < 1) {
       return generateSnackbar("Please Write a Review.", "error");
     }
-    const markCompleted = await markAsCompleted({
-      userId: userData.userId,
-      userType: userData.userType,
-      projectId: modalData._id,
+    const markCompleted : any = await markAsCompleted({
+      userId: userData?.userId,
+      userType: userData?.userType,
+      projectId: modalData?._id,
     });
 
-    console.log(markCompleted);
     if (
-      markCompleted.status !== 400 ||
-      markCompleted.data?.status === "success"
+      markCompleted?.status !== 400 ||
+      markCompleted?.data?.status === "success"
     ) {
       generateSnackbar("Status Changed Successfully", "success");
-      const submit = await professionalGivingReview({
+      const submit : any  = await professionalGivingReview({
         clientId: modalData.clientId,
         projectId: modalData._id,
         rating: rating,
         review: review,
       });
-      if (submit.status !== 400 || submit.data?.status === "success") {
+      if (submit?.status !== 400 || submit?.data?.status === "success") {
         generateSnackbar("Review Submitted Successfully", "success");
-        // router.push("/professional/my-responses");
         window.location.reload();
       } else {
         generateSnackbar("Failed Submitting Review.", "error");
@@ -143,7 +141,6 @@ export default function ProjectAward() {
               </Link>
 
               <div className="pt-5">
-                {console.log(allProjects)}
                 {allProjects?.map((data: any, i: number) => (
                   <>
                     <div

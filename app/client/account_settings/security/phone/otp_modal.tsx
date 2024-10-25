@@ -16,12 +16,12 @@ interface OTPModalProps {
 }
 
 const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
-  const [otp, setOtp] = useState("");
-  let {verifyPhoneOtp,sendPhoneOtp } = useUserContext();
+  const [otp, setOtp] : any = useState("");
+  let {verifyPhoneOtp,sendPhoneOtp } : any = useUserContext();
   let router = useRouter();
   
   // Alert
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any = useSnackbar();
 
 
   const handleChange = (newValue: string) => {
@@ -30,7 +30,7 @@ const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
 
   async function handleverifytp(){
     try{
-     let res = await verifyPhoneOtp(userId ,userType,otp);
+     let res : any = await verifyPhoneOtp(userId ,userType,otp);
       if(res?.status !== 400  || res?.data?.status === "success"){
         generateSnackbar("Phone Number Verified Successfully.", "success");
         router.push("/client/account_settings/security");
@@ -48,12 +48,12 @@ const OTPModal = ({ open, onClose,userId, userType,phoneNo }) => {
   const handleResend = async (e) => {
     try{ 
       e.preventDefault();
-            let res = await sendPhoneOtp({
+            let res : any = await sendPhoneOtp({
                 userId : userId,
                 userType    : userType,
                 phoneNo : phoneNo
             });
-        if(res.status !==400 || res.data?.status === "success"){
+        if(res?.status !==400 || res?.data?.status === "success"){
             
           generateSnackbar("OTP resent successfully", "success");
         }

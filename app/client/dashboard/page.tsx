@@ -25,16 +25,16 @@ import { useSnackbar } from "@/context/snackbar_context";
 const Page = () => {
   const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
   const pathname = usePathname();
-  let [userData,setUserData] = useState({});
-  let [dashData,setDashData] = useState({});
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false);
+  let [userData,setUserData] : any = useState({});
+  let [dashData,setDashData] : any = useState({});
+  const [isSideNavOpen, setIsSideNavOpen] : any = useState(false);
   // loading
-  const [loading2, setLoading2] = useState(true);
+  const [loading2, setLoading2] : any = useState(true);
   let router = useRouter();
-  let { dashboardData } = useUserContext(); 
+  let { dashboardData } : any = useUserContext(); 
 
 
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any = useSnackbar();
 
   const toggleSideNav = () => {
     setIsSideNavOpen(!isSideNavOpen);
@@ -49,20 +49,13 @@ const Page = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client");
-        if(ver.status === "success" && ver.userType === "client"){
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "client");
+        if(ver?.status === "success" && ver?.userType === "client"){
           setUserData(ver);
-          let dash = await dashboardData({userId : ver.userId, userType : ver.userType});
-          setDashData(dash.data?.data)
+          let dash : any = await dashboardData({userId : ver?.userId, userType : ver?.userType});
+          setDashData(dash?.data?.data)
           setLoading2(false);
-
-          // if(ver.registerAs === "professional"){
-          //   // router.push("/professional/dashboard")
-          // }
-          // else{
-          //   setLoading2(false);
-          // }
         }
         else{
           router.push("/"); 
@@ -119,11 +112,11 @@ const Page = () => {
       <div
         className={`fixed inset-0 z-40 transform ${isSideNavOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out`}
       >
-        <SideNav key={"side-mobile"} isClientDashboard={isClientDashboard} setIsClientDashboard={setIsClientDashboard} userId={userData.userId} />
+        <SideNav key={"side-mobile"} isClientDashboard={isClientDashboard} setIsClientDashboard={setIsClientDashboard} userId={userData?.userId} />
       </div>
       <section className="w-full max-w-[1250px] mx-auto bg-[url('/images/bg_pattern_5.svg')] bg-left-top bg-no-repeat py-4 mb-6 flex flex-col md:flex-row">
         <section className="md:max-w-[400px] md:block hidden">
-          <SideNav key={"side-desktop"} isClientDashboard={isClientDashboard} setIsClientDashboard={setIsClientDashboard}  userId={userData.userId} />
+          <SideNav key={"side-desktop"} isClientDashboard={isClientDashboard} setIsClientDashboard={setIsClientDashboard}  userId={userData?.userId} />
         </section>
         <section className="w-full px-4 overflow-hidden h-full">
           <div className="w-full flex items-center justify-between mt-8 flex-col md:flex-row">

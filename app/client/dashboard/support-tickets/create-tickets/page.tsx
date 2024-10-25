@@ -77,14 +77,12 @@ export default function CreateSupportTicket() {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        console.log(token);
-        let ver = await VerifyUser(token, "client");
-        console.log(ver);
-        if(ver.status === "success"){
+        let token : any  = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "client");
+        if(ver?.status === "success"){
           setUserData(ver);
-          const storedData = JSON.parse(sessionStorage.getItem('projectData'));
-          console.log(storedData);
+          let find : any = sessionStorage.getItem('projectData')
+          const storedData : any = JSON.parse(find);
           setProjects([...storedData,...projects])
           setTicketData({
             ...ticketData,
