@@ -647,14 +647,16 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                       />
                     )}
                     renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip
-                          key={option.value}
+                      value.map((option, index) => {
+                          return(
+                            <Chip
                           label={option.label}
                           {...getTagProps({ index })}
+                          key={index}
                           color="secondary"
                         />
-                      ))
+                          )
+                    })
                     }
                   />
                   <Autocomplete
@@ -731,9 +733,9 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
-                          key={option.value}
                           label={option.label}
                           {...getTagProps({ index })}
+                          key={index}
                           color="secondary"
                         />
                       ))
