@@ -51,7 +51,7 @@ const ClientSettings = ({ data }  : any) => {
     setLoading2(false)
   }, [data]);
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e : any) {
     try {
       e.preventDefault();
       let res : any = await addClientsData({
@@ -233,7 +233,7 @@ const ClientSettings = ({ data }  : any) => {
                         </Typography>
                         <ReactQuill
                           value={formData.bio}
-                          name="bio"
+                          // name="bio"
                           onChange={(e) => {
                             setFormData((prev) => ({ ...prev, bio: e }));
                           }}
