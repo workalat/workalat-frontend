@@ -18,31 +18,31 @@ import { useUserContext } from "@/context/user_context";
 import moment from "moment";
 
 export default function MessageBody() {
-    const [searchQuery, setSearchQuery] = useState<string>(""); // To search by name or username
-    const [selectedMessage, setSelectedMessage] = useState<any>(); // to select message for open and manage active conversation
-    const [messageListOpen, setMessageListOpen] = useState<boolean>(true);
-    const [loading2, setLoading2] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [userData, setUserData] = useState({});
-    const [chats, setChats] = useState([]);
-    const [seen, setSeen] = useState(0);
-    const [currentUs, setCurrentUs] = useState({});
-    const [input, setInput] = useState(""); // Search input state
+    const [searchQuery, setSearchQuery] : any = useState<string>(""); // To search by name or username
+    const [selectedMessage, setSelectedMessage]  : any  = useState<any>(); // to select message for open and manage active conversation
+    const [messageListOpen, setMessageListOpen]  : any  = useState<boolean>(true);
+    const [loading2, setLoading2]  : any  = useState(true);
+    const [loading, setLoading]  : any  = useState(false);
+    const [userData, setUserData]  : any  = useState({});
+    const [chats, setChats]  : any  = useState([]);
+    const [seen, setSeen]    = useState(0);
+    const [currentUs, setCurrentUs]  : any  = useState({});
+    const [input, setInput]  : any  = useState(""); // Search input state
   
-    const router = useRouter();
-    const pathname = usePathname();
-    const { generateSnackbar } = useSnackbar();
-    const { currentUser, fetchUserInfo } = useUserStore();
-    const { chatId, changeChat } = useChatStore();
-    const { userChatDetilas } = useUserContext();
+    const router  : any  = useRouter();
+    const pathname  : any  = usePathname();
+    const { generateSnackbar }  : any  = useSnackbar();
+    const { currentUser, fetchUserInfo }  : any  = useUserStore();
+    const { chatId, changeChat }  : any  = useChatStore();
+    const { userChatDetilas }  : any  = useUserContext();
   
     useEffect(() => {
       async function findUserAndChats() {
         try {
-          let token = Cookies.get("token");
-          let ver = await VerifyUser(token, window.location.pathname.split("/")[1]);
+          let token : any = Cookies.get("token");
+          let ver  : any  = await VerifyUser(token, window.location.pathname.split("/")[1]);
   
-          let currentUser = await userChatDetilas({
+          let currentUser  : any  = await userChatDetilas({
             userId: ver.userId,
             userType: ver.userType === "client" ? "client" : "professional",
           });
@@ -50,22 +50,22 @@ export default function MessageBody() {
           setCurrentUs(currentUser?.data?.data);
   
           // Set up the snapshot listener for real-time updates
-          const unSub = onSnapshot(doc(db, "usersChats", currentUser?.data?.data?.id), async (res) => {
-            let items = res?.data()?.chats;
+          const unSub  : any  = onSnapshot(doc(db, "usersChats", currentUser?.data?.data?.id), async (res) => {
+            let items  : any  = res?.data()?.chats;
   
-            let promises = items.map(async (item) => {
-              let userDocRef = await userChatDetilas({
+            let promises  = items.map(async (item) => {
+              let userDocRef  : any  = await userChatDetilas({
                 userId: item.receiverId,
                 userType: ver.userType === "client" ? "professional" : "client",
               });
   
-              let userDocSnap = userDocRef.data;
+              let userDocSnap  : any  = userDocRef.data;
               let user = userDocSnap;
   
               return { ...item, user };
             });
   
-            let chatData = await Promise.all(promises);
+            let chatData  : any  = await Promise.all(promises);
             setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
             setLoading2(false);
           });
@@ -82,8 +82,8 @@ export default function MessageBody() {
   
       // Cleanup function to unsubscribe when the component unmounts
       return () => {
-        if (unSubFn) {
-          unSubFn(); // This will stop the real-time updates
+        if (findUserAndChats) {
+          findUserAndChats(); // This will stop the real-time updates
         }
       };
     }, [pathname]);

@@ -16,14 +16,14 @@ type PropsType = {
     data: any
 }
 
-export default function MessageBoxForAll({ data, currentUser }) {
+export default function MessageBoxForAll({ data, currentUser }  : any ) {
 
-    const [demoMessageCollection, setDemoMessageCollection] = useState<any[]>([]); // here it is for the demo message collection fot the message box
-    const [messageCollection, setMessageCollection] = useState<string>("");
-    const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
-    const [selectedFile, setSelectedFile] = useState<string | null>(null); // Store the selected file as photo url. for now i did it with objectURL only for photo because it is not connected with any cloud
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalImage, setModalImage] = useState<string | null>(null);
+    const [demoMessageCollection, setDemoMessageCollection]  : any  = useState<any[]>([]); // here it is for the demo message collection fot the message box
+    const [messageCollection, setMessageCollection]  : any  = useState<string>("");
+    const [showEmojiPicker, setShowEmojiPicker]  : any  = useState<boolean>(false);
+    const [selectedFile, setSelectedFile]  : any  = useState<string | null>(null); // Store the selected file as photo url. for now i did it with objectURL only for photo because it is not connected with any cloud
+    const [isModalOpen, setIsModalOpen]  : any  = useState<boolean>(false);
+    const [modalImage, setModalImage]  : any  = useState<string | null>(null);
 
     
 
@@ -33,11 +33,11 @@ export default function MessageBoxForAll({ data, currentUser }) {
         setText(prev => prev + emojiObject.emoji);
     };
 
-    const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMessageChange = (e:  any ) => {
         setMessageCollection(e.target.value);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e:  any ) => {
         if (e.target.files) {
             setSelectedFile(URL.createObjectURL(e.target.files[0]));
                 setImg({
@@ -47,7 +47,7 @@ export default function MessageBoxForAll({ data, currentUser }) {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e : any ) => {
         e.preventDefault();
         const message = {
             message: text,
@@ -60,7 +60,7 @@ export default function MessageBoxForAll({ data, currentUser }) {
         setSelectedFile(null);
     };
 
-    const handleImageClick = (imgUrl: string) => {
+    const handleImageClick = (imgUrl:  any ) => {
         setModalImage(imgUrl);
         setIsModalOpen(true);
     };
@@ -86,14 +86,14 @@ export default function MessageBoxForAll({ data, currentUser }) {
         };
     }, []);
 
-    let [chat,setChat] = useState(false);
-    let [text, setText] = useState("");
-    let [img, setImg] = useState({
+    let [chat,setChat]  : any  = useState(false);
+    let [text, setText]  : any  = useState("");
+    let [img, setImg]  : any  = useState({
       file : null,
       url : ""
     });
   
-    let endRef = useRef(null);
+    let endRef  : any  = useRef(null);
 
     useEffect(()=>{
         endRef?.current?.scrollIntoView({behavior: "smooth"})
@@ -112,7 +112,7 @@ export default function MessageBoxForAll({ data, currentUser }) {
 
 
       
-  let handleSend = async (e) =>{
+  let handleSend = async (e  : any ) =>{
     e.preventDefault();
     if (text === "" && !img) return;
     let imgUrl = null;
@@ -120,23 +120,37 @@ export default function MessageBoxForAll({ data, currentUser }) {
         if(img.file){
             imgUrl = await upload(img.file);
         }
-      await updateDoc(doc(db, "chats", data?.chatId), {
-        messages : arrayUnion({
-          senderId : currentUser.id,
-          text,
-          createdAt : new Date(),
-          ...(imgUrl && {img : imgUrl})
-        })
-      });
+        {
+            imgUrl 
+            ?
+            await updateDoc(doc(db, "chats", data?.chatId), {
+                messages : arrayUnion({
+                  senderId : currentUser.id,
+                  text,
+                  createdAt : new Date(),
+                  img : imgUrl
+                })
+              })
+            :
+            await updateDoc(doc(db, "chats", data?.chatId), {
+                messages : arrayUnion({
+                  senderId : currentUser.id,
+                  text,
+                  createdAt : new Date(),
+                })
+              });
+
+        }
+      
       let userIDs = [currentUser.id, data?.receiverId];
 
       userIDs.forEach(async (id)=>{
         
         let userChatRef = doc(db, "usersChats", id);
-        let userChatsSnapShot = await getDoc(userChatRef);
+        let userChatsSnapShot : any = await getDoc(userChatRef);
         
         if(userChatsSnapShot.exists()){
-          let userChatsData = userChatsSnapShot.data();
+          let userChatsData  : any  = userChatsSnapShot.data();
           
           let chatIndex = userChatsData.chats.findIndex(c => c.chatId === data?.chatId);
 
@@ -145,7 +159,7 @@ export default function MessageBoxForAll({ data, currentUser }) {
           userChatsData.chats[chatIndex].updatedAt = Date.now();
           
           await updateDoc(userChatRef, {
-            chats :userChatsData.chats
+            chats :userChatsData?.chats
           })
           
         }
@@ -169,7 +183,6 @@ export default function MessageBoxForAll({ data, currentUser }) {
 
   return (
       <div className="w-full h-full relative">
-        {console.log(data)}
           {/* Header */}
           <div className="w-full flex justify-between bg-[#EDEDED] p-3 rounded-md">
               <div className="flex items-center">
