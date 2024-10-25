@@ -6,15 +6,30 @@ import CertificationModal from "./CertificationsModal";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
 import { formatDateTime } from "@/utils/helper";
+import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/user_context";
+import VerifyUser from '@/app/middleware/VerifyUser';
+import Cookies from 'js-cookie';
+import { useSnackbar } from "@/context/snackbar_context";
+import axios from "axios";
+import { Box, Modal } from "@mui/material";
 
 export default function Certifications() {
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isAddNewOpen, setIsAddNewOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] : any = useState(false);
+    const [isAddNewOpen, setIsAddNewOpen]  : any = useState(false);
+    let[certificateData,setCertificateData]  : any = useState({
+        name : "",
+        month : "" ,
+        year : "" ,
+        isExpired : false,
+    });
+    let [file, setFile]  : any = useState({});
+    let [loading,setLoading] : any  = useState(false);
 
     const openModal = () => {
         setIsModalOpen(true);
-    }
+    } 
     const addCertification = () => {
         setIsAddNewOpen(true)
     }
@@ -26,7 +41,7 @@ export default function Certifications() {
         setIsAddNewOpen(false);
     }
 
-    const [currentTime, setCurrentTime] = useState<string>(
+    const [currentTime, setCurrentTime]  : any  = useState<string>(
         formatDateTime(new Date())
     );
 
@@ -37,9 +52,92 @@ export default function Certifications() {
 
         return () => clearInterval(interval);
     }, []);
+    
+    let [userData,setUserData]  : any  = useState({});
+
+    const [loading2, setLoading2]  : any  = useState(true);
+    let router  : any  = useRouter();
+  
+  
+    const { generateSnackbar }  : any  = useSnackbar();
+
+      useEffect(() => {
+        async function verify(){
+          try{
+            setLoading2(true);
+            let token   : any = Cookies.get("token");
+            let ver   : any = await VerifyUser(token, "professional");
+            if(ver?.status === "success"){
+              setUserData(ver);
+              setLoading2(false);
+            }
+            else{
+              router.push("/"); 
+            }
+          }
+          catch(e){
+            generateSnackbar("Some Error Occur, Please try Again." ,"error")
+          }
+        };
+        verify();
+      }, []);
+
+      const handleFileChange = (e  : any ) => {
+        const file = e.target.files[0];
+        setFile(file);
+      };
+
+      async function handleSubmit(e  : any ){
+        try{
+            if(!file || !certificateData?.name || !certificateData?.month || !certificateData?.year || !certificateData?.isExpired){
+                generateSnackbar("Please Fill all the Fields", "error")
+            }
+            else{
+                setLoading(true);
+                e.preventDefault();
+    
+                const formDat = new FormData();
+                formDat.append('certificationImage', file);
+                formDat.append('professionalId', userData?.userId);
+                formDat.append('certificateTitle', certificateData?.name);
+                formDat.append('certificateExpirationMonth', certificateData?.month);
+                formDat.append('certificateExpirationYear', certificateData?.year);
+                formDat.append('isExpired', certificateData?.isExpired);
+    
+                const res  : any  = await axios.post('/applyCertification', formDat, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data',
+                    },
+                  });
+                  if (res?.status !== 400 || res?.data?.status === "success") {
+                    setLoading(false);
+                    generateSnackbar("Certification has been submitted for Verification.", "success");
+                    closeCertification();
+                    // router.refresh();
+                  }
+                  else {
+                    generateSnackbar(res?.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
+                  }
+    
+            }
+            
+
+        }
+        catch(e){
+            generateSnackbar("Some Error occurs, please try again in a few minutes", "error");
+        }
+      };
 
     return (
-        <div className="bg-white relative pb-12">
+        <>
+         {loading2 ? (
+                <div className="w-[100%] h-screen flex justify-center items-center">
+                <div className="loader m-auto" />
+                </div>
+            )
+            :(
+                <>
+                <div className="bg-white relative pb-12">
             {/* Left Image */}
             <img className="absolute z-0 left-0 top-[40px] w-[600px]" src="/CIRCLES.png" alt="workalat" />
             {/* Right Image */}
@@ -139,19 +237,19 @@ export default function Certifications() {
 
                                 </div>
                                 <div className="w-full mt-3 py-2 px-3">
-                                    <form className="border-t p-2">
+                                    <form className="border-t p-2" onSubmit={handleSubmit}>
                                         <div className="py-2">
                                             <label className="block pb-2" htmlFor="certificate">Certification / Licence Name</label>
-                                            <input type="text" id="certificate" placeholder="Thomas" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
+                                            <input type="text" value={certificateData.name} onChange={(e)=>{setCertificateData({...certificateData, ["name"] : e.target.value})}} name="name" id="certificate" placeholder="Thomas" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
                                         </div>
                                         <div className="py-2">
                                             <div className="flex flex-col md:flex-row gap-3 items-end">
                                                 <div className="w-full md:w-1/2">
                                                     <label className="block pb-2" htmlFor="date">Expiration Date</label>
-                                                    <input type="text" id="date" placeholder="Month" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
+                                                    <input type="text" id="date" value={certificateData.month} onChange={(e)=>{setCertificateData({...certificateData, ["month"] : e.target.value})}} name="month" placeholder="Month" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
                                                 </div>
                                                 <div className="w-full md:w-1/2">
-                                                    <input type="text" placeholder="Year" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
+                                                    <input type="text" placeholder="Year" value={certificateData.year} onChange={(e)=>{setCertificateData({...certificateData, ["year"] : e.target.value})}} name="year" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
                                                 </div>
                                             </div>
                                         </div>
@@ -159,14 +257,14 @@ export default function Certifications() {
                                             <div className="flex flex-col md:flex-row gap-2 items-center">
                                                 <div className="w-full md:w-1/3">
                                                     <div className="flex items-center gap-2">
-                                                        <input className="h-5 w-5 shadow" id="check" type="checkbox" />
+                                                        <input className="h-5 w-5 shadow" id="check" type="checkbox" checked={certificateData.isExpired} onChange={(e)=>{setCertificateData({...certificateData, ["isExpired"] : (!certificateData.isExpired)})}} />
                                                         <label className="block text-xs" htmlFor="check">Does not expire</label>
                                                    </div>
                                                 </div>
                                                 <div className="w-full md:w-2/3">
                                                     <label className="flex items-center gap-2 cursor-pointer bg-[#07242B66] justify-center px-2 py-2 rounded-md shadow">
                                                         <FaSquarePlus className="size-4 text-black" /> Upload certificate / licence
-                                                        <input className="hidden" type="file" />
+                                                        <input className="hidden" type="file" name="certificationImage" onChange={handleFileChange} />
                                                    </label>
                                                 </div>
                                             </div>
@@ -186,5 +284,18 @@ export default function Certifications() {
             )}
 
         </div>
+        <Modal open={loading}>
+            <Box className="w-full h-full flex justify-center items-center">
+              <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+                <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                <h1 className="text-center font-bold text-xl ml-2">Submitting your Details...</h1>
+              </Box>
+            </Box>
+          </Modal>
+                </>
+            )
+        }
+        </>
+        
     )
 }
