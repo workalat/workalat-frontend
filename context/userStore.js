@@ -1,6 +1,5 @@
-import { doc, getDoc } from 'firebase/firestore';
 import { create } from 'zustand'
-import { db } from './firebase';
+
 
 export const useUserStore = create((set) => ({
   currentUser: null,
@@ -13,15 +12,18 @@ export const useUserStore = create((set) => ({
       
       const token = Cookies.get("token");
       const pathSegment = pathname.split("/")[1];
+
       if(pathSegment === "login" || pathSegment === "register"){
         return set({currentUser : null, isLoading : false});
       }
       if (!token) {
         set({currentUser : null, isLoading : false});
+
         return;
       }
       
       let ver = await VerifyUser(token, pathSegment);
+
       if (ver.status === "success") {
         set({currentUser : {
           avatar : ver.userPicture,

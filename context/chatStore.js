@@ -1,6 +1,5 @@
-import { doc, getDoc } from 'firebase/firestore';
 import { create } from 'zustand'
-import { db } from './firebase';
+
 import { useUserStore } from './userStore';
 
 export const useChatStore = create((set) => ({
@@ -12,6 +11,7 @@ export const useChatStore = create((set) => ({
 
   changeChat : (chatId, user) =>{
     let currentUser =  useUserStore.getState().currentUser;
+
     if(user?.bloacked?.includes(currentUser?.id)){
       return  set({
         chatId ,

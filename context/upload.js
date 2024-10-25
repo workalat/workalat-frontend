@@ -1,4 +1,5 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
 import { storage } from "./firebase";
 
 async function upload(file) {
@@ -16,6 +17,7 @@ async function upload(file) {
       'state_changed',
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
         console.log('Upload is ' + progress + '% done');
       },
       (error) => {

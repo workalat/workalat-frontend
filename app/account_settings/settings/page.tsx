@@ -14,13 +14,13 @@ const SettingsPage = () => {
   
   return (
     <>
-      {
+      {/* {
         user?.role === "client" ? (
           <ClientSettings />
         ) : (
           <ProfessionalSettingsPage />
         )
-      }
+      } */}
     </>
   )
 }
