@@ -21,37 +21,35 @@ import moment from "moment";
 
 export default function ManageMembershipPage() {
     
-    let {getMembershipData, requestCancelMembershipData, generateInvoice} = useUserContext();
-    let [membershipData, setMembershipData] = useState({});
-    let [userData, setUserData] = useState({});
-    let [lastTransactionId,setLastTransactionId] = useState("");
+    let {getMembershipData, requestCancelMembershipData, generateInvoice} : any = useUserContext();
+    let [membershipData, setMembershipData] : any = useState({});
+    let [userData, setUserData] : any = useState({});
+    let [lastTransactionId,setLastTransactionId] : any = useState("");
     
 
-    let [loading, setLoading] = useState(false);
-    let [loading2, setLoading2] = useState(true);
+    let [loading, setLoading] : any = useState(false);
+    let [loading2, setLoading2] : any = useState(true);
     
     // Alert
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any = useSnackbar();
 
-    let router = useRouter();
+    let router : any = useRouter();
     useEffect(()=>{
         async function confirmSubs(){
             try{
                 setLoading2(true);
-                let token = Cookies.get("token");
-                let ver = await VerifyUser(token, "professional");
-                console.log(ver)
-                if(ver.status === "success"){
-                    let res = await getMembershipData({userId : ver.userId});
-                    console.log(res);
-                    if(res.status !== 400 && res.data?.status === "success"){
+                let token : any = Cookies.get("token");
+                let ver : any = await VerifyUser(token, "professional");
+                if(ver?.status === "success"){
+                    let res : any = await getMembershipData({userId : ver.userId});
+                    if(res?.status !== 400 && res?.data?.status === "success"){
                         setUserData(ver);
-                        setMembershipData(res.data?.data);
-                        setLastTransactionId(res.data?.data.membershipTransactionHistory[res.data?.data.membershipTransactionHistory?.length - 1]?._id);
+                        setMembershipData(res?.data?.data);
+                        setLastTransactionId(res?.data?.data.membershipTransactionHistory[res?.data?.data.membershipTransactionHistory?.length - 1]?._id);
                         setLoading2(false);
                     }
                     else{
-                        generateSnackbar(res.response?.data?.message || "Some error occurr, Please try again", "error");
+                        generateSnackbar(res?.response?.data?.message || "Some error occurr, Please try again", "error");
                        
                     }
                 }
@@ -70,20 +68,20 @@ export default function ManageMembershipPage() {
     async function handleCancelMembership(){
         try{
             setLoading(true);
-           let res = await requestCancelMembershipData({
+           let res : any = await requestCancelMembershipData({
             professionalId : userData.userId,
             trxId : lastTransactionId
            });
-           if(res.status !== 400 && res.data?.status === "success"){
+           if(res?.status !== 400 && res?.data?.status === "success"){
                 setLoading(false);
                 generateSnackbar("Your Request for Cancelling Membership is submitted, Your payment will be refund within 48 hours", "success")
                 setTimeout(()=>{
-                    router.refresh();
+                    router?.refresh();
                 }, 1000)
            }
            else{
             setLoading(false);
-            generateSnackbar(res.response?.data?.message || "Some error Occur, Please Try Again.", "error")
+            generateSnackbar(res?.response?.data?.message || "Some error Occur, Please Try Again.", "error")
            }
         }
         catch(e){
@@ -94,14 +92,14 @@ export default function ManageMembershipPage() {
 
     async function handleInvoiceGeneration(sessionId){
         try{
-           let res = await generateInvoice({
+           let res : any = await generateInvoice({
             sessionId
            });
-           if(res.status !== 400 && res.data?.status === "success"){
-            window.open(res.data?.hostedInvoiceUrl, '_blank')
+           if(res?.status !== 400 && res?.data?.status === "success"){
+            window.open(res?.data?.hostedInvoiceUrl, '_blank')
            }
            else{
-            generateSnackbar(res.response?.data?.message || "Some error Occur, Please Try Again.", "error")
+            generateSnackbar(res?.response?.data?.message || "Some error Occur, Please Try Again.", "error")
            }
         }
         catch(e){

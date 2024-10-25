@@ -28,13 +28,12 @@ export default function ManageMembershipPage() {
 
         setLoading2(false);
         setLoading(true);
-        let res = await payAsGoSessionData({ sessionId });
+        let res : any = await payAsGoSessionData({ sessionId });
 
-        if (res.status === 200 && res.data?.status === "success") {
+        if (res?.status === 200 && res?.data?.status === "success") {
           setPayPayment("paid"); 
           generateSnackbar("Wallet Purchase Successful.", "success");
 
-          console.log(process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN)
           // Send message back to parent window (ensure the origin matches)
           window.opener.postMessage(
             { paymentStatus: "success" },

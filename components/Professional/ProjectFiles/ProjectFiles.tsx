@@ -32,20 +32,20 @@ export default function ProjectFiles({ params }: any) {
   const dynamicData = projectsData?.find(
     (data) => data?.projectId == params?.id
   );
-  const [filterFiles, setFilterFiles] = useState<string>("all");
-  let [data, setData] = useState({});
+  const [filterFiles, setFilterFiles]  : any  = useState<string>("all");
+  let [data, setData]  : any  = useState({});
 
-  const [loading2, setLoading2] = useState(true);
-  let router = useRouter();
-  let { singleProjectDetails } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  let [existingFiles, setExistingFiles] = useState([]);
-  let [newFiles, setNewFiles] = useState([]);
-  let [selectedFiles, setSelectedFiles] = useState([]);
-  let [userData, setUserData] = useState({});
-  const [showUploadPopup, setShowUploadPopup] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [currentPath, setCurrentPath] = useState("");
+  const [loading2, setLoading2]  : any  = useState(true);
+  let router  : any  = useRouter();
+  let { singleProjectDetails }  : any  = useUserContext();
+  const { generateSnackbar }  : any  = useSnackbar();
+  let [existingFiles, setExistingFiles]  : any  = useState([]);
+  let [newFiles, setNewFiles]  : any  = useState([]);
+  let [selectedFiles, setSelectedFiles]  : any  = useState([]);
+  let [userData, setUserData]  : any  = useState({});
+  const [showUploadPopup, setShowUploadPopup]  : any  = useState(false);
+  const [uploadProgress, setUploadProgress]  : any  = useState(0);
+  const [currentPath, setCurrentPath]  : any  = useState("");
 
   useEffect(() => {
     setCurrentPath(window.location.pathname);
@@ -57,17 +57,16 @@ export default function ProjectFiles({ params }: any) {
       let projectId = params.id;
       setLoading2(true);
       let token = Cookies.get("token");
-      let ver = await VerifyUser(token, "professional");
-      if (ver.status === "success" && ver.userType === "professional") {
+      let ver  : any  = await VerifyUser(token, "professional");
+      if (ver?.status === "success" && ver?.userType === "professional") {
         setUserData(ver);
-        let res = await singleProjectDetails({
-          userId   : ver.userId,
-          userType: ver.userType,
+        let res  : any  = await singleProjectDetails({
+          userId   : ver?.userId,
+          userType: ver?.userType,
           projectId: projectId,
           need: "files",
         });
-        console.log(res);
-        if (res.status !== 400 || res.data?.status == "success") {
+        if (res?.status !== 400 || res?.data?.status == "success") {
           setData(res?.data?.data);
           setExistingFiles(res?.data?.data.projectFileURL);
           setLoading2(false);
@@ -85,7 +84,7 @@ export default function ProjectFiles({ params }: any) {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const validFiles = files.filter((file) => file.size <= 100 * 1024 * 1024); // 100MB limit
+    const validFiles = files.filter((file  : any ) => file.size <= 100 * 1024 * 1024); // 100MB limit
     setSelectedFiles((prevFiles) => [...prevFiles, ...validFiles]);
   };
 
@@ -106,11 +105,11 @@ export default function ProjectFiles({ params }: any) {
 
       setShowUploadPopup(true);
 
-      const res = await axios.post("/uploadProjectFile", formData, {
+      const res  : any  = await axios.post("/uploadProjectFile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        onUploadProgress: (progressEvent) => {
+        onUploadProgress: (progressEvent  : any ) => {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
@@ -118,12 +117,12 @@ export default function ProjectFiles({ params }: any) {
         },
       });
 
-      if (res.status === 200 || res.data?.status === "success") {
+      if (res?.status === 200 || res.data?.status === "success") {
         generateSnackbar("Files uploaded Successfully.", "success");
         router.refresh();
       } else {
         generateSnackbar(
-          res.data?.message || "Some Error Occurred, Please try Again.",
+          res?.data?.message || "Some Error Occurred, Please try Again.",
           "error"
         );
       }

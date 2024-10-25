@@ -15,53 +15,51 @@ import Cookies from 'js-cookie';
 
 export default function WalletPage() {
     // buy modal
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] : any  = useState(false);
 
 
     const openBuyModal = () => {
         setOpen(true);
     };
     
-    let {walletPointsData, walletTransactionData, pasAsGo, buyPoints} = useUserContext();
-    let [userData, setUserData] = useState({});
+    let {walletPointsData, walletTransactionData, pasAsGo, buyPoints} : any  = useUserContext();
+    let [userData, setUserData] : any  = useState({});
     // success modal
-    const [success, setSuccess] = useState(false);
-    let [pointsData, setPointsData] = useState([]);
-    let [transactionData, setTransactionData] = useState([]);
-    let [totalPoints, setTotalPoints] = useState("");
-    let [payGo, setPayGo] = useState(false);
+    const [success, setSuccess] : any  = useState(false);
+    let [pointsData, setPointsData] : any  = useState([]);
+    let [transactionData, setTransactionData] : any  = useState([]);
+    let [totalPoints, setTotalPoints] : any  = useState("");
+    let [payGo, setPayGo] : any  = useState(false);
     
 
-    let [loading, setLoading] = useState(false);
-    let [loading2, setLoading2] = useState(true);
+    let [loading2, setLoading2] : any  = useState(true);
     
     // Alert
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar }: any  = useSnackbar();
 
     let router = useRouter();
     useEffect(()=>{
         async function confirmSubs(){
             try{
                 setLoading2(true);
-                let token = Cookies.get("token");
-                let ver = await VerifyUser(token, "professional");
-                console.log(ver);
-                if(ver.status === "success" && ver.userType === "professional" ){
+                let token : any  = Cookies.get("token");
+                let ver : any  = await VerifyUser(token, "professional");
+                if(ver?.status === "success" && ver?.userType === "professional" ){
                         setUserData(ver);
-                        let pointsData = await walletPointsData();
-                        let walletHistoryData = await walletTransactionData({userId : ver.userId});
+                        let pointsData : any  = await walletPointsData();
+                        let walletHistoryData : any  = await walletTransactionData({userId : ver.userId});
                         
-                    if((pointsData.status !== 400 && pointsData.data?.status === "success") && (walletHistoryData.status !== 400 && walletHistoryData.data?.status === "success")){
+                    if((pointsData?.status !== 400 && pointsData?.data?.status === "success") && (walletHistoryData?.status !== 400 && walletHistoryData?.data?.status === "success")){
                         
                         // console.log(pointsData, walletHistoryData);
-                        setPointsData(pointsData.data?.data?.points)
+                        setPointsData(pointsData?.data?.data?.points)
                         setTransactionData(walletHistoryData?.data?.data?.pointsHistory);
                         setTotalPoints(walletHistoryData?.data?.data?.professionalTotalBidPoints);
                         setPayGo(walletHistoryData?.data?.data?.payAsGo)
                         setLoading2(false);
                     }
                     else{
-                        generateSnackbar(pointsData.response?.data?.message || walletHistoryData.response?.data?.message  ||  "Some error occurr, Please try again", "error");
+                        generateSnackbar(pointsData?.response?.data?.message || walletHistoryData.response?.data?.message  ||  "Some error occurr, Please try again", "error");
                        
                     }
                 }
@@ -81,12 +79,12 @@ export default function WalletPage() {
     
     async function confirmSubs(){
       try{
-        let res = await pasAsGo({
-          professionalId : userData.userId,
+        let res : any  = await pasAsGo({
+          professionalId : userData?.userId,
           current_value : payGo
         });
-        setPayGo(res.data?.current_value);
-        if(res.data?.current_value === true || res.data?.current_value){
+        setPayGo(res?.data?.current_value);
+        if(res?.data?.current_value === true || res.data?.current_value){
           generateSnackbar("Activated Successfully.", "success");
         }
         else{
@@ -94,19 +92,18 @@ export default function WalletPage() {
         }
       }
       catch(e){
-          // console.log(e);
           generateSnackbar("Some error occurr, Please try again", "error");
       }
   }
 
   async function purchasePoints({amount, points}){
     try{
-      let res = await buyPoints({
+      let res : any  = await buyPoints({
         professionalId : userData.userId,
         amount : amount,
         points : points
       });
-      if(res.status !== 400 || res.data?.status === "success"){
+      if(res?.status !== 400 || res?.data?.status === "success"){
         window.open(res?.data?.session?.url, "_blank");
     }
     else{

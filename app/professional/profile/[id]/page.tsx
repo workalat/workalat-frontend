@@ -6,21 +6,20 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
-    let router = useRouter();
-    let params = useParams(); 
-    let { professionalDetails } = useUserContext();
-    const [loading2, setLoading2] = useState(true);
-    let id = params.id; 
-    let [data,setData] = useState({});
-    let [isData,setIsData] = useState(false);
+    let router : any  = useRouter();
+    let params : any  = useParams(); 
+    let { professionalDetails } : any  = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
+    let id : any  = params.id; 
+    let [data,setData] : any  = useState({});
+    let [isData,setIsData] : any  = useState(false);
 
     useEffect(()=>{
         async function getData (){
             try{ 
-                let data = await  professionalDetails({userId : id});
-                // console.log(data);  
-                if(data.status !== 400 || data.data?.status === "success"){
-                    setData(data.data?.data);
+                let data : any  = await  professionalDetails({userId : id});
+                if(data?.status !== 400 || data?.data?.status === "success"){
+                    setData(data?.data?.data);
                     setIsData(true);
                     setLoading2(false);
                 }
@@ -31,7 +30,6 @@ export default function ProfilePage() {
                 }
             }
             catch(e){
-                console.log(e);
                 router.push("/error");
             }
         }

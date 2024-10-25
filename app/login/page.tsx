@@ -33,19 +33,19 @@ const LoginPage = () => {
     theme.toggleTheme();
   }, []);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
-  let [googleData, setGoogleData] = useState({});
-  let router = useRouter();
-  let [loading2, setLoading2]=  useState(true);
+  const [email, setEmail]   = useState("");
+  const [password, setPassword]   = useState("");
+  const [showPassword, setShowPassword]   = useState(false);
+  const [rememberMe, setRememberMe]   = useState(false);
+  const [loading, setLoading]   = useState(false);
+  let [googleData, setGoogleData]   = useState({});
+  let router   : any = useRouter();
+  let [loading2, setLoading2]  =  useState(true);
 
   
-  const {signinProfessional, userData,continueWithGoogleProfessional, setUserId,setUType , setTempUserData,  tempUserData } = useUserContext();
+  const {signinProfessional, userData,continueWithGoogleProfessional, setUserId,setUType , setTempUserData,  tempUserData }  : any = useUserContext();
   
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar }  : any = useSnackbar();
 
 
 
@@ -56,14 +56,13 @@ const LoginPage = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client", false);
-        console.log(ver);
-        if(ver.status === "fail"){
+        let token  : any = Cookies.get("token");
+        let ver  : any = await VerifyUser(token, "client", false);
+        if(ver?.status === "fail"){
           setLoading2(false);
         }
         else{
-          if(ver.registerAs === "professional"){
+          if(ver?.registerAs === "professional"){
             router.push("/professional/dashboard")
           }
           else{
@@ -105,23 +104,21 @@ const LoginPage = () => {
   async function handleContinueWithGoole(){
     try{
       if(Object.keys(googleData).length !== 0){
-          let res = await continueWithGoogleProfessional(googleData, "client");
-        console.log(res);
+          let res  : any = await continueWithGoogleProfessional(googleData, "client");
       if(res?.data?.userStatus === "SUCCESS"){
 
-        if(res.data?.newAccount === true || res.data?.newAccount ){
+        if(res?.data?.newAccount === true || res?.data?.newAccount ){
           // redirect
           generateSnackbar("Account Created Successfully", "success"); 
-          Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
+          Cookies.set("token", res?.data?.token, { secure: true, sameSite: 'None'}); 
           router.push("/client/dashboard")
 
         }
-        else if(res.data?.newAccount === false || !res.data?.newAccount ){
+        else if(res?.data?.newAccount === false || !res.data?.newAccount ){
           generateSnackbar("Loggedin Successfully", "success"); 
-          Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
-            let ver = await VerifyUser(res.data?.token, "client");
-            // console.log(ver);
-            if(ver.registerAs === "client"){
+          Cookies.set("token", res?.data?.token, { secure: true, sameSite: 'None'}); 
+            let ver  : any = await VerifyUser(res.data?.token, "client");
+            if(ver?.registerAs === "client"){
               router.push("/client/dashboard")
             }
             else{
@@ -133,7 +130,6 @@ const LoginPage = () => {
         }
       }
       else if(res?.data?.userStatus === "PENDING"){
-        // console.log("PENDING");
           setTempUserData({...tempUserData, userId: res?.data?.data[0]?.userId});
           setUserId({...userData, userId : res?.data?.data[0]?.userId});
           setUserId(res?.data?.data[0]?.userId);
@@ -159,7 +155,7 @@ const LoginPage = () => {
   }
 
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
       try{event.preventDefault();
 
         // Basic validation
@@ -167,18 +163,15 @@ const LoginPage = () => {
           return generateSnackbar("Please fill in all required fields.", "error");
         }
         setLoading(true);
-        let res = await signinProfessional({email, password, userType : "client"});
-        console.log(res);
+        let res  : any = await signinProfessional({email, password, userType : "client"});
         
         setLoading(false);
     
-        if(res.status !== 400 || res.response.data?.status === "success"){
-        if(res.isTwoFactAuth === false || !res.isTwoFactAuth) {
+        if(res?.status !== 400 || res?.response.data?.status === "success"){
+        if(res?.isTwoFactAuth === false || !res?.isTwoFactAuth) {
           generateSnackbar("Logged in successfully!", "success");
-          console.log(res.response?.data.token);
-          let ver = await VerifyUser(res.response?.data.token, "client");
-          console.log(ver);
-          if(ver.registerAs === "client"){
+          let ver  : any = await VerifyUser(res.response?.data.token, "client");
+          if(ver?.registerAs === "client"){
             router.push("/client/dashboard");
           }
           else{
@@ -274,6 +267,7 @@ const LoginPage = () => {
               variant="contained"
               className="bg-secondary capitalize shadow-none font-bold text-dark text-xl font-mono hover:bg-secondary"
               onClick={handleSubmit}
+              type="submit"
             >
               Login
             </Button>
@@ -294,7 +288,7 @@ const LoginPage = () => {
           <div className="flex flex-col gap-4 mt-6">
           <div className='flex justify-center items-center'>
               <GoogleLogin 
-                onSuccess={(credentialResponse) => {
+                onSuccess={(credentialResponse : any) => {
                     let decode = jwtDecode(credentialResponse.credential);
                     setGoogleData(decode);
                     handleContinueWithGoole();

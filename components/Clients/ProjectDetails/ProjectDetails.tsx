@@ -16,32 +16,32 @@ import { Typography } from "@mui/material";
 
 export default function ProjectDetails({ params }: any) {
     const dynamicData = projectsData?.find((data) => data?.projectId == params?.id);
-    console.log(params);
 
 
-    
 
     
-  const [loading2, setLoading2] = useState(true);
-  let router = useRouter();
-  let { singleProjectDetails} = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  let [data, setData] = useState({});
-  let [userData, setUserData]= useState({});
+
+    
+  const [loading2, setLoading2]   : any  = useState(true);
+  let router   : any  = useRouter();
+  let { singleProjectDetails}   : any  = useUserContext();
+  const { generateSnackbar }   : any  = useSnackbar();
+  let [data, setData]   : any  = useState({});
+  let [userData, setUserData]  : any  = useState({});
 
     
   useEffect(()=>{
     async function getUser(){
         try{
-            let projectId = await params.id;
+            let projectId  : any  = await params.id;
             setLoading2(true);
-            let token = Cookies.get("token"); 
-                let ver = await VerifyUser(token, "client");
-                if(ver.status === "success" && ver.userType === "client"){
+            let token  : any  = Cookies.get("token"); 
+                let ver  : any  = await VerifyUser(token, "client");
+                if(ver?.status === "success" && ver?.userType === "client"){
                     setUserData(ver);
-                    let res = await singleProjectDetails({userId   : ver.userId, userType: ver.userType ,projectId : projectId, need : "details"});
-                    console.log(res);
-                    if(res.status !== 400 || res.data?.status == "success"){
+                    let res  : any  = await singleProjectDetails({userId   : ver.userId, userType: ver.userType ,projectId : projectId, need : "details"});
+
+                    if(res?.status !== 400 || res?.data?.status == "success"){
                         setData(res?.data?.data);
                         setLoading2(false);
                     }
@@ -93,7 +93,7 @@ export default function ProjectDetails({ params }: any) {
                             <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.projectDes)}` }} />
                             <div className="px-2">
                                 {
-                                    data?.projectQuestions?.map((overview: string, i: number) => {
+                                    data?.projectQuestions?.map((overview  : any , i: number) => {
                                         return(
                                             <>        
                                                 <p className="flex items-center gap-2 leading-8 font-bold capitalize" key={i}> {overview.questionTitle}</p>

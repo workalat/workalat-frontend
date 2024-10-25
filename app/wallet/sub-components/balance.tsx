@@ -4,8 +4,7 @@ import ArrowForward from "@mui/icons-material/ArrowForward";
 
 import currentBalanceIcon from "@/public/icons/current_balance.svg";
 
-export default function CurrentBalance({data, payGoValue, change}) {
-  {console.log(payGoValue)}
+export default function CurrentBalance({data, payGoValue, change} : any ) {
   return (
     <Box className="bg-main rounded-md flex justify-between items-center p-4 py-8 flex-wrap gap-y-8">
         <Box className="flex gap-4">

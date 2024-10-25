@@ -5,6 +5,7 @@ import VerifyUser from '@/app/middleware/VerifyUser';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import ProfessionalSettingsPage from '@/components/Settings/ProfessionalSettings';
+import { useSnackbar } from '@/context/snackbar_context';
 
 const SettingsPage = () => {
   
@@ -17,6 +18,9 @@ const SettingsPage = () => {
   let [user, setUser ] : any  = useState("")
   let [data1, setData1]   : any  = useState({});
   let [data2, setData2]   : any  = useState({});
+
+  
+  const { generateSnackbar } : any  = useSnackbar();
 
   useEffect(() => {
     async function verify(){
@@ -37,7 +41,7 @@ const SettingsPage = () => {
         }
       }
       catch(e){
-        console.log(e);
+        generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
     };
     verify();

@@ -19,13 +19,13 @@ import Cookies from 'js-cookie';
 const Hero: React.FC = () => {
   const [inputFocus, setInputFocus] = useState<boolean>(false);
   const router = useRouter();
-  const { findAllServices, setTempUserData , tempUserData} = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const { findAllServices, setTempUserData , tempUserData} : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
 
-  const [allServices, setAllServices] = useState<string[]>([]);
-  const [category, setCategory] = useState<string>(""); // For selected category
+  const [allServices, setAllServices] : any  = useState<string[]>([]);
+  const [category, setCategory] : any  = useState<string>(""); // For selected category
 
-  const handleSearch = (e: FormEvent) => {
+  const handleSearch = (e: any ) => {
     e.preventDefault();
 
     // Log or use the selected category (service)
@@ -43,8 +43,8 @@ const Hero: React.FC = () => {
   useEffect(() => {
     async function getServices() {
       try {
-        const data = await findAllServices();
-        setAllServices(data.data); // Assuming data.data is an array of service names (strings)
+        const data: any  = await findAllServices();
+        setAllServices(data?.data); // Assuming data.data is an array of service names (strings)
       } catch (e) {
         router.push("/login");
       }

@@ -61,10 +61,10 @@ const verificationCache = new Map();
 
   
 
-  let [loading2, setLoading2] = useState(true);
-  let [loading, setLoading] = useState(false);
-  let router = useRouter();
-  let [userData,setUserData] = useState({});
+  let [loading2, setLoading2]  : any  = useState(true);
+  let [loading, setLoading]  : any  = useState(false);
+  let router  : any  = useRouter();
+  let [userData,setUserData]  : any  = useState({});
 
   const pathname = usePathname().replace(/\//g, "");
 
@@ -130,13 +130,12 @@ const verificationCache = new Map();
   useEffect(() => {
     const verifyUsers = async () => {
       try {
-        const token = Cookies.get("token");
-        const userType = Cookies.get("userType");
-        const pathSegment = pathname.split("/")[1];
-        const typeToVerify = pathSegment || userType;
+        const token  : any  = Cookies.get("token");
+        const userType  : any  = Cookies.get("userType");
+        const pathSegment  : any  = pathname.split("/")[1];
+        const typeToVerify  : any  = pathSegment || userType;
   
         if (!token || !typeToVerify) {
-          console.log("No token");
           setLoading2(false);
           return;
         }
@@ -153,10 +152,8 @@ const verificationCache = new Map();
           }
         }
   
-        console.log(token, typeToVerify, userType);
-        const response = await VerifyUser(token, typeToVerify);
-        console.log(response);
-        if (response.status === "success") {
+        const response : any  = await VerifyUser(token, typeToVerify);
+        if (response?.status === "success") {
           verificationCache.set(cacheKey, { data: response, timestamp: Date.now() });
           setUserData(response);
           setLoading2(false);
@@ -165,7 +162,6 @@ const verificationCache = new Map();
           setLoading2(false);
         }
       } catch (error) {
-        console.error("Verification error:", error);
         setLoading2(false);
       }
     };

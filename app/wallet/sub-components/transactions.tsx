@@ -50,9 +50,8 @@ const FailButton = () => (
 );
 
 export default function Transactions({data}) {
-  console.log(data)
-  const [rows, setRows] = useState<row[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [rows, setRows] : any  = useState<row[]>([]);
+  const [loading, setLoading] : any  = useState(false);
 
   return (
     <Box className="!mb-8">
@@ -71,7 +70,7 @@ export default function Transactions({data}) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading ? (data.map((row, i) => (
+            {!loading ? (data?.map((row, i) => (
               <TableRow
                 key={row._id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

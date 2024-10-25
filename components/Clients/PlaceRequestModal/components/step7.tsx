@@ -50,23 +50,23 @@ const Step7 = ({ handleNext, updateFormData, handlePrev }: Step7Props) => {
     file: null,
   });
   
-  const { projectData, setProjectData,  } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const { projectData, setProjectData,  } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
 
  
 
   useEffect(() => {
-    if(!projectData.projectPriceString || !projectData.projectPriceTitle || !projectData.projectMaxPrice === 0 ||  !projectData.pointsNeeded){
+    if(!projectData?.projectPriceString ||  !projectData?.pointsNeeded){
       handlePrev();
     }
   }, []);
 
   const [budget, setBudget] = useState()
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBudget((event.target as HTMLInputElement).value);
+  const handleChange = (event: any ) => {
+    setBudget(event.target.value);
   }; 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any ) => {
     e.preventDefault();
     // console.log(budget.length);
     if(!budget) {

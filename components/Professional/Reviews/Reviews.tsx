@@ -40,13 +40,13 @@ export default function Reviews({ params }: any) {
     },
   ];
 
-  let [data, setData] = useState({});
-  const [loading2, setLoading2] = useState(true);
-  let router = useRouter();
-  let { singleProjectDetails, addProjectTasks } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const [currentPath, setCurrentPath] = useState("");
-  let [userData, setUserData] = useState({});
+  let [data, setData]  : any  =  useState({});
+  const [loading2, setLoading2]  : any  =  useState(true);
+  let router  : any  =  useRouter();
+  let { singleProjectDetails, addProjectTasks }  : any  =  useUserContext();
+  const { generateSnackbar }  : any  =  useSnackbar();
+  const [currentPath, setCurrentPath]  : any  =  useState("");
+  let [userData, setUserData]  : any  =  useState({});
 
   useEffect(() => {
     setCurrentPath(window.location.pathname);
@@ -57,18 +57,17 @@ export default function Reviews({ params }: any) {
     try {
       let projectId = params.id;
       setLoading2(true);
-      let token = Cookies.get("token");
-      let ver = await VerifyUser(token, "professional");
-      if (ver.status === "success" && ver.userType === "professional") {
+      let token : any  = Cookies.get("token");
+      let ver  : any  = await VerifyUser(token, "professional");
+      if (ver?.status === "success" && ver?.userType === "professional") {
         setUserData(ver);
-        let res = await singleProjectDetails({
+        let res  : any  = await singleProjectDetails({
           userId   : ver.userId,
            userType: ver.userType,
           projectId: projectId,
           need: "reviews",
         });
-        console.log(res);
-        if (res.status !== 400 || res.data?.status == "success") {
+        if (res?.status !== 400 || res?.data?.status == "success") {
           setData(res?.data?.data);
           setLoading2(false);
         } else {
@@ -138,7 +137,7 @@ export default function Reviews({ params }: any) {
                         <div className="flex gap-2 items-center">
                           <Rating
                             precision={0.1}
-                            value={`${(data?.clientReview?.giverRating).toFixed(1)}`}
+                            value={parseFloat(`${(data?.clientReview?.giverRating).toFixed(1)}`)}
                             readOnly
                           />
                           <Typography
@@ -188,7 +187,7 @@ export default function Reviews({ params }: any) {
                         <div className="flex gap-2 items-center">
                           <Rating
                             precision={0.1}
-                            value={`${(data?.professionalReview?.giverRating).toFixed(1)}`}
+                            value={parseFloat(`${(data?.professionalReview?.giverRating).toFixed(1)}`)}
                             readOnly
                           />
                           <Typography

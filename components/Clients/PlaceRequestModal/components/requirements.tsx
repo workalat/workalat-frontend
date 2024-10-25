@@ -23,21 +23,20 @@ interface ReqProps {
 export default function Requirements({ handleNext, handlePrev }: ReqProps) {
 
 
-  const { projectData, setProjectData } = useUserContext();
-  let [projectDes, setProjectDes] = useState("");
-  let [project, setProject] = useState({});
-  let [clientId, setClientId] = useState("");
-  let [projectTitle, setProjectTitle] = useState("");
+  const { projectData, setProjectData } : any  = useUserContext();
+  let [projectDes, setProjectDes] : any  = useState("");
+  let [project, setProject] : any  = useState({});
+  let [clientId, setClientId] : any  = useState("");
+  let [projectTitle, setProjectTitle] : any  = useState("");
   
   useEffect(()=>{
-    if(!projectData.projectUrgentStatus){
+    if(!projectData?.projectUrgentStatus){
       handlePrev();
     }
     else{
-      console.log(projectData);
       setProject(projectData);
-      setProjectDes(projectData.serviceDes);
-      setProjectTitle(`I need a ${projectData.serviceNeeded} in ${projectData.postCodeRegion}`)
+      setProjectDes(projectData?.serviceDes);
+      setProjectTitle(`I need a ${projectData?.serviceNeeded} in ${projectData?.postCodeRegion}`)
     }
   },[])
   
@@ -48,28 +47,23 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
     // snackbar
     const { generateSnackbar } = useSnackbar();
     // let router = useRouter();
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any ) => {
     try{
           e.preventDefault();
-          console.log(projectDes);
-          console.log(projectData)
           if(!projectTitle || !projectDes){
             return generateSnackbar("Please fill all Fields", "error")
           }
          
-          let token = Cookies.get("token");
-          console.log(token);
-          let ver = await VerifyUser(token, "client");
-          console.log(ver);
-          if(ver.status === "success" && ver.userType === "client"){
-            console.log("Sending request");
+          let token : any  = Cookies.get("token");
+          let ver : any  = await VerifyUser(token, "client");
+          if(ver?.status === "success" && ver?.userType === "client"){
             setProjectData({
               ...projectData,
                "userId" : ver.userId,
               "serviceTitle" : projectTitle,
               "serviceDes" : projectDes});
             setProjectDes(projectDes);
-            sessionStorage.setItem("projectData", JSON.stringify(projectData));
+            sessionStorage?.setItem("projectData", JSON.stringify(projectData));
             handleNext();
             handleNext();
             handleNext();

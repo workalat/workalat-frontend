@@ -347,15 +347,11 @@ import { useSnackbar } from "@/context/snackbar_context";
 import postcodesData from "@/postcodes.json";
 import regionsData from "@/postcode_region.json";
 
-interface Step1Props {
-  handleNext: () => void;
-  updateFormData: (data: any) => void;
-}
 
-const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
+const Step1 = ({ handleNext, updateFormData }:  any ) => {
   // USE CONTEXT
-  const { projectData, setProjectData, findAllServices, findServiceCategory } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const { projectData, setProjectData, findAllServices, findServiceCategory } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
   
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState<string>(projectData.serviceNeeded || "");
@@ -408,7 +404,7 @@ const Step1 = ({ handleNext, updateFormData }: Step1Props) => {
         return;
       }
 
-      let cat = await findServiceCategory({ serviceName: selectedService });
+      let cat : any  = await findServiceCategory({ serviceName: selectedService });
       
       setProjectData({
         ...projectData,

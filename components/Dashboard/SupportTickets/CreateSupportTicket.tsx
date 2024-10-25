@@ -13,14 +13,14 @@ export default function CreateSupportTicket() {
 
     const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
 
-    const [isSideNavOpen, setIsSideNavOpen] = useState(false);
+    const [isSideNavOpen, setIsSideNavOpen] : any  = useState(false);
 
     const toggleSideNav = () => {
         setIsSideNavOpen(!isSideNavOpen);
     };
 
 
-    const pathname = usePathname();
+    const pathname  : any  = usePathname();
 
     useEffect(() => {
 

@@ -11,19 +11,19 @@ import VerifyUser from "@/app/middleware/VerifyUser";
 
 
 export default function ForgetPassword() {
-    const [isVerification, setIsVerification] = useState(false);
-    const { generateSnackbar } = useSnackbar();
-    const [verified, setVerified] = useState("");
-    const [newPass, setPass] = useState(false);
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    let [email, setEmail] = useState("");
-    let [userType, setUserType] = useState("");
-    let [userId, setUserId] = useState("");
-    let router = useRouter();
-    let [loading2, setLoading2]=  useState(true);
+    const [isVerification, setIsVerification]  : any  = useState(false);
+    const { generateSnackbar }  : any  = useSnackbar();
+    const [verified, setVerified]  : any  = useState("");
+    const [newPass, setPass]  : any  = useState(false);
+    const [password, setPassword]  : any  = useState("");
+    const [confirmPassword, setConfirmPassword]  : any  = useState("");
+    let [email, setEmail]  : any  = useState("");
+    let [userType, setUserType]  : any  = useState("");
+    let [userId, setUserId]  : any  = useState("");
+    let router  : any  = useRouter();
+    let [loading2, setLoading2] : any  =  useState(true);
     
-  const {setTempUserData,  tempUserData, uType , forgotPassword,sendEmailOtp ,verifyOtp,changeForgotPassword} = useUserContext();
+  const {setTempUserData,  tempUserData, uType , forgotPassword,sendEmailOtp ,verifyOtp,changeForgotPassword} : any  = useUserContext();
 
 
     useEffect(() => {
@@ -33,14 +33,13 @@ export default function ForgetPassword() {
                 router.push('/');
             }
             else{setLoading2(true);
-                let token = Cookies.get("token");
-                let ver = await VerifyUser(token,uType);
-                // console.log(ver);
-                if(ver.status === "fail"){
+                let token : any  = Cookies.get("token");
+                let ver : any  = await VerifyUser(token,uType);
+                if(ver?.status === "fail"){
                   setLoading2(false);
                 }
                 else{
-                  if(ver.registerAs === "professional"){
+                  if(ver?.registerAs === "professional"){
                     router.push("/professional/dashboard")
                   }
                   else{
@@ -61,17 +60,17 @@ export default function ForgetPassword() {
        try {
         e.preventDefault();
         // console.log(email);
-        let res = await forgotPassword({email, userType :  uType});
+        let res : any  = await forgotPassword({email, userType :  uType});
         // console.log(res)
-        if(res.status !== 400 || res.data?.status === "success") {
-            setUserId(res.data?.data[0]?.userId);
-            setEmail(res.data?.data[0]?.email)
+        if(res?.status !== 400 || res?.data?.status === "success") {
+            setUserId(res?.data?.data[0]?.userId);
+            setEmail(res?.data?.data[0]?.email)
             setIsVerification(true);
             
             generateSnackbar("Please verify your Email.", "success");
         }
         else{
-            generateSnackbar(res.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
+            generateSnackbar(res?.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
 
         }
        }
@@ -84,14 +83,14 @@ export default function ForgetPassword() {
        try{
         e.preventDefault();
         let otp = verified.join("");
-        let res = await verifyOtp({otp, userId,userType : uType, type : "forgot"});
+        let res : any  = await verifyOtp({otp, userId,userType : uType, type : "forgot"});
 
-        if(res.status !== 400 || res.data?.status === "success"){
+        if(res?.status !== 400 || res?.data?.status === "success"){
             setPass(true);
             generateSnackbar("Please Set New Password.", "success");
         }
         else{
-            generateSnackbar(res.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
+            generateSnackbar(res?.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
         }
        }
        catch(e){
@@ -102,15 +101,13 @@ export default function ForgetPassword() {
     const handleChangePassword = async (e: any) => {
         try{
             e.preventDefault();
-            console.log(password, confirmPassword);
 
             if(password !== confirmPassword){
                 generateSnackbar("Passwords don't match.", "error");
             }
             else{
-            let res = await changeForgotPassword({userId : userId, password : password});
-            // console.log(res);
-            if(res.status !== 400 || res.data?.status === "success"){
+            let res : any  = await changeForgotPassword({userId : userId, password : password});
+            if(res?.status !== 400 || res?.data?.status === "success"){
                 generateSnackbar("Password Changed Successfully", "success");
                 if(uType === "client"){
                     router.push("/login")
@@ -120,7 +117,7 @@ export default function ForgetPassword() {
                 }
             }
             else{
-                generateSnackbar(res.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
+                generateSnackbar(res?.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
             }
             }
 
@@ -135,14 +132,13 @@ export default function ForgetPassword() {
             e.preventDefault();
             if(userId.length > 0) {
 
-                let res = await sendEmailOtp({
+                let res : any  = await sendEmailOtp({
                 userId: userId,
                 userType: uType,
                 email: email,
               });
-            //   console.log(res);
         
-              if (res.status !== 400 || res.data?.status === "success") {
+              if (res?.status !== 400 || res?.data?.status === "success") {
                 return generateSnackbar("OTP resend successfully", "success");
               } else {
                 generateSnackbar("Please login again.", "error");

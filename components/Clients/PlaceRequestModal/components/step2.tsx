@@ -27,10 +27,10 @@ interface Step2Props {
   handlePrev: () => void;
 }
 
-const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev }) => {
-  const { projectData, setProjectData, searchJobQuestions } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const router = useRouter();
+const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev } : any ) => {
+  const { projectData, setProjectData, searchJobQuestions } : any  = useUserContext();
+  const { generateSnackbar }: any  = useSnackbar();
+  const router : any  = useRouter();
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -39,22 +39,21 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev })
 
   useEffect(() => {
     async function getData() { 
-      if(!projectData.serviceCategory || !projectData.serviceNeeded || !projectData.serviceLocationPostal || !projectData.postCodeRegion){
+      if(!projectData?.serviceCategory || !projectData?.serviceNeeded || !projectData?.serviceLocationPostal || !projectData?.postCodeRegion){
         handlePrev();
       }
       else{
         setLoading(true);
         try { 
-          let res = await searchJobQuestions({ category: projectData.serviceCategory, service: projectData.serviceNeeded });
-          if (res.status === 200 && res.data?.status === "success") {
+          let res : any  = await searchJobQuestions({ category: projectData.serviceCategory, service: projectData.serviceNeeded });
+          if (res?.status === 200 && res?.data?.status === "success") {
             setQuestions(res.data?.data);
             // Initialize answers array with empty answers for each question
-            setAnswers(res.data?.data.map((q: Question) => ({ questionTitle: q.questionTitle, answer: [] })));
+            setAnswers(res?.data?.data.map((q: Question) => ({ questionTitle: q.questionTitle, answer: [] })));
           } else {
-            generateSnackbar(res.response?.data?.message || "Some Error Occurred, Please try Again.", "error");
+            generateSnackbar(res?.response?.data?.message || "Some Error Occurred, Please try Again.", "error");
           }
         } catch (e) {
-          // console.log(e);
           generateSnackbar("An error occurred while fetching questions.", "error");
         } finally {
           setLoading(false);

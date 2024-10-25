@@ -22,7 +22,7 @@ import VerifyUser from "@/app/middleware/VerifyUser"
 import { Rating, Typography } from "@mui/material";
 
 export default function ProjectProposal({ params }: any) {
-    const dynamicData = projectsData?.find((data) => data?.projectId == params?.id);
+    const dynamicData = projectsData?.find((data  : any ) => data?.projectId == params?.id);
     // console.log(params.id);
     // console.log(window.location.pathname);
 
@@ -37,9 +37,9 @@ export default function ProjectProposal({ params }: any) {
     };
 
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    let [confirmedPrice, setConfirmedPrice] = useState(0);
-    const [modalData, setModalData] = useState<any>();
+    const [isModalOpen, setIsModalOpen]   : any = useState(false);
+    let [confirmedPrice, setConfirmedPrice]   : any = useState(0);
+    const [modalData, setModalData]   : any = useState<any>();
     const openModal = (data: any) => {
         setModalData(data);
         setIsModalOpen(true);
@@ -51,19 +51,19 @@ export default function ProjectProposal({ params }: any) {
 
     
     
-    const [loading2, setLoading2] = useState(true);
-    let router = useRouter();
-    let { singleProjectDetails, awardProject} = useUserContext();
-    const { generateSnackbar } = useSnackbar();
-    let [data, setData] = useState({});
-    let [userData, setUserData]= useState({});
+    const [loading2, setLoading2]   : any  = useState(true);
+    let router   : any  = useRouter();
+    let { singleProjectDetails, awardProject}   : any  = useUserContext();
+    const { generateSnackbar }   : any  = useSnackbar();
+    let [data, setData]   : any  = useState({});
+    let [userData, setUserData]  : any  = useState({});
     
-  const [currentPath, setCurrentPath] = useState("");
+  const [currentPath, setCurrentPath]   : any  = useState("");
 
   
       
 
-    const [awardSending, setAwardSending] = useState<boolean>(false);
+    const [awardSending, setAwardSending]  = useState<boolean>(false);
     const [awardSent, setAwardSent] = useState<boolean>(false);
 
     useEffect(() => {
@@ -75,14 +75,12 @@ export default function ProjectProposal({ params }: any) {
 async function getUser(){
     try{
         let projectId = params.id;
-        console.log(projectId);
-        console.log(window.location.pathname);
         setLoading2(true);
-        let token = Cookies.get("token");
-            let ver = await VerifyUser(token, "professional");
-            if(ver.status === "success" && ver.userType === "professional"){
+        let token  : any  = Cookies.get("token");
+            let ver  : any  = await VerifyUser(token, "professional");
+            if(ver?.status === "success" && ver?.userType === "professional"){
                 setUserData(ver);
-                let res = await singleProjectDetails({userId   : ver.userId, userType : ver.userType ,projectId : projectId, need : "proposals"});
+                let res = await singleProjectDetails({userId   : ver?.userId, userType : ver?.userType ,projectId : projectId, need : "proposals"});
                 console.log(res);
                 if(res.status !== 400 || res.data?.status == "success"){
                     setData(res?.data?.data); 
@@ -134,7 +132,7 @@ async function getUser(){
                                             <div className="flex items-center gap-1">
                                                 <div className="flex gap-1">
                                                    
-                                                     <Rating precision={0.1} value={`${(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }`} readOnly />
+                                                     <Rating precision={0.1} value={parseFloat(`${(d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) }`)} readOnly />
                                                             <Typography  className='text-sm' color="text.secondary" ml={1}>
                                                             { d?.professionalTotalReviews > 0 ?  (d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) : "0" }
                                                         </Typography>

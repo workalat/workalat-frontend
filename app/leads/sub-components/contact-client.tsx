@@ -12,12 +12,12 @@ import ClientDetails from './client-details';
 import { arrayUnion, collection, doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/context/firebase';
 
-export default function ContactClient({ open, onClose, job, openClientDetails, applied, setApplied, userData }) {
-  const [loading, setLoading] = useState(false);
-  const [proposalMessage, setProposalMessage] = useState("");
-  const [applied2, setApplied2] = useState(false);
-  const [clientData, setClientData] = useState({});
-  let [loaderMessage, setLoaderMessage] = useState("");
+export default function ContactClient({ open, onClose, job, openClientDetails, applied, setApplied, userData } : any) {
+  const [loading, setLoading] : any = useState(false);
+  const [proposalMessage, setProposalMessage] : any = useState("");
+  const [applied2, setApplied2] : any = useState(false);
+  const [clientData, setClientData] : any = useState({});
+  let [loaderMessage, setLoaderMessage] : any = useState("");
 
 
 

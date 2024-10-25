@@ -64,11 +64,11 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
     });
   };
 
-  const handleJobInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleJobInfoChange = (event  : any ) => {
     setJobInfo({ ...jobInfo, [event.target.name]: event.target.value });
   };
 
-  const handleNewEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewEmailChange = (event  : any ) => {
     setNewEmail(event.target.value);
   };
 
@@ -80,7 +80,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
 
   const [personName, setPersonName] = useState<string[]>([]);
 
-  const handleChange2 = (event: SelectChangeEvent<typeof personName>) => {
+  const handleChange2 = (event : any ) => {
     const {
       target: { value },
     } = event;
@@ -104,19 +104,19 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
     "Roof Cleaning",
   ];
 
-  let [file, setFile] = useState({});
+  let [file, setFile]  : any  = useState({});
 
   // loading
-  const [loading2, setLoading2] = useState(true);
+  const [loading2, setLoading2]  : any  = useState(true);
 
   // loading
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]  : any  = useState(false);
 
   // loading
-  const [openVerifyModel, setOpenVerifyModel] = useState(false);
+  const [openVerifyModel, setOpenVerifyModel]  : any  = useState(false);
 
   //Router
-  let router = useRouter();
+  let router : any  = useRouter();
 
   let [form1, setForm1] = useState({
     professionalFullName: "",
@@ -142,53 +142,52 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
     professionalAddress: "",
   });
 
-  const [services, setServices] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [primaryService, setPrimaryService] = useState("");
-  const [locations, setLocations] = useState([]);
-  const [selectedLocations, setSelectedLocations] = useState([]);
+  const [services, setServices]  : any  = useState([]);
+  const [selectedServices, setSelectedServices]  : any  = useState([]);
+  const [primaryService, setPrimaryService]  : any  = useState("");
+  const [locations, setLocations]  : any  = useState([]);
+  const [selectedLocations, setSelectedLocations]  : any  = useState([]);
 
-  let [avatar, setAvatar] = useState("");
-  const { generateSnackbar } = useSnackbar();
+  let [avatar, setAvatar]  : any  = useState("");
+  const { generateSnackbar }  : any  = useSnackbar();
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log(data2);
         setLoading2(true);
 
-        const servicesData = await findAllServices();
+        const servicesData  : any  = await findAllServices();
         console.log(servicesData);
-        setServices(servicesData.data);
-        setSelectedServices(data2.professionalSkills || []);
-        setPrimaryService(data2.professionalPrimaryService || "");
+        setServices(servicesData?.data);
+        setSelectedServices(data2?.professionalSkills || []);
+        setPrimaryService(data2?.professionalPrimaryService || "");
         // Set initial locations
         setLocations(postcodesData);
-        setSelectedLocations(data2.professionalServiceLocPostCodes || []);
+        setSelectedLocations(data2?.professionalServiceLocPostCodes || []);
 
         setForm1({
           ...form1,
-          ["professionalFullName"]: data1.professionalFullName,
-          ["professionalEmail"]: data1.professionalEmail,
-          ["professionalPhoneNo"]: data1.professionalPhoneNo,
-          ["professionalPictureLink"]: data1.professionalPictureLink,
+          ["professionalFullName"]: data1?.professionalFullName,
+          ["professionalEmail"]: data1?.professionalEmail,
+          ["professionalPhoneNo"]: data1?.professionalPhoneNo,
+          ["professionalPictureLink"]: data1?.professionalPictureLink,
         });
-        setAvatar(data1.professionalPictureLink);
-        setUserId(data1._id);
+        setAvatar(data1?.professionalPictureLink);
+        setUserId(data1?._id);
         setForm2({
           ...form2,
-          ["oldEmail"]: data1.professionalEmail,
+          ["oldEmail"]: data1?.professionalEmail,
         });
         setForm3({
           ...form3,
-          ["professionalCompanyName"]: data2.professionalCompanyName,
-          ["professionalCompanyTitle"]: data2.professionalCompanyTitle,
+          ["professionalCompanyName"]: data2?.professionalCompanyName,
+          ["professionalCompanyTitle"]: data2?.professionalCompanyTitle,
           ["professionalServiceLocPostCodes"]:
-            data2.professionalServiceLocPostCodes,
-          ["professionalPrimaryService"]: data2.professionalPrimaryService,
-          ["professionalBio"]: data2.professionalBio,
-          ["professionalSkills"]: data2.professionalSkills,
-          ["professionalCompanywebsite"]: data2.professionalCompanywebsite,
-          ["professionalAddress"]: data2.professionalAddress,
+            data2?.professionalServiceLocPostCodes,
+          ["professionalPrimaryService"]: data2?.professionalPrimaryService,
+          ["professionalBio"]: data2?.professionalBio,
+          ["professionalSkills"]: data2?.professionalSkills,
+          ["professionalCompanywebsite"]: data2?.professionalCompanywebsite,
+          ["professionalAddress"]: data2?.professionalAddress,
         });
 
         setLoading2(false);
@@ -298,18 +297,18 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
         formDat.append("userId", userId);
         formDat.append("userType", "professional");
 
-        const res = await axios.post("/changePicture", formDat, {
+        const res  : any  = await axios.post("/changePicture", formDat, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
-        if (res.status !== 400 || res.data?.status === "success") {
+        if (res?.status !== 400 || res?.data?.status === "success") {
           generateSnackbar("Profile Picture Updated Successfully", "success");
-          setAvatar(res.data?.picture);
+          setAvatar(res?.data?.picture);
           setLoading(false);
         } else {
           generateSnackbar(
-            res.response?.data?.message ||
+            res?.response?.data?.message ||
               "Some Error occurs, please try again in a few minutes",
             "error"
           );
@@ -328,7 +327,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
   async function handleSubmitForm2(e) {
     e.preventDefault();
     try {
-      let add = await addProfessionalDetailsP1({
+      let add : any  = await addProfessionalDetailsP1({
         userId : userId,
         name : form1.professionalFullName
       })
@@ -363,18 +362,17 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
     e.preventDefault();
     try {
       console.log(form3);
-      let add = await addProfessionalDetailsP2({
+      let add  : any  = await addProfessionalDetailsP2({
         userId : userId,
-        companyName : form3.professionalCompanyName,
-      companyTitle : form3.professionalCompanyTitle,
-      postalCode : form3.professionalServiceLocPostCodes,
-      primaryService : form3.professionalPrimaryService,
-      services : form3.professionalSkills,
-      bio : form3.professionalBio,
-      companyWebsite : form3.professionalCompanywebsite,
-      address : form3.professionalAddress
+        companyName : form3?.professionalCompanyName,
+      companyTitle : form3?.professionalCompanyTitle,
+      postalCode : form3?.professionalServiceLocPostCodes,
+      primaryService : form3?.professionalPrimaryService,
+      services : form3?.professionalSkills,
+      bio : form3?.professionalBio,
+      companyWebsite : form3?.professionalCompanywebsite,
+      address : form3?.professionalAddress
       })
-      console.log(add)
       if(add?.status !== 400 || add?.data?.status === 'success'){
         generateSnackbar("Data Added Successfully", "success");
       }

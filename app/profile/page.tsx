@@ -5,7 +5,7 @@ export default function ProfilePage() {
     return (
         <div>
             <AuthNavbar />
-            <Profile />
+            {/* <Profile /> */}
         </div>
     )
 }

@@ -9,30 +9,29 @@ import { useEffect, useRef, useState } from "react";
 
 
 export default function ManageMembershipPage() {
-    let [loading, setLoading] = useState(false);
-    let [loading2, setLoading2] = useState(false);
+    let [loading, setLoading] : any  = useState(false);
+    let [loading2, setLoading2] : any  = useState(false);
     
-    let {confirmWalletPurchase} = useUserContext();
+    let {confirmWalletPurchase} : any  = useUserContext();
 
     // Alert
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any  = useSnackbar();
 
-    let searchParams = useSearchParams();
-    let router = useRouter();
-    const hasFetched = useRef(false);
+    let searchParams : any  = useSearchParams();
+    let router : any  = useRouter();
+    const hasFetched : any  = useRef(false);
 
 
     useEffect(()=>{
         async function confirmSubs(){
-            if (hasFetched.current) {return};
+            if (hasFetched?.current) {return};
             try{
                 setLoading2(true);
-                let sessionId  = searchParams.get('sessionId');
+                let sessionId : any   = searchParams.get('sessionId');
                 setLoading2(false);
                 setLoading(true)
-                let res = await confirmWalletPurchase({sessionId: sessionId});
-                if(res.status === 200 && res.data?.status === "success"){
-                    console.log(res);
+                let res : any  = await confirmWalletPurchase({sessionId: sessionId});
+                if(res?.status === 200 && res.data?.status === "success"){
                     generateSnackbar("Wallet Purchase Successfull.", "success");
                     router.push("/wallet")
                     setLoading(false);

@@ -9,17 +9,17 @@ import { useEffect, useRef, useState } from "react";
 
 
 export default function ManageMembershipPage() {
-    let [loading, setLoading] = useState(false);
-    let [loading2, setLoading2] = useState(false);
+    let [loading, setLoading] : any  = useState(false);
+    let [loading2, setLoading2] : any  = useState(false);
     
-    let {confirmMembership} = useUserContext();
+    let {confirmMembership} : any  = useUserContext();
 
     // Alert
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any  = useSnackbar();
 
-    let searchParams = useSearchParams();
-    let router = useRouter();
-    const hasFetched = useRef(false);
+    let searchParams : any  = useSearchParams();
+    let router : any  = useRouter();
+    const hasFetched : any  = useRef(false);
 
 
     useEffect(()=>{
@@ -27,12 +27,11 @@ export default function ManageMembershipPage() {
             if (hasFetched.current) {return};
             try{
                 setLoading2(true);
-                let sessionId  = searchParams.get('sessionId');
+                let sessionId  : any = searchParams.get('sessionId');
                 setLoading2(false);
                 setLoading(true)
-                let res = await confirmMembership({sessionId: sessionId});
-                if(res.status === 200 && res.data?.status === "success"){
-                    console.log(res);
+                let res : any = await confirmMembership({sessionId: sessionId});
+                if(res?.status === 200 && res?.data?.status === "success"){
                     generateSnackbar("Activating Membership Successfull.", "success");
                     router.push("/membership/manage")
                     setLoading(false);
@@ -42,7 +41,7 @@ export default function ManageMembershipPage() {
                 }
             }
             catch(e){
-                console.log(e);
+                generateSnackbar("Some error occurr, Please try again", "error");
             }
         }
         confirmSubs();

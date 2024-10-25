@@ -17,15 +17,15 @@ interface VerifyOTPProps {
 const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
   const [otp, setOtp] = useState<string>("");
   
-  const {tempUserData, setTempUserData,verifyPhoneOtp,userData, setUserData,sendPhoneOtp} = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const {tempUserData, setTempUserData,verifyPhoneOtp,userData, setUserData,sendPhoneOtp}  : any  = useUserContext();
+  const { generateSnackbar }  : any  = useSnackbar();
 
   const handleChange = (newValue: string) => {
     setOtp(newValue);
   };
 
        
-  const { projectData, setProjectData } = useUserContext();
+  const { projectData, setProjectData }  : any  = useUserContext();
  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,12 +35,12 @@ const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
     try {
       console.log(otp);
       let userId = tempUserData.userId || Cookies.get("userId");
-      let res = await  verifyPhoneOtp(userId, "client", otp);
-      console.log(res);
+      let res : any  = await  verifyPhoneOtp(userId, "client", otp);
 
-      if(res.status !== 400 || res.data?.status === "success"){
-        Cookies.set("userId",res.data?.userId ,{ secure: true, sameSite: 'None', expires: 30 });
-        Cookies.set("token",res.data?.token ,{ secure: true, sameSite: 'None', expires: 30 });
+
+      if(res?.status !== 400 || res?.data?.status === "success"){
+        Cookies.set("userId",res?.data?.userId ,{ secure: true, sameSite: 'None', expires: 30 });
+        Cookies.set("token",res?.data?.token ,{ secure: true, sameSite: 'None', expires: 30 });
 
         setUserData({...userData, userId : res.data?.userId, token : res.data?.token});
         generateSnackbar("Number Verified Successfully.", "success");
@@ -56,8 +56,8 @@ const VerifyOTP = ({ handleNext, handlePrev }: VerifyOTPProps) => {
   };
 
   const handleResendOtp = async () => {
-    let userId = tempUserData.userId || Cookies.get("userId");
-    let phoneNo = tempUserData.userPhone || Cookies.get("userPhone");
+    let userId = tempUserData?.userId || Cookies.get("userId");
+    let phoneNo = tempUserData?.userPhone || Cookies.get("userPhone");
           try {
             let res = await sendPhoneOtp({
               userId : userId,

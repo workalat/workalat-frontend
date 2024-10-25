@@ -14,17 +14,17 @@ import Cookies from 'js-cookie';
 
 const PhoneOTPVerify = () => {
     //Context 
-    let {userData, verifyPhoneOtp, tempUserData, sendPhoneOtp} = useUserContext();
+    let {userData, verifyPhoneOtp, tempUserData, sendPhoneOtp}  : any  = useUserContext();
 
     useEffect(()=>{
         async function getAllVerificationDone(){
             try{
-                let token = Cookies.get("token");
-                let ver = await VerifyUser(token, "professional");
+                let token  : any  = Cookies.get("token");
+                let ver  : any  = await VerifyUser(token, "professional");
                 if(ver?.status === "success"){
-                    if(ver.userType === "professional" && ver.isRegistrationComplete !== true){
-                        if(ver.isPhoneVerify || ver.isPhoneVerify===true){
-                            if(ver.isRegistrationComplete === true){
+                    if(ver?.userType === "professional" && ver?.isRegistrationComplete !== true){
+                        if(ver?.isPhoneVerify || ver?.isPhoneVerify===true){
+                            if(ver?.isRegistrationComplete === true){
                                 router.push("/leads")
                             }
                             else{
@@ -33,7 +33,7 @@ const PhoneOTPVerify = () => {
                         }
                     }
                     else{
-                      if(ver.userType === "professional"){
+                      if(ver?.userType === "professional"){
                         router.push("/leads")
                       }
                       else{
@@ -53,25 +53,25 @@ const PhoneOTPVerify = () => {
     }, [])
 
     // router
-    const router = useRouter();
+    const router  : any  = useRouter();
 
     // snackbar
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar }  : any  = useSnackbar();
     
     // otp
-    const [otp, setOtp] = useState("");
+    const [otp, setOtp]  : any  = useState("");
 
-    const handleChange = (newValue: string) => {
+    const handleChange  : any  = (newValue: string) => {
         setOtp(newValue);
     };
 
-    const handleResend = async () => {
+    const handleResend  : any  = async () => {
         try{ 
             
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
+        let token  : any  = Cookies.get("token");
+        let ver  : any  = await VerifyUser(token, "professional");
 
-        if(ver.status === "success" || ver.status !== 400){
+        if(ver?.status === "success" || ver?.status !== 400){
                         
         // TODO: Implement resend
                 // console.log(tempUserData);
@@ -101,7 +101,7 @@ const PhoneOTPVerify = () => {
         }
     };
 
-    const handleOTPSubmit =async (value: string) => {
+    const handleOTPSubmit =async (value:  any ) => {
         // OTP validation
         // if (otp.length >= 4) return generateSnackbar("Enter valid OTP", "error");
         

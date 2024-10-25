@@ -29,38 +29,37 @@ import { doc, setDoc } from 'firebase/firestore';
 
 
 const ProfessionalSignupForm = () => {
-  let { setSignupProfessional, signupProfessional, professionalSignupFunction, setUserId, continueWithGoogleProfessional } = useUserContext();
+  let { setSignupProfessional, signupProfessional, professionalSignupFunction, setUserId, continueWithGoogleProfessional } : any  = useUserContext();
 
   // loading
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] : any  = useState(false);
 
   
   // loading
-  const [loading2, setLoading2] = useState(false);
+  const [loading2, setLoading2] : any  = useState(false);
 
 
   // router
-  const router = useRouter();
+  const router : any  = useRouter();
 
   // Theme
-  const theme = useTheme();
+  const theme : any  = useTheme();
 
   // Alert
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any  = useSnackbar();
   
   useEffect(() => {
     theme.toggleTheme();
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        // console.log(ver);
-        if(ver.status === "fail"){
+        let token : any  = Cookies.get("token");
+        let ver  : any  = await VerifyUser(token, "professional");
+        if(ver?.status === "fail"){
           setLoading2(false);
         }
         else{
-          if(ver.registerAs === "professional"){
+          if(ver?.registerAs === "professional"){
             router.push("/professional/dashboard")
           }
           else{
@@ -77,9 +76,9 @@ const ProfessionalSignupForm = () => {
 
   
   // Form Inputs
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  let [googleData, setGoogleData] = useState({});
+  const [showPassword, setShowPassword] : any  = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] : any  = useState(false);
+  let [googleData, setGoogleData] : any  = useState({});
 
 
   const handleShowPasswordToggle = () => {
@@ -94,7 +93,6 @@ const ProfessionalSignupForm = () => {
   function handleInput(e: any) {
     let name = e.target.name;
     let value = e.target.value;
-    // console.log(value)
 
     setSignupProfessional({
       ...signupProfessional,
@@ -104,27 +102,24 @@ const ProfessionalSignupForm = () => {
 
 
   
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: any ) => {
     try {
       event.preventDefault();
 
       // Validate form inputs
-      if (signupProfessional.fullName === "" || signupProfessional.email === "" || signupProfessional.password === "" || signupProfessional.confirmPassword === "") {
+      if (signupProfessional?.fullName === "" || signupProfessional?.email === "" || signupProfessional?.password === "" || signupProfessional?.confirmPassword === "") {
         return generateSnackbar("Please fill in all required fields.", "error");
       }
 
-      if (signupProfessional.password !== signupProfessional.confirmPassword) {
+      if (signupProfessional?.password !== signupProfessional?.confirmPassword) {
         return generateSnackbar("Passwords do not match.", "error");
       }
 
       setLoading(true);
-      let res = await professionalSignupFunction(signupProfessional);
-      // console.log(res);
-      
-       
+      let res : any  = await professionalSignupFunction(signupProfessional);
 
       setLoading(false);
-      if (res.status !== 400 || res.response.data?.status === "success") {
+      if (res?.status !== 400 || res?.response?.data?.status === "success") {
         // Handle form submission
         generateSnackbar(res.response?.data?.message || res.data?.message, "success");
           // Add a new document in collection "cities"
@@ -142,7 +137,7 @@ const ProfessionalSignupForm = () => {
         return generateSnackbar(res.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
       }
     }
-    catch (e) {
+    catch (e : any ) {
       // console.log(e);
       return generateSnackbar(e?.message || "Some Error occurs, please try again in a few minutes", "error");
     }
@@ -151,22 +146,20 @@ const ProfessionalSignupForm = () => {
   async function handleContinueWithGoole(){
     try{
       if(Object.keys(googleData).length !== 0){
-          let res = await continueWithGoogleProfessional(googleData, "professional");
-      // console.log(res);
-      // console.log(res?.data?.userStatus);
-      // console.log(res.data?.newAccount, res.data?.newAccount);
+          let res : any  = await continueWithGoogleProfessional(googleData, "professional");
+
       if(res?.data?.userStatus === "SUCCESS"){
 
-        if(res.data?.newAccount === true || res.data?.newAccount ){
+        if(res?.data?.newAccount === true || res?.data?.newAccount ){
           // redirect
           generateSnackbar("Account Created Successfully", "success");
           Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
          router.push("/professional/onboard/phone");
 
         }
-        else if(res.data?.newAccount === false || !res.data?.newAccount ){
+        else if(res?.data?.newAccount === false || !res?.data?.newAccount ){
           generateSnackbar("Loggedin Successfully", "success"); 
-          Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
+          Cookies.set("token", res?.data?.token, { secure: true, sameSite: 'None'}); 
          router.push("/professional/onboard/phone");
         }
         else{
@@ -197,20 +190,20 @@ const ProfessionalSignupForm = () => {
     
   }
 
-   async function handleLinkedInLogin(){
-    try{
-          const clientId = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID;
-          const redirectUri = process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI;
-          const scope = 'r_liteprofile r_emailaddress'; // Requesting profile and email
-          const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI}&scope=r_liteprofile%20r_emailaddress`;
+//    async function handleLinkedInLogin(){
+//     try{
+//           const clientId  = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID;
+//           const redirectUri = process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI;
+//           const scope = 'r_liteprofile r_emailaddress'; // Requesting profile and email
+//           const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI}&scope=r_liteprofile%20r_emailaddress`;
           
-          // Redirect to LinkedIn login page
-          window.location.href = linkedInAuthUrl;
-    }
-    catch(e){
-      generateSnackbar("Some error Occur, please Try Again.", "error"); 
-   }
-}
+//           // Redirect to LinkedIn login page
+//           window.location.href = linkedInAuthUrl;
+//     }
+//     catch(e){
+//       generateSnackbar("Some error Occur, please Try Again.", "error"); 
+//    }
+// }
 
   return (
     <>
@@ -311,7 +304,7 @@ const ProfessionalSignupForm = () => {
             > */}
               <div className='flex justify-center items-center'>
               <GoogleLogin
-                onSuccess={(credentialResponse) => {
+                onSuccess={(credentialResponse : any ) => {
                     let decode = jwtDecode(credentialResponse.credential);
                     setGoogleData(decode);
                     handleContinueWithGoole();
@@ -323,7 +316,7 @@ const ProfessionalSignupForm = () => {
               </div>
             {/* </Link> */}
             <button 
-            onClick={handleLinkedInLogin}
+            // onClick={handleLinkedInLogin }
               className="bg-main hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
             >
               <img src={linkedInIcon.src} alt="" />

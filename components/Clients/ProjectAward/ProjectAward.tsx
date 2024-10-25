@@ -21,23 +21,23 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { Typography } from "@mui/material";
 
 export default function ProjectAward() {
-  const [loading2, setLoading2] = useState(true);
-  const router = useRouter();
+  const [loading2, setLoading2] : any  = useState(true);
+  const router : any  = useRouter();
   const {
     allActiveProjectsClient,
     markAsAwardedClient,
     markAsCompleted,
     clientGivingReview,
     clientCancelProject,
-  } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const [allProjects, setAllProjects] = useState([]);
-  const [review, setReview] = useState("");
-  const [activeStatusId, setActiveStatusId] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalData, setModalData] = useState<any>();
-  const [userData, setUserData] = useState({});
-  const [rating, setRating] = useState(0);
+  } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
+  const [allProjects, setAllProjects] : any  = useState([]);
+  const [review, setReview] : any  = useState("");
+  const [activeStatusId, setActiveStatusId] : any  = useState(null);
+  const [isModalOpen, setIsModalOpen] : any  = useState<boolean>(false);
+  const [modalData, setModalData] : any  = useState<any>();
+  const [userData, setUserData] : any  = useState({});
+  const [rating, setRating] : any  = useState(0);
 
   const handleToggleStatus = (id: any) => {
     setActiveStatusId((prevId) => (prevId === id ? null : id));
@@ -60,12 +60,12 @@ export default function ProjectAward() {
     async function getUser() {
       try {
         setLoading2(false);
-        const token = Cookies.get("token");
-        const ver = await VerifyUser(token, "client");
-        if (ver.status === "success" && ver.userType === "client") {
+        const token : any  = Cookies.get("token");
+        const ver : any  = await VerifyUser(token, "client");
+        if (ver?.status === "success" && ver?.userType === "client") {
           setUserData(ver);
-          const res = await allActiveProjectsClient({ clientId: ver.userId });
-          if (res.status !== 400 || res.data?.status === "success") {
+          const res : any  = await allActiveProjectsClient({ clientId: ver.userId });
+          if (res?.status !== 400 || res?.data?.status === "success") {
             setAllProjects(res?.data?.data);
           } else {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
@@ -81,30 +81,29 @@ export default function ProjectAward() {
     getUser();
   }, []);
 
-  async function handleReviewSubmit(e: React.FormEvent) {
+  async function handleReviewSubmit(e: any ) {
     e.preventDefault();
     if (!review || review.length < 1) {
       return generateSnackbar("Please Write a Review.", "error");
     }
-    const markCompleted = await markAsCompleted({
+    const markCompleted : any  = await markAsCompleted({
       userId: userData.userId,
       userType: userData.userType,
       projectId: modalData._id,
     });
     
-    console.log(markCompleted);
     if (
       markCompleted.status !== 400 ||
       markCompleted.data?.status === "success"
     ) {
       generateSnackbar("Status Changed Successfully", "success");
-      const submit = await clientGivingReview({
+      const submit  : any  = await clientGivingReview({
         professionalId: modalData.awardedProfessionalId,
         projectId: modalData._id,
         rating: rating,
         review: review,
       });
-      if (submit.status !== 400 || submit.data?.status === "success") {
+      if (submit?.status !== 400 || submit?.data?.status === "success") {
         generateSnackbar("Review Submitted Successfully", "success");
         router.refresh();
       } else {
@@ -120,8 +119,8 @@ export default function ProjectAward() {
 
   async function markAsAwarded(clientId: string, projectId: string) {
     try {
-      const res = await markAsAwardedClient({ clientId, projectId });
-      if (res.status !== 400 || res.data?.status === "success") {
+      const res  : any  = await markAsAwardedClient({ clientId, projectId });
+      if (res?.status !== 400 || res?.data?.status === "success") {
         generateSnackbar("Status Changed Successfully", "success");
         window.location.reload();
       } else {
@@ -141,8 +140,8 @@ export default function ProjectAward() {
 
   async function cancelProject(clientId: string, projectId: string) {
     try {
-      const res = await clientCancelProject({ clientId, projectId });
-      if (res.status !== 400 || res.data?.status === "success") {
+      const res  : any  = await clientCancelProject({ clientId, projectId });
+      if (res?.status !== 400 || res?.data?.status === "success") {
         window.location.reload();
         generateSnackbar("Project Cancelled Successfully", "success");
       } else {

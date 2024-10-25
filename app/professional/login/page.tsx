@@ -26,8 +26,8 @@ import { Router } from 'next/router';
   
 const LoginPage = () => {
   // user context
-  const {signinProfessional, userData,continueWithGoogleProfessional, setUType } = useUserContext();
-  let [loading, setLoading]=  useState(true);
+  const {signinProfessional, userData,continueWithGoogleProfessional, setUType }  : any = useUserContext();
+  let [loading, setLoading]  : any =  useState(true);
     
   // router
   const router = useRouter();
@@ -40,14 +40,14 @@ const LoginPage = () => {
     async function verify(){
       try{
         setLoading(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional", true);
+        let token : any = Cookies.get("token");
+        let ver   : any = await VerifyUser(token, "professional", true);
         // console.log(ver);
-        if(ver.status === "fail"){
+        if(ver?.status === "fail"){
           setLoading(false);
         }
         else{
-          if(ver.registerAs === "professional"){
+          if(ver?.registerAs === "professional"){
             router.push("/professional/dashboard")
           }
           else{
@@ -92,7 +92,7 @@ const LoginPage = () => {
       return generateSnackbar("Please fill in all required fields.", "error");
     }
 
-    let res = await signinProfessional({email, password, userType : "professional"});
+    let res  : any = await signinProfessional({email, password, userType : "professional"});
     console.log(res);
 
     if(res.isTwoFactAuth === false || !res.isTwoFactAuth) {
@@ -118,7 +118,7 @@ const LoginPage = () => {
   async function handleContinueWithGoole(){
     try{
       if(Object.keys(googleData).length !== 0){
-          let res = await continueWithGoogleProfessional(googleData, "professional");
+          let res  : any = await continueWithGoogleProfessional(googleData, "professional");
           // console.log(res);
           if(res?.data?.userStatus === "SUCCESS"){
         if(res.data?.newAccount === true || res.data?.newAccount ){
@@ -237,7 +237,7 @@ const LoginPage = () => {
             </Link> */}
            <div className='flex justify-center items-center'>
               <GoogleLogin 
-                onSuccess={(credentialResponse) => {
+                onSuccess={(credentialResponse : any) => {
                     let decode = jwtDecode(credentialResponse.credential);
                     setGoogleData(decode);
                     handleContinueWithGoole();

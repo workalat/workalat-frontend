@@ -31,38 +31,38 @@ const Step6: React.FC<Step5Props> = ({
       ? JSON.parse(localStorage.getItem("stepFormData")!).budget
       : ""
   );
-  let [selectedBudget, setSelectedBudget] = useState(0)
+  let [selectedBudget, setSelectedBudget] : any  = useState(0)
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange  = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBudget((event.target as HTMLInputElement).value);
   };
 
   //My Workflow
-  const { projectData, setProjectData, getPointsBudget } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const router = useRouter();
-  let [budgetData, setBudgetData] = useState([]); 
+  const { projectData, setProjectData, getPointsBudget } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
+  const router : any  = useRouter();
+  let [budgetData, setBudgetData] : any  = useState([]); 
 
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [currentQuestionIndex, setCurrentQuestionIndex]   = useState(0);
+  const [loading, setLoading] : any  = useState(true);
 
   
 
   useEffect(() => {
       async function findData(){
         try{
-          if(!projectData.serviceFrequency){
+          if(!projectData?.serviceFrequency){
               handlePrev();
           }
           else{
-            let category = projectData.serviceCategory;
+            let category : any  = projectData.serviceCategory;
             if(!category){
               router.push("/");
             }
             else{
-              let res = await getPointsBudget({category});
-              if(res.status !== 400 || res.data?.status === "success"){
-                setBudgetData(res.data?.data);
+              let res : any  = await getPointsBudget({category});
+              if(res?.status !== 400 || res?.data?.status === "success"){
+                setBudgetData(res?.data?.data);
               }
               else{
                 generateSnackbar("Error fetching budget data.", "error");
@@ -78,8 +78,8 @@ const Step6: React.FC<Step5Props> = ({
       findData();
   }, []);
 
-  const handlePriceChange= (e: React.FormEvent<HTMLFormElement>) => {
-    setSelectedBudget(e.target.value);
+  const handlePriceChange= (e: any ) => {
+    setSelectedBudget(e?.target.value);
   }; 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

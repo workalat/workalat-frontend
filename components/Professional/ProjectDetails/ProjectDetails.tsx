@@ -24,26 +24,25 @@ export default function ProjectDetails({ params }: any) {
     
 
     
-  const [loading2, setLoading2] = useState(true);
-  let router = useRouter();
-  let { singleProjectDetails,professionlalAwardedChoice} = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  let [data, setData] = useState({});
-  let [userData, setUserData]= useState({});
+  const [loading2, setLoading2]   : any  = useState(true);
+  let router   : any  = useRouter();
+  let { singleProjectDetails,professionlalAwardedChoice}   : any  = useUserContext();
+  const { generateSnackbar }   : any  = useSnackbar();
+  let [data, setData]   : any  = useState({});
+  let [userData, setUserData]  : any  = useState({});
 
     
   useEffect(()=>{
     async function getUser(){
         try{
-            let projectId = await params.id;
+            let projectId  : any  = await params.id;
             setLoading2(true);
             let token = Cookies.get("token"); 
-                let ver = await VerifyUser(token, "professional");
-                if(ver.status === "success" && ver.userType === "professional"){
+                let ver  : any  = await VerifyUser(token, "professional");
+                if(ver?.status === "success" && ver?.userType === "professional"){
                     setUserData(ver);
-                    let res = await singleProjectDetails({userId   : ver.userId, userType: ver.userType ,projectId : projectId, need : "details"});
-                    console.log(res);
-                    if(res.status !== 400 || res.data?.status == "success"){
+                    let res = await singleProjectDetails({userId   : ver?.userId, userType: ver?.userType ,projectId : projectId, need : "details"});
+                    if(res?.status !== 400 || res?.data?.status == "success"){
                         setData(res?.data?.data);
                         setLoading2(false);
                     }
@@ -66,16 +65,14 @@ export default function ProjectDetails({ params }: any) {
 
 
 
-async function handleAcceptProject(choice){
+async function handleAcceptProject(choice  : any ){
     try{
-        console.log(userData.userId,params.id,choice)
-        let task = await professionlalAwardedChoice({
+        let task  : any  = await professionlalAwardedChoice({
             professionalId : userData.userId,
             projectId : params.id,
             choice
         })
-        console.log(task);
-        if(task.status !== 400 || task?.data?.status === "success"){
+        if(task?.status !== 400 || task?.data?.status === "success"){
             generateSnackbar("Project Accepted Successfully", "success");
             router.refresh();
         }
@@ -122,7 +119,7 @@ async function handleAcceptProject(choice){
                             {/* <p className="text-md leading-[1.4] py-3 capitalize">{data?.projectDes}</p> */}
                             <div className="px-2">
                                 {
-                                    data?.projectQuestions?.map((overview: string, i: number) => {
+                                    data?.projectQuestions?.map((overview  : any , i: number) => {
                                         return(
                                             <>       
                                             {
@@ -145,7 +142,7 @@ async function handleAcceptProject(choice){
                                     })
                                 }
                             </div>
-                            <p className="text-lg px-2 py-3 font-bold text-[#E88B00]">Project ID: {params.id}</p>
+                            <p className="text-lg px-2 py-3 font-bold text-[#E88B00]">Project ID: {params?.id}</p>
                         </div>
 
                                 

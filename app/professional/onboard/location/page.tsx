@@ -27,14 +27,14 @@ import regionsData from "@/postcode_region.json";
 import { useSnackbar } from "@/context/snackbar_context";
 
 export default function LocationPage() {
-  const {userData ,addProfessionalDetails, tempUserData, setTempUserData } = useUserContext();
-  const router = useRouter();
+  const {userData ,addProfessionalDetails, tempUserData, setTempUserData }  : any  = useUserContext();
+  const router  : any  = useRouter();
   // snackbar
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar }  : any  = useSnackbar();
 
-  const [loading, setLoading] = useState(false);
-  const [selectedPostcodes, setSelectedPostcodes] = useState<string[]>([]);
-  const [nationwide, setNationwide] = useState(false); // For the nationwide checkbox
+  const [loading, setLoading]  : any  = useState(false);
+  const [selectedPostcodes, setSelectedPostcodes]  : any  = useState<string[]>([]);
+  const [nationwide, setNationwide]  : any  = useState(false); // For the nationwide checkbox
 
   // Handle adding/removing "nationwide"
   const handleNationwideChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,29 +48,27 @@ export default function LocationPage() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e  : any ) => {
     try{
       e.preventDefault();
     // await new Promise((resolve) => setTimeout(resolve, 5000)); // Simulate loading
     // console.log(selectedPostcodes);
-    if(selectedPostcodes.length >0){
+    if(selectedPostcodes?.length >0){
       setLoading(true);
-      console.log(selectedPostcodes); // Send selected postcodes to the backend
 
-      let name = tempUserData.name || Cookies.get('name'); 
-      let companyName = tempUserData.companyName || Cookies.get('companyName');
-      let website  = tempUserData.website || Cookies.get('website');
-      let bio  = tempUserData.bio || Cookies.get('bio');
-      let companySize = tempUserData.companySize || Cookies.get("companySize");
-      let skills = tempUserData.skills || JSON.parse(Cookies.get("skills"));
-      let isData = tempUserData.isData || Cookies.get("isData") || true;
-      let userId = userData.userId || tempUserData.userId || Cookies.get("userId") ;
+      let name = tempUserData?.name || Cookies.get('name'); 
+      let companyName = tempUserData?.companyName || Cookies.get('companyName');
+      let website  = tempUserData?.website || Cookies.get('website');
+      let bio  = tempUserData?.bio || Cookies.get('bio');
+      let companySize = tempUserData?.companySize || Cookies.get("companySize");
+      let skills = tempUserData?.skills || JSON.parse(Cookies.get("skills"));
+      let isData = tempUserData?.isData || Cookies.get("isData") || true;
+      let userId = userData?.userId || tempUserData?.userId || Cookies.get("userId") ;
   
       console.log(userId);
 
-      let res = await addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes});
-      console.log(res);
-      if(res.status !==400 || res.data?.status === "success"){
+      let res  : any  = await addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes});
+      if(res?.status !==400 || res.data?.status === "success"){
         setTempUserData({});
         Cookies.remove('name'); 
         Cookies.remove('companyName');
@@ -85,8 +83,7 @@ export default function LocationPage() {
         generateSnackbar("Some Error occur, please Try Again.", "error");
       }
       setLoading(false);
-  
-      // router.push("/professional/onboard/more");
+
     }
     else{
       generateSnackbar("Please select atleast one Postcode, or Nationwide.", "error");

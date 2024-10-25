@@ -28,15 +28,15 @@ export default function Tasklist({ params }: any) {
     setIsModalOpen(false);
   };
 
-  let [data, setData] = useState({});
-  const [loading2, setLoading2] = useState(true);
-  let router = useRouter();
-  let { singleProjectDetails, addProjectTasks } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const [currentPath, setCurrentPath] = useState("");
-  let [userData, setUserData] = useState({});
-  let [lists, setLists] = useState([]);
-  let [tasks, setTasks] = useState({
+  let [data, setData] : any = useState({});
+  const [loading2, setLoading2]  : any  = useState(true);
+  let router  : any  = useRouter();
+  let { singleProjectDetails, addProjectTasks }  : any  = useUserContext();
+  const { generateSnackbar }  : any  = useSnackbar();
+  const [currentPath, setCurrentPath]  : any  = useState("");
+  let [userData, setUserData]  : any  = useState({});
+  let [lists, setLists]  : any  = useState([]);
+  let [tasks, setTasks]  : any  = useState({
     name: "",
     des: "",
   });
@@ -58,18 +58,18 @@ export default function Tasklist({ params }: any) {
 
   async function getUser() {
     try {
-      let projectId = params.id;
+      let projectId  : any  = params.id;
       setLoading2(true);
-      let token = Cookies.get("token");
-      let ver = await VerifyUser(token, "professsional");
-      if (ver.status === "success" && ver.userType === "professional") {
+      let token  : any  = Cookies.get("token");
+      let ver  : any  = await VerifyUser(token, "professsional");
+      if (ver?.status === "success" && ver?.userType === "professional") {
         setUserData(ver);
-        let res = await singleProjectDetails({
+        let res  : any  = await singleProjectDetails({
           userId   : ver.userId, userType: ver.userType,
           projectId: projectId,
           need: "tasklist",
         });
-        if (res.status !== 400 || res.data?.status == "success") {
+        if (res?.status !== 400 || res?.data?.status == "success") {
           setData(res?.data?.data);
           setLists(res?.data?.data?.taskLists);
           setLoading2(false);
@@ -92,7 +92,7 @@ export default function Tasklist({ params }: any) {
     }
 
     try {
-      let res = await addProjectTasks({
+      let res  : any  = await addProjectTasks({
         userType: userData.userType,
         userId: userData.userId,
         projectId: params.id,
@@ -100,7 +100,7 @@ export default function Tasklist({ params }: any) {
         taskListDes: tasks.des,
       });
       
-      if (res.status !== 400 || res.data?.status == "success") {
+      if (res?.status !== 400 || res?.data?.status == "success") {
         // Update the lists array with the new task
         const newTask = {
           date: Date.now().toString(),

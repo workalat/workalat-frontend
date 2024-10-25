@@ -49,23 +49,21 @@ export default function UploadPicture({
 
 
   
-  const { projectData, setProjectData, postProject } = useUserContext();
-  let [sessionData, setSessionData] = useState({});
-  let [projectId, setProjectId] = useState("");
-  let [files, setFiles ] = useState([]);
+  const { projectData, setProjectData, postProject } : any  = useUserContext();
+  let [sessionData, setSessionData] : any  = useState({});
+  let [projectId, setProjectId] : any  = useState("");
+  let [files, setFiles ] : any  = useState([]);
 
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any  = useSnackbar();
   console.log(projectData);
 
   useEffect(()=>{
    async function post(){
       try{
 
-        let p = sessionStorage.getItem("projectData");
-        let project = JSON.parse(p);
-        console.log("SessionuserId);" ,project);
+        let p : any  = sessionStorage.getItem("projectData");
+        let project : any  = JSON.parse(p);
         setSessionData(project);
-        console.log( "projectID",projectData)
         if(!project?.userId){
           handlePrev();
           handlePrev();
@@ -77,7 +75,6 @@ export default function UploadPicture({
       }
       catch(e){
         generateSnackbar("Some error occured, Please try Again.", "error");
-        console.log(e);
       }
    };
    post();
@@ -85,7 +82,7 @@ export default function UploadPicture({
   }, [])
 
   function handleBack(){
-    if(projectData.userId || sessionData.userId){
+    if(projectData?.userId || sessionData?.userId){
       handlePrev();
       handlePrev();
       handlePrev();
@@ -104,66 +101,54 @@ export default function UploadPicture({
   };
   
   
-  const handleProjectFileUpload = async (event) => {
+  const handleProjectFileUpload = async (event : any ) => {
     try {
       event.preventDefault();
 
-      if(!files || files.length<1){
+      if(!files || files?.length<1){
              generateSnackbar("Please Fill all Data.", "error");
       }
       else{ 
-      // console.log(userData);
       setLoading(true);
       let uploadProject = {
         userId : projectData?.userId || sessionData?.userId,
-        serviceCategory : projectData.serviceCategory || sessionData.serviceCategory,
-        serviceNeeded : projectData.serviceNeeded || sessionData.serviceNeeded,
-        serviceLocationPostal : projectData.serviceLocationPostal || sessionData.serviceLocationPostal,
-        postCodeRegion : projectData.postCodeRegion || sessionData.postCodeRegion,
-        serviceQuestions : projectData.serviceQuestions || sessionData.serviceQuestions,
-        serviceFrequency : projectData.serviceFrequency || sessionData.serviceFrequency,
-        serviceFrequencyDays : projectData.serviceFrequencyDays || sessionData.serviceFrequencyDays,
-        projectPriceString : projectData.projectPriceString || sessionData.projectPriceString,
-        projectPriceTitle : projectData.projectPriceTitle || sessionData.projectPriceTitle,
-        projectPriceString : projectData.projectPriceString || sessionData.projectPriceString,
-        projectMaxPrice : projectData.projectMaxPrice || sessionData.projectMaxPrice,
-        projectUrgentStatus : projectData.projectUrgentStatus || sessionData.projectUrgentStatus,
-        pointsNeeded : projectData.pointsNeeded || sessionData.pointsNeeded,
-        serviceTitle : projectData.serviceTitle || sessionData.serviceTitle,
-        serviceDes : projectData.serviceDes || sessionData.serviceDes
+        serviceCategory : projectData?.serviceCategory || sessionData.serviceCategory,
+        serviceNeeded : projectData?.serviceNeeded || sessionData.serviceNeeded,
+        serviceLocationPostal : projectData?.serviceLocationPostal || sessionData.serviceLocationPostal,
+        postCodeRegion : projectData?.postCodeRegion || sessionData.postCodeRegion,
+        serviceQuestions : projectData?.serviceQuestions || sessionData.serviceQuestions,
+        serviceFrequency : projectData?.serviceFrequency || sessionData.serviceFrequency,
+        serviceFrequencyDays : projectData?.serviceFrequencyDays || sessionData.serviceFrequencyDays,
+        projectPriceString : projectData?.projectPriceString || sessionData.projectPriceString,
+        projectPriceTitle : projectData?.projectPriceTitle || sessionData.projectPriceTitle,
+        projectMaxPrice : projectData?.projectMaxPrice || sessionData.projectMaxPrice,
+        projectUrgentStatus : projectData?.projectUrgentStatus || sessionData.projectUrgentStatus,
+        pointsNeeded : projectData?.pointsNeeded || sessionData.pointsNeeded,
+        serviceTitle : projectData?.serviceTitle || sessionData.serviceTitle,
+        serviceDes : projectData?.serviceDes || sessionData.serviceDes
       }
-      console.log("Upload", uploadProject);
-      console.log(files)
-      let res  = await postProject({project : uploadProject});
-      console.log(res);
+      let res : any   = await postProject({project : uploadProject});
 
       if(res?.status !== 400 || res?.data.status === "success"){
         setProjectId(res?.data?.projectId);
-        console.log(files);
-        console.log( projectData.userId || sessionData.userId)
-        console.log( res?.data?.projectId)
 
         
       const formData = new FormData();
-      formData.append('userId', projectData.userId || sessionData.userId);
+      formData.append('userId', projectData?.userId || sessionData.userId);
       formData.append('userType', "client");
       formData.append('projectId', res?.data?.projectId);
         
 
       //       // // Append all selected files to the form data under the kycDocuments key
-        files.forEach((file) => {
+        files?.forEach((file) => {
             formData.append('projectFiles', file);
         });
       
-      // // Send the form data to the server to upload the files
-      // setLoading(true);
-      console.log(formData);
-        const upload = await axios.post('/uploadProjectFile', formData, {
+        const upload : any  = await axios.post('/uploadProjectFile', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        console.log(upload);
         handleNext(); 
 
       }

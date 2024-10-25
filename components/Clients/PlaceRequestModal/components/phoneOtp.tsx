@@ -26,25 +26,25 @@ const PhoneOtp = ({
   updateFormData,
 }: PhoneOtpProps) => {
   // State for phone number and error messages
-  const [phoneNumber, setPhoneNumber] = useState(
+  const [phoneNumber, setPhoneNumber] : any  = useState(
     JSON.parse(localStorage.getItem("stepFormData") || "")?.phone_number || ""
   );
-  const [error, setError] = useState("");
+  const [error, setError] : any  = useState("");
   
   
-  const { clientSignup, tempUserData, setTempUserData, setProjectData, projectData} = useUserContext();
-  let [loading, setLoading]=  useState(true); 
-  const { generateSnackbar } = useSnackbar();
+  const { clientSignup, tempUserData, setTempUserData, setProjectData, projectData} : any  = useUserContext();
+  let [loading, setLoading] : any =  useState(true); 
+  const { generateSnackbar }  : any = useSnackbar();
 
 
 
   // Handle phone number change
-  const handlePhoneNumChange = (e: string | undefined) => {
+  const handlePhoneNumChange = (e: any ) => {
     setPhoneNumber(e || ""); // Set the phone number from input
     const phoneNumberObject = parsePhoneNumberFromString(e || "", "PK");  // Default country code (replace "PK" if necessary)
 
     // Validate the phone number
-    if (!phoneNumberObject || !phoneNumberObject.isValid()) {
+    if (!phoneNumberObject || !phoneNumberObject?.isValid()) {
       setError("Please enter a valid phone number.");
       return;
     }
@@ -78,10 +78,9 @@ const PhoneOtp = ({
       country_code: countryCode,
       country_calling_code: `+${countryCallingCode}`,
     });
-    let res =  await clientSignup({phoneNo : phoneNumber, country : countryCode, countryCode:countryCallingCode  });
-    console.log(res);
+    let res : any  =  await clientSignup({phoneNo : phoneNumber, country : countryCode, countryCode:countryCallingCode  });
 
-    if(res.status !== 400 || res.data?.status === 'success'){
+    if(res?.status !== 400 || res?.data?.status === 'success'){
       setTempUserData({...tempUserData, userId : res.data?.data?.userId, userPhone : phoneNumber,});
       
       await setDoc(doc(db, "usersChats", res.data?.data?.userId), {

@@ -52,15 +52,14 @@ export default function ProjectAward() {
     async function getUser() {
       try {
         setLoading2(false);
-        const token = Cookies.get("token");
-        const ver = await VerifyUser(token, "professional");
-        if (ver.status === "success" && ver.userType === "professional") {
+        const token : any  = Cookies.get("token");
+        const ver  : any  = await VerifyUser(token, "professional");
+        if (ver?.status === "success" && ver?.userType === "professional") {
           setUserData(ver);
-          const res = await allActiveProjectsProfessoinal({
-            userId: ver.userId,
+          const res  : any  = await allActiveProjectsProfessoinal({
+            userId: ver?.userId,
           });
-          console.log(res);
-          if (res.status !== 400 || res.data?.status === "success") {
+          if (res?.status !== 400 || res?.data?.status === "success") {
             setAllProjects(res?.data?.data);
           } else {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
@@ -76,9 +75,9 @@ export default function ProjectAward() {
     getUser();
   }, []);
 
-  async function handleReviewSubmit(e: React.FormEvent) {
+  async function handleReviewSubmit(e : any ) {
     e.preventDefault();
-    if (!review || review.length < 1) {
+    if (!review || review?.length < 1) {
       return generateSnackbar("Please Write a Review.", "error");
     }
     const markCompleted : any = await markAsCompleted({
@@ -93,8 +92,8 @@ export default function ProjectAward() {
     ) {
       generateSnackbar("Status Changed Successfully", "success");
       const submit : any  = await professionalGivingReview({
-        clientId: modalData.clientId,
-        projectId: modalData._id,
+        clientId: modalData?.clientId,
+        projectId: modalData?._id,
         rating: rating,
         review: review,
       });

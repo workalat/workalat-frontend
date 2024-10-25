@@ -18,35 +18,29 @@ const NotificationsPage = () => {
 
     
   //Loading
-  const [loading2, setLoading2] = useState(true);
-  const { generateSnackbar } = useSnackbar();
+  const [loading2, setLoading2] : any = useState(true);
+  const { generateSnackbar } : any = useSnackbar();
   
-  let [requestValue, setRequestValue] =useState(true);
-  let [chatNotificationValue, setChatNotificationValue] = useState(true);
-  let [reminderValue,setReminderValue] = useState({});
-  let [userData, setUserData] = useState({});
+  let [requestValue, setRequestValue] : any =useState(true);
+  let [chatNotificationValue, setChatNotificationValue] : any = useState(true);
+  let [reminderValue,setReminderValue] : any = useState({});
+  let [userData, setUserData] : any = useState({});
 
 
-  const router = useRouter();
-  let { getNotificationPage , setRequest, setReminder, setChatNotification} = useUserContext();
+  const router : any = useRouter();
+  let { getNotificationPage , setRequest, setReminder, setChatNotification} : any = useUserContext();
   
   
   useEffect(() => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        // console.log(ver);
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "professional");
         if(ver.status === "success"){
           setUserData(ver);
-          // if(ver.registerAs === "professional"){
-            // router.push("/professional/dashboard")
-          // }
-          // else{
-            let data = await getNotificationPage({userId : ver.userId, userType : "professional"});
-            if(data.status === 200 || data.data?.status === "success"){
-              // console.log(data);
+            let data : any = await getNotificationPage({userId : ver.userId, userType : "professional"});
+            if(data?.status === 200 || data?.data?.status === "success"){
               
               setRequestValue(data.data?.data?.request);
               setReminderValue(data.data?.data?.reminder);
@@ -54,9 +48,8 @@ const NotificationsPage = () => {
               setLoading2(false);
           }
           else{
-              generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+              generateSnackbar(data?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
           }  
-          // }
         }
         else{
           router.push("/"); 
@@ -73,20 +66,16 @@ const NotificationsPage = () => {
   async function handleSave(){
     try{
     //   console.log(userData);
-      let re = await setRequest({userId : userData.userId,userType : userData.userType,current_value : !requestValue});
-      let rem = await setReminder({userId : userData.userId,userType : userData.userType,current_value : !reminderValue});
-      let chatN = await setChatNotification({userId : userData.userId,userType : userData.userType,current_value : !chatNotificationValue});
+      let re : any = await setRequest({userId : userData.userId,userType : userData.userType,current_value : !requestValue});
+      let rem : any = await setReminder({userId : userData.userId,userType : userData.userType,current_value : !reminderValue});
+      let chatN : any = await setChatNotification({userId : userData.userId,userType : userData.userType,current_value : !chatNotificationValue});
+      if((re?.status !== 400 && rem?.status !== 400 && chatN?.status !== 400 ) || (re?.data?.status === "success" && rem?.data?.status === "success" && chatN?.data?.status === "success" )){
 
-    //   console.log(re);
-    //   console.log(rem);
-    //   console.log(chatN);
-      if((re.status !== 400 && rem.status !== 400 && chatN.status !== 400 ) || (re.data?.status === "success" && rem.data?.status === "success" && chatN.data?.status === "success" )){
-        // console.log(data);
         generateSnackbar("Status Updated Successfully." ,"success");
         
     }
     else{
-        generateSnackbar(re.response?.data?.message || rem.response?.data?.message || chatN.response?.data?.message   || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(re?.response?.data?.message || rem?.response?.data?.message || chatN?.response?.data?.message   || "Some Error Occur, Please try Again." ,"error")
     }  
     }
     catch(e){

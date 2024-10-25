@@ -314,10 +314,9 @@ async function findAllServices(){
 
 
 async function signinProfessional({email, password, userType}){
-  console.log(email, password,userType)
   try{
     if(userType === "professional"){
-      const response = await axios.post('/signinEmail', {
+      const response  : any = await axios.post('/signinEmail', {
         email : email,
         pass : password,
         userType : userType
@@ -331,28 +330,29 @@ async function signinProfessional({email, password, userType}){
         });
         
         setUserData({
-          token : response.data?.token,
-          userId : verifyToken.data?.userId,
-          userName : verifyToken.data?.data[0]?.fullName,
-          userPicture : verifyToken.data?.data[0]?.pictureLink,
-          userType : verifyToken.data?.userType,
-          userRegisterAs : verifyToken.data?.data[0]?.registerAs,
+          token : response?.data?.token,
+          userId : verifyToken?.data?.userId,
+          userName : verifyToken?.data?.data[0]?.fullName,
+          userPicture : verifyToken?.data?.data[0]?.pictureLink,
+          userType : verifyToken?.data?.userType,
+          userRegisterAs : verifyToken?.data?.data[0]?.registerAs,
         })
     
-        Cookies.set("token", response.data?.token, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userType", verifyToken.data?.userType, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("token", response?.data?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userType", verifyToken?.data?.userType, { secure: true, sameSite: 'None',expires: 30 });
 
         return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
       }
       else if(response.data.userStatus === 'PENDING'){
         setUserData({
-          userId : response.data?.data[0]?.userId,
-          userType : response.data?.data[0]?.userType,
+          ...userData,
+          userId : response?.data?.data[0]?.userId,
+          userType : response?.data?.data[0]?.userType,
         });
         setTempUserData({...tempUserData, "userEmail" : response.data?.data[0]?.email});
-        setUserId(response.data?.data[0]?.userId);
-        Cookies.set("userType", response.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userId", response.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
+        setUserId(response?.data?.data[0]?.userId);
+        Cookies.set("userType", response?.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         return({response : response , isTwoFactAuth : true});
       }   
     }
@@ -388,6 +388,7 @@ async function signinProfessional({email, password, userType}){
       }
       else if(response.data.userStatus === 'PENDING'){
         setUserData({
+          ...userData,
           userId : response.data?.data[0]?.userId,
           userType : response.data?.data[0]?.userType,
         });
@@ -410,27 +411,24 @@ async function signinProfessional({email, password, userType}){
   async function sendPhoneOtp({userId, userType, phoneNo}){
     // console.log(userId, userType, phoneNo)
     try{
-      const response = await axios.post('/sendPhoneOtp', {
+      const response  : any = await axios.post('/sendPhoneOtp', {
         userId : userId,
         userType : userType,
         phoneNo : phoneNo
       });
-      // console.log(response);
       return(response);
     }
     catch(e){
-      // console.log(e);
       return(e);
     }
   };
   async function sendEmailOtp({userId, userType, email}){
     try{
-      const response = await axios.post('/sendEmailOtp', {
+      const response  : any = await axios.post('/sendEmailOtp', {
         userId : userId,
         userType : userType,
         userEmail : email
       });
-      // console.log(response);
       return(response);
     }
     catch(e){
@@ -494,13 +492,13 @@ async function addLeadsToProfessioal({userId, services}){
     }
 };
 
-async function continueWithGoogleProfessional(data  : object, userType : string) {
+async function continueWithGoogleProfessional(data  : any, userType :   any) {
   // console.log(data, userType);
   
     try{
       if(data){
         if(userType === "professional"){
-        let d = {
+        let d  : any = {
           userFName : data.given_name,
           userLName : data.family_name,
           userFullName : data.name,      

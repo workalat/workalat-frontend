@@ -23,24 +23,24 @@ import { useRouter } from 'next/navigation';
 import { useSnackbar } from "@/context/snackbar_context";
 
 const Page = () => {
-  const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
-  const pathname = usePathname();
-  let [userData,setUserData] = useState({});
-  let [dashData,setDashData] = useState({});
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false);
+  const [isClientDashboard, setIsClientDashboard] : any = useState<boolean>(false);
+  const pathname : any = usePathname();
+  let [userData,setUserData] : any = useState({});
+  let [dashData,setDashData] : any = useState({});
+  const [isSideNavOpen, setIsSideNavOpen] : any = useState(false);
   // loading
-  const [loading2, setLoading2] = useState(true);
-  let router = useRouter();
-  let { dashboardData } = useUserContext();
+  const [loading2, setLoading2] : any = useState(true);
+  let router : any = useRouter();
+  let { dashboardData } : any = useUserContext();
 
 
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any = useSnackbar();
 
-  const toggleSideNav = () => {
+  const toggleSideNav : any = () => {
     setIsSideNavOpen(!isSideNavOpen);
   };
 
-  const [currentTime, setCurrentTime] = useState<string>(
+  const [currentTime, setCurrentTime] : any = useState<string>(
     formatDateTime(new Date())
   );
 
@@ -49,17 +49,16 @@ const Page = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        console.log(ver);
-        if(ver.status === "success" && ver.userType === "professional"){
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "professional");
+        if(ver?.status === "success" && ver?.userType === "professional"){
           setUserData(ver);
-          let dash = await dashboardData({userId : ver.userId, userType : ver.userType});
-          setDashData(dash.data?.data)
+          let dash : any = await dashboardData({userId : ver.userId, userType : ver.userType});
+          setDashData(dash?.data?.data)
           setLoading2(false);
         }
         else{
-          // router.push("/"); 
+          router.push("/"); 
         }
       }
       catch(e){
@@ -127,7 +126,8 @@ const Page = () => {
           <div className="w-full h-[0.5px] bg-gray-400 mt-4" />
           <section className="w-full flex flex-col md:flex-row gap-3 mt-6 justify-between">
             <ProfileWidget data={dashData} userType={userData.userType} />
-            <VerificationWidget isClientDashboard={isClientDashboard} data={dashData} userType={userData.userType} />
+            {/* <VerificationWidget isClientDashboard={isClientDashboard} data={dashData} userType={userData.userType} /> */}
+            <VerificationWidget />
           </section>
           <section
             className={`w-full flex flex-col md:flex-row ${isClientDashboard ? "justify-end" : "justify-between"} gap-3 mt-8`}

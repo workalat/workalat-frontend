@@ -14,14 +14,9 @@ export default function BuyPoints({
   setOpen,
   data,
   setSuccess,
-}: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  data: pointsData;
-  setSuccess: (success: boolean) => void;
-}) {
+}: any ) {
   // form data
-  const handlePurchase = (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePurchase = (e : any ) => {
     e.preventDefault();
     setOpen(false);
     setSuccess(true);

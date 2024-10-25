@@ -48,19 +48,19 @@ const Step5: React.FC<Step5Props> = ({
   updateFormData,
   handlePrev,
 }) => {
-  const [frequency, setFrequency] = useState();
+  const [frequency, setFrequency] : any  = useState("");
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: any ) => {
     setFrequency((event.target as HTMLInputElement).value);
   };
 
 
   //My Workflow
-  const { projectData, setProjectData, searchJobQuestions } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  const router = useRouter();
+  const { projectData, setProjectData, searchJobQuestions } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
+  const router : any  = useRouter();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] : any  = useState(true);
 
   
 
@@ -71,7 +71,6 @@ const Step5: React.FC<Step5Props> = ({
     }
     else{
       setProjectData({ ...projectData, ["serviceFrequency"] :  frequency });
-      console.log(projectData);
       handleNext();
     }
   };

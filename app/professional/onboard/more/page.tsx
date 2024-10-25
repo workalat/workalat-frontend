@@ -11,35 +11,35 @@ import { useSnackbar } from "@/context/snackbar_context";
 
 export default function MoreInfoPage() {
   const router = useRouter();
-  const { findAllServices, addLeadsToProfessioal, tempUserData } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const { findAllServices, addLeadsToProfessioal, tempUserData }   : any  = useUserContext();
+  const { generateSnackbar }   : any  = useSnackbar();
   
   // State for more leads
-  const [moreLeads, setMoreLeads] = useState<string[]>([]);
-  const extraServiceRef = useRef<HTMLInputElement>(null);
-  const [allServices, setAllServices] = useState<string[]>([]);
-  const [filteredServices, setFilteredServices] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  let [userPService,setUserPService] = useState<string[]>([]);
-  let [userData, setUserData] = useState({});
-  let [loading, setLoading]=  useState(true);
+  const [moreLeads, setMoreLeads]   : any  = useState<string[]>([]);
+  const extraServiceRef   : any  = useRef<HTMLInputElement>(null);
+  const [allServices, setAllServices]   : any  = useState<string[]>([]);
+  const [filteredServices, setFilteredServices]   : any  = useState<string[]>([]);
+  const [searchTerm, setSearchTerm]   : any  = useState("");
+  let [userPService,setUserPService]   : any  = useState<string[]>([]);
+  let [userData, setUserData]   : any  = useState({});
+  let [loading, setLoading]  : any  =  useState(true);
 
   useEffect(() => {
     async function getServices() {
       try {
         setLoading(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
+        let token  : any  = Cookies.get("token");
+        let ver  : any  = await VerifyUser(token, "professional");
         if(ver?.status === "success"){
-          if(ver.userType === "professional" && ver.isRegistrationComplete !== true){
+          if(ver?.userType === "professional" && ver?.isRegistrationComplete !== true){
             setUserData(ver);
-            const data = await findAllServices();
-            setAllServices(data.data);
-            setUserPService(tempUserData.userPrimaryService || Cookies.get("userPrimaryService"));
+            const data  : any  = await findAllServices();
+            setAllServices(data?.data);
+            setUserPService(tempUserData?.userPrimaryService || Cookies.get("userPrimaryService"));
             setLoading(false);
           }
           else{
-            if(ver.userType === "professional"){
+            if(ver?.userType === "professional"){
               router.push("/leads")
             }
             else{
@@ -52,15 +52,14 @@ export default function MoreInfoPage() {
         }
       }
        catch (e) {
-        // console.log(e);
         router.push("/login");
       }
     }
     getServices();
   }, [findAllServices]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toLowerCase();
+  const handleSearch : any   = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value  : any  = e.target.value.toLowerCase();
     setSearchTerm(value);
     setFilteredServices(
       allServices.filter(service => service.toLowerCase().includes(value))
@@ -94,9 +93,9 @@ export default function MoreInfoPage() {
   const handleButtonClick = async  () => {
     try{     
       if(moreLeads.length > 0) {
-        let res = await addLeadsToProfessioal({userId : userData.userId, services: moreLeads});
+        let res  : any  = await addLeadsToProfessioal({userId : userData.userId, services: moreLeads});
  
-        if(res.data?.status ==="success"){
+        if(res?.data?.status ==="success"){
           generateSnackbar("Data Saved Successfully", "success");
           Cookies.remove("userPrimaryService");
           Cookies.remove("userId");

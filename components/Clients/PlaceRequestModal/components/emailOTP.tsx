@@ -23,14 +23,14 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
   const [otp, setOtp] = useState<string>("");
   
     // snackbar
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any  = useSnackbar();
     // let router = useRouter();
 
     //context
-        let { userId, verifyOtp, tempUserData,sendEmailOtp, userData, setUserData } = useUserContext();
+        let { userId, verifyOtp, tempUserData,sendEmailOtp, userData, setUserData } : any  = useUserContext();
 
          
-  const { projectData, setProjectData } = useUserContext();
+  const { projectData, setProjectData } : any  = useUserContext();
 
 
   const handleResend = async (e) => {
@@ -38,13 +38,13 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
         e.preventDefault();
         if(Cookies.get("userId").length > 0) {
 
-            let res = await sendEmailOtp({
+            let res : any  = await sendEmailOtp({
             userId: Cookies.get("userId"),
             userType: "professional",
             email: tempUserData.userEmail || Cookies.get("userEmail"),
           });
     
-          if (res.status !== 400 || res.data?.status === "success") {
+          if (res?.status !== 400 || res?.data?.status === "success") {
             return generateSnackbar("OTP resend successfully", "success");
           } else {
             generateSnackbar("Please login again.", "error");
@@ -67,12 +67,11 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
    try{
     e.preventDefault();
     if (otp.length !== 4) return alert("Enter valid OTP");
-    let userId = tempUserData.userId || Cookies.get("userId");
+    let userId = tempUserData?.userId || Cookies.get("userId");
 
-    let res = await verifyOtp({otp, userId, userType : "client" })
-        console.log(res);
+    let res : any  = await verifyOtp({otp, userId, userType : "client" })
 
-        if(res.status === 200 || res.response.data?.status === "success"){
+        if(res?.status === 200 || res?.response?.data?.status === "success"){
           setUserData({
             ...userData,
             token : res.data?.token

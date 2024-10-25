@@ -35,8 +35,8 @@ SetupAccountProps) {
     password : "",
     confirmPassword : "",
   });
-  const {userData,clientDetailsAdd, tempUserData, setTempUserData} = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const {userData,clientDetailsAdd, tempUserData, setTempUserData}  : any = useUserContext();
+  const { generateSnackbar }  : any = useSnackbar();
 
   function handleInput(e){
     let name= e.target.name;
@@ -50,17 +50,16 @@ SetupAccountProps) {
   }
 
         
-  const { projectData, setProjectData } = useUserContext();
+  const { projectData, setProjectData } : any  = useUserContext();
 
 
 
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any ) => {
     try{
       e.preventDefault();
-      let clientId = userData.clientId || Cookies.get("userId") ;
-    console.log(userDetails)
-    let res = await clientDetailsAdd({
+      let clientId : any  = userData.clientId || Cookies.get("userId") ;
+    let res : any  = await clientDetailsAdd({
       clientId : clientId,
       email : userDetails.email,
       name : userDetails.name,
@@ -68,9 +67,8 @@ SetupAccountProps) {
       confirmPass : userDetails.confirmPassword,
       userType : "client",
     })
-    // console.log(res);
 
-    if(res.status !== 400 || res.status === "success"){
+    if(res?.status !== 400 || res?.status === "success"){
       setTempUserData({...tempUserData,
         userId : res.data?.data[0]?.userId,
         userEmail : res.data?.data[0]?.email,

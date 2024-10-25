@@ -4,7 +4,6 @@ import Link from "next/link"
 import { MdShare } from "react-icons/md"
 
 export default function ProjectsHeader({ data, isActive, params }: any) {
-    console.log(data);
     return (
         <div className="w-full border-b border-black/50">
             <div className="relative z-10 mt-6 container mx-auto max-w-7xl px-6">

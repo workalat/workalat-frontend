@@ -22,17 +22,17 @@ const style = {
 
 
 export default function VerifyEmail() {
-    let { userId, verifyOtp, tempUserData,sendEmailOtp } = useUserContext();
+    let { userId, verifyOtp, tempUserData,sendEmailOtp } : any  = useUserContext();
     let userType = "professional";
 
     // snackbar
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any  = useSnackbar();
     
     // router
-    const router = useRouter();
+    const router : any  = useRouter();
     
     // otp
-    const [otp, setOtp] = useState<string>("");
+    const [otp, setOtp]  = useState<string>("");
 
     const handleChange = (newValue: string) => {
         setOtp(newValue);
@@ -46,14 +46,13 @@ export default function VerifyEmail() {
             e.preventDefault();
             if(Cookies.get("userId").length > 0) {
 
-                let res = await sendEmailOtp({
+                let res : any  = await sendEmailOtp({
                 userId: Cookies.get("userId"),
                 userType: "professional",
                 email: tempUserData.userEmail || Cookies.get("userEmail"),
               });
-              console.log(res);
         
-              if (res.status !== 400 || res.data?.status === "success") {
+              if (res?.status !== 400 || res?.data?.status === "success") {
                 return generateSnackbar("OTP resend successfully", "success");
               } else {
                 generateSnackbar("Please login again.", "error");
@@ -69,11 +68,9 @@ export default function VerifyEmail() {
         }
       };
    
-    const handleOTPSubmit = async  (e: React.FormEvent<HTMLFormElement>) => {
+    const handleOTPSubmit = async  (e: any ) => {
         e.preventDefault();
-        // console.log(userId);
-
-        if(!userId || userId.length === 0){
+        if(!userId || userId?.length === 0){
             generateSnackbar("Please Login Again.", "error");
             router.push("/professional/login");
         }
@@ -83,23 +80,18 @@ export default function VerifyEmail() {
         if (otp.length !== 4) return generateSnackbar("Enter valid OTP", "error");
         
         // TODO: Implement OTP verification
-        let res = await verifyOtp({otp, userId, userType})
+        let res : any  = await verifyOtp({otp, userId, userType})
         // console.log(res);
 
-        if(res.status === 200 || res.response.data?.status === "success"){
+        if(res?.status === 200 || res?.response?.data?.status === "success"){
 
             generateSnackbar("Email verified. Login to continue.", "success")
             router.push("/professional/login");
         }
         else{
-            // OTP verification failed
-            // console.log("HERE");
             generateSnackbar("Invalid OTP" ,"error")
         }
         
-        // OTP verification success
-        // generateSnackbar("Email verified. Login to continue.", "success")
-        // router.push("/professional/login");
     }
 
     return (

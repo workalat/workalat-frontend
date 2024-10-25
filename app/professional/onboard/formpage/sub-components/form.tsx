@@ -34,31 +34,28 @@ export default function Form() {
   const router = useRouter();
 
   //Context
-  let { addProfessionalDetails, tempUserData, setTempUserData, findAllServices } = useUserContext();
-  let [userData, setUserData] = useState({});
-  let [loading, setLoading]=  useState(true);
-  const [allServices, setAllServices] = useState<string[]>([]);
+  let { tempUserData, setTempUserData, findAllServices }   : any  = useUserContext();
+  let [userData, setUserData]   : any  = useState({});
+  let [loading, setLoading]  : any  =  useState(true);
+  const [allServices, setAllServices]   : any  = useState<string[]>([]);
 
   // snackbar
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar }  : any  = useSnackbar();
   useEffect(()=>{
     async function getAllVerificationDone(){
         try{
           setLoading(true);
-            let token = Cookies.get("token");
-            let ver = await VerifyUser(token, "professional");
-            console.log(ver);
+            let token  : any  = Cookies.get("token");
+            let ver  : any  = await VerifyUser(token, "professional");
             if(ver?.status === "success" && ver.userType === "professional" ){
                 if(ver.isRegistrationComplete !== true){
                   setUserData(ver);
                   const data = await findAllServices();
                   setAllServices(data.data);
-                  // console.log(data.data)
                   setLoading(false);
                 }
                 else{
                     router.push("/leads")
-                 
                 }
               }
               else{
@@ -73,7 +70,7 @@ export default function Form() {
 }, [])
 
   // form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData]  = useState({
     name: "",
     companyName: "",
     website: "",
@@ -84,14 +81,14 @@ export default function Form() {
     isData : false,
   });
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event : any ) => {
     const { name, value } = event.target;
 
     setFormData({ ...formData, [name]: value });
   };
 
 
-  const handleSkillChange = (event: SelectChangeEvent<string[]>) => {
+  const handleSkillChange = (event : any ) => {
     const selectedSkills = event.target.value as string[];
 
     setFormData((prevFormData) => ({
@@ -100,15 +97,14 @@ export default function Form() {
     }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event : any ) => {
     try {
       event.preventDefault();
 
-      let token = Cookies.get("token");
-      let ver = await VerifyUser(token, "professional");
-      console.log(ver);
+      let token  : any  = Cookies.get("token");
+      let ver  : any  = await VerifyUser(token, "professional");
 
-      if (ver.status === "success" || ver.status !== 400) {
+      if (ver?.status === "success" || ver?.status !== 400) {
         setFormData({
           ...formData,
           ["userId"] : ver.userId,
@@ -116,23 +112,21 @@ export default function Form() {
         });
 
         // form validation
-        if (!formData.name) {
+        if (!formData?.name) {
           return generateSnackbar("Name is required", "error");
         }
-        if (!formData.companyName) {
+        if (!formData?.companyName) {
           return generateSnackbar("Company name is required", "error");
         }
-        if (!formData.bio) {
+        if (!formData?.bio) {
           return generateSnackbar("Bio is required", "error");
         }
-        if (!formData.companySize) {
+        if (!formData?.companySize) {
           return generateSnackbar("Company size is required", "error");
         }
-        if (formData.skills.length === 0) {
+        if (formData?.skills.length === 0) {
           return generateSnackbar("Skills are required", "error");
         }
-        console.log(formData);
-        addProfessionalDetails;
 
         generateSnackbar("Data Added successfully", "success");
         setTempUserData({

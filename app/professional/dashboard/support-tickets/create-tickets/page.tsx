@@ -18,12 +18,12 @@ export default function CreateSupportTicket() {
     // here tickets data will be dynamically from the backend. for now i using "import { ticketsData } from "@/utils/TicketsData";" as a demo tickets data. and here also will be post operation for create ticket
 
 
-    const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
+    const [isClientDashboard, setIsClientDashboard] : any  = useState<boolean>(false);
 
-    const [isSideNavOpen, setIsSideNavOpen] = useState(false);
-    let {  createTicket } = useUserContext();
+    const [isSideNavOpen, setIsSideNavOpen] : any  = useState(false);
+    let {  createTicket } : any  = useUserContext();
      // State to hold the projects fetched from the backend
-     const [projects, setProjects] = useState([
+     const [projects, setProjects] : any  = useState([
         {
             serviceTitle : "Other",
             _id : "0"
@@ -34,10 +34,10 @@ export default function CreateSupportTicket() {
         setIsSideNavOpen(!isSideNavOpen);
     };
 
-    let [userData,setUserData] = useState({});
+    let [userData,setUserData] : any  = useState({});
     // loading
-    const [loading2, setLoading2] = useState(true);
-    let router = useRouter();
+    const [loading2, setLoading2] : any  = useState(true);
+    let router : any  = useRouter();
 
     let [ticketData, setTicketData] = useState({
         department  : "finance",
@@ -52,7 +52,7 @@ export default function CreateSupportTicket() {
     })
   
   
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any  = useSnackbar();
 
 
       // Helper function to capitalize project name
@@ -61,7 +61,7 @@ export default function CreateSupportTicket() {
         };
 
 
-    const pathname = usePathname();
+    const pathname : any  = usePathname();
 
     useEffect(() => {
 
@@ -77,11 +77,12 @@ export default function CreateSupportTicket() {
     async function verify(){
       try{ 
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        if(ver.status === "success"){
+        let token : any  = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "professional");
+        if(ver?.status === "success"){
           setUserData(ver);
-          const storedData = JSON.parse(sessionStorage.getItem('projectData'));
+          let f : any = sessionStorage.getItem('projectData')
+          const storedData : any  = JSON.parse(f);
           setProjects([...storedData,...projects])
           setTicketData({
             ...ticketData,
@@ -105,10 +106,10 @@ export default function CreateSupportTicket() {
 
       // Function to handle the selection of a project
       const handleProjectChange = (e) => {
-        const selectedProjectName = e.target.value.toLowerCase(); // Ensure project name is in lowercase
+        const selectedProjectName : any  = e.target.value.toLowerCase(); // Ensure project name is in lowercase
         
         // Find the selected project based on the project name (in lowercase)
-        const selectedProject = projects.find(proj => proj.serviceTitle.toLowerCase() === selectedProjectName);
+        const selectedProject : any  = projects.find(proj => proj.serviceTitle.toLowerCase() === selectedProjectName);
         
         // Update the ticketData with the selected project name and ID
         setTicketData({
@@ -122,11 +123,11 @@ export default function CreateSupportTicket() {
   async function handleCreateTicket(e){
     try{
         e.preventDefault();
-        if(!ticketData.subject || !ticketData.relatedProject || !ticketData.creatorId || !ticketData.message){
+        if(!ticketData?.subject || !ticketData?.relatedProject || !ticketData?.creatorId || !ticketData?.message){
             generateSnackbar( "Please fill all the Required Field." ,"error")
         }
         else{
-            let res = await createTicket({
+            let res : any  = await createTicket({
             department : ticketData.department,
             subject : ticketData.subject,
             relatedProject : ticketData.relatedProject,
@@ -136,7 +137,7 @@ export default function CreateSupportTicket() {
             ticketStatus : ticketData.ticketStatus,
             message : ticketData.message
         });
-        if(res.status !== 400 || res.data?.status === "success"){
+        if(res?.status !== 400 || res?.data?.status === "success"){
             generateSnackbar("Ticket Created Successfully.", "success");
             router.push("/professional/dashboard/support-tickets");
         }
@@ -152,8 +153,6 @@ export default function CreateSupportTicket() {
     }
   }
 
-
-  console.log("projects", projects);
     return (
         <div>
             <div className="md:hidden fixed bottom-4 right-4 z-50">

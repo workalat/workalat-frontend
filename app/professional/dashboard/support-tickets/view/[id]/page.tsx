@@ -19,20 +19,20 @@ type PropsType = {
 export default function ViewSupportTickets() {
     // here tickets data will be dynamically from the backend. for now i using "import { ticketsData } from "@/utils/TicketsData";" as a demo tickets data
 
-    const [filteredTicketsData, setFilteredTicketsData] = useState<any>();
-    let params = useParams();
+    const [filteredTicketsData, setFilteredTicketsData] : any  = useState();
+    let params : any  = useParams();
 
-    let [userData,setUserData] = useState({});
+    let [userData,setUserData] : any  = useState({});
     let [allTicketData, setAllTicketData] = useState([]);
 
     // loading
-    const [loading2, setLoading2] = useState(true);
-    let router = useRouter();
-    let { findSingleTicket, respondTicket } = useUserContext();
-    let [ticketData, setTicketData] = useState({});
-    let [allTicketMessages, setAllTicketMessages] = useState([]);
-    let [ticketMessages, setTicketMessages] = useState("")
-    const { generateSnackbar } = useSnackbar();
+    const [loading2, setLoading2] : any  = useState(true);
+    let router : any  = useRouter();
+    let { findSingleTicket, respondTicket } : any  = useUserContext();
+    let [ticketData, setTicketData] : any  = useState({});
+    let [allTicketMessages, setAllTicketMessages] : any  = useState([]);
+    let [ticketMessages, setTicketMessages] : any  = useState("")
+    const { generateSnackbar } : any  = useSnackbar();
   
   
 
@@ -41,12 +41,12 @@ export default function ViewSupportTickets() {
         async function getTicketData(){
             try{
                 setLoading2(true);
-            let token = Cookies.get("token");
-            let ver = await VerifyUser(token, "professional");
-            if(ver.status === "success"){
+            let token : any  = Cookies.get("token");
+            let ver : any  = await VerifyUser(token, "professional");
+            if(ver?.status === "success"){
               setUserData(ver);
-              let res = await findSingleTicket({ticketId : params.id});
-              if(res.status !== 400 || res.data?.status === 'success'){
+              let res : any  = await findSingleTicket({ticketId : params.id});
+              if(res?.status !== 400 || res?.data?.status === 'success'){
               setTicketData(res.data?.data);
               setAllTicketMessages(res.data?.data?.ticketMessages.reverse());
               setLoading2(false);
@@ -74,21 +74,21 @@ export default function ViewSupportTickets() {
                 generateSnackbar("Please Type your Reply.", "error")
             }
             else{
-                let res = await respondTicket({
+                let res : any  = await respondTicket({
                     ticketId : params.id,
                     userId : userData.userId,
                     userType : userData.userType,
                     ticketStatus : "customer",
                     userMessage : ticketMessages,
                 });
-                if(res.status !== 400 || res.data?.status === 'success'){
+                if(res?.status !== 400 || res?.data?.status === 'success'){
                     let message = {
                         messageTimeStamp : Date.now(),
                         message_email : "",
-                        message_name : userData.userName,
+                        message_name : userData?.userName,
                         ticketMessages : ticketMessages,
-                        userType : userData.userType,
-                        userId : userData.userId
+                        userType : userData?.userType,
+                        userId : userData?.userId
                     }
                     setAllTicketMessages([message,...allTicketMessages]);
                     setTicketMessages("");

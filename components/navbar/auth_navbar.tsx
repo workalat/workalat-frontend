@@ -43,9 +43,9 @@ const AuthNavbar = () => {
     },
   ];
 
-  let [loading2, setLoading2] = useState(true);
-  let [loading, setLoading] = useState(false);
-  let router = useRouter();
+  let [loading2, setLoading2]  : any  = useState(true);
+  let [loading, setLoading]  : any  = useState(false);
+  let router  : any  = useRouter();
   
   async function handleIntoProfessional(){
     try{

@@ -204,7 +204,6 @@ let [kycDocumentData, setKycDocumentData] : any  = useState({
                 'Content-Type': 'multipart/form-data',
             },
         });
-        // console.log(res);
         if(res?.status === 200 || res?.response?.data?.status === "success"){
           generateSnackbar("Your KYC has been submitted successfully,We will let you know once approved." ,"success");
           setLoading(false);

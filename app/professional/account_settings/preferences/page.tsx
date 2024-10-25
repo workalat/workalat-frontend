@@ -23,57 +23,42 @@ const formItems = [
   { name: "activateChat", label: "Activate Chat" },
 ];
 
-const PreferenceSettings = () => {
-  const [preferences, setPreferences] = useState<PreferencesProp>({
+const PreferenceSettings : any = () => {
+  const [preferences, setPreferences] : any = useState<PreferencesProp>({
     markUnavailable: false,
     activateChat: false,
   });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = event.target;
-
-    setPreferences((prevPreferences) => ({
-      ...prevPreferences,
-      [name]: checked,
-    }));
-  };
-
   //Loading
-  const [loading2, setLoading2] = useState(true);
-  const { generateSnackbar } = useSnackbar();
+  const [loading2, setLoading2] : any = useState(true);
+  const { generateSnackbar } : any = useSnackbar();
   
-  let [markUnavailable, setMarkUnavailable] =useState(true);
-  let [activateChat, setActivateChat] = useState(true);
-  let [userData,setUserData] = useState({});
+  let [markUnavailable, setMarkUnavailable] : any =useState(true);
+  let [activateChat, setActivateChat] : any = useState(true);
+  let [userData,setUserData] : any = useState({});
 
 
-  const router = useRouter();
-  let { getChatPage, setMark, setChat } = useUserContext();
+  const router : any = useRouter();
+  let { getChatPage, setMark, setChat } : any = useUserContext();
   
   
   useEffect(() => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        // console.log(ver);
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "professional");
         if(ver.status === "success"){
           setUserData(ver);
-          // if(ver.registerAs === "professional"){
-          //   router.push("/professional/dashboard")
-          // }
-          // else{
-            let data = await getChatPage({userId : ver.userId, userType : "professional"});
+            let data : any = await getChatPage({userId : ver.userId, userType : "professional"});
             if(data.status === 200 || data.data?.status === "success"){
-              // console.log(data);
               
               setMarkUnavailable(data.data?.data?.mark);
               setActivateChat(data.data?.data?.chat);
               setLoading2(false);
           }
           else{
-              generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+              generateSnackbar(data?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
           }  
           // }
         }
@@ -91,12 +76,9 @@ const PreferenceSettings = () => {
   async function handleSave(){
     try{
       // console.log( userData.userType)
-      let m = await setMark({userId : userData.userId,userType : userData.userType,current_value : !markUnavailable});
-      let a = await setChat({userId : userData.userId,userType : userData.userType,current_value : !activateChat});
-      // console.log(m);
-      // console.log(a);
-      if((a.status === 200 && m.status === 200 )|| (a.data?.status === "success" && m.data?.status === "success" )){
-        // console.log(data);
+      let m : any = await setMark({userId : userData.userId,userType : userData.userType,current_value : !markUnavailable});
+      let a : any = await setChat({userId : userData.userId,userType : userData.userType,current_value : !activateChat});
+      if((a?.status === 200 && m?.status === 200 )|| (a?.data?.status === "success" && m?.data?.status === "success" )){
         generateSnackbar("Status Updated Successfully." ,"success");
         
     }

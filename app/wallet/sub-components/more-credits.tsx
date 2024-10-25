@@ -31,7 +31,7 @@ function createData(points: string, price: string): row {
 
 export default function MoreCredits(
     { openBuyModal, data, buy, payGoValue }
-) {
+) : any  {
   
   const router = useRouter()
   
@@ -52,7 +52,7 @@ export default function MoreCredits(
                     </TableHead>
                     <TableBody>
                       
-                      {data.map((row) => (
+                      {data?.map((row) => (
                         <TableRow
                           key={row._id}
                           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

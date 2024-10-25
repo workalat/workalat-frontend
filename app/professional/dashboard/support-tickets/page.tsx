@@ -22,18 +22,18 @@ export default function SupportTickets() {
     // here tickets data will be dynamically from the backend. for now i using "import { ticketsData } from "@/utils/TicketsData";" as a demo tickets data
 
     // States for user data, filtering
-    const [userType, setUserType] = useState('all'); // Filter by user type
-    const [filteredUsers, setFilteredUsers] = useState(ticketsData); // Filtered data
+    const [userType, setUserType] : any  = useState('all'); // Filter by user type
+    const [filteredUsers, setFilteredUsers] : any  = useState(ticketsData); // Filtered data
 
-    let [userData,setUserData] = useState({});
-    let [allTicketData, setAllTicketData] = useState([]);
+    let [userData,setUserData] : any  = useState({});
+    let [allTicketData, setAllTicketData] : any  = useState([]);
 
     // loading
-    const [loading2, setLoading2] = useState(true);
-    let { findAllTickets } = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
+    let { findAllTickets } : any  = useUserContext();
   
   
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar } : any  = useSnackbar();
   
 
     // Filter users based on selected user type
@@ -75,21 +75,19 @@ export default function SupportTickets() {
         async function verify(){
           try{ 
             setLoading2(true);
-            let token = Cookies.get("token");
-            let ver = await VerifyUser(token, "professional", false);
-            console.log("Sending")
-            console.log(ver);
-            if(ver.status === "success"){
+            let token : any  = Cookies.get("token");
+            let ver  : any = await VerifyUser(token, "professional", false);
+            if(ver?.status === "success"){
               setUserData(ver);
-              let res = await findAllTickets({userId :ver.userId, userType : ver.userType});
+              let res : any  = await findAllTickets({userId :ver.userId, userType : ver.userType});
               console.log(res);
-              if(res.status !== 400 || res.data?.status === "success"){
+              if(res?.status !== 400 || res?.data?.status === "success"){
                     setAllTicketData(res.data?.data);
                     sessionStorage.setItem('projectData', JSON.stringify(res.data?.projectData));
                     setLoading2(false);
             }
             else{
-                generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+                generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
             } 
             }
             else{

@@ -1,13 +1,10 @@
 "use client"
-
-import { useUserContext } from "@/context/user_context";
 import axios from "axios";
 
 async function VerifyUser (token: string, userType : string, auth=false){
-    console.log(token , userType, auth, token !== undefined);
     try{
         if( token || token !== undefined ){
-            const verifyToken = await axios.post('/verify', {
+            const verifyToken  : any  = await axios.post('/verify', {
               type : userType,
               token : token,
               auth
@@ -15,20 +12,20 @@ async function VerifyUser (token: string, userType : string, auth=false){
 
             if(verifyToken?.data?.status === "success"){
                 let data = {
-                    status : verifyToken.data.status,
-                    message : verifyToken.data?.msg || "User verified successfully",
-                    userId : verifyToken.data?.userId,
-                    userType : verifyToken.data?.userType,
-                    userEmail : verifyToken.data?.data[0]?.email,
-                    userName : verifyToken.data?.data[0]?.fullName,
-                    userPicture : verifyToken.data?.data[0]?.pictureLink,
-                    registerAs : verifyToken.data?.data[0]?.registerAs,
-                    isEmailVerify : verifyToken.data?.data[0].isEmailVerify,
-                    isPhoneVerify : verifyToken.data?.data[0].isPhoneVerify,
-                    isTwoFactAuth : verifyToken.data?.data[0].isTwoFactAuth,
-                    isRegistrationComplete : verifyToken.data?.data[0].isRegsitrationComplete,
-                    statusCode : verifyToken.status,
-                    country : verifyToken.data?.data[0].country,
+                    status : verifyToken?.data.status,
+                    message : verifyToken?.data?.msg || "User verified successfully",
+                    userId : verifyToken?.data?.userId,
+                    userType : verifyToken?.data?.userType,
+                    userEmail : verifyToken?.data?.data[0]?.email,
+                    userName : verifyToken?.data?.data[0]?.fullName,
+                    userPicture : verifyToken?.data?.data[0]?.pictureLink,
+                    registerAs : verifyToken?.data?.data[0]?.registerAs,
+                    isEmailVerify : verifyToken?.data?.data[0].isEmailVerify,
+                    isPhoneVerify : verifyToken?.data?.data[0].isPhoneVerify,
+                    isTwoFactAuth : verifyToken?.data?.data[0].isTwoFactAuth,
+                    isRegistrationComplete : verifyToken?.data?.data[0].isRegsitrationComplete,
+                    statusCode : verifyToken?.status,
+                    country : verifyToken?.data?.data[0].country,
                     bidPoints: verifyToken?.data?.data[0]?.totalBidPoints
                 }
                 return(data);
@@ -36,7 +33,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
             else{
                 let data = {
                     status : "fail",
-                    message : verifyToken.response?.data?.msg || "Some error occur, please login again",
+                    message : "Some error occur, please login again",
                     userId : null,
                     userType : null,
                     userEmail : null,
@@ -47,7 +44,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     isPhoneVerify : null,
                     isTwoFactAuth : null,
                     isRegistrationComplete : null,
-                    statusCode : verifyToken.status,
+                    statusCode : verifyToken?.status,
                     country : null,
                 }
                 return(data);
@@ -74,8 +71,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
 
         }
     }
-    catch(e){
-        console.log( "Error ", e);
+    catch(e : any){
         let data = {
             status : "fail",
             message :  "Some Error Occur, please login again",

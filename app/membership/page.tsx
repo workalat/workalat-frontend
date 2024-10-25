@@ -18,14 +18,14 @@ import { useSnackbar } from "@/context/snackbar_context";
 
 
 export default function MemberShipPage() {
-    let [loading, setLoading] = useState(true);
-    let [loading2, setLoading2] = useState(false);
-    let {purchaseMembership } = useUserContext();
+    let [loading, setLoading] : any = useState(true);
+    let [loading2, setLoading2]  : any = useState(false);
+    let {purchaseMembership }  : any = useUserContext();
 
-    let params = useParams();
-    let router = useRouter();
+    let params  : any = useParams();
+    let router  : any = useRouter();
     // Alert
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar }  : any = useSnackbar();
 
     const membershipPlan = [
         {
@@ -62,13 +62,11 @@ export default function MemberShipPage() {
 
       async function handlePurchaseMembership(){
         try{
-            let token = Cookies.get("token");
-            let ver = await VerifyUser(token, "professional");
-            if(ver.status === "success" || ver.userType === "professional"){
-                console.log(ver);
-                let res = await purchaseMembership({professionalId : ver.userId});
-                console.log(res);
-                if(res.status !== 400 || res.data?.status === "success"){
+            let token  : any = Cookies.get("token");
+            let ver  : any = await VerifyUser(token, "professional");
+            if(ver?.status === "success" || ver?.userType === "professional"){
+                let res  : any = await purchaseMembership({professionalId : ver.userId});
+                if(res?.status !== 400 || res?.data?.status === "success"){
                     window.open(res?.data?.session?.url, "_blank");
                 }
                 else{
@@ -80,7 +78,7 @@ export default function MemberShipPage() {
             }
         }
         catch(e){
-            console.log(e);
+            generateSnackbar("Some error occurr, Please try again", "error");
         }
       }
     return (

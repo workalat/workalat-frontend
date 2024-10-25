@@ -12,9 +12,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ClientDetails({ open, onClose, job, applied }) {
-  const [showPhone, setShowPhone] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
-  let router = useRouter();
+  const [showPhone, setShowPhone] : any = useState(false);
+  const [showEmail, setShowEmail] : any = useState(false);
+  let router : any = useRouter();
 
   if (!job) {
     return null;

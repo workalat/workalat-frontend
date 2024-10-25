@@ -14,28 +14,28 @@ import VerifyUser from "@/app/middleware/VerifyUser";
 
 
 const GetProfessionalPhone = () => {
-    let [loading, setLoading]=  useState(true);
+    let [loading, setLoading] : any =  useState(true);
 
     // snackbar
-    const { generateSnackbar } = useSnackbar();
+    const { generateSnackbar }  : any  = useSnackbar();
     
     //Context 
-    let { verifyToken, userData, sendPhoneOtp, setTempUserData, tempUserData } = useUserContext();
+    let { verifyToken, userData, sendPhoneOtp, setTempUserData, tempUserData }  : any  = useUserContext();
     // router
-    const router = useRouter();
+    const router  : any  = useRouter();
 
-    const [value, setValue] = useState<string | undefined>();
+    const [value, setValue]  : any  = useState<string | undefined>();
 
     useEffect(()=>{
         async function getAllVerificationDone(){ 
             setLoading(true);
             try{
-                let token = Cookies.get("token");
-                let ver = await VerifyUser(token, "professional");
+                let token  : any  = Cookies.get("token");
+                let ver  : any  = await VerifyUser(token, "professional");
                 if(ver?.status === "success"){
-                    if(ver.userType === "professional" && ver.isRegistrationComplete !== true){
-                        if(ver.isPhoneVerify || ver.isPhoneVerify===true){
-                            if(ver.isRegistrationComplete === true){
+                    if(ver?.userType === "professional" && ver?.isRegistrationComplete !== true){
+                        if(ver?.isPhoneVerify || ver?.isPhoneVerify===true){
+                            if(ver?.isRegistrationComplete === true){
                                 router.push("/leads")
                             }
                             else{
@@ -47,7 +47,7 @@ const GetProfessionalPhone = () => {
                         }
                     }
                     else{
-                      if(ver.userType === "professional"){
+                      if(ver?.userType === "professional"){
                         router.push("/professional/dashboard")
                       }
                       else{
@@ -76,30 +76,20 @@ const GetProfessionalPhone = () => {
         try{
             e.preventDefault();
 
-        // phone validation
         if (!value) {
             return generateSnackbar("Enter valid phone number", "error");
         }
-
-        // TODO: Implement OTP send
-
-        // OTP send failed
-        // generateSnackbar("Failed to send OTP", "error")
-        let token = Cookies.get("token") || userData.token;
-        if(token || token.length>0) { 
-            console.log(Cookies.get("token"))
-            let verifyUser = await verifyToken(token, "professional",true );
-            console.log(verifyUser);
-
+        let token  : any  = Cookies.get("token") || userData.token;
+        if(token || token?.length>0) { 
+            let verifyUser  : any  = await verifyToken(token, "professional",true );
             if(verifyUser?.status !== 400 || verifyUser?.data?.status === "success"){
                 setTempUserData({...tempUserData, userPhone : value});
-                let res = await sendPhoneOtp({
+                let res  : any  = await sendPhoneOtp({
                     userId : verifyUser.data.userId,
                     userType    : verifyUser.data.userType,
                     phoneNo : value
                 });
-                console.log(res);
-                if(res.data.status === "success" && res.data.userStatus === "PENDING"){
+                if(res?.data?.status === "success" && res?.data?.userStatus === "PENDING"){
                     generateSnackbar("OTP sent, You'll shortly recieve a call on your Phone No.", "success");
                     router.push("/professional/onboard/phone/verify");
                 }
@@ -117,15 +107,9 @@ const GetProfessionalPhone = () => {
             router.push("/professional/login");
             return generateSnackbar("Please login again", "error")
         }
-
-        // OTP send success
-        // generateSnackbar("OTP sent", "success")
-
-        // navigate to OTP verification
-        // router.push("/professional/onboard/phone/verify");
         }
         catch(e){
-            console.log(e);
+            // console.log(e);
         }
     }
 

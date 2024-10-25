@@ -14,7 +14,7 @@ import { ReactNode, useState } from "react"
 import DOMPurify from 'dompurify';
 import { useRouter } from 'next/navigation';
 import moment from "moment"
-export default function Profile({data, isData}) {
+export default function Profile({data, isData}  : any ) {
     console.log(data);
     const sanitizedBio = DOMPurify.sanitize(data.professionalBio);
     let profile = 20;
@@ -88,14 +88,14 @@ export default function Profile({data, isData}) {
                                         <h4 className="text-sm sm:text-lg font-semibold flex gap-2 items-center capitalize">{data?.professionalFullName}
                                             <span className="text-sm font-thin lowercase flex gap-1 items-center">
                                                 {
-                                                    (data.isprofessionalEmailVerify && data.isprofessionalPhoneNoVerify)
+                                                    (data?.isprofessionalEmailVerify && data?.isprofessionalPhoneNoVerify)
                                                     ?
                                                     <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
                                                     :
                                                     ""
                                                 }
                                                  {
-                                                    (data.kycStatus === "appproved")
+                                                    (data?.kycStatus === "appproved")
                                                     ?
                                                     <GiCheckedShield className="size-[12px] text-[#F76C10]" />
                                                     :
@@ -106,21 +106,21 @@ export default function Profile({data, isData}) {
                                         <div className="flex gap-2">
                                             <div className="flex gap-1 items-center"> 
                                                
-                                                <Rating precision={0.1} value={(data.totalRatings / data.totalReviews )} readOnly />
-                                                    {/* {console.log(data.totalReviews , data.totalRatings)} */}
+                                                <Rating precision={0.1} value={(data?.totalRatings / data?.totalReviews )} readOnly />
+                                                    {/* {console.log(data?.totalReviews , data?.totalRatings)} */}
                                                 <p className="text-xs">{  data?.totalReviews>0 ? Number((data?.totalRatings / data?.totalReviews )).toFixed(1) : 0}</p>
                                             </div>
                                             <div className="sm:flex gap-1 items-center hidden">
                                                 <IoMdChatboxes className="size-4 text-[#EA740E]" />
-                                                <p className="text-xs">{data.totalProjectsCompleted}</p>
+                                                <p className="text-xs">{data?.totalProjectsCompleted}</p>
                                             </div>
                                             <div className="flex gap-2 flex-col sm:flex-row items-center">
-                                                <p className="text-xs">Level {data.professional_level}</p>
+                                                <p className="text-xs">Level {data?.professional_level}</p>
                                                 <div className="flex space-x-2">
                                                     {[...Array(5)].map((_, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`w-[5px] h-[5px] sm:w-[8px] sm:h-[8px] rounded-sm border border-black rotate-45 overflow-hidden ${index < parseInt(data.professional_level) ? 'bg-black' : 'bg-transparent'} transition-colors duration-300 ease-in-out`}
+                                                            className={`w-[5px] h-[5px] sm:w-[8px] sm:h-[8px] rounded-sm border border-black rotate-45 overflow-hidden ${index < parseInt(data?.professional_level) ? 'bg-black' : 'bg-transparent'} transition-colors duration-300 ease-in-out`}
                                                         >
                                                         </div>
                                                     ))}
@@ -134,7 +134,7 @@ export default function Profile({data, isData}) {
                                                 {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
 
                                                 {data?.professionalCountry}</p>
-                                            <p className="text-xs capitalize ps-4">joined on {moment(data.accountCreationDate).format('MMMM D, YYYY')}</p>
+                                            <p className="text-xs capitalize ps-4">joined on {moment(data?.accountCreationDate).format('MMMM D, YYYY')}</p>
                                         </div>
                                     </div>
 
@@ -190,20 +190,20 @@ export default function Profile({data, isData}) {
                         <div className="w-full">
                             <h4 className="font-semibold pb-3 pt-2">Verifications</h4>
                             <Box className="flex gap-4">
-                                {data.kycStatus && (
+                                {data?.kycStatus && (
                                     <VerifiedCell
-                                        isVerified={(data.kycStatus === "approved") ? true : false}
+                                        isVerified={(data?.kycStatus === "approved") ? true : false}
                                         Icon={
-                                            <PersonOutlineOutlinedIcon className={(data.kycStatus === "approved") ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />
+                                            <PersonOutlineOutlinedIcon className={(data?.kycStatus === "approved") ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />
                                         }
                                         name="identity"
                                     />
                                 )}
                                 {true && (
                                     <VerifiedCell
-                                        isVerified={data.isprofessionalPhoneNoVerify}
+                                        isVerified={data?.isprofessionalPhoneNoVerify}
                                         Icon={
-                                            <LocalPhoneOutlinedIcon className={(data.isprofessionalPhoneNoVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}   />
+                                            <LocalPhoneOutlinedIcon className={(data?.isprofessionalPhoneNoVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}   />
                                         }
                                         name="phone"
                                     />
@@ -211,7 +211,7 @@ export default function Profile({data, isData}) {
                                 {true && (
                                     <VerifiedCell
                                         isVerified={data?.isprofessionalEmailVerify}
-                                        Icon={<EmailOutlinedIcon className={(data.isprofessionalEmailVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />}
+                                        Icon={<EmailOutlinedIcon className={(data?.isprofessionalEmailVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />}
                                         name="email"
                                     />
                                 )}
@@ -219,7 +219,7 @@ export default function Profile({data, isData}) {
                                     <VerifiedCell
                                         isVerified={data?.isPaymentVerify}
                                         Icon={
-                                            <CreditCardOutlinedIcon className={(data.isPaymentVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}/>
+                                            <CreditCardOutlinedIcon className={(data?.isPaymentVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"}/>
                                         }
                                         name="payment"
                                     />
