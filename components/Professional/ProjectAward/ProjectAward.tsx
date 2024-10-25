@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import DOMPurify from 'dompurify';
 import VerifyUser from "@/app/middleware/VerifyUser";
 import moment from "moment";
+import { Typography } from "@mui/material";
 
 export default function ProjectAward() {
   const [loading2, setLoading2] = useState(true);

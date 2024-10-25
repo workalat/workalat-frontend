@@ -229,7 +229,7 @@ const AuthNavbar = () => {
           className="cursor-pointer ml-6 flex gap-2 text-white items-center"
           onClick={() => setOpenDropdown(!openDropdown)}
         >
-          <img src={userData?.userPicture} className="w-8 h-8 rounded-[100%]" />
+          <img src={userData?.userPicture} className="w-8 h-8 rounded-[100%]" alt=""/>
           <span className="text-sm sm:text-base">
             <span className="capitalize">{userData.userName}</span>
             {/* <span className="hidden sm:inline">Maika</span> */}
@@ -360,7 +360,7 @@ const AuthNavbar = () => {
     <Modal open={loading}>
             <Box className="w-full h-full flex justify-center items-center">
               <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
-                <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                <img src="/images/loader.gif" alt="Loading..." className="w-60"  />
                 <h1 className="text-center font-bold text-xl ml-2">{loadingMessage}</h1>
               </Box>
             </Box>
