@@ -30,104 +30,104 @@ interface UserContextType {
   user: User | null;
   setUser: (user: User) => void;
   projectData : Object | null;
-  setProjectData : (projectData : Object) => void;
+  setProjectData : (projectData : any) => void;
   tempUserData :  String | null;
-  setTempUserData :(userData : object) => void;
-  verifyToken : (data : object) => object;
-  findAllServices : () => Array<String>;
+  setTempUserData :(userData : any) => void;
+  verifyToken : (token :any ,userType : any, auth) => any;
+  findAllServices : () => any;
   signupProfessional : SignupProfessional;
   setSignupProfessional : (signupProfessional : SignupProfessional) => void;
-  professionalSignupFunction : (data : SignupProfessional) => object;
-  verifyOtp : (data : object) => object;
-  signinProfessional : (data : object) => object;
-  sendPhoneOtp(data  : object) : object;
-  sendEmailOtp : (data : object) => object;
-  verifyPhoneOtp : (data : object) => object; 
-  addProfessionalDetails :  (data : object) => object; 
-  addLeadsToProfessioal : (data : object) => object; 
-  continueWithGoogleProfessional : (data : object) => object;
-  forgotPassword : (data : object) => object;
-  changeForgotPassword : (data : object) => object;
-  logout : (data : object) => object;
+  professionalSignupFunction : (data : SignupProfessional) => any;
+  verifyOtp : (data : any) => any;
+  signinProfessional : (data : any) => any;
+  sendPhoneOtp(data  : any) : any;
+  sendEmailOtp : (data : any) => any;
+  verifyPhoneOtp : (userId : any, userType : any, otp : any) => any; 
+  addProfessionalDetails :  (data : any) => any; 
+  addLeadsToProfessioal : (data : any) => any; 
+  continueWithGoogleProfessional : (data  : any, userType :   any) => any;
+  forgotPassword : (data : any) => any;
+  changeForgotPassword : (data : any) => any;
+  logout : (data : any) => any;
 
   //PRofessional
-  intoClient : (data : object) => object;
-  professionalDetails : (data : object) => object;
-  professionalDetailsP1 : (data : object) => object;
-  addProfessionalDetailsP1 : (data : object) => object;
-  professionalDetailsP2 : (data : object) => object;
-  addProfessionalDetailsP2  : (data : object) => object;
-  changeEmail : (data : object) => object;
-  purchaseMembership : (data : object) => object;
-  confirmMembership : (data : object) => object;
-  getMembershipData : (data : object) => object;
-  requestCancelMembershipData : (data : object) => object;
-  walletTransactionData : (data : object) => object;
-  pasAsGo : (data : object) => object;
-  buyPoints : (data : object) => object;
-  confirmWalletPurchase : (data : object) => object;
-  showLeads : (data : object) => object;
-  showSingleLead : (data : object) => object;
-  filterLead : (data : object) => object;
-  checkBid : (data : object) => object;
-  applyJob : (data : object) => object;
-  payAsGoSession : (data : object) => object;
-  payAsGoSessionData : (data : object) => object
+  intoClient : (data : any) => any;
+  professionalDetails : (data : any) => any;
+  professionalDetailsP1 : (data : any) => any;
+  addProfessionalDetailsP1 : (data : any) => any;
+  professionalDetailsP2 : (data : any) => any;
+  addProfessionalDetailsP2  : (data : any) => any;
+  changeEmail : (data : any) => any;
+  purchaseMembership : (data : any) => any;
+  confirmMembership : (data : any) => any;
+  getMembershipData : (data : any) => any;
+  requestCancelMembershipData : (data : any) => any;
+  walletTransactionData : (data : any) => any;
+  pasAsGo : (data : any) => any;
+  buyPoints : (data : any) => any;
+  confirmWalletPurchase : (data : any) => any;
+  showLeads : (data : any) => any;
+  showSingleLead : (data : any) => any;
+  filterLead : (data : any) => any;
+  checkBid : (data : any) => any;
+  applyJob : (data : any) => any;
+  payAsGoSession : (data : any) => any;
+  payAsGoSessionData : (data : any) => any
   
 
 
   //GENERAL
-  changePicture : (data : object) => object;
-  lastDatesDetails : (data : object) => object;
-  changePassword : (data : object) => object;
-  changeTwoFact : (data : object) => object;
-  kycDetailsUpload : (data : object) => object;
-  kycDocumentDetailsUpload : (data : object) => object;
-  getChatPage : (data : object) => object;
-  getNotificationPage : (data : object) => object;
-  setMark : (data : object) => object;
-  setChat : (data : object) => object;
-  setRequest : (data : object) => object;
-  setReminder : (data : object) => object;
-  setChatNotification : (data : object) => object;
-  dashboardData : (data : object) => object;
-  findServiceCategory : (data : object) => object;
-  findAllTickets : (data : object) => object;
-  createTicket : (data : object) => object;
-  findSingleTicket : (data : object) => object;
-  respondTicket : (data : object) => object;
-  getPointsBudget : (data : object) => object;
-  generateInvoice : (data : object) => object;
-  walletPointsData : (data : object) => object;
-  phoneVerifyPage : (data : object) => object;
-  userChatDetilas : (data : object) => object;
+  changePicture : (data : any) => any;
+  lastDatesDetails : (data : any) => any;
+  changePassword : (data : any) => any;
+  changeTwoFact : (data : any) => any;
+  kycDetailsUpload : (data : any) => any;
+  kycDocumentDetailsUpload : (data : any) => any;
+  getChatPage : (data : any) => any;
+  getNotificationPage : (data : any) => any;
+  setMark : (data : any) => any;
+  setChat : (data : any) => any;
+  setRequest : (data : any) => any;
+  setReminder : (data : any) => any;
+  setChatNotification : (data : any) => any;
+  dashboardData : (data : any) => any;
+  findServiceCategory : (data : any) => any;
+  findAllTickets : (data : any) => any;
+  createTicket : (data : any) => any;
+  findSingleTicket : (data : any) => any;
+  respondTicket : (data : any) => any;
+  getPointsBudget : (data : any) => any;
+  generateInvoice : (data : any) => any;
+  walletPointsData : (data : any) => any;
+  phoneVerifyPage : (data : any) => any;
+  userChatDetilas : (data : any) => any;
 
   
 
   //Client Context
-  clientSignup : (data : object) => object;
-  clientDetailsAdd : (data : object) => object;
-  getClientsData : (data : object) => object;
-  addClientsData : (data : object) => object;
-  clientDetails : (data : object) => object;
-  getPhoneNo : (data : object) => object;
-  intoProfessoinal  : (data : object) => object;
-  searchJobQuestions : (data : object) => object;
-  postProject : (data : object) => object;
+  clientSignup : (data : any) => any;
+  clientDetailsAdd : (data : any) => any;
+  getClientsData : (data : any) => any;
+  addClientsData : (data : any) => any;
+  clientDetails : (data : any) => any;
+  getPhoneNo : (data : any) => any;
+  intoProfessoinal  : (data : any) => any;
+  searchJobQuestions : (data : any) => any;
+  postProject : (data : any) => any;
 
   // Files
-  allActiveProjectsClient :  (data : object) => object;
-  allActiveProjectsProfessoinal : (data : object) => object
-  markAsAwardedClient : (data : object) => object;
-  singleProjectDetails : (data : object) => object;
-  awardProject : (data : object) => object;
-  addProjectTasks : (data : object) => object;
-  markAsCompleted : (data : object) => object;
-  clientGivingReview : (data : object) => object;
-  professionalGivingReview : (data : object) => object;
-  clientCancelProject : (data : object) => object;
-  professionlalAwardedChoice : (data : object) => object;
-  AllProjectHistory : (data : object) => object;
+  allActiveProjectsClient :  (data : any) => any;
+  allActiveProjectsProfessoinal : (data : any) => any
+  markAsAwardedClient : (data : any) => any;
+  singleProjectDetails : (data : any) => any;
+  awardProject : (data : any) => any;
+  addProjectTasks : (data : any) => any;
+  markAsCompleted : (data : any) => any;
+  clientGivingReview : (data : any) => any;
+  professionalGivingReview : (data : any) => any;
+  clientCancelProject : (data : any) => any;
+  professionlalAwardedChoice : (data : any) => any;
+  AllProjectHistory : (data : any) => any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -139,10 +139,10 @@ function getUserFromLocalStorage(): User | null {
 }
 
 function useUser() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser]  : any  = useState<User | null>(null);
 
   useEffect(() => {
-    const storedUser = getUserFromLocalStorage();
+    const storedUser  : any  = getUserFromLocalStorage();
     
     setUser(storedUser);
   }, []);
@@ -158,7 +158,7 @@ function useUser() {
 
 function useUserContext() {
     
-  const context = useContext(UserContext);
+  const context  = useContext(UserContext);
   
   if (!context) {
     throw new Error('useUserContext must be used within a UserProvider');
@@ -172,9 +172,9 @@ function useUserContext() {
 
 // User provider component
 const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, setUser } = useUser();
+  const { user, setUser }  : any  = useUser();
 
-  let[userData, setUserData] = useState({
+  let[userData, setUserData] : any = useState({
     token : Cookies.get("token") || "",
     userId :  Cookies.get("userId") || "",
     userName : Cookies.get("userName")  || "",
@@ -183,16 +183,16 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     userType : Cookies.get("userType")  ||  "",
     
   })
-  let [userId, setUserId] = useState(Cookies.get('userId') || "" );
-  let [uType, setUType] = useState(Cookies.get('uType') || "" );
-  let [payPayment,setPayPayment] = useState("unpaid");
+  let [userId, setUserId]  : any  = useState(Cookies.get('userId') || "" );
+  let [uType, setUType]  : any  = useState(Cookies.get('uType') || "" );
+  let [payPayment,setPayPayment]  : any  = useState("unpaid");
 
   useEffect(()=>{
     setPayPayment(payPayment);
   },[payPayment])
 
 
-  let[tempUserData, setTempUserData] = useState({
+  let[tempUserData, setTempUserData]  : any  = useState({
     userId : Cookies.get("userId") || "" ,
     userEmail :Cookies.get("userEmail") || "" ,
     userPhone :  Cookies.get("userPhone") || "",
@@ -211,7 +211,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   });
  
 
-  let [projectData, setProjectData]= useState({
+  let [projectData, setProjectData]  : any  = useState({
     userId : "",
     serviceCategory : "",
     serviceNeeded : "",
@@ -232,15 +232,13 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 
 
-  async function verifyToken(token :string ,userType : string, auth ){
+  async function verifyToken(token :any ,userType : any, auth ){
     try{  
-      console.log(token, userType, auth);
-      const verifyToken = await axios.post('/verify', {
+      const verifyToken  : any    = await axios.post('/verify', {
         type : userType,
         token : token,
         auth
       });
-      // console.log(verifyToken);
       return(verifyToken);
       
     }
@@ -251,7 +249,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 async function findAllServices(){
   try{  
-    const allServices = await axios.get('/getAllService');
+    const allServices  : any  = await axios.get('/getAllService');
     // console.log(allServices);
     return(allServices);
     
@@ -262,7 +260,7 @@ async function findAllServices(){
 }
 
 
-  let [signupProfessional, setSignupProfessional] = useState({
+  let [signupProfessional, setSignupProfessional]  : any  = useState({
       fullName : "",
       email : "",
       password : "",
@@ -272,10 +270,10 @@ async function findAllServices(){
   })
  
 
-  async function professionalSignupFunction(userData : SignupProfessional){
+  async function professionalSignupFunction(userData :  any ){
         try{
           // console.log(userData);
-          const response = await axios.post('/signupEmail', {
+          const response  : any  = await axios.post('/signupEmail', {
             clientId : "",
             name : userData.fullName,
             email : userData.email,
@@ -294,16 +292,15 @@ async function findAllServices(){
         }
   };
 
-  async function verifyOtp({otp, userId, userType, type : type = "auth"})  {
+  async function verifyOtp({otp, userId, userType, type : type = "auth"}  : any )  {
     try{
       // console.log(otp, userId, userType);
-      const response = await axios.post('/verify-emailOtp', {
+      const response  : any  = await axios.post('/verify-emailOtp', {
         userId : userId,
         otp : otp,
         userType : userType,
         type : type
       });
-      // console.log(response);
 
       return(response)
     }
@@ -313,7 +310,7 @@ async function findAllServices(){
 };
 
 
-async function signinProfessional({email, password, userType}){
+async function signinProfessional({email, password, userType} : any ){
   try{
     if(userType === "professional"){
       const response  : any = await axios.post('/signinEmail', {
@@ -323,7 +320,7 @@ async function signinProfessional({email, password, userType}){
       });
   
       if(response.data.userStatus === 'success' || response.data.userStatus === 'SUCCESS'){
-        const verifyToken = await axios.post('/verify', {
+        const verifyToken  : any  = await axios.post('/verify', {
           type : "professional",
           token : response.data?.token,
           auth : true
@@ -357,46 +354,45 @@ async function signinProfessional({email, password, userType}){
       }   
     }
     else{
-      const response = await axios.post('/signinEmail', {
+      const response  : any  = await axios.post('/signinEmail', {
         email : email,
         pass : password,
         userType : userType
       });
   
-      // console.log("Response", response);
-  
-      if(response.data.userStatus === 'success' || response.data.userStatus === 'SUCCESS'){
+
+      if(response?.data.userStatus === 'success' || response?.data.userStatus === 'SUCCESS'){
         const verifyToken = await axios.post('/verify', {
           type : "client",
-          token : response.data?.token,
+          token : response?.data?.token,
           auth : true
         });
         // console.log("Token", verifyToken)
         setUserData({
-          token : response.data?.token,
-          userId : verifyToken.data?.userId,
-          userName : verifyToken.data?.data[0]?.fullName,
-          userPicture : verifyToken.data?.data[0]?.pictureLink,
-          userType : verifyToken.data?.userType,
-          userRegisterAs : verifyToken.data?.data[0]?.registerAs,
+          token : response?.data?.token,
+          userId : verifyToken?.data?.userId,
+          userName : verifyToken?.data?.data[0]?.fullName,
+          userPicture : verifyToken?.data?.data[0]?.pictureLink,
+          userType : verifyToken?.data?.userType,
+          userRegisterAs : verifyToken?.data?.data[0]?.registerAs,
         })
     
         // console.log( verifyToken.data?.userType);
-        Cookies.set("token", response.data?.token, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("token", response?.data?.token, { secure: true, sameSite: 'None',expires: 30 });
         Cookies.set("userType", verifyToken.data?.userType,  { secure: true, sameSite: 'None',expires: 30 });
         return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
       }
-      else if(response.data.userStatus === 'PENDING'){
+      else if(response?.data.userStatus === 'PENDING'){
         setUserData({
           ...userData,
-          userId : response.data?.data[0]?.userId,
-          userType : response.data?.data[0]?.userType,
+          userId : response?.data?.data[0]?.userId,
+          userType : response?.data?.data[0]?.userType,
         });
-        setTempUserData({...tempUserData, "userEmail" :response.data?.data[0]?.email});
-        setUserId(response.data?.data[0]?.userId);
-        Cookies.set("userType",response.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userId", response.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
-        // Cookies.set("userType", response.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
+        setTempUserData({...tempUserData, "userEmail" :response?.data?.data[0]?.email});
+        setUserId(response?.data?.data[0]?.userId);
+        Cookies.set("userType",response?.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
+        Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
+        // Cookies.set("userType", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         return({response : response , isTwoFactAuth : true});
       } 
 
@@ -408,7 +404,7 @@ async function signinProfessional({email, password, userType}){
   }
 }
 
-  async function sendPhoneOtp({userId, userType, phoneNo}){
+  async function sendPhoneOtp({userId, userType, phoneNo}  : any ){
     // console.log(userId, userType, phoneNo)
     try{
       const response  : any = await axios.post('/sendPhoneOtp', {
@@ -422,7 +418,7 @@ async function signinProfessional({email, password, userType}){
       return(e);
     }
   };
-  async function sendEmailOtp({userId, userType, email}){
+  async function sendEmailOtp({userId, userType, email}  : any ){
     try{
       const response  : any = await axios.post('/sendEmailOtp', {
         userId : userId,
@@ -437,10 +433,9 @@ async function signinProfessional({email, password, userType}){
     }
   };
 
-  async function verifyPhoneOtp(userId, userType, otp){
-      console.log(userId, userType, otp);
+  async function verifyPhoneOtp(userId : any, userType : any, otp : any){
       try{
-        const response = await axios.post('/verify-phoneOtp', {
+        const response  : any  = await axios.post('/verify-phoneOtp', {
           userId : userId,
           otp : otp,
           userType : userType
@@ -454,12 +449,12 @@ async function signinProfessional({email, password, userType}){
         }
   };
 
-  async function addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes}){
+  async function addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes}  : any ){
     // console.log("REached");
     // console.log(name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes);
     console.log(userId)
     try{
-      const response = await axios.post('/addDetailsProfessionals', {
+      const response : any = await axios.post('/addDetailsProfessionals', {
         userId : userId,
         name,
         companyName,
@@ -469,7 +464,6 @@ async function signinProfessional({email, password, userType}){
         skills,
         postCode : selectedPostcodes
         });
-        console.log(response);  
         return(response)
       }
       catch(e){
@@ -477,14 +471,13 @@ async function signinProfessional({email, password, userType}){
       }
 };
 
-async function addLeadsToProfessioal({userId, services}){
+async function addLeadsToProfessioal({userId, services}  : any ){
   // console.log(userId, services);
   try{
     const response = await axios.post('/addProfessionalServices', {
       userId : userId,
       services
       });
-      // console.log(response);  
       return(response)
     }
     catch(e){
@@ -509,8 +502,7 @@ async function continueWithGoogleProfessional(data  : any, userType :   any) {
           verify : data.email_verified,
           professionalService : tempUserData.userPrimaryService || Cookies.get("userPrimaryService")
         }
-        const response = await axios.post('/signinGoogle', d);
-          console.log(response);  
+        const response  : any  = await axios.post('/signinGoogle', d);
           return(response)
         }
         else{
@@ -525,8 +517,7 @@ async function continueWithGoogleProfessional(data  : any, userType :   any) {
             verify : data.email_verified,
             professionalService : ""
           }
-          const response = await axios.post('/signinGoogle', d);
-            console.log(response);  
+          const response  : any  = await axios.post('/signinGoogle', d);
             return(response)
         }
       }
@@ -539,17 +530,16 @@ async function continueWithGoogleProfessional(data  : any, userType :   any) {
 
 
 ///////////////////////////////CLIENTS CONTEXT////////////////////////////, 
-async function clientSignup({phoneNo, country, countryCode}){
+async function clientSignup({phoneNo, country, countryCode}  : any ){
   // console.log(phoneNo);
   // console.log(country);
   // console.log(countryCode);
   try{
-    const response = await axios.post('/signup-phone', {
+    const response  : any  = await axios.post('/signup-phone', {
       phoneNo,
       country,
       countryCode
       });
-      console.log(response);  
       return(response)
     }
     catch(e){
@@ -558,11 +548,11 @@ async function clientSignup({phoneNo, country, countryCode}){
 };
 
 
-async function clientDetailsAdd({clientId, email, name, pass, confirmPass, userType}){
+async function clientDetailsAdd({clientId, email, name, pass, confirmPass, userType}  : any ){
   // console.log(clientId, email, name, pass, confirmPass, userType)
   
   try{
-    const response = await axios.post('/signupEmail', {
+    const response  : any  = await axios.post('/signupEmail', {
       clientId: clientId,
       email: email,
       name: name,
@@ -580,10 +570,10 @@ async function clientDetailsAdd({clientId, email, name, pass, confirmPass, userT
 };
 
 
-async function forgotPassword({email, userType}){
+async function forgotPassword({email, userType} : any ){
     // console.log(email, userType);
     try{
-      const response = await axios.post('/forgetPasswordLoginEmail', {
+      const response  : any  = await axios.post('/forgetPasswordLoginEmail', {
         userEmail : email,
         userType
         });
@@ -596,10 +586,10 @@ async function forgotPassword({email, userType}){
     }
 }
 
-async function changeForgotPassword({userId, password}){
+async function changeForgotPassword({userId, password}  : any ){
   // console.log(email, userType);
   try{
-    const response = await axios.post('/changePasswordLogin', {
+    const response  : any  = await axios.post('/changePasswordLogin', {
       userId : userId,
       newPassword : password
       });
@@ -613,10 +603,10 @@ async function changeForgotPassword({userId, password}){
 
 }
 
-async function getClientsData({userId}){
+async function getClientsData({userId}  : any ){
   // console.log(userId);
   try{
-    const response = await axios.post('/getPersonalClientInfo', {
+    const response  : any  = await axios.post('/getPersonalClientInfo', {
       userId : userId,
       });
       // console.log(response);
@@ -629,9 +619,9 @@ async function getClientsData({userId}){
 
 }
 
-async function clientDetails({ userId}){
+async function clientDetails({ userId}  : any ){
   try{
-    const response = await axios.post('/clientDetails', {
+    const response  : any  = await axios.post('/clientDetails', {
       clientId : userId,
       });
       // console.log(response);
@@ -643,9 +633,9 @@ async function clientDetails({ userId}){
   }
 }
 
-async function addClientsData({userId, name, bio}){
+async function addClientsData({userId, name, bio}  : any ){
   try{
-    const response = await axios.post('/addPersonalClientInfo', {
+    const response  : any  = await axios.post('/addPersonalClientInfo', {
       userId : userId,
       name,
       bio
@@ -658,9 +648,9 @@ async function addClientsData({userId, name, bio}){
     return(e);
   }
 }
-async function changePicture({userId, name, bio}){
+async function changePicture({userId, name, bio}  : any ){
   try{
-    const response = await axios.post('/addPersonalClientInfo', {
+    const response  : any  = await axios.post('/addPersonalClientInfo', {
       userId : userId,
       name,
       bio
@@ -674,9 +664,9 @@ async function changePicture({userId, name, bio}){
   }
 }
 
-async function lastDatesDetails({userId, userType}){
+async function lastDatesDetails({userId, userType}  : any ){
   try{
-    const response = await axios.post('/lastChangeDetails', {
+    const response  : any  = await axios.post('/lastChangeDetails', {
       userId : userId,
       userType
       });
@@ -689,9 +679,9 @@ async function lastDatesDetails({userId, userType}){
   }
 }
 
-async function changePassword({userId, userType, oldPassword, newPassword}){
+async function changePassword({userId, userType, oldPassword, newPassword}  : any ){
   try{
-    const response = await axios.post('/changePassword', {
+    const response  : any  = await axios.post('/changePassword', {
       userId : userId,
       userType,
       oldPassword,
@@ -705,9 +695,9 @@ async function changePassword({userId, userType, oldPassword, newPassword}){
     return(e);
   }
 }
-async function changeTwoFact({userId, userType, current_value}){
+async function changeTwoFact({userId, userType, current_value}  : any ){
   try{
-    const response = await axios.post('/twoFactSwitch', {
+    const response  : any  = await axios.post('/twoFactSwitch', {
       userId : userId,
       userType,
       current_value
@@ -721,9 +711,9 @@ async function changeTwoFact({userId, userType, current_value}){
   }
 }
 
-async function getPhoneNo({userId, userType}){
+async function getPhoneNo({userId, userType}  : any ){
   try{
-    const response = await axios.post('/getUserPhone', {
+    const response  : any  = await axios.post('/getUserPhone', {
       userId : userId,
       userType,
       });
@@ -736,10 +726,10 @@ async function getPhoneNo({userId, userType}){
   }
 }
 
-async function kycDetailsUpload({data, userId, userType}){
+async function kycDetailsUpload({data, userId, userType}  : any ){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/kycDetails', {
+    const response  : any  = await axios.post('/kycDetails', {
       userId : userId,
       userType,
       firstName : data.firstName,
@@ -759,11 +749,9 @@ async function kycDetailsUpload({data, userId, userType}){
   }
 }
 
-async function kycDocumentDetailsUpload(formData){
-  console.log(formData);
+async function kycDocumentDetailsUpload(formData  : any ){
   try{
-    const response = await axios.post('/kycDocuments', formData);
-      console.log(response);
+    const response  : any  = await axios.post('/kycDocuments', formData);
       return(response);
   }
   catch(e){
@@ -773,14 +761,13 @@ async function kycDocumentDetailsUpload(formData){
 }
 
 
-async function phoneVerifyPage({userId, userType, phoneNo}){
+async function phoneVerifyPage({userId, userType, phoneNo}  : any ){
   try{
-    const response = await axios.post('/phoneVerifyPage', {
+    const response  : any  = await axios.post('/phoneVerifyPage', {
       userId,
       userType,
       phoneNo
     });
-      console.log(response);
       return(response);
   }
   catch(e){
@@ -790,10 +777,10 @@ async function phoneVerifyPage({userId, userType, phoneNo}){
 }
 
 
-async function getChatPage({ userId, userType}){
+async function getChatPage({ userId, userType} : any ){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/getChatPage', {
+    const response  : any  = await axios.post('/getChatPage', {
       userId : userId,
       userType,
 
@@ -806,26 +793,10 @@ async function getChatPage({ userId, userType}){
     return(e);
   }
 }
-async function setMark({ userId, userType,current_value}){
+async function setMark({ userId, userType,current_value} : any ){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/markAsUnavailable', {
-      userId : userId,
-      userType,
-      current_value
-      });
-      // console.log(response);
-      return(response);
-  }
-  catch(e){
-    // console.log(e);
-    return(e);
-  }
-}
-async function setChat({ userId, userType,current_value}){
-  // console.log(data,userId, userType);
-  try{
-    const response = await axios.post('/activeChat', {
+    const response  : any  = await axios.post('/markAsUnavailable', {
       userId : userId,
       userType,
       current_value
@@ -838,10 +809,26 @@ async function setChat({ userId, userType,current_value}){
     return(e);
   }
 }
-async function setRequest({ userId, userType,current_value}){
+async function setChat({ userId, userType,current_value}  : any ){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/changeRequest', {
+    const response  : any  = await axios.post('/activeChat', {
+      userId : userId,
+      userType,
+      current_value
+      });
+      // console.log(response);
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+async function setRequest({ userId, userType,current_value}  : any ){
+  // console.log(data,userId, userType);
+  try{
+    const response  : any  = await axios.post('/changeRequest', {
       userId : userId,
       userType,
       current_value
@@ -857,7 +844,7 @@ async function setRequest({ userId, userType,current_value}){
 async function setReminder({ userId, userType,current_value}){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/reminderToReply', {
+    const response  : any  = await axios.post('/reminderToReply', {
       userId : userId,
       userType,
       current_value
@@ -873,7 +860,7 @@ async function setReminder({ userId, userType,current_value}){
 async function setChatNotification({ userId, userType,current_value}){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/chatNotifications', {
+    const response  : any  = await axios.post('/chatNotifications', {
       userId : userId,
       userType,
       current_value
@@ -891,7 +878,7 @@ async function setChatNotification({ userId, userType,current_value}){
 async function getNotificationPage({ userId, userType}){
   // console.log(data,userId, userType);
   try{
-    const response = await axios.post('/getNotificationPage', {
+    const response  : any  = await axios.post('/getNotificationPage', {
       userId : userId,
       userType,
       });
@@ -906,7 +893,7 @@ async function getNotificationPage({ userId, userType}){
 
 async function intoProfessoinal({ userId}){
   try{
-    const response = await axios.post('/clientSwitchToProfessional', {
+    const response  : any  = await axios.post('/clientSwitchToProfessional', {
       clientId : userId,
       });
       // console.log(response);
@@ -921,7 +908,7 @@ async function intoProfessoinal({ userId}){
 
 async function intoClient({ userId}){
   try{
-    const response = await axios.post('/professionalSwitchToClient', {
+    const response  : any  = await axios.post('/professionalSwitchToClient', {
       professionalId : userId,
       });
       // console.log(response);
@@ -936,7 +923,7 @@ async function intoClient({ userId}){
 
 async function dashboardData({ userId, userType}){
   try{
-    const response = await axios.post('/dashboardData', {
+    const response  : any  = await axios.post('/dashboardData', {
       userId : userId,
       userType : userType,
       });
@@ -953,7 +940,7 @@ async function dashboardData({ userId, userType}){
 
 async function professionalDetails({ userId}){
   try{
-    const response = await axios.post('/professionalDetails', {
+    const response  : any  = await axios.post('/professionalDetails', {
       professionalId : userId,
       });
       // console.log(response);
@@ -967,7 +954,7 @@ async function professionalDetails({ userId}){
 
 async function professionalDetailsP1({ userId}){
   try{
-    const response = await axios.post('/getPersonalInfoProfP1', {
+    const response  : any  = await axios.post('/getPersonalInfoProfP1', {
       userId : userId,
       });
       // console.log(response);
@@ -981,7 +968,7 @@ async function professionalDetailsP1({ userId}){
 
 async function professionalDetailsP2({ userId}){
   try{
-    const response = await axios.post('/getPersonalInfoProfP2', {
+    const response  : any  = await axios.post('/getPersonalInfoProfP2', {
       userId : userId,
       });
       // console.log(response);
@@ -995,7 +982,7 @@ async function professionalDetailsP2({ userId}){
 
 async function addProfessionalDetailsP1({ userId, name}){
   try{
-    const response = await axios.post('/addPersonalnfoProfP1', {
+    const response  : any  = await axios.post('/addPersonalnfoProfP1', {
       userId : userId,
       name : name
       });
@@ -1010,7 +997,7 @@ async function addProfessionalDetailsP1({ userId, name}){
 
 async function addProfessionalDetailsP2({ userId, companyName,companyTitle,postalCode  ,primaryService,services,bio,companyWebsite,address}){
   try{
-    const response = await axios.post('/addPersonalInfoProfP2', {
+    const response  : any  = await axios.post('/addPersonalInfoProfP2', {
       userId : userId,
       companyName : companyName,
       companyTitle : companyTitle,
@@ -1032,7 +1019,7 @@ async function addProfessionalDetailsP2({ userId, companyName,companyTitle,posta
 
 async function changeEmail({ userId , email,newEmail, userType}){
   try{
-    const response = await axios.post('/changeEmail', {
+    const response  : any  = await axios.post('/changeEmail', {
       userId : userId,
       email,
       newEmail,
@@ -1050,7 +1037,7 @@ async function changeEmail({ userId , email,newEmail, userType}){
 
 async function findServiceCategory({ serviceName}){
   try{
-    const response = await axios.post('/findServiceCategory', {
+    const response  : any  = await axios.post('/findServiceCategory', {
       serviceName
       });
       // console.log(response);
@@ -1065,7 +1052,7 @@ async function findServiceCategory({ serviceName}){
 
 async function findAllTickets({ userId , userType}){
   try{
-    const response = await axios.post('/findAllTickets', {
+    const response  : any  = await axios.post('/findAllTickets', {
         userId,
         userType
       });
@@ -1079,7 +1066,7 @@ async function findAllTickets({ userId , userType}){
 
 async function findSingleTicket({ ticketId ,}){
   try{
-    const response = await axios.post('/findSingleTicket', {
+    const response  : any  = await axios.post('/findSingleTicket', {
       ticketId
       });
       // console.log(response);
@@ -1092,7 +1079,7 @@ async function findSingleTicket({ ticketId ,}){
 
 async function createTicket({ department, subject, relatedProject, relatedProjectId, createdBy, creatorName ,creatorId, ticketStatus, message}){
   try{
-    const response = await axios.post('/createTicket', {
+    const response  : any  = await axios.post('/createTicket', {
       ticketDepartment : department,
       ticketSubject : subject,
       ticketRelatedProject : relatedProject,
@@ -1114,7 +1101,7 @@ async function createTicket({ department, subject, relatedProject, relatedProjec
 async function respondTicket({ ticketId, userId,userType, ticketStatus, userMessage}){
   try{
     console.log(ticketId, userId,userType, ticketStatus, userMessage);
-    const response = await axios.post('/respondTicket', {
+    const response  : any  = await axios.post('/respondTicket', {
       ticketId,
       userId,
       userType,
@@ -1133,7 +1120,7 @@ async function respondTicket({ ticketId, userId,userType, ticketStatus, userMess
 
 async function searchJobQuestions({ category , service}){
   try{
-    const response = await axios.post('/getJobsQuestions', {
+    const response  : any  = await axios.post('/getJobsQuestions', {
       category,
       service
       });
@@ -1148,7 +1135,7 @@ async function searchJobQuestions({ category , service}){
 
 async function getPointsBudget({ category}){
   try{
-    const response = await axios.post('/getPointsCategory', {
+    const response  : any  = await axios.post('/getPointsCategory', {
       category,
       });
       // console.log(response);
@@ -1163,7 +1150,7 @@ async function getPointsBudget({ category}){
 
 async function purchaseMembership({ professionalId}){
   try{
-    const response = await axios.post('/purchaseMembership', {
+    const response  : any  = await axios.post('/purchaseMembership', {
       professionalId,
       });
       // console.log(response);
@@ -1177,7 +1164,7 @@ async function purchaseMembership({ professionalId}){
 
 async function confirmMembership({ sessionId}){
   try{
-    const response = await axios.post('/addpurchaseMembershipData', {
+    const response  : any  = await axios.post('/addpurchaseMembershipData', {
       sessionId,
       });
       // console.log(response);
@@ -1191,7 +1178,7 @@ async function confirmMembership({ sessionId}){
 
 async function getMembershipData({ userId}){
   try{
-    const response = await axios.post('/getMembershipData', {
+    const response  : any  = await axios.post('/getMembershipData', {
       userId,
       });
       // console.log(response);
@@ -1204,7 +1191,7 @@ async function getMembershipData({ userId}){
 }
 async function requestCancelMembershipData({ professionalId, trxId}){
   try{
-    const response = await axios.post('/requestCancelMembership', {
+    const response  : any  = await axios.post('/requestCancelMembership', {
       professionalId,
       trxId
       });
@@ -1219,7 +1206,7 @@ async function requestCancelMembershipData({ professionalId, trxId}){
 
 async function generateInvoice({ sessionId}){
   try{
-    const response = await axios.post('/generateInvoice', {
+    const response  : any  = await axios.post('/generateInvoice', {
       sessionId
       });
       // console.log(response);
@@ -1233,7 +1220,7 @@ async function generateInvoice({ sessionId}){
 
 async function walletPointsData(){
   try{
-    const response = await axios.get('/getPointsWallet');
+    const response  : any  = await axios.get('/getPointsWallet');
       // console.log(response);
       return(response);
   }
@@ -1245,7 +1232,7 @@ async function walletPointsData(){
 async function walletTransactionData({ userId}){
   console.log(userId);
   try{
-    const response = await axios.post('/walletTransactionData', {
+    const response  : any  = await axios.post('/walletTransactionData', {
       userId
       });
       // console.log(response);
@@ -1259,7 +1246,7 @@ async function walletTransactionData({ userId}){
 
 async function pasAsGo({professionalId ,current_value}){
   try{
-    const response = await axios.post('/changePayAsYouGo', {
+    const response  : any  = await axios.post('/changePayAsYouGo', {
       professionalId,
       current_value
       });
@@ -1275,7 +1262,7 @@ async function pasAsGo({professionalId ,current_value}){
 
 async function buyPoints({professionalId ,amount,points}){
   try{
-    const response = await axios.post('/walletTopupProfessional', {
+    const response  : any  = await axios.post('/walletTopupProfessional', {
       professionalId,
       amount,
       points
@@ -1292,7 +1279,7 @@ async function buyPoints({professionalId ,amount,points}){
 
 async function confirmWalletPurchase({ sessionId}){
   try{
-    const response = await axios.post('/addWalletTopupProfessional', {
+    const response  : any  = await axios.post('/addWalletTopupProfessional', {
       sessionId
       });
       // console.log(response);
@@ -1306,7 +1293,7 @@ async function confirmWalletPurchase({ sessionId}){
 
 async function showLeads({ userId}){
   try{
-    const response = await axios.post('/showLeads', {
+    const response  : any  = await axios.post('/showLeads', {
       userId
       });
       return(response);
@@ -1320,7 +1307,7 @@ async function showLeads({ userId}){
 
 async function showSingleLead({ projectId}){
   try{
-    const response = await axios.post('/showSingleProjectLead', {
+    const response  : any  = await axios.post('/showSingleProjectLead', {
       projectId
       });
       return(response);
@@ -1333,7 +1320,7 @@ async function showSingleLead({ projectId}){
 
 async function payAsGoSession({projectId ,professionalId}){
   try{
-    const response = await axios.post('/payAsYouGoProject', {
+    const response  : any  = await axios.post('/payAsYouGoProject', {
       professionalId,
       projectId
       });
@@ -1348,7 +1335,7 @@ async function payAsGoSession({projectId ,professionalId}){
 
 async function payAsGoSessionData({sessionId}){
   try{
-    const response = await axios.post('/addPayAsYouGoProjectDetails', {
+    const response  : any  = await axios.post('/addPayAsYouGoProjectDetails', {
       sessionId
       });
       // console.log(response);
@@ -1364,7 +1351,7 @@ async function payAsGoSessionData({sessionId}){
 
 async function filterLead({ service, services, location,minBudget,maxBudget,timeStamp,todayTimeStamp,professionalId}){
   try{
-    const response = await axios.post('/projectFilter', {
+    const response  : any  = await axios.post('/projectFilter', {
       service,
       services,
       location,
@@ -1385,7 +1372,7 @@ async function filterLead({ service, services, location,minBudget,maxBudget,time
 async function postProject({project} ){
   console.log(project);
   try{
-    const response = await axios.post('/postProject', {
+    const response  : any  = await axios.post('/postProject', {
       userId  : project.userId,
       serviceCategory : project.serviceCategory,
       serviceNeeded : project.serviceNeeded,
@@ -1414,7 +1401,7 @@ async function postProject({project} ){
 
 async function checkBid({userId,projectId }){
   try{
-    const response = await axios.post('/professionalCheckBid', {
+    const response  : any  = await axios.post('/professionalCheckBid', {
       userId,
       projectId
       });
@@ -1429,7 +1416,7 @@ async function checkBid({userId,projectId }){
 async function applyJob({ professionalId, projectId, proposal,proposalType}){
   console.log(professionalId, projectId, proposal,proposalType)
   try{
-    const response = await axios.post('/confirmBid', {
+    const response  : any  = await axios.post('/confirmBid', {
       professionalId,
         projectId,
         proposal,
@@ -1449,7 +1436,7 @@ async function applyJob({ professionalId, projectId, proposal,proposalType}){
 
 async function allActiveProjectsClient({ clientId, }){
   try{
-    const response = await axios.post('/getAwardedDetails', {
+    const response  : any  = await axios.post('/getAwardedDetails', {
       clientId
       });
       return(response);
@@ -1462,7 +1449,7 @@ async function allActiveProjectsClient({ clientId, }){
 
 async function allActiveProjectsProfessoinal({ userId, }){
   try{
-    const response = await axios.post('/showAllAwardedProf', {
+    const response  : any  = await axios.post('/showAllAwardedProf', {
       userId
       });
       return(response);
@@ -1477,7 +1464,7 @@ async function allActiveProjectsProfessoinal({ userId, }){
 async function markAsAwardedClient({ clientId,projectId }){
   console.log(clientId,projectId )
   try{
-    const response = await axios.post('/markAsAwarded', {
+    const response  : any  = await axios.post('/markAsAwarded', {
       clientId,
       projectId
       });
@@ -1491,7 +1478,7 @@ async function markAsAwardedClient({ clientId,projectId }){
 
 async function markAsCompleted({ userId,userType,projectId }){
   try{
-    const response = await axios.post('/markAsCompleted', {
+    const response  : any  = await axios.post('/markAsCompleted', {
       userId,userType,projectId,
       });
       return(response);
@@ -1504,7 +1491,7 @@ async function markAsCompleted({ userId,userType,projectId }){
 
 async function clientGivingReview({ professionalId,projectId,rating,review }){
   try{
-    const response = await axios.post('/clientReviewSubmitting', {
+    const response  : any  = await axios.post('/clientReviewSubmitting', {
       professionalId,projectId,rating,review,
       });
       return(response);
@@ -1517,7 +1504,7 @@ async function clientGivingReview({ professionalId,projectId,rating,review }){
 
 async function professionalGivingReview({ clientId,projectId,rating,review }){
   try{
-    const response = await axios.post('/professionalReviewSubmitting', {
+    const response  : any  = await axios.post('/professionalReviewSubmitting', {
       clientId,projectId,rating,review,
       });
       return(response);
@@ -1531,7 +1518,7 @@ async function professionalGivingReview({ clientId,projectId,rating,review }){
 async function singleProjectDetails({ projectId,userId,need , userType}){
   // console.log(clientId,projectId )
   try{
-    const response = await axios.post('/getSingleProjectClient', {
+    const response  : any  = await axios.post('/getSingleProjectClient', {
       projectId,userId,need ,userType
       });
       return(response);
@@ -1546,7 +1533,7 @@ async function singleProjectDetails({ projectId,userId,need , userType}){
 async function awardProject({ projectId,professionalId,clientId,projectConfirmAmount }){
   console.log(projectId,professionalId,clientId,projectConfirmAmount )
   try{
-    const response = await axios.post('/awardProject', {
+    const response  : any  = await axios.post('/awardProject', {
       projectId,clientId,professionalId,projectConfirmAmount
       });
       return(response);
@@ -1560,7 +1547,7 @@ async function awardProject({ projectId,professionalId,clientId,projectConfirmAm
 
 async function clientCancelProject({ clientId,projectId}){
   try{
-    const response = await axios.post('/cancelProject', {
+    const response  : any  = await axios.post('/cancelProject', {
       projectId,clientId
       });
       return(response);
@@ -1574,7 +1561,7 @@ async function clientCancelProject({ clientId,projectId}){
 
 async function professionlalAwardedChoice({ professionalId,projectId,choice}){
   try{
-    const response = await axios.post('/acceptAwardedProjects', {
+    const response  : any  = await axios.post('/acceptAwardedProjects', {
       professionalId,projectId,choice
       });
       return(response);
@@ -1588,7 +1575,7 @@ async function professionlalAwardedChoice({ professionalId,projectId,choice}){
 
 async function addProjectTasks({ userId,userType,projectId,taskListName,taskListDes }){
   try{
-    const response = await axios.post('/addProjectTaskList', {
+    const response  : any  = await axios.post('/addProjectTaskList', {
       userId,userType,projectId,taskListName,taskListDes 
       });
       return(response);
@@ -1601,7 +1588,7 @@ async function addProjectTasks({ userId,userType,projectId,taskListName,taskList
 
 async function AllProjectHistory({ userId,userType }){
   try{
-    const response = await axios.post('/projectHistory', {
+    const response  : any  = await axios.post('/projectHistory', {
       userId,userType
       });
       return(response);
@@ -1615,7 +1602,7 @@ async function AllProjectHistory({ userId,userType }){
 
 async function logout({ token,userType }){
   try{
-    const response = await axios.post('/logout', {
+    const response  : any  = await axios.post('/logout', {
       token,userType
       });
       return(response);
@@ -1628,7 +1615,7 @@ async function logout({ token,userType }){
 
 async function userChatDetilas({ userId ,userType }){
   try{
-    const response = await axios.post('/userChatDetails', {
+    const response  : any  = await axios.post('/userChatDetails', {
       userId,userType
       });
       return(response);
