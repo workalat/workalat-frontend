@@ -161,7 +161,6 @@ async function handleAdd(current, user2, projectTitle){
               setApplied(false);
               setApplied2(true);
               setPayPayment("unpaid")
-              router.push("/leads");
             }, 3000);
           }
       }
@@ -183,7 +182,6 @@ async function handleAdd(current, user2, projectTitle){
             setTimeout(() => {
               setApplied(false);
               setApplied2(true);
-              router.push("/leads");
             }, 3000);
           }
         }
@@ -207,7 +205,6 @@ async function handleAdd(current, user2, projectTitle){
           setTimeout(() => {
             setApplied(false);
             setApplied2(true);
-            router.push("/leads");
           }, 3000);
         }
       }

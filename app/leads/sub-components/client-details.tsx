@@ -18,7 +18,7 @@ export default function ClientDetails({ open, onClose, job, applied }) {
 
   if (!job) {
     return null;
-  }
+  } 
 
   return (
     <Modal open={open} className="flex justify-center items-center" onClose={onClose}>
