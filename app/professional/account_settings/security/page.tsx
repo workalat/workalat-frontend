@@ -180,7 +180,7 @@ let [kycDocumentData, setKycDocumentData] : any  = useState({
 
   const handleKycDocumentUpload = async (event) => {
     try {
-      if(!files || files.length<1 || !kycDocumentData.documentType || !kycDocumentData.idNumber){
+      if(!files || files?.length<1 || !kycDocumentData?.documentType || !kycDocumentData?.idNumber){
              return generateSnackbar("Please Fill all Data.", "error");
       }
       else{
@@ -194,30 +194,26 @@ let [kycDocumentData, setKycDocumentData] : any  = useState({
       formData.append('documentType', kycDocumentData.documentType);
       formData.append('idNumber', kycDocumentData.idNumber);
       
-      // Append all selected files to the form data under the kycDocuments key
       files.forEach((file) => {
           formData.append('kycDocuments', file);
       });
       
-      // Send the form data to the server to upload the files
       setLoading(true);
-        const res = await axios.post('/kycDocuments', formData, {
+        const res : any  = await axios.post('/kycDocuments', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
         // console.log(res);
-        if(res.status === 200 || res.response.data?.status === "success"){
-          // generateSnackbar(res.data?.msg , "success");
+        if(res?.status === 200 || res?.response?.data?.status === "success"){
           generateSnackbar("Your KYC has been submitted successfully,We will let you know once approved." ,"success");
           setLoading(false);
           closeModal();
       }
       else{
           setLoading(false);
-          generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+          generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
       }  
-        // Handle success (e.g., show a success message)
       }
     } catch (error) {
         generateSnackbar("Some Error Occur, Please try Again." ,"error")

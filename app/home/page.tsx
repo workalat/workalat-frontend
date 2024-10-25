@@ -13,9 +13,9 @@ import Testimonials from "./sub-components/testimonials";
 import PlaceRequestModal from "@/components/Clients/PlaceRequestModal/PlaceRequestModal";
 
 const HomePage = () => {
-  const [openPlaceReqModal, setOpenPlaceReqModal] = useState(false);
-  const closePlaceReqModal = () => setOpenPlaceReqModal(false);
-  const doOpenPlaceReqModal =  () => setOpenPlaceReqModal(true);
+  const [openPlaceReqModal, setOpenPlaceReqModal] : any = useState(false);
+  const closePlaceReqModal : any = () => setOpenPlaceReqModal(false);
+  const doOpenPlaceReqModal : any =  () => setOpenPlaceReqModal(true);
 
   return (
     <div>

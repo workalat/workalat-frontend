@@ -65,9 +65,9 @@ interface JobSearchCriteria {
   };
 }
 
-export default function LeadsFilter({setFilterProjects, professionalId }) {
+export default function LeadsFilter({setFilterProjects, professionalId } : any) {
   // Main filter state
-  const [filters, setFilters] = useState<JobSearchCriteria>({
+  const [filters, setFilters] : any = useState<JobSearchCriteria>({
     keyword: "",
     services: [],
     location: {
@@ -90,24 +90,24 @@ export default function LeadsFilter({setFilterProjects, professionalId }) {
   });
 
   // UI States
-  const [open, setOpen] = useState(false);
-  const [showAllServices, setShowAllServices] = useState(false);
-  const [selectedPostcode, setSelectedPostcode] = useState("");
-  const [selectedPostcodeRegion, setSelectedPostcodeRegion] = useState("");
+  const [open, setOpen] : any = useState(false);
+  const [showAllServices, setShowAllServices] : any = useState(false);
+  const [selectedPostcode, setSelectedPostcode] : any = useState("");
+  const [selectedPostcodeRegion, setSelectedPostcodeRegion] : any = useState("");
   
   // Services fetching state
-  const [availableServices, setAvailableServices] = useState<string[]>([]);
+  const [availableServices, setAvailableServices] : any = useState<string[]>([]);
   
   // Context hooks
-  const { generateSnackbar } = useSnackbar();
-  const { filterLead, findAllServices } = useUserContext();
+  const { generateSnackbar } : any = useSnackbar();
+  const { filterLead, findAllServices } : any = useUserContext();
 
   // Fetch services on mount
   useEffect(() => {
     async function getServices() {
       try {
-        const data = await findAllServices();
-        setAvailableServices(data.data);
+        const data : any = await findAllServices();
+        setAvailableServices(data?.data);
       } catch (e) {
         console.log(e);
         generateSnackbar("Failed to fetch services", "error");
@@ -122,17 +122,17 @@ export default function LeadsFilter({setFilterProjects, professionalId }) {
     : SERVICES_LIST.slice(0, 7);
 
   // Utility function to convert to camelCase
-  const toCamelCase = (str: string) => {
+  const toCamelCase : any = (str: string) => {
     return str.split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
 
   // Handle postcode selection
-  const handlePostcodeSelection = (event: any, newValue: any) => {
+  const handlePostcodeSelection : any = (event: any, newValue: any) => {
     if (newValue) {
-      const postcode = newValue.label;
-      const region = regionsData[postcode] || "";
+      const postcode : any = newValue.label;
+      const region : any = regionsData[postcode] || "";
       setSelectedPostcodeRegion(region);
       setSelectedPostcode(postcode);
       setFilters(prev => ({
@@ -143,7 +143,7 @@ export default function LeadsFilter({setFilterProjects, professionalId }) {
   };
 
   // Form submission handler
-  const handleFilterSubmit = async (e: React.FormEvent) => {
+  const handleFilterSubmit : any = async (e : any) => {
     try {
       e.preventDefault();
       const service = filters.keyword;

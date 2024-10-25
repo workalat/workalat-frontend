@@ -20,18 +20,18 @@ interface Option {
   label: string;
 }
 
-const Hero = ({ openModal }: { openModal: () => void }) => {
-  const [inputFocus, setInputFocus] = useState<boolean>(false);
-  const [zipFocus, setZipFocus] = useState<boolean>(false);
-  const [searchEnabled, setSearchEnabled] = useState<boolean>(true);
+const Hero = ({ openModal }: { openModal: () => void } ) => {
+  const [inputFocus, setInputFocus] : any = useState<boolean>(false);
+  const [zipFocus, setZipFocus] : any = useState<boolean>(false);
+  const [searchEnabled, setSearchEnabled] : any = useState<boolean>(true);
 
   // State to manage category selection
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] : any = useState<string>("");
 
   // State to manage post code input
   const [postCode, setPostCode] = useState<string>("");
-  const [selectedPostcode, setSelectedPostcode] = useState(""); // For storing the selected postcode
-  const [filteredPostcodes, setFilteredPostcodes] = useState(postcodesData); // For filtering postcodes
+  const [selectedPostcode, setSelectedPostcode] : any = useState(""); // For storing the selected postcode
+  const [filteredPostcodes, setFilteredPostcodes] : any = useState(postcodesData); // For filtering postcodes
 
 
   useEffect(() => {
@@ -42,35 +42,27 @@ const Hero = ({ openModal }: { openModal: () => void }) => {
     }
   }, [category, postCode]);
 
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault();
-    console.log("Searchin..")
-    openModal();
-  };
+  let [userPService,setUserPService] : any = useState<string[]>([]);
+  let [userData, setUserData] : any = useState({});
+  let [loading, setLoading ] : any =  useState(true);
+  let [service, setService] : any = useState([]);
 
-  let [userPService,setUserPService] = useState<string[]>([]);
-  let [userData, setUserData] = useState({});
-  let [loading, setLoading]=  useState(true);
-  let [service, setService] = useState([]);
-
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar } : any = useSnackbar();
 // Store the service selected by the user (lowercase for backend)
-const [selectedService, setSelectedService] = useState<string>("");
+const [selectedService, setSelectedService] : any = useState<string>("");
 
   //USE CONTEXT
-  const { findAllServices,findServiceCategory, projectData, setProjectData } = useUserContext();
+  const { findAllServices,findServiceCategory, projectData, setProjectData } : any = useUserContext();
 
 
   useEffect(() => {
     async function getServices() {
       try {
         // setLoading(true);
-        const data = await findAllServices();
-        // console.log(data);
-        setService(data.data);          
+        const data : any = await findAllServices();
+        setService(data?.data);          
       }
        catch (e) {
-        // console.log(e);
         // router.push("/login");
       }
     }
@@ -100,8 +92,7 @@ const [selectedService, setSelectedService] = useState<string>("");
           generateSnackbar("Please Fill all the Fields", "error");
         }
         else{
-          let cat = await findServiceCategory({serviceName :selectedService });
-          console.log(postCode,selectedPostcode ,selectedService)
+          let cat : any = await findServiceCategory({serviceName :selectedService });
           setProjectData({
             ...projectData,
             serviceCategory : cat.data?.category,
@@ -109,12 +100,12 @@ const [selectedService, setSelectedService] = useState<string>("");
             serviceLocationPostal : postCode,
             postCodeRegion : selectedPostcode
           });
-          console.log(projectData);
           openModal();
         }
       }
       catch(e){
-        console.log(e)
+        // console.log(e)
+          generateSnackbar("Some error occur, Please Try Again.", "error");
       }
     }
 

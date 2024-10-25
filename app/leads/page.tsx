@@ -13,36 +13,36 @@ import VerifyUser from "../middleware/VerifyUser";
 import Cookies from 'js-cookie';
 
 export default function LeadsPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const job = searchParams.get("job");
-  const applyToJob = searchParams.get("apply") === "true";
-  const applied = searchParams.get("applied") === "true";
+  const router : any = useRouter();
+  const searchParams : any = useSearchParams();
+  const job : any = searchParams.get("job");
+  const applyToJob : any = searchParams.get("apply") === "true";
+  const applied : any = searchParams.get("applied") === "true";
 
-  const [loading, setLoading] = useState(true);
-  const [leadsData, setLeadsData] = useState([]);
-  const [userData, setUserData] = useState({});
-  const [activeJob, setActiveJob] = useState(null);
-  const [appliedToJob, setAppliedToJob] = useState(false);
+  const [loading, setLoading] : any = useState(true);
+  const [leadsData, setLeadsData] : any = useState([]);
+  const [userData, setUserData] : any = useState({});
+  const [activeJob, setActiveJob] : any = useState(null);
+  const [appliedToJob, setAppliedToJob] : any = useState(false);
 
-  const { showLeads } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
+  const { showLeads } : any = useUserContext();
+  const { generateSnackbar } : any = useSnackbar();
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        if (ver.status === "success") {
+        let token : any = Cookies.get("token");
+        let ver : any = await VerifyUser(token, "professional");
+        if (ver?.status === "success") {
           setUserData(ver);
-          if (ver.isRegistrationComplete === false) {
+          if (ver?.isRegistrationComplete === false) {
             router.push("/professional/onboard/formpage");
             return;
           }
-          let res = await showLeads({ userId: ver.userId });
-          if (res.status !== 400 || res.data?.status === "success") {
-            setLeadsData(res.data?.data);
+          let res : any = await showLeads({ userId: ver.userId });
+          if (res?.status !== 400 || res?.data?.status === "success") {
+            setLeadsData(res?.data?.data);
           } else {
             generateSnackbar("Failed to fetch leads. Please try again.", "error");
             setTimeout(() => {
@@ -105,8 +105,8 @@ export default function LeadsPage() {
             openClientDetails={openClientDetails}
             onClose={closeJobApplication}
             userData={userData}
-          />
-          <ClientDetails open={applied} job={activeJob} onClose={closeApplied} />
+          /> 
+          <ClientDetails open={applied} job={activeJob} onClose={closeApplied} applied={applied} />
         </Box>
       )}
     </>

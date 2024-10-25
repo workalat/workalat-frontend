@@ -36,28 +36,28 @@ interface Lead {
   };
 }
 
-export default function LeadCard({ lead }: { lead: Lead }) {
+export default function LeadCard({ lead }: any) {
   return (
     <>
     <Box className="border rounded-md bg-[#F3F3F3] px-4 py-8 sm:p-8 text-main space-y-4 lg:space-y-2">
       <Box className="flex gap-x-4 gap-y-2 justify-between items-center flex-wrap">
         {/* Category / Service */}
-        <h2 className="font-semibold text-lg capitalize">{lead.serviceNeeded} </h2>     
+        <h2 className="font-semibold text-lg capitalize">{lead?.serviceNeeded} </h2>     
         <Box className="flex gap-4 w-full sm:w-max justify-between sm:justify-start">
           <Box className="flex gap-2">
             <Image src={coinIcon} alt="Cost" />
             {/* Points  */}
-            {lead.pointsNeeded} Points
+            {lead?.pointsNeeded} Points
           </Box>
           {/* Amont  */}
-          <span className="font-bold text-right sm:text-left">${lead.projectMaxPrice} GBP</span>
+          <span className="font-bold text-right sm:text-left">${lead?.projectMaxPrice} GBP</span>
         </Box>
       </Box>
-      <Link href={`/client/profile/${lead.clientId}`}  className="cursor-pointer">
+      <Link href={`/client/profile/${lead?.clientId}`}  className="cursor-pointer">
       <Box className="flex gap-4 items-start">
         {/* Clinet image */}
         <img 
-          src={lead.clientPictureLink}
+          src={lead?.clientPictureLink}
           alt=""
           width={64}
           height={64}
@@ -66,14 +66,14 @@ export default function LeadCard({ lead }: { lead: Lead }) {
         <Box className="flex gap-4 items-start">
           <h3 className="text-lg font-semibold flex flex-col gap-0 justify-center capitalize">
             {/* Name  */}
-            {lead.clientName}
-            <span className="text-sm font-medium capitalize">   {(lead.serviceLocationTown) ?(`${lead?.serviceLocationTown}`) :  (`${lead?.serviceLocationPostal}`)}</span>
+            {lead?.clientName}
+            <span className="text-sm font-medium capitalize">   {(lead?.serviceLocationTown) ?(`${lead?.serviceLocationTown}`) :  (`${lead?.serviceLocationPostal}`)}</span>
             {/* <span className="text-sm font-medium">UK</span> */}
           </h3>
           <Box className="flex items-center gap-1 mt-0.5 flex-wrap">
             {/* Verified  */}
             {
-              ((lead.isClientEmailVerify === true && lead.isClientPhoneNoVerify === true) || (lead.isClientEmailVerify && lead.isClientPhoneNoVerify))
+              ((lead?.isClientEmailVerify === true && lead?.isClientPhoneNoVerify === true) || (lead?.isClientEmailVerify && lead?.isClientPhoneNoVerify))
               ?
               <Box
                   className="flex justify-center items-center px-2 rounded-full text-sm"
@@ -97,7 +97,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
 
               {/* Urgent  */}
               {
-                (lead.projectUrgentStatus === "urgent")
+                (lead?.projectUrgentStatus === "urgent")
                 ?
                <Box
                 className="flex justify-center items-center px-2 rounded-full text-sm"
@@ -125,7 +125,7 @@ export default function LeadCard({ lead }: { lead: Lead }) {
       </Link>
 
       {/* Title  */}
-      <Typography className='text-sm capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: ` ${DOMPurify.sanitize(lead.serviceDes).slice(0,350)}...`}} />
+      <Typography className='text-sm capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: ` ${DOMPurify.sanitize(lead?.serviceDes).slice(0,350)}...`}} />
             <Box className="!mt-4 flex justify-between items-center flex-wrap w-full">
         <Box>
           <Box className="flex items-center gap-2 text-sm flex-wrap">
@@ -139,19 +139,19 @@ export default function LeadCard({ lead }: { lead: Lead }) {
               }} 
             />
             {/* Leads Number */}
-            {5- lead.maxBid} professionals have
+            {5- lead?.maxBid} professionals have
             bided
           </Box>
           {/* Date  */}
-          <p className="sm:text-base text-sm mt-4">{moment(lead.projectTimeStamp).fromNow()}</p>
+          <p className="sm:text-base text-sm mt-4">{moment(lead?.projectTimeStamp).fromNow()}</p>
         </Box>
         <Box className="flex gap-4 flex-wrap gap-y-2 mt-4 sm:mt-0 !w-full">
-          <Link href={`/leads?job=${lead._id}`} className="w-full sm:w-auto">
+          <Link href={`/leads?job=${lead?._id}`} className="w-full sm:w-auto">
             <Button variant="outlined" color="secondary" className="sm:!mt-4 w-full">
               View Details
             </Button>
           </Link>
-          <Link href={`/leads?job=${lead._id}&apply=true`} className="w-full sm:w-auto">
+          <Link href={`/leads?job=${lead?._id}&apply=true`} className="w-full sm:w-auto">
             <Button variant="contained" color="secondary" className="sm:!mt-4 w-full">
               Contact
             </Button>

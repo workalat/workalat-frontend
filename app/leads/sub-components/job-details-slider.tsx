@@ -50,45 +50,41 @@ export default function JobDetailsSlider({
   open,
   onClose,
   jobId,
-}: {
-  open: boolean;
-  onClose: () => void;
-  jobId: number;
-}) {
+}:   any ) {
   // loading
-  const [loading, setLoading] = useState(true);
-  let [projectData, setProjectData] = useState({});
+  const [loading, setLoading]   : any  = useState(true);
+  let [projectData, setProjectData]   : any  = useState({});
   // job details
-  const [job, setJob] = useState<Job | null>(null);
+  const [job, setJob]   : any  = useState<Job | null>(null);
 
-  const { generateSnackbar } = useSnackbar();
+  const { generateSnackbar }   : any  = useSnackbar();
 
-  let { showSingleLead } = useUserContext();
-    let projectId = useSearchParams().get("job");
-    let apply = useSearchParams().get("apply");
+  let { showSingleLead }   : any  = useUserContext();
+    let projectId   : any  = useSearchParams().get("job");
+    let apply   : any  = useSearchParams().get("apply");
 
+
+    async function getJobData(){
+      try{
+        setLoading(true);
+        let res  : any  = await showSingleLead({projectId : projectId});
+        if(res?.status !== 400 || res?.data?.status === "success"){
+          setProjectData(res?.data?.data);
+          setLoading(false);
+        }
+        else{
+          generateSnackbar("Some Error Occure, please try again", "error");
+        }
+      } 
+      catch(e){
+        // console.log(e);
+      }
+    }
 
   useEffect(() => {
     // simulate loading job details
     if(projectId !== null){
-      async function getJobData(){
-        try{
-          setLoading(true);
-          let res = await showSingleLead({projectId : projectId});
-          if(res?.status !== 400 || res?.data?.status === "success"){
-            setProjectData(res?.data?.data);
-            setLoading(false);
-          }
-          else{
-            // generateSnackbar("Some Error Occure, please try again", "error");
-          }
-        } 
-        catch(e){
-          // console.log(e);
-        }
-      }
-      getJobData();
-
+            getJobData();
     }
 
 
@@ -138,11 +134,11 @@ export default function JobDetailsSlider({
             projectData?.projectQuestions?.map((val,i)=>{
               return(
                 <>{
-                  val.answer.length > 0 ?
+                  val?.answer.length > 0 ?
                   <>
-                 <h2 className="font-bold capitalize">{val.questionTitle}</h2>
+                 <h2 className="font-bold capitalize">{val?.questionTitle}</h2>
                  {
-                  val.answer.map((val, i)=>{
+                  val?.answer.map((val, i)=>{
                     return (
                                 <Box key={i}>
                                   <p className="capitalize">{val}</p>
@@ -161,7 +157,7 @@ export default function JobDetailsSlider({
           }
            <Box >
                   <h2 className="font-bold capitalize">How Frequent I need the Service?</h2>
-                  <p className="capitalize">{projectData.serviceFrequency}</p>
+                  <p className="capitalize">{projectData?.serviceFrequency}</p>
                 </Box>
           <Box>
             <h2 className="font-bold">Budget: </h2>${projectData?.projectPriceTitle}
@@ -189,7 +185,7 @@ export default function JobDetailsSlider({
   );
 }
 
-const ClientDetails = ({ job }: { job: Job | null }) => {
+const ClientDetails = ({ job }) : any => {
   return (
     <Box className="flex justify-between flex-wrap sm:flex-nowrap gap-y-4">
       <Box className="flex gap-4 items-start w-full">

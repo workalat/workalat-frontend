@@ -16,8 +16,8 @@ import axios from "axios";
 // Dynamically import React Quill to ensure it works with SSR in Next.js
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const ClientSettings = ({ data }) => {
-  const [formData, setFormData] = useState({
+const ClientSettings = ({ data }  : any) => {
+  const [formData, setFormData]: any = useState({
     name: "",
     phone_number: "",
     email: "",
@@ -26,19 +26,18 @@ const ClientSettings = ({ data }) => {
   });
 
   // State for avatar image
-  const [avatar, setAvatar] = useState("https://your-cloudinary-url.com/default-avatar.jpg"); // Replace with your default avatar URL
-  const { addClientsData } = useUserContext();
-  const { generateSnackbar } = useSnackbar();
-  let [file,setFile] = useState();
+  const [avatar, setAvatar] : any  = useState("https://your-cloudinary-url.com/default-avatar.jpg"); // Replace with your default avatar URL
+  const { addClientsData } : any  = useUserContext();
+  const { generateSnackbar } : any  = useSnackbar();
+  let [file,setFile] : any  = useState();
   
   // loading
-  const [loading2, setLoading2] = useState(true);
+  const [loading2, setLoading2] : any = useState(true);
   
   // loading
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] : any = useState(false);
 
   useEffect(() => {
-    console.log(data);
     setLoading2(true)
     setFormData({
       ...formData,
@@ -55,28 +54,28 @@ const ClientSettings = ({ data }) => {
   async function handleSubmit(e) {
     try {
       e.preventDefault();
-      let res = await addClientsData({
+      let res : any = await addClientsData({
         userId: formData.userId,
         name: formData.name,
         bio: formData.bio,
       });
-      if (res.status !== 400 || res.data?.status === "success") {
-        // Handle form submission
-        generateSnackbar(res.data?.message, "success");
+      if (res?.status !== 400 || res?.data?.status === "success") {
+        generateSnackbar(res?.data?.message, "success");
       } else {
         return generateSnackbar(
-          res.response?.data?.message || "Some Error occurs, please try again in a few minutes",
+          res?.response?.data?.message || "Some Error occurs, please try again in a few minutes",
           "error"
         );
       }
     } catch (e) {
-      console.log(e);
+      generateSnackbar("Some Error occurs, please try again in a few minutes",
+        "error"
+      );
     }
   }
 
-  // Handle file input change
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file : any = e.target.files[0];
     setFile(file);
     if (file) {
       const reader = new FileReader();
@@ -90,7 +89,6 @@ const ClientSettings = ({ data }) => {
   async function handleChangeImage(e){
     e.preventDefault();
     try{
-      console.log(file);
       if (!file) {
         generateSnackbar("Please Select a File First", "warning");
         return;
@@ -102,18 +100,18 @@ const ClientSettings = ({ data }) => {
         formDat.append('userId', formData.userId);
         formDat.append('userType', "client");
 
-        const res = await axios.post('/changePicture', formDat, {
+        const res  : any  = await axios.post('/changePicture', formDat, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        if (res.status !== 400 || res.data?.status === "success") {
+        if (res?.status !== 400 || res?.data?.status === "success") {
           generateSnackbar("Profile Picture Updated Successfully", "success");
-          setAvatar(res.data?.picture);
+          setAvatar(res?.data?.picture);
           setLoading(false);
         }
         else {
-          generateSnackbar(res.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
+          generateSnackbar(res?.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
         }
       }
     }

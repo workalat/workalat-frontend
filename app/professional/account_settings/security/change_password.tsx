@@ -20,7 +20,7 @@ interface ChangePassProps {
   open: boolean;
   onClose: () => void;
 }
-const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProps) => {
+const ChangePasswordModal = ({ open, onClose ,userId , userType}: any) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -42,10 +42,8 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProp
       return generateSnackbar("Passwords do not match", "error");
     }
     
-    // console.log(userType);
-    let res = await changePassword({userId ,userType, oldPassword :currentPassword , newPassword : newPassword});
-    // console.log(res);
-    if(res.status === 200 || res.response.data?.status === "success"){
+    let res : any  = await changePassword({userId ,userType, oldPassword :currentPassword , newPassword : newPassword});
+    if(res?.status === 200 || res?.response.data?.status === "success"){
 
       generateSnackbar("Password Changed Successfully.", "success")
       setCurrentPassword("");
@@ -56,10 +54,6 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType}: ChangePassProp
   else{
       generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
   }
-
-    // console.log(newPassword);
-    // console.log(userId, userType)
-
     }
     catch(e){
       return generateSnackbar("Some Error Occur, Please Try Again.", "error");

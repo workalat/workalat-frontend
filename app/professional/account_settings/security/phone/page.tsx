@@ -14,21 +14,21 @@ import { useSnackbar } from "@/context/snackbar_context";
 import VerifyUser from "@/app/middleware/VerifyUser";
 
 const PhonePage = () => {
-  const [otpModal, setOtpModal] = useState(false);
-  const [value, setValue] = useState<string | undefined>();
+  const [otpModal, setOtpModal] : any  = useState(false);
+  const [value, setValue] : any  = useState<string | undefined>();
 
   
-  let { getPhoneNo,phoneVerifyPage } = useUserContext();
-  let [userData, setUserData] = useState({});
-  let [phoneNo, setPhoneNo] = useState("");
-  let [phoneCountry, setPhoneCountry] = useState("");
+  let { getPhoneNo,phoneVerifyPage } : any  = useUserContext();
+  let [userData, setUserData] : any  = useState({});
+  let [phoneNo, setPhoneNo] : any  = useState("");
+  let [phoneCountry, setPhoneCountry] : any  = useState("");
 
   // loading
-  const [loading2, setLoading2] = useState(true);
+  const [loading2, setLoading2] : any  = useState(true);
 
   
   // router
-  const router = useRouter();
+  const router : any  = useRouter();
 
    // Alert
    const { generateSnackbar } = useSnackbar();
@@ -47,17 +47,15 @@ const PhonePage = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
-        console.log(ver);
-        if(ver.status === "success"){
-          if(ver.registerAs === "client"){
+        let token : any  = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "professional");
+        if(ver?.status === "success"){
+          if(ver?.registerAs === "client"){
             router.push("/client/dashboard")
           }
           else{
             setUserData(ver);
-            let phoneDet = await getPhoneNo({userId : ver.userId, userType : "professional"});
-            console.log(phoneDet)
+            let phoneDet : any  = await getPhoneNo({userId : ver.userId, userType : "professional"});
             setPhoneNo(phoneDet?.data?.phoneNo)
             setPhoneCountry(phoneDet?.data?.countryCode)
             setLoading2(false);
@@ -80,12 +78,11 @@ const PhonePage = () => {
       if(!phoneNo){
         return generateSnackbar("Please Enter Phone Number.", "error");
       }
-     let res = await phoneVerifyPage({
+     let res : any  = await phoneVerifyPage({
         userId : userData?.userId,
         userType : userData?.userType,
         phoneNo : phoneNo
      });
-     console.log(res);
       if(res?.status !== 400  || res?.data?.status === "success"){
         generateSnackbar("OTP sent successfully", "success");
         setOtpModal(true)

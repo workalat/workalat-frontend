@@ -22,21 +22,19 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
 
 
 
-  const { generateSnackbar } = useSnackbar();
-  const { checkBid, applyJob ,setPayPayment ,payPayment,payAsGoSession, userChatDetilas} = useUserContext();
-  const router = useRouter();
-  let projectId = useSearchParams().get("job")
+  const { generateSnackbar } : any = useSnackbar();
+  const { checkBid, applyJob ,setPayPayment ,payPayment,payAsGoSession, userChatDetilas} : any = useUserContext();
+  const router : any = useRouter();
+  let projectId : any = useSearchParams().get("job")
 
-  const closeApplied = () => {
+  const closeApplied : any = () => {
     router.push("/leads");
   };
 
 
   window.addEventListener("message", (event) => {
     // Check the origin to ensure it matches
-    console.log( "Checking",event.origin !== process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN)
-    if (event.origin !== process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN) {
-      console.log("Payment Unsuccess")
+    if (event?.origin !== process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN) {
         return; // Ignore messages from untrusted origins
     }
     
@@ -53,20 +51,20 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
 async function handleAdd(current, user2, projectTitle){
   console.log(current,user2)
   try{
-    let chatRef = collection(db, "chats")
-    let userChatRef = collection(db, "usersChats");
+    let chatRef : any = collection(db, "chats")
+    let userChatRef : any = collection(db, "usersChats");
 
-    let currentUser = await userChatDetilas({
+    let currentUser : any = await userChatDetilas({
       userId : current.userId,
       userType : current.userType === "client" ? "client" : "professional"
     })
-    let user = await userChatDetilas({
+    let user : any = await userChatDetilas({
       userId : user2.clientId,
       userType : current.userType === "client" ? "professional" : "client"
     });
 
 
-    let newChatRef = doc(chatRef);
+    let newChatRef : any = doc(chatRef);
     await setDoc(newChatRef, {
       createdAt : serverTimestamp(),
       message : [],
@@ -105,15 +103,13 @@ async function handleAdd(current, user2, projectTitle){
 
   async function payAsGenerate(projectId, professionalId){
     try{
-      console.log(projectId, professionalId)
       setLoaderMessage("Generating Payment Sesstion, Please Wait...");
       setLoading(true);
 
-      let res = await payAsGoSession({
+      let res: any = await payAsGoSession({
         projectId : projectId,
         professionalId : professionalId
       });
-      console.log(res);
       if(res?.status !== 400 || res?.data?.status === "success"){
       setLoading(false);
       const paymentWindow = window.open(res?.data?.session?.url, '_blank', 'width=500,height=600');
@@ -130,7 +126,6 @@ async function handleAdd(current, user2, projectTitle){
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(payPayment)
     try {
       if(!proposalMessage){
         return generateSnackbar("Please Write a proposal.", "warning")
@@ -138,28 +133,26 @@ async function handleAdd(current, user2, projectTitle){
       if(!proposalMessage){
         return generateSnackbar("Please Write a proposal.", "warning")
       }
-      let bid = await checkBid({ userId: userData.userId, projectId: projectId });
-      console.log(bid);
-      console.log(payPayment);
-      let data = bid?.data;
-      let professionalData = bid?.data?.data;
+      let bid : any = await checkBid({ userId: userData.userId, projectId: projectId });
+      let data : any = bid?.data;
+      let professionalData : any = bid?.data?.data;
 
       if (!data.eligible) {
         generateSnackbar("Cannot apply on this project.", "warning");
-      } else if (!professionalData.adminAccessProfessional) {
+      } else if (!professionalData?.adminAccessProfessional) {
         generateSnackbar("Admin has restricted your Account.", "error");
       }
-      else if(professionalData.payAsGo === true && payPayment === "unpaid"){
+      else if(professionalData?.payAsGo === true && payPayment === "unpaid"){
           payAsGenerate(projectId,userData.userId);
       }
-      else if(professionalData.payAsGo === true && payPayment === "paid"){
-          let res = await applyJob({
-            professionalId: professionalData._id,
-            projectId: data.projectId,
+      else if(professionalData?.payAsGo === true && payPayment === "paid"){
+          let res : any = await applyJob({
+            professionalId: professionalData?._id,
+            projectId: data?.projectId,
             proposal: proposalMessage,
             proposalType: "points",
           });
-          if (res.status !== 400 || res.data?.status === "success") {
+          if (res?.status !== 400 || res?.data?.status === "success") {
             generateSnackbar("Bid Sent successfully.", "success");
             setClientData(res?.data?.data[0]);
             handleAdd(userData, res?.data?.data[0],data?.projectTitle);
@@ -172,17 +165,17 @@ async function handleAdd(current, user2, projectTitle){
             }, 3000);
           }
       }
-      else if (professionalData.isMembership) {
-        if (professionalData.membershipLeads < 1) {
+      else if (professionalData?.isMembership) {
+        if (professionalData?.membershipLeads < 1) {
           generateSnackbar("Your membership limit has exceeded.", "warning");
         } else {
           let res = await applyJob({
-            professionalId: professionalData._id,
-            projectId: data.projectId,
+            professionalId: professionalData?._id,
+            projectId: data?.projectId,
             proposal: proposalMessage,
             proposalType: "leads",
           });
-          if (res.status !== 400 || res.data?.status === "success") {
+          if (res?.status !== 400 || res?.data?.status === "success") {
             generateSnackbar("Bid Sent successfully.", "success");
             setClientData(res?.data?.data[0]);
             handleAdd(userData, res?.data?.data[0] ,data?.projectTitle);
@@ -194,19 +187,19 @@ async function handleAdd(current, user2, projectTitle){
             }, 3000);
           }
         }
-      } else if (data.projectAvailableBids < 1) {
+      } else if (data?.projectAvailableBids < 1) {
         generateSnackbar("Maximum bidding limit is reached.", "warning");
-      } else if (professionalData.professionalTotalBidPoints < data.pointsNeeded) {
+      } else if (professionalData?.professionalTotalBidPoints < data?.pointsNeeded) {
         generateSnackbar("Not Enough Points.", "warning");
       } else {
         // Apply using points
-        let res = await applyJob({
-          professionalId: professionalData._id,
-          projectId: data.projectId,
+        let res : any = await applyJob({
+          professionalId: professionalData?._id,
+          projectId: data?.projectId,
           proposal: proposalMessage,
           proposalType: "points",
         });
-        if (res.status !== 400 || res.data?.status === "success") {
+        if (res?.status !== 400 || res?.data?.status === "success") {
           generateSnackbar("Bid Sent successfully.", "success");
           setClientData(res?.data?.data[0]);
           handleAdd(userData, res?.data?.data[0] ,data?.projectTitle);
