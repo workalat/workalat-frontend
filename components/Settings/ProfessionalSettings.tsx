@@ -482,6 +482,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                         type="email"
                         className="shadow-medium"
                         placeholder="jane.doe@example.com"
+                        value={form1.professionalEmail}
                         name="professionalEmail"
                         disabled
                         onChange={handleChangeForm1}
@@ -494,6 +495,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                       <TextField
                         className="shadow-medium"
                         placeholder="+1 (555) 123-4567"
+                        value={form1.professionalPhoneNo}
                         disabled
                         name="professionalPhoneNo"
                         onChange={handleChangeForm1}
