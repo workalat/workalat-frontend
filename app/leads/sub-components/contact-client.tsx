@@ -34,7 +34,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
 
   window.addEventListener("message", (event) => {
     // Check the origin to ensure it matches
-    if (event?.origin !== process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN) {
+    if (event?.origin !== process.env.NEXT_PUBLIC_CLIENT_ORIGIN) {
         return; // Ignore messages from untrusted origins
     }
     

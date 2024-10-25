@@ -37,7 +37,7 @@ export default function ManageMembershipPage() {
           // Send message back to parent window (ensure the origin matches)
           window.opener.postMessage(
             { paymentStatus: "success" },
-            process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ORIGIN // Set your domain here
+            process.env.NEXT_PUBLIC_CLIENT_ORIGIN // Set your domain here
           );
  
           // Close the window after notifying the parent
