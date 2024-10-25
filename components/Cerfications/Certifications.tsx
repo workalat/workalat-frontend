@@ -89,7 +89,7 @@ export default function Certifications() {
 
       async function handleSubmit(e  : any ){
         try{
-            if(!file || !certificateData?.name || !certificateData?.month || !certificateData?.year || !certificateData?.isExpired){
+            if(!file || !certificateData?.name || !certificateData?.month || !certificateData?.year){
                 generateSnackbar("Please Fill all the Fields", "error")
             }
             else{
