@@ -15,7 +15,6 @@ export default function ClientDetails({ open, onClose, job, applied }) {
   const [showPhone, setShowPhone] : any = useState(false);
   const [showEmail, setShowEmail] : any = useState(false);
   let router : any = useRouter();
-
   if (!job) {
     return null;
   } 
@@ -41,7 +40,7 @@ export default function ClientDetails({ open, onClose, job, applied }) {
               readOnly
               type={showPhone ? "text" : "password"}
               className="border-none outline-none bg-transparent w-auto"
-              value={job.clientPhoneNo}
+              value={`+${job.clientPhoneNo}`}
             />
             <Button
               onClick={() => setShowPhone(!showPhone)}

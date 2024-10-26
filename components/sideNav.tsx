@@ -45,7 +45,6 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
   
  
   useEffect(() => {
-    console.log(window.location.pathname.split("/")[1])
     if (
       pathname === "/client/dashboard" ||
       pathname.startsWith("/client/dashboard")
@@ -110,7 +109,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
       
     }
     catch(e){
-      console.log(e);
+      // console.log(e);
       generateSnackbar("Some Error Occur, Please try again", "error")
     }
   }
@@ -238,14 +237,25 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
               </span>
             </Typography>
             <Box className="flex justify-between text-secondary mt-2 items-center">
-              <Typography className="text-white">Alat Pro</Typography>
+              {
+                userData?.membershipStatus === "active"
 
-              <Divider
+                ?
+                <>
+                <Typography className="text-white">Alat Pro</Typography>
+                <Divider
                 flexItem
                 orientation="vertical"
                 variant="middle"
                 className="border-slate-400"
               />
+                </>
+                :
+                <>
+                
+                </>
+              }
+
               <button
                 className="py-1"
                 onClick={() => router.push("/membership/manage")}

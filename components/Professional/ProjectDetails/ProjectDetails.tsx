@@ -42,6 +42,7 @@ export default function ProjectDetails({ params }: any) {
                 if(ver?.status === "success" && ver?.userType === "professional"){
                     setUserData(ver);
                     let res = await singleProjectDetails({userId   : ver?.userId, userType: ver?.userType ,projectId : projectId, need : "details"});
+                    console.log(res);
                     if(res?.status !== 400 || res?.data?.status == "success"){
                         setData(res?.data?.data);
                         setLoading2(false);
@@ -171,7 +172,7 @@ async function handleAcceptProject(choice  : any ){
                                 <div className="flex flex-col  justify-center gap-2 items-center my-2 w-full bg-[#F3F3F3] py-2 px-1 mx-auto">
                                     <div className="flex gap-1 overflow-hidden w-auto justify-start items-center">
                                         <div className="text-[13px]">
-                                        <MaskedPhoneNumber phoneNumber={(data?.clientDetails[0]?.clientPhoneNo) ? `${data?.clientDetails[0]?.clientPhoneNo}` : "0000000"}/>
+                                        <MaskedPhoneNumber phoneNumber={(data?.clientDetails[0]?.clientPhoneNo) ? `${data?.clientDetails[0]?.clientPhoneNo.slice(1)}` : "0000000"}/>
                                         </div>
                                     </div>
                                     <div className="w-[2px] bg-[#ABABAB] h-[19px] sm:block hidden"></div>

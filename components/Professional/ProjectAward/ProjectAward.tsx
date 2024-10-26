@@ -51,7 +51,7 @@ export default function ProjectAward() {
   useEffect(() => {
     async function getUser() {
       try {
-        setLoading2(false);
+        setLoading2(true);
         const token : any  = Cookies.get("token");
         const ver  : any  = await VerifyUser(token, "professional");
         if (ver?.status === "success" && ver?.userType === "professional") {
@@ -61,8 +61,10 @@ export default function ProjectAward() {
           });
           if (res?.status !== 400 || res?.data?.status === "success") {
             setAllProjects(res?.data?.data);
+            setLoading2(false);
           } else {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
+            setLoading2(false);
           }
           setLoading2(false);
         } else {

@@ -59,7 +59,7 @@ export default function ProjectAward() {
   useEffect(() => {
     async function getUser() {
       try {
-        setLoading2(false);
+        setLoading2(true);
         const token : any  = Cookies.get("token");
         const ver : any  = await VerifyUser(token, "client");
         if (ver?.status === "success" && ver?.userType === "client") {
@@ -67,8 +67,10 @@ export default function ProjectAward() {
           const res : any  = await allActiveProjectsClient({ clientId: ver.userId });
           if (res?.status !== 400 || res?.data?.status === "success") {
             setAllProjects(res?.data?.data);
+            setLoading2(false);
           } else {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
+            setLoading2(false);
           }
           setLoading2(false);
         } else {

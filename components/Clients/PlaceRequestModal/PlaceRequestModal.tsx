@@ -21,7 +21,7 @@ import Requirements from "./components/requirements";
 import SetupAccount from "./components/setupaccount";
 import EmailOTP from "./components/emailOTP";
 import UploadPicture from "./components/upload-pic";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 type formDataType = {
   service: string;
@@ -98,7 +98,7 @@ const PlaceRequestModal = ({
   const [activeStep, setActiveStep] = useState<number>(0);
   const [stepFormData, setStepFormData] =
     useState<formDataType>(getInitialFormData());
-
+      let router = useRouter();
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("activeStep", JSON.stringify(activeStep));
@@ -222,12 +222,12 @@ const PlaceRequestModal = ({
   };
 
   return (
-    <Modal open={open} className="w-full h-full flex justify-center items-center" onClose={()=>{onClose(); setActiveStep(0);}}>
+    <Modal open={open} className="w-full h-full flex justify-center items-center" onClose={()=>{onClose(); setActiveStep(0); router.refresh();}}>
       <div
         className={`bg-white text-main w-full max-w-xl py-10 ${activeStep === 8 || activeStep === 9 ? "pt-10" : "pt-20"} rounded-lg flex flex-col justify-center items-center gap-6 relative mx-4 sm:mx-0`}
       >
         {activeStep !== 9 && activeStep !== 10 && (
-          <Button className="absolute top-2 right-0 sm:top-6 sm:right-6 z-50" onClick={onClose} >
+          <Button className="absolute top-2 right-0 sm:top-6 sm:right-6 z-50" onClick={()=>{onClose(); router.refresh();}} >
             <Image src={closeIcon} alt="Close" title="close" className="w-6 sm:w-auto" />
           </Button>
         )}

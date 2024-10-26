@@ -26,7 +26,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     isRegistrationComplete : verifyToken?.data?.data[0].isRegsitrationComplete,
                     statusCode : verifyToken?.status,
                     country : verifyToken?.data?.data[0].country,
-                    bidPoints: verifyToken?.data?.data[0]?.totalBidPoints
+                    bidPoints: verifyToken?.data?.data[0]?.totalBidPoints,
+                    membershipStatus : verifyToken?.data?.data[0]?.membershipStatus || null
                 }
                 return(data);
             }
@@ -46,6 +47,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     isRegistrationComplete : null,
                     statusCode : verifyToken?.status,
                     country : null,
+                    membershipStatus : null
                 }
                 return(data);
             }
@@ -65,7 +67,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                 isPhoneVerify : null,
                 isTwoFactAuth : null,
                 isRegistrationComplete : null,
-                statusCode : 400
+                statusCode : 400,
+                membershipStatus : null
             }
             return(data);
 
