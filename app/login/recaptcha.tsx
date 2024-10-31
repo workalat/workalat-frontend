@@ -19,7 +19,7 @@ const Recaptcha  : any  = ({ setIsHuman }) => {
         const response = await verifyRecaptcha(token);
         setIsHuman(response as boolean);
       };
-
+      console.log("Site Key",process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!)
   return (
     <div>
       <ReCAPTCHA
