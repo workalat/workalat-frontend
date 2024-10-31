@@ -189,22 +189,6 @@ const ProfessionalSignupForm = () => {
     }
     
   }
-
-//    async function handleLinkedInLogin(){
-//     try{
-//           const clientId  = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID;
-//           const redirectUri = process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI;
-//           const scope = 'r_liteprofile r_emailaddress'; // Requesting profile and email
-//           const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_LINKEDIN_REDIRECT_SIGNUP_URI}&scope=r_liteprofile%20r_emailaddress`;
-          
-//           // Redirect to LinkedIn login page
-//           window.location.href = linkedInAuthUrl;
-//     }
-//     catch(e){
-//       generateSnackbar("Some error Occur, please Try Again.", "error"); 
-//    }
-// }
-
   return (
     <>
     {

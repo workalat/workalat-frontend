@@ -45,7 +45,7 @@ export default function VerifyEmail() {
 
                 let res : any  = await sendEmailOtp({
                 userId: Cookies.get("userId"),
-                userType: "client",
+                userType: Cookies.get("userType"),
                 email: tempUserData?.userEmail || Cookies?.get("userEmail"),
               });
         
@@ -80,14 +80,14 @@ export default function VerifyEmail() {
         if (otp?.length !== 4) return generateSnackbar("Enter valid OTP", "error");
         
         // TODO: Implement OTP verification
-        let res  : any  = await verifyOtp({otp, userId, userType : "client"});
+        let res  : any  = await verifyOtp({otp, userId, userType : tempUserData?.userType ||  Cookies.get("userType")});
 
 
         if(res?.status === 200 || res?.response?.data?.status === "success"){
 
             generateSnackbar("Email verified.", "success")
             Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
-            let ver  : any  = await VerifyUser(res.data?.token, "client");
+            let ver  : any  = await VerifyUser(res.data?.token, tempUserData?.userType ||  Cookies.get("userType"));
             if(ver?.registerAs === "client"){
               router.push("/client/dashboard")
             }

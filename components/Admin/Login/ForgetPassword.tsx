@@ -8,6 +8,7 @@ import { useUserContext } from "@/context/user_context";
 import Cookies from 'js-cookie';
 import { useSnackbar } from "@/context/snackbar_context";
 import VerifyUser from "@/app/middleware/VerifyUser";
+import { Box, Modal } from "@mui/material";
 
 
 export default function ForgetPassword() {
@@ -22,31 +23,35 @@ export default function ForgetPassword() {
     let [userId, setUserId]  : any  = useState("");
     let router  : any  = useRouter();
     let [loading2, setLoading2] : any  =  useState(true);
+    let [loading, setLoading] : any  =  useState(false);
+    let [message, setMessage] : any = useState("");
     
-  const {setTempUserData,  tempUserData, uType , forgotPassword,sendEmailOtp ,verifyOtp,changeForgotPassword} : any  = useUserContext();
+  const {setTempUserData,  tempUserData , forgotPassword,sendEmailOtp ,verifyOtp,changeForgotPassword} : any  = useUserContext();
 
 
     useEffect(() => {
         async function verify(){
           try{
-            if(!uType){
-                router.push('/');
-            }
-            else{setLoading2(true);
+            setLoading2(true);
                 let token : any  = Cookies.get("token");
-                let ver : any  = await VerifyUser(token,uType);
-                if(ver?.status === "fail"){
-                  setLoading2(false);
+                if(token || token !== undefined){
+                    router.push("/")
                 }
                 else{
-                  if(ver?.registerAs === "professional"){
-                    router.push("/professional/dashboard")
-                  }
-                  else{
-                    router.push("/client/dashboard")
-                  }
+                    setLoading2(false);
                 }
-            }
+                // let ver : any  = await VerifyUser(token,"professional");
+                // if(ver?.status === "fail"){
+                //   setLoading2(false);
+                // }
+                // else{
+                //   if(ver?.registerAs === "professional"){
+                //     router.push("/professional/dashboard")
+                //   }
+                //   else{
+                //     router.push("/client/dashboard")
+                //   }
+                // }
             
           }
           catch(e){
@@ -60,16 +65,19 @@ export default function ForgetPassword() {
        try {
         e.preventDefault();
         // console.log(email);
-        let res : any  = await forgotPassword({email, userType :  uType});
-        // console.log(res)
+        setMessage("Sending OTP on your Email...")
+        setLoading(true);
+        let res : any  = await forgotPassword({email});
         if(res?.status !== 400 || res?.data?.status === "success") {
             setUserId(res?.data?.data[0]?.userId);
             setEmail(res?.data?.data[0]?.email)
+            setUserType(res?.data?.data[0]?.userType)
             setIsVerification(true);
-            
+            setLoading(false);
             generateSnackbar("Please verify your Email.", "success");
         }
         else{
+            setLoading(false);
             generateSnackbar(res?.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
 
         }
@@ -81,15 +89,19 @@ export default function ForgetPassword() {
 
     const handleVerify = async (e: any) => {
        try{
+        setMessage("Verifying OTP...");
+        setLoading(true);
         e.preventDefault();
         let otp = verified.join("");
-        let res : any  = await verifyOtp({otp, userId,userType : uType, type : "forgot"});
+        let res : any  = await verifyOtp({otp, userId,userType : userType, type : "forgot"});
 
         if(res?.status !== 400 || res?.data?.status === "success"){
             setPass(true);
+            setLoading(false);
             generateSnackbar("Please Set New Password.", "success");
         }
         else{
+            setLoading(false);
             generateSnackbar(res?.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
         }
        }
@@ -103,20 +115,19 @@ export default function ForgetPassword() {
             e.preventDefault();
 
             if(password !== confirmPassword){
-                generateSnackbar("Passwords don't match.", "error");
+               return generateSnackbar("Passwords don't match.", "error");
             }
             else{
+            setMessage("Changing Password...");
+            setLoading(true);
             let res : any  = await changeForgotPassword({userId : userId, password : password});
             if(res?.status !== 400 || res?.data?.status === "success"){
                 generateSnackbar("Password Changed Successfully", "success");
-                if(uType === "client"){
-                    router.push("/login")
-                }
-                else{
-                    router.push("/professional/login")
-                }
+                setLoading(false);
+                router.push("/login")
             }
             else{
+                setLoading(false);
                 generateSnackbar(res?.response?.data?.message || "Some Error  Occure, please Try Again.", "error");
             }
             }
@@ -132,19 +143,24 @@ export default function ForgetPassword() {
             e.preventDefault();
             if(userId.length > 0) {
 
+                setMessage("Resending OTP...");
+                setLoading(true);
                 let res : any  = await sendEmailOtp({
                 userId: userId,
-                userType: uType,
+                userType: userType,
                 email: email,
               });
         
               if (res?.status !== 400 || res?.data?.status === "success") {
+                setLoading(false);
                 return generateSnackbar("OTP resend successfully", "success");
               } else {
+                setLoading(false);
                 generateSnackbar("Please login again.", "error");
               }
             } 
             else {
+                setLoading(false);
               generateSnackbar("No user Data Found, please login again.", "error");
               router.push("/login");
             }
@@ -222,12 +238,21 @@ export default function ForgetPassword() {
                             </div>
 
                 }
+                 <Modal open={loading}>
+                    <Box className="w-full h-full flex justify-center items-center">
+                    <Box className="p-4 bg-white rounded-md shadow-md w-full max-w-2xl pt-16 pb-20 flex flex-col justify-center items-center">
+                        <img src="/images/loader.gif" alt="Loading..." className="w-60" />
+                        <h1 className="text-center font-bold text-xl ml-2 capitalize">{message}</h1>
+                    </Box>
+                    </Box>
+                </Modal>
 
             </div>
                 </>
             )
         }
             
+           
         </>
     )
 }

@@ -25,6 +25,7 @@ export default function Certifications() {
         isExpired : false,
     });
     let [file, setFile]  : any = useState({});
+    const [filePill, setFilePill] : any = useState(null);
     let [loading,setLoading] : any  = useState(false);
 
     const openModal = () => {
@@ -83,18 +84,19 @@ export default function Certifications() {
       }, []);
 
       const handleFileChange = (e  : any ) => {
-        const file = e.target.files[0];
-        setFile(file);
+        const files = e.target.files[0];
+        setFile(files);
+        setFilePill(files ? files.name : null);
       };
 
       async function handleSubmit(e  : any ){
+        e.preventDefault();
         try{
             if(!file || !certificateData?.name || !certificateData?.month || !certificateData?.year){
-                generateSnackbar("Please Fill all the Fields", "error")
+                return generateSnackbar("Please Fill all the Fields", "error")
             }
             else{
                 setLoading(true);
-                e.preventDefault();
     
                 const formDat = new FormData();
                 formDat.append('certificationImage', file);
@@ -111,9 +113,10 @@ export default function Certifications() {
                   });
                   if (res?.status !== 400 || res?.data?.status === "success") {
                     setLoading(false);
+                    setFilePill(null);
                     generateSnackbar("Certification has been submitted for Verification.", "success");
                     closeCertification();
-                    // router.refresh();
+                    router.refresh();
                   }
                   else {
                     generateSnackbar(res?.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
@@ -253,6 +256,12 @@ export default function Certifications() {
                                                 </div>
                                             </div>
                                         </div>
+                                        {/* File Pill */}
+                                        {filePill && (
+                                            <div className="file-pill border-2 border-red-200 p-2 bg-green-200 break-words" style={{border: ".5px solid green"}}>
+                                                <span style={{color : "green"}}>{filePill}</span>
+                                            </div>
+                                            )}
                                         <div className="py-2">
                                             <div className="flex flex-col md:flex-row gap-2 items-center">
                                                 <div className="w-full md:w-1/3">
@@ -269,6 +278,7 @@ export default function Certifications() {
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div className="border-t">
                                             <div className="flex justify-center gap-3 pt-7">
                                                 <button type="button" className="flex items-center justify-normal px-4 py-2 text-black bg-white border-2 border-secondary rounded-md gap-2" onClick={closeCertification}>Cancel <FaArrowRight className="size-3" /></button>

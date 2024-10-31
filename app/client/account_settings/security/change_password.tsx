@@ -20,7 +20,7 @@ interface ChangePassProps {
   open: boolean;
   onClose: () => void;
 }
-const ChangePasswordModal = ({ open, onClose ,userId , userType} : any) => {
+const ChangePasswordModal = ({ open, onClose ,userId , userType, registrationType} : any) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,7 +34,7 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType} : any) => {
     try{
       event.preventDefault();
 
-    if (!newPassword || !confirmPassword || !currentPassword) {
+    if (!newPassword || !confirmPassword) {
       return generateSnackbar("Please Enter Password", "error");
     }
 

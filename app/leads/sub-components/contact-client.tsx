@@ -139,8 +139,10 @@ async function handleAdd(current, user2, projectTitle){
 
       if (!data.eligible) {
         generateSnackbar("Cannot apply on this project.", "warning");
+        console.log("already applied");
       } else if (!professionalData?.adminAccessProfessional) {
         generateSnackbar("Admin has restricted your Account.", "error");
+        console.log("already applied");
       }
       else if(professionalData?.payAsGo === true && payPayment === "unpaid"){
           payAsGenerate(projectId,userData.userId);

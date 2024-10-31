@@ -70,6 +70,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   let [googleData, setGoogleData] = useState({});
+  let [userId, setUserId] = useState("");
 
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,9 +118,10 @@ const LoginPage = () => {
 
   async function handleContinueWithGoole(){
     try{
+      console.log(googleData)
       if(Object.keys(googleData).length !== 0){
           let res  : any = await continueWithGoogleProfessional(googleData, "professional");
-          // console.log(res);
+          console.log(res);
           if(res?.data?.userStatus === "SUCCESS"){
         if(res.data?.newAccount === true || res.data?.newAccount ){
           // redirect
@@ -133,18 +135,18 @@ const LoginPage = () => {
           Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
           router.push("/professional/onboard/formpage")
         }
-      //   else{
-      //     generateSnackbar("Some error Occur, please Try Again.", "error"); 
-      //   }
+        else{
+          generateSnackbar("Some error Occur, please Try Again.", "error"); 
+        }
 
-      // }
-      // else if(res?.data?.userStatus === "PENDING"){
-      //     setUserId(res?.data?.data[0]?.userId);
-      //     Cookies.set("userId", res?.data?.data[0]?.userId);
-      //     generateSnackbar("Please Verify OTP", "success");
+      }
+      else if(res?.data?.userStatus === "PENDING"){
+          setUserId(res?.data?.data[0]?.userId);
+          Cookies.set("userId", res?.data?.data[0]?.userId);
+          generateSnackbar("Please Verify OTP", "success");
 
-      //   // redirect
-      //   router.push("/professional/login/verify-email");
+        // redirect
+        router.push("/professional/login/verify-email");
       }
       else{
         generateSnackbar("Some error Occur, please Try Again.", "error"); 

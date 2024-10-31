@@ -72,7 +72,7 @@ export default function VerifyEmail() {
         e.preventDefault();
         if(!userId || userId?.length === 0){
             generateSnackbar("Please Login Again.", "error");
-            router.push("/professional/login");
+            router.push("/login");
         }
         
 
@@ -86,7 +86,7 @@ export default function VerifyEmail() {
         if(res?.status === 200 || res?.response?.data?.status === "success"){
 
             generateSnackbar("Email verified. Login to continue.", "success")
-            router.push("/professional/login");
+            router.push("/login");
         }
         else{
             generateSnackbar("Invalid OTP" ,"error")

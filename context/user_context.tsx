@@ -312,17 +312,16 @@ async function findAllServices(){
 
 async function signinProfessional({email, password, userType} : any ){
   try{
-    if(userType === "professional"){
+    // if(userType === "client"){
       const response  : any = await axios.post('/signinEmail', {
         email : email,
         pass : password,
-        userType : userType
       });
   
-      if(response.data.userStatus === 'success' || response.data.userStatus === 'SUCCESS'){
+      if(response?.data?.userStatus === "success" ||  response?.data?.userStatus === "SUCCESS"){
         const verifyToken  : any  = await axios.post('/verify', {
-          type : "professional",
-          token : response.data?.token,
+          type : response?.data?.userType,
+          token : response?.data?.token,
           auth : true
         });
         
@@ -340,7 +339,7 @@ async function signinProfessional({email, password, userType} : any ){
 
         return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
       }
-      else if(response.data.userStatus === 'PENDING'){
+      else if(response?.data?.userStatus === 'PENDING'){
         setUserData({
           ...userData,
           userId : response?.data?.data[0]?.userId,
@@ -351,52 +350,52 @@ async function signinProfessional({email, password, userType} : any ){
         Cookies.set("userType", response?.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
         Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         return({response : response , isTwoFactAuth : true});
-      }   
-    }
-    else{
-      const response  : any  = await axios.post('/signinEmail', {
-        email : email,
-        pass : password,
-        userType : userType
-      });
+      }     
+      // }
+    // else{
+    //   const response  : any  = await axios.post('/signinEmail', {
+    //     email : email,
+    //     pass : password,
+    //     userType : userType
+    //   });
   
 
-      if(response?.data.userStatus === 'success' || response?.data.userStatus === 'SUCCESS'){
-        const verifyToken = await axios.post('/verify', {
-          type : "client",
-          token : response?.data?.token,
-          auth : true
-        });
-        // console.log("Token", verifyToken)
-        setUserData({
-          token : response?.data?.token,
-          userId : verifyToken?.data?.userId,
-          userName : verifyToken?.data?.data[0]?.fullName,
-          userPicture : verifyToken?.data?.data[0]?.pictureLink,
-          userType : verifyToken?.data?.userType,
-          userRegisterAs : verifyToken?.data?.data[0]?.registerAs,
-        })
+    //   if(response?.data.userStatus === 'success' || response?.data.userStatus === 'SUCCESS'){
+    //     const verifyToken = await axios.post('/verify', {
+    //       type : "client",
+    //       token : response?.data?.token,
+    //       auth : true
+    //     });
+    //     // console.log("Token", verifyToken)
+    //     setUserData({
+    //       token : response?.data?.token,
+    //       userId : verifyToken?.data?.userId,
+    //       userName : verifyToken?.data?.data[0]?.fullName,
+    //       userPicture : verifyToken?.data?.data[0]?.pictureLink,
+    //       userType : verifyToken?.data?.userType,
+    //       userRegisterAs : verifyToken?.data?.data[0]?.registerAs,
+    //     })
     
-        // console.log( verifyToken.data?.userType);
-        Cookies.set("token", response?.data?.token, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userType", verifyToken.data?.userType,  { secure: true, sameSite: 'None',expires: 30 });
-        return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
-      }
-      else if(response?.data.userStatus === 'PENDING'){
-        setUserData({
-          ...userData,
-          userId : response?.data?.data[0]?.userId,
-          userType : response?.data?.data[0]?.userType,
-        });
-        setTempUserData({...tempUserData, "userEmail" :response?.data?.data[0]?.email});
-        setUserId(response?.data?.data[0]?.userId);
-        Cookies.set("userType",response?.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
-        Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
-        // Cookies.set("userType", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
-        return({response : response , isTwoFactAuth : true});
-      } 
+    //     // console.log( verifyToken.data?.userType);
+    //     Cookies.set("token", response?.data?.token, { secure: true, sameSite: 'None',expires: 30 });
+    //     Cookies.set("userType", verifyToken.data?.userType,  { secure: true, sameSite: 'None',expires: 30 });
+    //     return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
+    //   }
+    //   else if(response?.data.userStatus === 'PENDING'){
+    //     setUserData({
+    //       ...userData,
+    //       userId : response?.data?.data[0]?.userId,
+    //       userType : response?.data?.data[0]?.userType,
+    //     });
+    //     setTempUserData({...tempUserData, "userEmail" :response?.data?.data[0]?.email});
+    //     setUserId(response?.data?.data[0]?.userId);
+    //     Cookies.set("userType",response?.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
+    //     Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
+    //     // Cookies.set("userType", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
+    //     return({response : response , isTwoFactAuth : true});
+    //   } 
 
-    }
+    // }
   }
   catch(e){
     // console.log(e);
@@ -570,12 +569,11 @@ async function clientDetailsAdd({clientId, email, name, pass, confirmPass, userT
 };
 
 
-async function forgotPassword({email, userType} : any ){
+async function forgotPassword({email} : any ){
     // console.log(email, userType);
     try{
       const response  : any  = await axios.post('/forgetPasswordLoginEmail', {
         userEmail : email,
-        userType
         });
         // console.log(response);
         return(response);

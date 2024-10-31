@@ -27,7 +27,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     statusCode : verifyToken?.status,
                     country : verifyToken?.data?.data[0].country,
                     bidPoints: verifyToken?.data?.data[0]?.totalBidPoints,
-                    membershipStatus : verifyToken?.data?.data[0]?.membershipStatus || null
+                    membershipStatus : verifyToken?.data?.data[0]?.membershipStatus || null,
+                    registrationType : verifyToken?.data?.data[0]?.registrationType
                 }
                 return(data);
             }

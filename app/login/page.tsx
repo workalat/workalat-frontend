@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { FaLinkedin } from "react-icons/fa6";
+import { loginWithGoogle, loginWithLinkedin } from "./action";
 import {
   Box,
   Button,
@@ -49,32 +52,32 @@ const LoginPage = () => {
 
 
 
-
+  async function verify(){
+    try{
+      setLoading2(true);
+      let token  : any = Cookies.get("token");
+      let ver  : any = await VerifyUser(token, "client", false);
+      if(ver?.status === "fail"){
+        setLoading2(false);
+      }
+      else{
+        if(ver?.registerAs === "professional"){
+          router.push("/professional/dashboard")
+        }
+        else{
+          router.push("/client/dashboard")
+        }
+      }
+    }
+    catch(e){
+      // console.log(e);
+    }
+  };
 
   useEffect(() => {
     theme.toggleTheme();
-    async function verify(){
-      try{
-        setLoading2(true);
-        let token  : any = Cookies.get("token");
-        let ver  : any = await VerifyUser(token, "client", false);
-        if(ver?.status === "fail"){
-          setLoading2(false);
-        }
-        else{
-          if(ver?.registerAs === "professional"){
-            router.push("/professional/dashboard")
-          }
-          else{
-            router.push("/client/dashboard")
-          }
-        }
-      }
-      catch(e){
-        console.log(e);
-      }
-    };
     verify();
+  
   }, []);
 
 
@@ -140,7 +143,7 @@ const LoginPage = () => {
         router.push("/login/verify-email");
       }
       else{
-        generateSnackbar("Some error Occur, please Try Again.", "error"); 
+        generateSnackbar( res?.response?.data?.message.incluedes("Please use Another Email") ? "Please use Another Email" : "Some error Occur, please Try Again.", "error"); 
       }
     
       }
@@ -164,18 +167,18 @@ const LoginPage = () => {
         }
         setLoading(true);
         let res  : any = await signinProfessional({email, password, userType : "client"});
-        
+         
         setLoading(false);
     
-        if(res?.status !== 400 || res?.response.data?.status === "success"){
+        if(res?.status !== 400 || res?.response?.data?.status === "success"){
         if(res?.isTwoFactAuth === false || !res?.isTwoFactAuth) {
           generateSnackbar("Logged in successfully!", "success");
-          let ver  : any = await VerifyUser(res.response?.data.token, "client");
+          let ver  : any = await VerifyUser(res?.response?.data?.token, res?.response?.data?.userType);
           if(ver?.registerAs === "client"){
             router.push("/client/dashboard");
           }
           else{
-            router.push("/professional/dashboard");
+            router.push("/professional/onboard/phone");
           }
         }
         else{
@@ -286,7 +289,7 @@ const LoginPage = () => {
             </p>
           </div>
           <div className="flex flex-col gap-4 mt-6">
-          <div className='flex justify-center items-center'>
+          {/* <div className='flex justify-center items-center'>
               <GoogleLogin 
                 onSuccess={(credentialResponse : any) => {
                     let decode = jwtDecode(credentialResponse.credential);
@@ -294,17 +297,35 @@ const LoginPage = () => {
                     handleContinueWithGoole();
                 }}
                 onError={() => {
-                    console.log('Login Failed');
+                    // console.log('Login Failed');
                 }}
                 />
-                </div>
-          <Link
-              href={"/"}
+                </div> */}
+
+                <Button
+              onClick={() => {
+                loginWithGoogle();
+              }}
+              href={""}
+              style={{
+                border: "1px solid main",
+                color : "black"
+              }}
+              className="border border-main border-opacity-15 transition-colors hover:bg-secondary shadow-md flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
+            >
+              <img src={gmailIcon.src} alt="" />
+              Continue with Google
+            </Button>
+
+          <Button
+              onClick={() => {
+                loginWithLinkedin();
+              }}
               className="bg-main hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
             >
               <img src={linkedInIcon.src} alt="" />
               Continue with LinkedIn
-            </Link>
+            </Button>
           </div>
           <div className="text-sm text-center mt-10 font-bold">
             <p>

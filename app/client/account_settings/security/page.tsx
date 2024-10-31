@@ -87,6 +87,7 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
         setLoading2(true);
         let token  : any  = Cookies.get("token");
         let ver  : any  = await VerifyUser(token, "client");
+        console.log(ver);
         if(ver.status === "success"){
             let data = await lastDatesDetails({userId : ver.userId, userType : "client"});
             setPageDate(data?.data?.data?.ChangingDates[0]);
@@ -249,11 +250,13 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                       Password
                     </Typography>
                     <Typography>Last Changed {formatDate(pageDate.passwordLast)}</Typography>
+
                     <Button
                       variant="contained"
                       color="primary"
                       className="gap-2 py-3 px-6 font-semibold"
                       onClick={() => setIsPasswordModalOpen(true)}
+                      // disabled={(userData.registrationType === "google" || userData.registrationType === "linkedin") ? true : false}
                     >
                       Change Password
                       <Image alt="Change password" src={arrowRight} />
