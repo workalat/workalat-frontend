@@ -1219,7 +1219,7 @@ async function generateInvoice({ sessionId}){
 async function walletPointsData(){
   try{
     const response  : any  = await axios.get('/getPointsWallet');
-      // console.log(response);
+      console.log(response);
       return(response);
   }
   catch(e){
@@ -1322,7 +1322,7 @@ async function payAsGoSession({projectId ,professionalId}){
       professionalId,
       projectId
       });
-      // console.log(response);
+      console.log(response);
       return(response);
   }
   catch(e){
@@ -1420,6 +1420,7 @@ async function applyJob({ professionalId, projectId, proposal,proposalType}){
         proposal,
         proposalType
       });
+      console.log(response);
       return(response);
   }
   catch(e){

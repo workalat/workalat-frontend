@@ -12,6 +12,8 @@ import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from '@/context/user_context';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/context/firebase";
 
 type PreferencesProp = {
   activateChat: boolean;
@@ -75,6 +77,37 @@ const PreferenceSettings = () => {
 
   async function handleSave(){
     try{
+      
+      let userChatRef = doc(db, "usersChats", userData?.userId);
+      let userChatsSnapShot : any = await getDoc(userChatRef);
+      if(userChatsSnapShot.exists()){
+        let userChatsData  : any  = userChatsSnapShot.data();
+        let change  = userChatsData?.chats?.map(async (val, i)=>{
+          val.activeChat = activateChat
+          let userChatRef2 = doc(db, "usersChats", val?.receiverId);
+          let userChatsSnapShot2 : any = await getDoc(userChatRef2);
+          if(userChatsSnapShot2.exists()){
+            let userChatsData2  : any  = userChatsSnapShot2.data();
+            let change2 = userChatsData2?.chats?.map((val, i)=>{
+              if(val?.receiverId === userData?.userId){
+                val.activeChat = activateChat
+                return(val)
+              }
+              else{
+                return(val);
+              }
+            });
+            await updateDoc(userChatRef2, {
+              chats : userChatsData2?.chats
+            });
+          }
+          return(val)
+        });
+        await updateDoc(userChatRef, {
+          chats :userChatsData?.chats
+        });
+      }
+
       let m = await setMark({userId : userData?.userId,userType : userData?.userType,current_value : !markUnavailable});
       let a = await setChat({userId : userData?.userId,userType : userData?.userType,current_value : !activateChat});
       if((a?.status === 200 && m?.status === 200 )|| (a?.data?.status === "success" && m?.data?.status === "success" )){

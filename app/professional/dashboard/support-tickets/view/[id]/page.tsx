@@ -46,9 +46,10 @@ export default function ViewSupportTickets() {
             if(ver?.status === "success"){
               setUserData(ver);
               let res : any  = await findSingleTicket({ticketId : params.id});
+              console.log(res);
               if(res?.status !== 400 || res?.data?.status === 'success'){
-              setTicketData(res.data?.data);
-              setAllTicketMessages(res.data?.data?.ticketMessages.reverse());
+              setTicketData(res?.data?.data);
+              setAllTicketMessages(res?.data?.data?.ticketMessages.reverse());
               setLoading2(false);
               }
               else{
@@ -155,7 +156,7 @@ export default function ViewSupportTickets() {
                             <div className="flex justify-between">
                                 <div className="flex gap-3">
                                     <h4 className="text-[20px] text-white font-semibold py-2 tracking-wide">Ticket Details</h4>
-                                    <button className="bg-[#FFBE00] text-black px-4 capitalize py-1 rounded text-[12px] xl:text-[15px] font-bold capitalize">Waiting on {ticketData?.ticketStatus}</button>
+                                    <button className="bg-[#FFBE00] text-black px-4 py-1 rounded text-[12px] xl:text-[15px] font-bold capitalize">Waiting on {ticketData?.ticketStatus}</button>
                                 </div>
 
                             </div>
@@ -166,7 +167,7 @@ export default function ViewSupportTickets() {
                                 </div>
                                 <div className="w-[48%] md:w-auto">
                                     <h5 className="text-[20px] font-semibold tracking-wide text-white">Ticket ID</h5>
-                                    <p className="capitalize text-[15px] text-white font-semibold tracking-wide leading-[1.5]">{ticketData?._id}</p>
+                                    <p className="capitalize text-[15px] text-white font-semibold tracking-wide leading-[1.5]">{ticketData?.ticketNumber}</p>
                                 </div>
                                 <div className="w-[48%] md:w-auto">
                                     <h5 className="text-[20px] font-semibold tracking-wide text-white">Department</h5>

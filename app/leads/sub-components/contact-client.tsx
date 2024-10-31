@@ -145,15 +145,18 @@ async function handleAdd(current, user2, projectTitle){
         console.log("already applied");
       }
       else if(professionalData?.payAsGo === true && payPayment === "unpaid"){
+        console.log("OAy as and un paid");
           payAsGenerate(projectId,userData.userId);
       }
       else if(professionalData?.payAsGo === true && payPayment === "paid"){
+        console.log("OAy as and paid");
           let res : any = await applyJob({
             professionalId: professionalData?._id,
             projectId: data?.projectId,
             proposal: proposalMessage,
             proposalType: "points",
           });
+          console.log(res);
           if (res?.status !== 400 || res?.data?.status === "success") {
             generateSnackbar("Bid Sent successfully.", "success");
             setClientData(res?.data?.data[0]);

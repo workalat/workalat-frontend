@@ -313,9 +313,35 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                     </Typography>
                     <Typography>Last Changed {formatDate(pageDate.kycLast)}</Typography>
                     {
-                      (kycStatus !== "pending" && kycStatus !== "approved") &&(
-                        
-                        <Button
+                      (kycStatus !== "pending" )
+
+                      ?
+                      <Button
+                        variant="contained"
+                        // onClick={openModal}
+                        color="primary"
+                        className="gap-2 py-3 px-6 font-semibold"
+                        // disabled={true}
+                      >
+                        Pending
+                      </Button>
+
+                      :
+                      (kycStatus !== "approved")
+
+                      ?
+                      <Button
+                        variant="contained"
+                        // onClick={openModal}
+                        className="gap-2 py-3 px-6 font-semibold"
+                        style={{color : "green"}}
+                      >
+                        Approved
+                        {/* <Image alt="Change password" src={arrowRight} /> */}
+                      </Button>
+
+                      :
+                      <Button
                         variant="contained"
                         onClick={openModal}
                         color="primary"
@@ -324,7 +350,19 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                         Enable
                         <Image alt="Change password" src={arrowRight} />
                       </Button>
-                      )
+
+                      // (kycStatus !== "pending" && kycStatus !== "approved") &&(
+                        
+                      //   <Button
+                      //   variant="contained"
+                      //   onClick={openModal}
+                      //   color="primary"
+                      //   className="gap-2 py-3 px-6 font-semibold"
+                      // >
+                      //   Enable
+                      //   <Image alt="Change password" src={arrowRight} />
+                      // </Button>
+                      // )
                     }
                   </Box>
                 </Grid>

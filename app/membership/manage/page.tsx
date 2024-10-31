@@ -220,8 +220,8 @@ export default function ManageMembershipPage() {
                                                         </td>
                                                         <td className="px-4 text-end">{`${data?._id.slice(0, 25)}...`}</td>
                                                         <td className="px-4 text-end">
-                                                            <p className="font-semibold">{data?.totalTransactionAmount}</p>
-                                                            <p className="text-xs"> {`£ ${data.transactionAmount} (+£${data?.transactionAmountTax})`}  VAT</p>
+                                                            <p className="font-semibold">£{data?.totalTransactionAmount}</p>
+                                                            <p className="text-xs"> {`£${data.transactionAmount} (+£${data?.transactionAmountTax})`}  VAT</p>
                                                         </td>
                                                     </tr>
                                                 ))

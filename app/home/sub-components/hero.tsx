@@ -111,19 +111,19 @@ const [selectedService, setSelectedService] : any = useState<string>("");
 
   return (
 
-<div className="flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6">
-  <div className="max-w-[800px] flex flex-col gap-9 relative z-10">
+<div className="flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6 py-0 mt-[-10%]">
+  <div className="max-w-[800px] flex flex-col gap-7 relative z-10">
     <h1 className="text-white text-4xl md:text-5xl font-bold">
       Find verified professionals you can trust
     </h1>
     <p className="text-white text-xl sm:text-xl">It takes a few clicks...</p>
     <Box
       component={"form"}
-      className="flex items-center flex-wrap gap-4 bg-white py-2 px-3 rounded-md border-2 border-transparent transition-all [&:has(input:focus)]:border-secondary w-full" // Increased width slightly
+      className="flex items-center flex-wrap gap-4 bg-white  px-2 rounded-md border-2 border-transparent transition-all [&:has(input:focus)]:border-secondary w-full" // Increased width slightly
       // onSubmit={handleSearch}
     >
       {/* Services Input */}
-      <div className="flex w-full md:max-w-[300px]">
+      <div className="flex w-full md:max-w-[350px]">
         <img
           alt=""
           className={inputFocus || category !== "" ? "opacity-100" : "opacity-40"}
@@ -171,13 +171,18 @@ const [selectedService, setSelectedService] : any = useState<string>("");
                 onFocus: () => setInputFocus(true),
                 onBlur: () => setInputFocus(false),
               }}
+              sx={{
+                "& input::placeholder": {
+                  fontSize: "1rem", // Adjust placeholder font size here
+                },
+              }}
             />
           )}
         />
       </div>
 
       {/* Postcode Input */}
-      <div className="flex w-full md:max-w-[300px]">
+      <div className="flex w-full md:max-w-[250px]">
 
         <Autocomplete
           disablePortal
@@ -217,6 +222,7 @@ const [selectedService, setSelectedService] : any = useState<string>("");
                       width={18}
                     />
                 ),
+                endAdornment: postCode ? params.InputProps.endAdornment : null
               }}
             />
           )}
@@ -226,7 +232,7 @@ const [selectedService, setSelectedService] : any = useState<string>("");
 
       {/* Search Button */}
       <Button
-        className="bg-secondary text-main px-6 py-2 rounded-md disabled:text-opacity-40 flex-shrink-0"
+        className="bg-secondary text-main px-6 py-2 rounded-md disabled:text-opacity-40 flex-shrink-0 md:w-auto w-[100%] mb-1"
         type="submit"
         onClick={handleSubmit}
       >

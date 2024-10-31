@@ -10,12 +10,12 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import DoneIcon from "@mui/icons-material/Done";
 import { Box, Rating, Tooltip, Typography } from "@mui/material"
+import { useSnackbar } from "@/context/snackbar_context";
 import { ReactNode, useState } from "react"
 import DOMPurify from 'dompurify';
 import { useRouter } from 'next/navigation';
 import moment from "moment"
 export default function Profile({data, isData}  : any ) {
-    console.log(data);
     const sanitizedBio = DOMPurify.sanitize(data.professionalBio);
     let profile = 20;
     (data.isEmailVerify ? profile +=20 : profile +=0);
@@ -23,6 +23,7 @@ export default function Profile({data, isData}  : any ) {
     (data.isRegistrationComplete ? profile +=20 : profile +=0);
     (data.isPaymentVerify ? profile +=20 : profile +=0);
     
+    const { generateSnackbar } = useSnackbar();
 
     const VerifiedCell = ({
         isVerified,
@@ -64,7 +65,8 @@ export default function Profile({data, isData}  : any ) {
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
-        alert('Link copied to clipboard!');
+        generateSnackbar("Link copied to clipboard!", "success")
+        // alert('Link copied to clipboard!');
         setIsOpen(false); // Close the dropdown after copying
     };
     return (
@@ -133,7 +135,8 @@ export default function Profile({data, isData}  : any ) {
 
                                                 {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
 
-                                                {data?.professionalCountry}</p>
+                                                {/* {data?.professionalCountry} */}
+                                                </p>
                                             <p className="text-xs capitalize ps-4">joined on {moment(data?.accountCreationDate).format('MMMM D, YYYY')}</p>
                                         </div>
                                     </div>

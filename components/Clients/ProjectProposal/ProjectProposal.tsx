@@ -166,10 +166,13 @@ async function getUser(){
                             <div className="flex items-end gap-2 flex-col lg:flex-row p-4 my-2 shadow bg-[#F3F3F3]" key={i}>
                                 <div className="w-full lg:w-3/4">
                                     <div className="flex">
+                                        <Link href={`/professional/profile/${d?._id}`} target="_blank">
                                         <img className="w-[60px] h-[60px] object-cover" src={d?.professionalPicture} alt="work alat" />
-
+                                        </Link>
                                         <div className="px-2">
+                                        <Link href={`/professional/profile/${d?._id}`} target="_blank">
                                             <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center capitalize">{d?.professionalName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /></span></h2>
+                                            </Link>
                                             <div className="flex items-center gap-1">
                                                 <div className="flex gap-1">
                                                    
@@ -205,15 +208,15 @@ async function getUser(){
 
                                     <div className="flex items-center justify-center pt-3 space-x-4">
                                         {/* Close Button */}
-                                        <button
+                                        {/* <button
                                             onClick={handleDeselectAll}
                                             className="p-1 bg-gray-900 text-white rounded-md"
-                                        >
-                                            <AiOutlineClose size={12} />
-                                        </button>
+                                        > */}
+                                            {/* <AiOutlineClose size={12} /> */}
+                                        {/* </button> */}
 
                                         {/* Rating Checkboxes */}
-                                        <div className="flex space-x-1">
+                                        {/* <div className="flex space-x-1">
                                             {[1, 2, 3, 4, 5].map((num) => (
                                                 <button
                                                     key={num}
@@ -224,12 +227,12 @@ async function getUser(){
                                                     <IoCheckmarkSharp className="size-[15px] text-white" />
                                                 </button>
                                             ))}
-                                        </div>
+                                        </div> */}
 
                                         {/* Filter Icon */}
-                                        <div>
+                                        {/* <div>
                                             <IoFilter className="size-[22px] text-[#07242B]" />
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>

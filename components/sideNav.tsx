@@ -10,6 +10,7 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import HelpIcon from "@mui/icons-material/Help";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { FaUserEdit } from "react-icons/fa";
+import Chip from '@mui/material/Chip';
 import { usePathname } from "next/navigation";
 
 import projectsIcon from "@/public/icons/projects.svg";
@@ -236,12 +237,40 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
                 <FaUserEdit />
               </span>
             </Typography>
-            <Box className="flex justify-between text-secondary mt-2 items-center">
+            <Box className="flex justify-between gap-1 text-secondary mt-2 items-center">
               {
                 userData?.membershipStatus === "active"
 
                 ?
                 <>
+                <Chip
+                className={"bg-secondary"}
+                  label={
+                    <Box display="flex" alignItems="center">
+                      <span className="text-[.95rem]">Pro</span>
+                      <img src="/pro.png" alt="Loading..." className="w-[25px] h-[25px] ml-1" />
+                    </Box>
+                  }
+                  variant="outlined"
+                  sx={{ width: "100%", display: "flex" }}
+                />
+                <Divider
+                flexItem
+                orientation="vertical"
+                variant="middle"
+                className="border-slate-400"
+              />
+                <button
+                  className="py-1"
+                  onClick={() => router.push("/membership/manage")}
+                >
+                  Manage
+                </button>
+                
+                </>
+                :
+                <>
+                
                 <Typography className="text-white">Alat Pro</Typography>
                 <Divider
                 flexItem
@@ -249,19 +278,16 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
                 variant="middle"
                 className="border-slate-400"
               />
-                </>
-                :
-                <>
+                <button
+                  className="py-1"
+                  onClick={() => router.push("/membership/manage")}
+                >
+                  Manage
+                </button>
                 
                 </>
               }
 
-              <button
-                className="py-1"
-                onClick={() => router.push("/membership/manage")}
-              >
-                Manage
-              </button>
             </Box>
           </Box>
         </Box>

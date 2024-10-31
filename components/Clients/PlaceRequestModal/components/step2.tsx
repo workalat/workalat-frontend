@@ -133,7 +133,7 @@ const Step2: React.FC<Step2Props> = ({ handleNext, updateFormData, handlePrev } 
 
   return (
     <>
-      <h1 className="text-2xl sm:text-3xl font-bold text-center md:mt-8 capitalize">
+      <h1 className="text-xl sm:text-2xl font-bold text-center md:mt-8 capitalize">
         {currentQuestion.questionTitle}
       </h1>
       <form className="flex flex-col gap-0 px-2 sm:px-4 pr-8 sm:pr-12 w-full">

@@ -66,7 +66,7 @@ export default function ProjectAward() {
           setUserData(ver);
           const res : any  = await allActiveProjectsClient({ clientId: ver.userId });
           if (res?.status !== 400 || res?.data?.status === "success") {
-            setAllProjects(res?.data?.data);
+            setAllProjects(res?.data?.data?.reverse());
             setLoading2(false);
           } else {
             generateSnackbar("Some error occurred, Please Try Again.", "error");

@@ -60,7 +60,7 @@ export default function ProjectAward() {
             userId: ver?.userId,
           });
           if (res?.status !== 400 || res?.data?.status === "success") {
-            setAllProjects(res?.data?.data);
+            setAllProjects(res?.data?.data?.reverse());
             setLoading2(false);
           } else {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
@@ -150,7 +150,7 @@ export default function ProjectAward() {
                     >
                       <div>
                         <p
-                          className={`text-[12px] text-black/50 ${data?.projectStatusProfessional === "awarded" || data?.projectStatusProfessional === "completed" ? "bg-[#04842F33]" : "bg-[#EA740E33]"} absolute left-3 top-[20%] font-semibold capitalize px-2 py-1 rounded-[20px]`}
+                          className={`text-[12px] text-black/50 ${data?.projectStatusProfessional === "awarded" || data?.projectStatusProfessional === "completed" ? "bg-[#04842F33]" : "bg-[#EA740E33]"} absolute left-3 top-[10%] font-semibold capitalize px-2 py-1 rounded-[20px]`}
                         >
                           {data?.projectStatusProfessional}
                         </p>

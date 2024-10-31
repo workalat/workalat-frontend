@@ -15,6 +15,7 @@ import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import DoneIcon from "@mui/icons-material/Done";
 import { Box, Rating, Tooltip, Typography } from "@mui/material"
 import DOMPurify from 'dompurify';
+import { useSnackbar } from "@/context/snackbar_context";
 import moment from "moment"
 
 
@@ -26,6 +27,7 @@ export default function ProfilePage() {
     let id = params.id; 
     let [data,setData] : any  = useState({});
     let [isData,setIsData]  : any = useState(false);
+    const { generateSnackbar } = useSnackbar();
 
   
 
@@ -102,7 +104,8 @@ export default function ProfilePage() {
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
-        alert('Link copied to clipboard!');
+        generateSnackbar("Link copied to clipboard!", "success")
+        // alert('Link copied to clipboard!');
         setIsOpen(false); // Close the dropdown after copying
     };
     
@@ -170,7 +173,8 @@ export default function ProfilePage() {
 
                                                 {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
 
-                                                {data?.clientCountry}</p>
+                                                {/* {data?.clientCountry} */}
+                                                </p>
                                             <p className="text-xs capitalize ps-4">joined on {moment(data.accountCreationDate).format('MMMM D, YYYY')}</p>
                                         </div>
                                     </div>
@@ -227,7 +231,7 @@ export default function ProfilePage() {
                         <div className="w-full">
                             <h4 className="font-semibold pb-3 pt-2">Verifications</h4>
                             <Box className="flex gap-4">
-                                {data.kycStatus && (
+                                {data?.kycStatus && (
                                     <VerifiedCell
                                         isVerified={(data.kycStatus === "approved") ? true : false}
                                         Icon={
@@ -236,7 +240,7 @@ export default function ProfilePage() {
                                         name="identity"
                                     />
                                 )}
-                                {true && (
+                                {data?.isClientPhoneNoVerify && (
                                     <VerifiedCell
                                         isVerified={data.isClientPhoneNoVerify}
                                         Icon={
@@ -245,14 +249,14 @@ export default function ProfilePage() {
                                         name="phone"
                                     />
                                 )}
-                                {true && (
+                                {data?.isClientEmailVerify && (
                                     <VerifiedCell
                                         isVerified={data?.isClientEmailVerify}
                                         Icon={<EmailOutlinedIcon className={(data.isClientEmailVerify) ?"text-[rgba(4,132,47,1)]" : "text-yellow-500"} />}
                                         name="email"
                                     />
                                 )}
-                                {true && (
+                                {/* {true && (
                                     <VerifiedCell
                                         isVerified={data?.isPaymentVerify}
                                         Icon={
@@ -260,7 +264,7 @@ export default function ProfilePage() {
                                         }
                                         name="payment"
                                     />
-                                )}
+                                )} */}
                             </Box>
 
                             {/* <div className="py-2">

@@ -42,13 +42,13 @@ export default function ProjectDetails({ params }: any) {
                 if(ver?.status === "success" && ver?.userType === "professional"){
                     setUserData(ver);
                     let res = await singleProjectDetails({userId   : ver?.userId, userType: ver?.userType ,projectId : projectId, need : "details"});
-                    console.log(res);
+                    // console.log(res);
                     if(res?.status !== 400 || res?.data?.status == "success"){
                         setData(res?.data?.data);
                         setLoading2(false);
                     }
                     else{
-                        generateSnackbar("Some error occure, Please Try Again.", "error");
+                        // generateSnackbar("Some error occure, Please Try Again.", "error");
                         router.push("/professional/my-responses")
                     }
                 }
@@ -72,13 +72,14 @@ async function handleAcceptProject(choice  : any ){
             professionalId : userData.userId,
             projectId : params.id,
             choice
-        })
+        });
+        console.log(task);
         if(task?.status !== 400 || task?.data?.status === "success"){
-            generateSnackbar("Project Accepted Successfully", "success");
+            generateSnackbar(task?.data?.message || "Project Status Changed Successfully.", "success");
             router.refresh();
         }
         else{
-            generateSnackbar( task?.response?.data?.message || "Some Error Occured, Please Try Again.", "success");
+            // generateSnackbar( task?.response?.data?.message || "Some Error Occured, Please Try Again.", "success");
             router.push("/professional/my-responses/")
         }
     }

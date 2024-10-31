@@ -25,7 +25,7 @@ const ChangePasswordModal = ({ open, onClose ,userId , userType, registrationTyp
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  
+
   const { generateSnackbar } = useSnackbar();
   
   let { changePassword } = useUserContext();

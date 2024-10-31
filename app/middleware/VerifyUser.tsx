@@ -28,7 +28,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     country : verifyToken?.data?.data[0].country,
                     bidPoints: verifyToken?.data?.data[0]?.totalBidPoints,
                     membershipStatus : verifyToken?.data?.data[0]?.membershipStatus || null,
-                    registrationType : verifyToken?.data?.data[0]?.registrationType
+                    registrationType : verifyToken?.data?.data[0]?.registrationType,
+                    adminAccess : verifyToken?.data?.data[0]?.adminAccess,
                 }
                 return(data);
             }
@@ -48,7 +49,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     isRegistrationComplete : null,
                     statusCode : verifyToken?.status,
                     country : null,
-                    membershipStatus : null
+                    membershipStatus : null,
+                    adminAccess : null
                 }
                 return(data);
             }
@@ -69,7 +71,8 @@ async function VerifyUser (token: string, userType : string, auth=false){
                 isTwoFactAuth : null,
                 isRegistrationComplete : null,
                 statusCode : 400,
-                membershipStatus : null
+                membershipStatus : null,
+                adminAccess  : null
             }
             return(data);
 
@@ -89,6 +92,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
             isPhoneVerify : null,
             isTwoFactAuth : null,
             isRegistrationComplete : null,
+            adminAccess : null,
             statusCode : e.status
         }
         return(data);

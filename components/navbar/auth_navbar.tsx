@@ -105,7 +105,7 @@ const AuthNavbar = () => {
         const token  : any = Cookies.get("token");
         const userType  : any = Cookies.get("userType");
         const pathSegment  : any = pathname.split("/")[1];
-        const typeToVerify  : any = pathSegment || userType;
+        const typeToVerify  : any =  userType || pathSegment
   
         if (!token || !typeToVerify) {
           console.log("No token");
@@ -118,7 +118,6 @@ const AuthNavbar = () => {
         if(ver?.status === "success"){
           setUserData(ver);
           setLoading2(false);
-
         }
         else{
           setLoading2(false);
@@ -195,7 +194,7 @@ const AuthNavbar = () => {
       </NavbarBrand>
       <NavbarContent as="div" justify="end">
         <NavbarItem className="hidden md:inline text-white">
-          <Link href={(userData?.userType ==="client") ? "/client/my-projects" : "/professional/my-responses/"}>My Projects</Link>
+          <Link href={(userData?.userType ==="client") ? "/client/my-projects" : "/professional/my-responses/"}>{(userData?.userType ==="client") ? "My Projects" : "My Responses"}</Link>
         </NavbarItem>
         
         <NavbarItem>
@@ -303,7 +302,7 @@ const AuthNavbar = () => {
                   </Box>
                 </Link>
                 <Link
-                  href={`/${userData?.userType}/account_settings/notifications`}
+                  href={`/${userData?.userType}/account_settings/`}
                 >
                   <Box
                     className={`flex items-center gap-4 p-2 px-3 border-b  border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
@@ -364,7 +363,7 @@ const AuthNavbar = () => {
         :
         <> 
         
-          <NavMain mode="light" />
+          <NavMain mode="dark" />
         </>
       }
     </>

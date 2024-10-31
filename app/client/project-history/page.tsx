@@ -40,7 +40,7 @@ export default function projects() {
             userType: ver.userType,
           });
           if (data?.status !== 400 || data?.data?.status === "success") {
-            setProjectData(data?.data?.data);
+            setProjectData(data?.data?.data?.reverse());
             setLoading2(false);
           } else {
             generateSnackbar(

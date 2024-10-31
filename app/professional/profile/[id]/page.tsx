@@ -14,27 +14,29 @@ export default function ProfilePage() {
     let [data,setData] : any  = useState({});
     let [isData,setIsData] : any  = useState(false);
 
-    useEffect(()=>{
-        async function getData (){
-            try{ 
-                let data : any  = await  professionalDetails({userId : id});
-                if(data?.status !== 400 || data?.data?.status === "success"){
-                    setData(data?.data?.data);
-                    setIsData(true);
-                    setLoading2(false);
-                }
-                else{
-                    setData({});
-                    setIsData(false);
-                    setLoading2(false);
-                }
+    async function getData (){
+        try{ 
+            let data : any  = await  professionalDetails({userId : id});
+            console.log(data);
+            if(data?.status !== 400 || data?.data?.status === "success"){
+                setData(data?.data?.data);
+                setIsData(true);
+                setLoading2(false);
             }
-            catch(e){
-                router.push("/error");
+            else{
+                setData({});
+                setIsData(false);
+                setLoading2(false);
             }
         }
+        catch(e){
+            // router.push("/error");
+        }
+    }
+
+    useEffect(()=>{
         getData();
-    },[id])
+    },[id]) 
 
     return (
         <>
@@ -43,7 +45,9 @@ export default function ProfilePage() {
                 <div className="loader m-auto" />
                 </div> 
             )
-            :(
+            :
+            // <></>
+            (
                 <>
                 {
                     (isData)

@@ -18,7 +18,13 @@ interface ReqProps {
   handlePrev: () => void;
 }
 
-
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 export default function Requirements({ handleNext, handlePrev }: ReqProps) {
 
@@ -34,8 +40,38 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
       handlePrev();
     }
     else{
+      // console.log(projectData);
       setProject(projectData);
-      setProjectDes(projectData?.serviceDes);
+      setProjectDes(`
+             I need a ${projectData?.serviceNeeded} in ${projectData?.postCodeRegion} for ${projectData?.serviceFrequency} basis, <br /><br /><br />
+
+             <b><p className={"text-yellow-400"} style={{color : "yellow"}}>Additional Information</p></b><br />
+        ${
+          projectData?.serviceQuestions?.map((val, i)=>{
+            // console.log(val);
+            return(`
+              ${
+                val?.answer?.length>0
+
+                ?
+                `
+                <b className="capitalize">${toTitleCase(val?.questionTitle)}</b><br />
+              
+              ${val?.answer.map((va)=>{
+                return(`<p className="capitalize">${toTitleCase(va)}</p><br/>`)
+              })}
+              `
+                :
+                ''
+              }
+              
+              
+              `)
+          })
+        }
+
+        `);
+      // setProjectDes(projectData?.serviceDes);
       setProjectTitle(`I need a ${projectData?.serviceNeeded} in ${projectData?.postCodeRegion}`)
     }
   },[])
@@ -57,6 +93,9 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
           let token : any  = Cookies.get("token");
           let ver : any  = await VerifyUser(token, "client");
           if(ver?.status === "success" && ver?.userType === "client"){
+            if(!ver?.adminAccess || ver?.adminAccess === false){
+              return generateSnackbar("Admin has restricted our account", "error")
+            }
             setProjectData({
               ...projectData,
                "userId" : ver.userId,
@@ -75,7 +114,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
           }
     }
     catch(e){
-      console.log(e);
+      // console.log(e);
     }
   };
   
@@ -103,7 +142,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
           <label className="font-semibold">Description</label>
           <ReactQuill
             theme="snow"
-            className="bg-white rounded-lg shadow-lg overflow-hidden border-2 h-[250px] [&_*]:!font-mono border-b-4 border-b-secondary"
+            className="bg-white rounded-lg py-2 shadow-lg overflow-hidden border-2 h-[250px] [&_*]:!font-mono border-b-4 border-b-secondary"
             placeholder="Start typing here"
             value={projectDes}
             onChange={(e)=>{setProjectDes(e)}}

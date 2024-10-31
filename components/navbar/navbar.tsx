@@ -133,7 +133,7 @@ const verificationCache = new Map();
         const token  : any  = Cookies.get("token");
         const userType  : any  = Cookies.get("userType");
         const pathSegment  : any  = pathname.split("/")[1];
-        const typeToVerify  : any  = pathSegment || userType;
+        const typeToVerify  : any  = userType ||   pathSegment;
   
         if (!token || !typeToVerify) {
           setLoading2(false);

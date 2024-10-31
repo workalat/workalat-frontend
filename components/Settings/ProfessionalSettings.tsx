@@ -646,6 +646,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                         {...params}
                         label="Service Locations"
                         placeholder="Select your service locations"
+                        className="my-[3%]"
                       />
                     )}
                     renderTags={(value, getTagProps) =>
@@ -673,11 +674,12 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                         {...params}
                         label="Primary Service"
                         placeholder="Select your primary service"
+                        
                       />
                     )}
                   />
                   <FormControl>
-                    <Box>
+                    <Box className="my-[3%]">
                       <Typography variant="body1">Your Bio.</Typography>
                       <ReactQuill
                         // value={editorValue}
@@ -730,6 +732,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                         {...params}
                         label="Services"
                         placeholder="Select your services"
+                        className="my-[3%]"
                       />
                     )}
                     renderTags={(value, getTagProps) =>

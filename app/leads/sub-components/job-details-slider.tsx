@@ -110,7 +110,7 @@ export default function JobDetailsSlider({
         <>
           <ClientDetails job={projectData} />
           <Box className="flex justify-between">
-            <h2 className="font-bold text-lg">Project Details</h2>
+            {/* <h2 className="font-bold text-lg">Project Details</h2> */}
             <Box className="flex items-center flex-wrap justify-end gap-2 text-right sm:text-left text-xs sm:text-sm">
               <LinearProgress
                 variant="determinate"
@@ -129,8 +129,9 @@ export default function JobDetailsSlider({
             <h2 className="font-bold capitalize">Project Title:</h2>
             <p className="capitalize">{projectData.serviceTitle}</p>
           </Box>
+          <h2 className="font-bold capitalize">Project Description:</h2>
           <Markdown className="[&>h1]:font-bold [&>h2]:font-bold [&>h2]:mt-3 [&>h3]:font-bold [&>h3]:mt-2 [&>li]:ml-2 capitalize">{`${projectData?.serviceDes}`}</Markdown>
-          { 
+          {/* { 
             projectData?.projectQuestions?.map((val,i)=>{
               return(
                 <>{
@@ -154,7 +155,7 @@ export default function JobDetailsSlider({
               )
               
             })
-          }
+          } */}
            <Box >
                   <h2 className="font-bold capitalize">How Frequent I need the Service?</h2>
                   <p className="capitalize">{projectData?.serviceFrequency}</p>

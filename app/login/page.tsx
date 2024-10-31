@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa6";
+import Recaptcha from "./recaptcha";
 import { loginWithGoogle, loginWithLinkedin } from "./action";
 import {
   Box,
@@ -44,6 +45,7 @@ const LoginPage = () => {
   let [googleData, setGoogleData]   = useState({});
   let router   : any = useRouter();
   let [loading2, setLoading2]  =  useState(true);
+  const [isHuman, setIsHuman] = useState<boolean>(false);
 
   
   const {signinProfessional, userData,continueWithGoogleProfessional, setUserId,setUType , setTempUserData,  tempUserData }  : any = useUserContext();
@@ -265,12 +267,16 @@ const LoginPage = () => {
                 <p className="font-semibold text-sm sm:text-lg">Remember me</p>
               </div>
             </div>
+            <div className="pb-5">
+            <Recaptcha setIsHuman={setIsHuman}  />
+          </div>
             <Button
               fullWidth
               variant="contained"
               className="bg-secondary capitalize shadow-none font-bold text-dark text-xl font-mono hover:bg-secondary"
               onClick={handleSubmit}
               type="submit"
+              disabled={!isHuman}
             >
               Login
             </Button>
@@ -306,6 +312,7 @@ const LoginPage = () => {
               onClick={() => {
                 loginWithGoogle();
               }}
+              disabled={!isHuman}
               href={""}
               style={{
                 border: "1px solid main",
@@ -321,7 +328,13 @@ const LoginPage = () => {
               onClick={() => {
                 loginWithLinkedin();
               }}
-              className="bg-main hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
+              disabled={!isHuman}
+              style={{
+                border: "1px solid main",
+                color : "black"
+              }}
+               className="border border-main border-opacity-15 transition-colors hover:bg-secondary shadow-md flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
+              // className=" hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
             >
               <img src={linkedInIcon.src} alt="" />
               Continue with LinkedIn

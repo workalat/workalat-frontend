@@ -207,7 +207,7 @@ export default function Certifications() {
                                                 <h4 className="text-lg font-semibold">CompTIA Security</h4>
                                                 <p className="text-sm">September 2024</p>
                                             </div>
-                                            <button><MdEditSquare className="size-5 text-secondary" /></button>
+                                            <button onClick={addCertification}><MdEditSquare className="size-5 text-secondary" /></button>
                                         </li>
                                         <li className="flex py-3 justify-between items-center border-b">
                                             <div className="px-3">

@@ -42,7 +42,7 @@ export default function LeadCard({ lead }: any) {
     <Box className="border rounded-md bg-[#F3F3F3] px-4 py-8 sm:p-8 text-main space-y-4 lg:space-y-2">
       <Box className="flex gap-x-4 gap-y-2 justify-between items-center flex-wrap">
         {/* Category / Service */}
-        <h2 className="font-semibold text-lg capitalize">{lead?.serviceNeeded} </h2>     
+        <h2 className="font-semibold text-lg capitalize">{lead?.serviceNeeded} at {(lead?.serviceLocationTown) ?(`${lead?.serviceLocationTown}`) :  (`${lead?.serviceLocationPostal}`)} </h2>     
         <Box className="flex gap-4 w-full sm:w-max justify-between sm:justify-start">
           <Box className="flex gap-2">
             <Image src={coinIcon} alt="Cost" />
@@ -50,7 +50,7 @@ export default function LeadCard({ lead }: any) {
             {lead?.pointsNeeded} Points
           </Box>
           {/* Amont  */}
-          <span className="font-bold text-right sm:text-left">${lead?.projectMaxPrice} GBP</span>
+          <span className="font-bold text-right sm:text-left">£{lead?.projectMaxPrice} GBP</span>
         </Box>
       </Box>
       <Link href={`/client/profile/${lead?.clientId}`}  className="cursor-pointer">

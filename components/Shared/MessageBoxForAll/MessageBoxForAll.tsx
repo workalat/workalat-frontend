@@ -25,7 +25,7 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
     const [isModalOpen, setIsModalOpen]  : any  = useState<boolean>(false);
     const [modalImage, setModalImage]  : any  = useState<string | null>(null);
 
-    
+    console.log(data);
 
     const toggleEmojiPicker = () => setShowEmojiPicker(prev => !prev);
 
@@ -71,20 +71,20 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
     // emoji box responsive
     const [screenWidth, setScreenWidth] = useState<number | undefined>(undefined);
 
-    useEffect(() => {
-        // Function to update the screen width
-        const handleResize = () => {
-            setScreenWidth(window.innerWidth);
-        };
+    // useEffect(() => {
+    //     // Function to update the screen width
+    //     const handleResize = () => {
+    //         setScreenWidth(window.innerWidth);
+    //     };
 
-        handleResize();
+    //     handleResize();
 
-        window.addEventListener('resize', handleResize);
+    //     window.addEventListener('resize', handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener('resize', handleResize);
+    //     };
+    // }, []);
 
     let [chat,setChat]  : any  = useState(false);
     let [text, setText]  : any  = useState("");
@@ -307,7 +307,7 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
                                   type="text"
                                   name="messageTxt"
                                   className="sm:w-auto w-[160px] py-1 px-3 sm:flex-grow rounded-none border-none outline-none bg-transparent"
-                                  placeholder="Write message here"
+                                  placeholder={!data?.activeChat ? "Chat is disabled with the user." :  "Write message here"}
                               />
 
                               <div className="flex items-center">
@@ -347,7 +347,13 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
                                   <button
                                       type="submit"
                                       onClick={handleSend}
-                                      className="bg-[#07242B] p-2 rounded flex items-center justify-center text-white hover:bg-[#0A2F36] transition-all"
+                                      disabled={!data?.activeChat}
+                                    //   className="bg-[#07242B] p-2 rounded flex items-center justify-center text-white hover:bg-[#0A2F36] transition-all"
+                                    className={`p-2 rounded flex items-center justify-center transition-all ${
+                                        !data?.activeChat
+                                            ? 'bg-gray-400 cursor-not-allowed'  // Gray background and restricted cursor when disabled
+                                            : 'bg-[#07242B] hover:bg-[#0A2F36] text-white'  // Original styling when enabled
+                                    }`}
                                   >
                                       <FiSend className="w-4 h-4" />
                                   </button>
