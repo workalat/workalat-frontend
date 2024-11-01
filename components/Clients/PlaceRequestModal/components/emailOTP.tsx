@@ -36,7 +36,8 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
   const handleResend = async (e) => {
     try { 
         e.preventDefault();
-        if(Cookies.get("userId").length > 0) {
+        let id : any = Cookies.get("userId");
+        if(id?.length > 0) {
 
             let res : any  = await sendEmailOtp({
             userId: Cookies.get("userId"),

@@ -106,8 +106,8 @@ const PhoneOTPVerify = () => {
         // if (otp.length >= 4) return generateSnackbar("Enter valid OTP", "error");
         
         // TODO: Implement OTP verification
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "professional");
+        let token : any = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "professional");
         // console.log("REsnsasldkn")
         // console.log(ver);
         if(ver.status === "success" || ver.status !== 400){

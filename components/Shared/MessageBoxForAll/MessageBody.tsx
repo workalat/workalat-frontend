@@ -51,9 +51,9 @@ export default function MessageBody() {
   
           // Set up the snapshot listener for real-time updates
           const unSub  : any  = onSnapshot(doc(db, "usersChats", currentUser?.data?.data?.id), async (res) => {
+            console.log(res);
             let items  : any  = res?.data()?.chats;
-  
-            let promises  = items.map(async (item) => {
+            let promises  = items?.map(async (item) => {
               let userDocRef  : any  = await userChatDetilas({
                 userId: item.receiverId,
                 userType: ver.userType === "client" ? "professional" : "client",
@@ -149,11 +149,10 @@ export default function MessageBody() {
                         />
                       </div>
                     </div>
-  
                     {/* Filtered message list */}
                     <div className="md:py-1 h-[76vh] md:h-full">
                       <ul className="h-full  w-[100%] rounded-xl overflow-x-hidden chat-nav flex-shrink-0">
-                        {filteredChats?.map((message: any, i: number) => (
+                        {filteredChats && filteredChats?.map((message: any, i: number) => (
                           <li
                             key={i}
                             onClick={() => {

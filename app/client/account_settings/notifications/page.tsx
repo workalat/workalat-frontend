@@ -35,8 +35,8 @@ const NotificationsPage = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
-        let ver = await VerifyUser(token, "client");
+        let token : any  = Cookies.get("token");
+        let ver : any  = await VerifyUser(token, "client");
         if(ver.status === "success"){
           setUserData(ver);
             let data : any = await getNotificationPage({userId : ver.userId, userType : "client"}) ;

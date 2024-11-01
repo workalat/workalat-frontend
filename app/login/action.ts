@@ -7,7 +7,7 @@ export async function loginWithGoogle() {
 }
 
 export async function loginWithLinkedin() {
-  await signIn("linkedin");
+  await signIn("linkedin"); 
 }
 
 export async function verifyRecaptcha(token: string) {

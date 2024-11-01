@@ -139,7 +139,7 @@ export default function Form() {
         Cookies.set("bio", formData?.bio, { secure: true, sameSite: 'None',expires: 10 });
         Cookies.set("companySize", formData?.companySize, { secure: true, sameSite: 'None',expires: 10 });
         Cookies.set("userId",  ver.userId, { secure: true, sameSite: 'None' ,expires: 10});
-        Cookies.set("isData", true, { secure: true, sameSite: 'None',expires: 10 });
+        Cookies.set("isData", "true", { secure: true, sameSite: 'None',expires: 10 });
         Cookies.set("skills", JSON.stringify(formData?.skills), { secure: true, sameSite: 'None',expires: 10 });
 
         router.push("/professional/onboard/location");

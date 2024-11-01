@@ -36,6 +36,11 @@ export default function LeadsPage() {
         let ver : any = await VerifyUser(token, "professional");
         if (ver?.status === "success") {
           setUserData(ver);
+          if(ver?.isPhoneVerify === false){
+            generateSnackbar("Please Verify Your Phone Number.", "error");
+            router.push("/professional/account_settings/security/phone");
+            return;
+          }
           if (ver?.isRegistrationComplete === false) {
             router.push("/professional/onboard/formpage");
             return;

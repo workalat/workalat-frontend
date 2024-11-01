@@ -24,6 +24,7 @@ import Cookies from 'js-cookie';
 import VerifyUser from "../middleware/VerifyUser";
 import { useUserContext } from "@/context/user_context";
 import { Navbar as NavMain} from "@/components/navbar/navbar";
+import { signOut } from "next-auth/react";
 
 const AuthNavbar = () => {
   const pathname = usePathname();
@@ -147,6 +148,23 @@ const AuthNavbar = () => {
       if(log?.status !== 400 || log?.data?.status === "success"){
         generateSnackbar("Logged Out Successfully." , "success");
         Cookies.remove("token");
+        Cookies.remove("userType");
+        Cookies.remove("authjs.callback-url", { path: '/' });
+        Cookies.remove("authjs.csrf-token", { path: '/' });
+        Cookies.remove("authjs.session-token", { path: '/' });
+        Cookies.remove("__Secure-3PSIDTS", { path: '/' });
+        Cookies.remove("__Secure-3PSIDCC", { path: '/' });
+        Cookies.remove("__Secure-3PSID", { path: '/' });
+        Cookies.remove("__Secure-3PAPISID", { path: '/' });
+        Cookies.remove("__Secure-1PSIDTS", { path: '/' });
+        Cookies.remove("__Secure-1PSIDCC", { path: '/' });
+        signOut();
+
+
+        document.cookie = "authjs.session-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax; Secure";
+        document.cookie = "authjs.callback-url=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax; Secure";
+        document.cookie = "authjs.csrf-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax; Secure";
+
         setLoading(false);
         router.push("/");
     }

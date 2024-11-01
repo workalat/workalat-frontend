@@ -49,7 +49,7 @@ const PreferenceSettings = () => {
     async function verify(){
       try{
         setLoading2(true);
-        let token = Cookies.get("token");
+        let token  : any  = Cookies.get("token");
         let ver :any = await VerifyUser(token, "client");
         if(ver.status === "success"){
           setUserData(ver);
@@ -82,9 +82,9 @@ const PreferenceSettings = () => {
       let userChatsSnapShot : any = await getDoc(userChatRef);
       if(userChatsSnapShot.exists()){
         let userChatsData  : any  = userChatsSnapShot.data();
-        let change  = userChatsData?.chats?.map(async (val, i)=>{
+        let change   = userChatsData?.chats?.map(async (val, i)=>{
           val.activeChat = activateChat
-          let userChatRef2 = doc(db, "usersChats", val?.receiverId);
+          let userChatRef2  : any  = doc(db, "usersChats", val?.receiverId);
           let userChatsSnapShot2 : any = await getDoc(userChatRef2);
           if(userChatsSnapShot2.exists()){
             let userChatsData2  : any  = userChatsSnapShot2.data();

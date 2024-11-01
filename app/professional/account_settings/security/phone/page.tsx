@@ -50,17 +50,12 @@ const PhonePage = () => {
         let token : any  = Cookies.get("token");
         let ver : any  = await VerifyUser(token, "professional");
         if(ver?.status === "success"){
-          if(ver?.registerAs === "client"){
-            router.push("/client/dashboard")
-          }
-          else{
             setUserData(ver);
             let phoneDet : any  = await getPhoneNo({userId : ver.userId, userType : "professional"});
             setPhoneNo(phoneDet?.data?.phoneNo)
             setPhoneCountry(phoneDet?.data?.countryCode)
             setLoading2(false);
           }
-        }
         else{
           router.push("/"); 
         }

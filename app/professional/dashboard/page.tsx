@@ -51,9 +51,11 @@ const Page = () => {
         setLoading2(true);
         let token : any = Cookies.get("token");
         let ver : any = await VerifyUser(token, "professional");
+        console.log(ver);
         if(ver?.status === "success" && ver?.userType === "professional"){
           setUserData(ver);
           let dash : any = await dashboardData({userId : ver.userId, userType : ver.userType});
+          console.log(dash);
           setDashData(dash?.data?.data)
           setLoading2(false);
         }
@@ -127,7 +129,7 @@ const Page = () => {
           <section className="w-full flex flex-col md:flex-row gap-3 mt-6 justify-between">
             <ProfileWidget data={dashData} userType={userData.userType} />
             {/* <VerificationWidget isClientDashboard={isClientDashboard} data={dashData} userType={userData.userType} /> */}
-            <VerificationWidget />
+            <VerificationWidget emailVerify={dashData?.isEmailVerify} phoneVerify={dashData?.isPhoneVerify} kycVerify={dashData?.kycStatus} payentVerify={dashData?.isPaymentVerify} />
           </section>
           <section
             className={`w-full flex flex-col md:flex-row ${isClientDashboard ? "justify-end" : "justify-between"} gap-3 mt-8`}

@@ -96,6 +96,12 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
             if(!ver?.adminAccess || ver?.adminAccess === false){
               return generateSnackbar("Admin has restricted our account", "error")
             }
+            if(!ver?.isEmailVerify || ver?.isEmailVerify === false){
+              return generateSnackbar("Please Verify Your Email.", "error")
+            }
+            if(!ver?.isPhoneVerify || ver?.isPhoneVerify === false){
+              return generateSnackbar("Please Verify your Phone Number.", "error")
+            }
             setProjectData({
               ...projectData,
                "userId" : ver.userId,

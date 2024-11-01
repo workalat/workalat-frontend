@@ -37,7 +37,7 @@ export default function ProjectDetails({ params }: any) {
         try{
             let projectId  : any  = await params.id;
             setLoading2(true);
-            let token = Cookies.get("token"); 
+            let token : any = Cookies.get("token"); 
                 let ver  : any  = await VerifyUser(token, "professional");
                 if(ver?.status === "success" && ver?.userType === "professional"){
                     setUserData(ver);

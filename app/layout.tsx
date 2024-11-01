@@ -10,6 +10,8 @@ import { fontMono } from "@/config/fonts";
 // import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
 import { NavThemeProvider } from "@/context/navbar_theme";
+import AuthProvider from "./providers/AuthProvider";
+
 
 export const metadata: Metadata = {
   title: {
@@ -44,6 +46,7 @@ export default function RootLayout({
           fontMono.variable
         )}
       >
+        <AuthProvider>
         <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
           <div className="relative flex flex-col h-screen w-full">
             {/* <Navbar mode={theme.type} /> */}
@@ -56,6 +59,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </Providers>
+        </AuthProvider>
       </body>
     </html>
   );

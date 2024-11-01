@@ -894,7 +894,7 @@ async function intoProfessoinal({ userId}){
     const response  : any  = await axios.post('/clientSwitchToProfessional', {
       clientId : userId,
       });
-      // console.log(response);
+      console.log(response);
       return(response);
   }
   catch(e){

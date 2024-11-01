@@ -7,15 +7,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 
-const VerificationWidget = () => {
+const VerificationWidget = ({emailVerify,phoneVerify,kycVerify,payentVerify} : any) => {
   const router = useRouter()
   const theme = useTheme();
   const verifications = [
     { name: 'Top Professional', status: 'join' },
-    { name: 'Identity Verified', status: 'verified' },
-    { name: 'Phone Verified', status: 'verified' },
-    { name: 'Email Verified', status: 'verified' },
-    { name: 'Payment Verified', status: 'unverified' },
+    { name: 'Identity Verified', status: (kycVerify === "approved" ? 'verified'  : 'unverified') },
+    { name: 'Phone Verified', status: (phoneVerify ? 'verified'  : 'unverified') },
+    { name: 'Email Verified', status:  (emailVerify ? 'verified'  : 'unverified') },
+    { name: 'Payment Verified', status:  (payentVerify ? 'verified'  : 'unverified')},
   ];
 
   return (
@@ -37,7 +37,7 @@ const VerificationWidget = () => {
         {verifications.map((item, index) => (
           <ListItem key={index} disablePadding>
             <ListItemText primary={item.name} />
-            <ListItemIcon>
+            <ListItemIcon> 
               {item.status === 'verified' && (
                 <CheckIcon className='text-secondary' />
               )}

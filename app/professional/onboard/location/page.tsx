@@ -61,7 +61,8 @@ export default function LocationPage() {
       let website  = tempUserData?.website || Cookies.get('website');
       let bio  = tempUserData?.bio || Cookies.get('bio');
       let companySize = tempUserData?.companySize || Cookies.get("companySize");
-      let skills = tempUserData?.skills || JSON.parse(Cookies.get("skills"));
+      // let s : any =  JSON.parse(Cookies?.get("skills"));
+      let skills = tempUserData?.skills
       let isData = tempUserData?.isData || Cookies.get("isData") || true;
       let userId = userData?.userId || tempUserData?.userId || Cookies.get("userId") ;
   

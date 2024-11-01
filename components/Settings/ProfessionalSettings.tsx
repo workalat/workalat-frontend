@@ -674,7 +674,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                         {...params}
                         label="Primary Service"
                         placeholder="Select your primary service"
-                        
+                        className="my-[5%]"
                       />
                     )}
                   />

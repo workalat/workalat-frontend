@@ -313,7 +313,7 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                     </Typography>
                     <Typography>Last Changed {formatDate(pageDate.kycLast)}</Typography>
                     {
-                      (kycStatus !== "pending" )
+                      (kycStatus === "pending" )
 
                       ?
                       <Button
@@ -327,7 +327,7 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                       </Button>
 
                       :
-                      (kycStatus !== "approved")
+                      (kycStatus === "approved")
 
                       ?
                       <Button
@@ -350,19 +350,6 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                         Enable
                         <Image alt="Change password" src={arrowRight} />
                       </Button>
-
-                      // (kycStatus !== "pending" && kycStatus !== "approved") &&(
-                        
-                      //   <Button
-                      //   variant="contained"
-                      //   onClick={openModal}
-                      //   color="primary"
-                      //   className="gap-2 py-3 px-6 font-semibold"
-                      // >
-                      //   Enable
-                      //   <Image alt="Change password" src={arrowRight} />
-                      // </Button>
-                      // )
                     }
                   </Box>
                 </Grid>
