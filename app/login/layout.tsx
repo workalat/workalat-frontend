@@ -14,7 +14,6 @@ const AuthLayout : any  = async ({ children }) => {
   const session  : any  = await Session();
   const user  : any  = session?.user;
 
-  console.log(user);
   const data  : any  = {
     ...user,
     provider: user?.image?.includes("https://lh3.googleusercontent.com")

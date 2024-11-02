@@ -88,10 +88,7 @@ const LoginPage = () => {
 
   async function loginUserGoogle() {
     try {
-      console.log("User");
       let data: any = user;
-      console.log(data?.image !== undefined ,
-          data?.image?.includes("https://lh3.googleusercontent.com"))
 
       if (
         data?.image !== undefined ||
@@ -107,7 +104,6 @@ const LoginPage = () => {
           `${process.env.NEXT_PUBLIC_SERVER_URL}/signinGoogle`,
           d
         );
-        console.log(response);
         if (response?.status !== 400 || response?.data?.status === "success") {
           const customToken = response?.data?.token; // Retrieve your custom token
           generateSnackbar(response?.data?.message, "success");
@@ -193,9 +189,6 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
-    // console.log("Ussre 1");
-    // console.log(user);
-
     if (user !== undefined) {
       if (hasRun.current) return;
       hasRun.current = true;

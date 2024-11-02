@@ -53,7 +53,6 @@ const AuthNavbar = () => {
       setLoading(true)
       setLoadingMessage(`Switching to ${(userData?.userType === "client") ?"Professional" :"Client"}...`)
       let changeToProfessional : any = await intoProfessoinal({userId : userData?.userId});
-      console.log(changeToProfessional)
       
       if(changeToProfessional?.status !== 400 || changeToProfessional?.data?.status === "success"){
         generateSnackbar(changeToProfessional?.data?.message , "success");
@@ -69,7 +68,6 @@ const AuthNavbar = () => {
       
     }
     catch(e){
-      console.log(e);
       generateSnackbar("Some Error Occur, Please try again", "error")
     }
   }
@@ -109,7 +107,6 @@ const AuthNavbar = () => {
         const typeToVerify  : any =  userType || pathSegment
   
         if (!token || !typeToVerify) {
-          console.log("No token");
           setLoading2(false);
           return;
         }

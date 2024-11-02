@@ -202,7 +202,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
           </Box>
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center capitalize">
-            {userData.userName}{" "}
+            {userData?.companyName.length>0 ? userData?.companyName : userData?.userName } {" "} 
               <span
                 onClick={() => router.push("/profile")}
                 className="border border-white rounded-full h-7 w-7 flex items-center justify-center"
@@ -229,12 +229,12 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
           </Box>
           <Box className="ml-4 flex-grow">
             <Typography className="font-semibold text-lg flex gap-2 items-center capitalize">
-              {userData.userName}{" "}
+            {userData?.companyName.length>0 ? userData?.companyName : userData?.userName } {" "} 
               <span
                 onClick={() => router.push("/profile")}
                 className="border border-white rounded-full h-7 w-7 flex items-center justify-center"
               >
-                <FaUserEdit />
+                <FaUserEdit /> 
               </span>
             </Typography>
             <Box className="flex justify-between gap-1 text-secondary mt-2 items-center">

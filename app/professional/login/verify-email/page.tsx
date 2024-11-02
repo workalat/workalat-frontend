@@ -92,7 +92,6 @@ export default function VerifyEmail() {
         
         // TODO: Implement OTP verification
         let res = await verifyOtp({otp, userId, userType})
-        console.log(res);
 
         if(res.status === 200 || res.response.data?.status === "success"){
 

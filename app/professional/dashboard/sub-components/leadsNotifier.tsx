@@ -2,7 +2,7 @@
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-const LeadsNotifier = () => {
+const LeadsNotifier = ({totalLeads} : any) => {
 
   const router = useRouter();  
   
@@ -24,7 +24,7 @@ const LeadsNotifier = () => {
         color="secondary"
         className='mt-3'
       >
-        10400
+        {totalLeads}
       </Button>
       <Typography
         variant="body1"

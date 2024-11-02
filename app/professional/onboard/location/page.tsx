@@ -52,7 +52,6 @@ export default function LocationPage() {
     try{
       e.preventDefault();
     // await new Promise((resolve) => setTimeout(resolve, 5000)); // Simulate loading
-    // console.log(selectedPostcodes);
     if(selectedPostcodes?.length >0){
       setLoading(true);
 
@@ -65,8 +64,6 @@ export default function LocationPage() {
       let skills = tempUserData?.skills
       let isData = tempUserData?.isData || Cookies.get("isData") || true;
       let userId = userData?.userId || tempUserData?.userId || Cookies.get("userId") ;
-  
-      console.log(userId);
 
       let res  : any  = await addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes});
       if(res?.status !==400 || res.data?.status === "success"){

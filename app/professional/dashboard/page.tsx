@@ -28,10 +28,11 @@ const Page = () => {
   let [userData,setUserData] : any = useState({});
   let [dashData,setDashData] : any = useState({});
   const [isSideNavOpen, setIsSideNavOpen] : any = useState(false);
+  const [totalLeads, setTotalLeads] : any = useState(0);
   // loading
   const [loading2, setLoading2] : any = useState(true);
   let router : any = useRouter();
-  let { dashboardData } : any = useUserContext();
+  let { dashboardData, showLeads } : any = useUserContext();
 
 
   const { generateSnackbar } : any = useSnackbar();
@@ -51,11 +52,11 @@ const Page = () => {
         setLoading2(true);
         let token : any = Cookies.get("token");
         let ver : any = await VerifyUser(token, "professional");
-        console.log(ver);
         if(ver?.status === "success" && ver?.userType === "professional"){
           setUserData(ver);
-          let dash : any = await dashboardData({userId : ver.userId, userType : ver.userType});
-          console.log(dash);
+          let dash : any = await dashboardData({userId : ver?.userId, userType : ver?.userType});
+          let leadsCount : any = await showLeads({ userId: ver?.userId , choice : "dashboard"});
+          setTotalLeads(leadsCount?.data?.data);
           setDashData(dash?.data?.data)
           setLoading2(false);
         }
@@ -127,7 +128,7 @@ const Page = () => {
           </div>
           <div className="w-full h-[0.5px] bg-gray-400 mt-4" />
           <section className="w-full flex flex-col md:flex-row gap-3 mt-6 justify-between">
-            <ProfileWidget data={dashData} userType={userData.userType} />
+            <ProfileWidget data={dashData} userType={userData?.userType} companyName={userData?.companyName || ""} />
             {/* <VerificationWidget isClientDashboard={isClientDashboard} data={dashData} userType={userData.userType} /> */}
             <VerificationWidget emailVerify={dashData?.isEmailVerify} phoneVerify={dashData?.isPhoneVerify} kycVerify={dashData?.kycStatus} payentVerify={dashData?.isPaymentVerify} />
           </section>
@@ -146,7 +147,7 @@ const Page = () => {
                 <div>
                   <OfferWidget />
                   <div className="flex flex-col md:flex-row gap-2 mt-6 w-full">
-                    <LeadsNotifier />
+                    <LeadsNotifier totalLeads={totalLeads} />
                     <ResponseNotifier />
                   </div>
                   <Help />

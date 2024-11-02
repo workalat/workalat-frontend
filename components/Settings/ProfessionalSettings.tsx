@@ -88,7 +88,6 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
-    console.log(personName);
   };
 
   const names = [
@@ -156,7 +155,6 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
         setLoading2(true);
 
         const servicesData  : any  = await findAllServices();
-        console.log(servicesData);
         setServices(servicesData?.data);
         setSelectedServices(data2?.professionalSkills || []);
         setPrimaryService(data2?.professionalPrimaryService || "");
@@ -286,7 +284,6 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
   async function handleChangeImage(e) {
     e.preventDefault();
     try {
-      console.log(file);
       if (!file) {
         generateSnackbar("Please Select a File First", "warning");
         return;
@@ -331,7 +328,6 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
         userId : userId,
         name : form1.professionalFullName
       })
-      console.log(add)
       if(add?.status !== 400 || add?.data?.status === 'success'){
         generateSnackbar("Data Added Successfully", "success");
       }
@@ -361,7 +357,6 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
   async function handleSubmitForm3(e) {
     e.preventDefault();
     try {
-      console.log(form3);
       let add  : any  = await addProfessionalDetailsP2({
         userId : userId,
         companyName : form3?.professionalCompanyName,

@@ -49,7 +49,6 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
 
 
 async function handleAdd(current, user2, projectTitle){
-  console.log(current,user2)
   try{
     let chatRef : any = collection(db, "chats")
     let userChatRef : any = collection(db, "usersChats");
@@ -97,7 +96,7 @@ async function handleAdd(current, user2, projectTitle){
     });
   } 
   catch(e){
-    console.log(e);
+    // console.log(e);
   }
 };
 
@@ -152,7 +151,6 @@ async function handleAdd(current, user2, projectTitle){
             proposal: proposalMessage,
             proposalType: "points",
           });
-          console.log(res);
           if (res?.status !== 400 || res?.data?.status === "success") {
             generateSnackbar("Bid Sent successfully.", "success");
             setClientData(res?.data?.data[0]);
@@ -210,7 +208,6 @@ async function handleAdd(current, user2, projectTitle){
         }
       }
     } catch (e) {
-      console.error(e);
       generateSnackbar("Failed to contact client. Please try again.", "error");
     } finally {
       setLoading(false);

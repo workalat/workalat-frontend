@@ -21,8 +21,8 @@ export interface ProvidersProps {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
-  // axios.defaults.baseURL = "http://localhost:5000";
-  axios.defaults.baseURL = "https://workalat-backend.vercel.app";
+  axios.defaults.baseURL = "http://localhost:5000";
+  // axios.defaults.baseURL = "https://workalat-backend.vercel.app";
   axios.defaults.withCredentials = true;
 
   return (

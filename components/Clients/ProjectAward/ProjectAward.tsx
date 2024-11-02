@@ -245,9 +245,8 @@ export default function ProjectAward() {
                       <div
                         className={`ring-1 absolute right-3 top-10 flex flex-col shadow-lg rounded-lg ring-black/50 overflow-hidden justify-start ${activeStatusId === data?._id ? "visible" : "invisible"}`}
                       >
-                        
-                        {(data?.projectStatus === "cancelled" ||
-                        (data?.projectStatus === "completed" || data?.projectStatusClient === "completed" || data?.projectStatusAdmin === false)? (
+                        {
+                        (data?.projectStatus === "cancelled"  || data?.projectStatus === "completed" || data?.projectStatusClient === "completed" || data?.projectStatusAdmin === false || userData?.adminAccess === false)? (
                           <></>
                         ) : data?.awardedStatus === "awarded" ? (
                           data?.projectStatusClient === "awarded" ? (
@@ -299,7 +298,7 @@ export default function ProjectAward() {
                               Cancel project
                             </button>
                           </>
-                        ))}
+                        )}
                       </div>
                     </div>
                   </>

@@ -30,6 +30,7 @@ async function VerifyUser (token: string, userType : string, auth=false){
                     membershipStatus : verifyToken?.data?.data[0]?.membershipStatus || null,
                     registrationType : verifyToken?.data?.data[0]?.registrationType,
                     adminAccess : verifyToken?.data?.data[0]?.adminAccess,
+                    companyName : verifyToken?.data?.data[0]?.companyName || "",
                 }
                 return(data);
             }

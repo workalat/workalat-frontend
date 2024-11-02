@@ -40,7 +40,6 @@ export default function ProjectDetails({ params }: any) {
                 if(ver?.status === "success" && ver?.userType === "client"){
                     setUserData(ver);
                     let res  : any  = await singleProjectDetails({userId   : ver.userId, userType: ver.userType ,projectId : projectId, need : "details"});
-
                     if(res?.status !== 400 || res?.data?.status == "success"){
                         setData(res?.data?.data);
                         setLoading2(false);
@@ -119,12 +118,12 @@ export default function ProjectDetails({ params }: any) {
                             ?
                             <>
                             <div className="w-full m-2 bg-[#F3F3F3] rounded-md p-6">
-                                <h5>Discuss the project details with <span className="capitalize font-bold">{data?.professionalDetails[0]?.professionalFullName}</span></h5>
+                                <h5>Discuss the project details with <span className="capitalize font-bold">{data?.professionalDetails[0]?.professionalCompanyName.length>0 ? data?.professionalDetails[0]?.professionalCompanyName :   data?.professionalDetails[0]?.professionalFullName}</span></h5>
 
                                 <div className="flex pt-3 items-center">
                                     <img className="w-12 h-12 object-cover" src={data?.professionalDetails[0]?.professionalPictureLink} alt="work alat" />
                                     <div className="px-2">
-                                        <p className="text-sm font-bold capitalize">{data?.professionalDetails[0]?.professionalFullName}</p>
+                                        <p className="text-sm font-bold capitalize">{data?.professionalDetails[0]?.professionalCompanyName.length>0 ? data?.professionalDetails[0]?.professionalCompanyName :   data?.professionalDetails[0]?.professionalFullName}</p>
                                         <Link href={`/client/chat/${data?.professionalDetails[0]?.professionalChatId}`} className="text-sm text-black px-3 rounded-md mt-1 py-1 font-semibold bg-[#FFBE00]">Chat</Link>
                                     </div>
                                 </div>

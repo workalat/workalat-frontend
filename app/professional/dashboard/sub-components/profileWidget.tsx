@@ -15,21 +15,20 @@ import EditIcon from '@mui/icons-material/Edit';
 import DOMPurify from 'dompurify';
 import { useRouter } from 'next/navigation';
 
-const ProfileWidget = ({data, userType}) => {
-  console.log(data);
+const ProfileWidget = ({data, userType, companyName} : any) => {
   const router = useRouter();
   const sanitizedBio = DOMPurify.sanitize(data.userBio);
   let profile = 20;
-  (data.isEmailVerify ? (profile += 20) : profile +=0);
-  (data.isPhoneVerify ? (profile +=20 ): profile +=0);
-  (data.isProfileComplete ? (profile +=20) : profile +=0);
-  (data.isPaymentVerify ? (profile +=20 ): profile +=0);
+  (data?.isEmailVerify ? (profile += 20) : profile +=0);
+  (data?.isPhoneVerify ? (profile +=20 ): profile +=0);
+  (data?.isProfileComplete ? (profile +=20) : profile +=0);
+  (data?.isPaymentVerify ? (profile +=20 ): profile +=0);
   return (
     <Card sx={{ width: '100%', maxWidth: 800, borderRadius: 2 }} className=' border-1 border-gray-300 p-2'>
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
           <Typography className='text-lg font-bold capitalize'>
-            {data.userName}
+          {companyName.length>0 ? companyName : data?.userName }
           </Typography>
           <Box className="flex flex-wrap justify-end sm:justify-start">
             <IconButton size="small" href='/profile' >
@@ -45,7 +44,7 @@ const ProfileWidget = ({data, userType}) => {
           </Box>
         </Box>
 
-        <Typography className='text-md font-semibold mb-3' color="text.secondary" gutterBottom>
+        <Typography className='text-md font-semibold mb-3 capitalize' color="text.secondary" gutterBottom>
           {
             (data.userService)
             ? 

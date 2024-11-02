@@ -87,7 +87,6 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
         setLoading2(true);
         let token  : any  = Cookies.get("token");
         let ver  : any  = await VerifyUser(token, "client");
-        console.log(ver);
         if(ver.status === "success"){
             let data = await lastDatesDetails({userId : ver.userId, userType : "client"});
             setPageDate(data?.data?.data?.ChangingDates[0]);

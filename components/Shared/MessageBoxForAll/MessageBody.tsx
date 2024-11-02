@@ -51,29 +51,35 @@ export default function MessageBody() {
   
           // Set up the snapshot listener for real-time updates
           const unSub  : any  = onSnapshot(doc(db, "usersChats", currentUser?.data?.data?.id), async (res) => {
-            console.log(res);
             let items  : any  = res?.data()?.chats;
-            let promises  = items?.map(async (item) => {
+            let promises
+            if( items !== undefined) {
+              
+            promises  = items?.map(async (item) => {
               let userDocRef  : any  = await userChatDetilas({
-                userId: item.receiverId,
-                userType: ver.userType === "client" ? "professional" : "client",
+                userId: item?.receiverId,
+                userType: ver?.userType === "client" ? "professional" : "client",
               });
   
-              let userDocSnap  : any  = userDocRef.data;
+              let userDocSnap  : any  = userDocRef?.data;
               let user = userDocSnap;
   
               return { ...item, user };
             });
+            }
+            else{
+              promises = []
+            }
   
             let chatData  : any  = await Promise.all(promises);
-            setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
+            setChats(chatData?.sort((a, b) => b?.updatedAt - a?.updatedAt));
             setLoading2(false);
           });
   
           // Return the unsubscribe function to be called on unmount
           return unSub;
         } catch (e) {
-          console.log(e);
+          // console.log(e);
         }
       }
   

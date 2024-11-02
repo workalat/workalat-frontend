@@ -108,8 +108,6 @@ const PhoneOTPVerify = () => {
         // TODO: Implement OTP verification
         let token : any = Cookies.get("token");
         let ver : any  = await VerifyUser(token, "professional");
-        // console.log("REsnsasldkn")
-        // console.log(ver);
         if(ver.status === "success" || ver.status !== 400){
             let verifyOtp = await verifyPhoneOtp(ver.userId, ver.userType , otp);
             // OTP verification success

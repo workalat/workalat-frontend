@@ -61,7 +61,7 @@ const PhonePage = () => {
         }
       }
       catch(e){
-        console.log(e);
+        // console.log(e);
       }
     };
     verify();
@@ -87,7 +87,7 @@ const PhonePage = () => {
       }
     }
     catch(e){
-      console.log(e);
+      // console.log(e);
     }
   };
 

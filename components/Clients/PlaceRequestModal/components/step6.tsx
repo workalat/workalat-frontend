@@ -62,7 +62,8 @@ const Step6: React.FC<Step5Props> = ({
             else{
               let res : any  = await getPointsBudget({category});
               if(res?.status !== 400 || res?.data?.status === "success"){
-                setBudgetData(res?.data?.data);
+                let budget = res?.data?.data?.sort((a, b) => a.budget - b.budget)
+                setBudgetData(budget);
               }
               else{
                 generateSnackbar("Error fetching budget data.", "error");
@@ -97,7 +98,6 @@ const Step6: React.FC<Step5Props> = ({
         projectMaxPrice : parseInt(selectedBudget),
         pointsNeeded : parseInt(findPoints.point)
       })
-      console.log(projectData);
 
       // updateFormData({ budget: budget });
       handleNext();
@@ -119,10 +119,10 @@ const Step6: React.FC<Step5Props> = ({
             {budgetData.map((item, index) => (
               <FormControlLabel
                 key={index}
-                value={item.budget}
+                value={item?.budget}
                 control={<Radio />}
                 onChange={handlePriceChange}
-                label={<span>{(item.budget >=0 && item.budget <=150) ? `Small Project (Below £${item.budget})` : (item.budget >=151 && item.budget <=500) ? `Mini Project (Below £${item.budget})` : (item.budget >=501 && item.budget <=3000) ? `Mega Project (Below £${item.budget})` : (item.budget > 3000) ? `Premium Project (£${item.budget} & above)` :""}  <b></b></span>}
+                label={<span>{(item?.budget >=0 && item?.budget <=150) ? `Small Project (Below £${item?.budget})` : (item?.budget >=151 && item?.budget <=500) ? `Mini Project (Below £${item?.budget})` : (item?.budget >=501 && item?.budget <=3000) ? `Mega Project (Below £${item?.budget})` : (item?.budget > 3000) ? `Premium Project (£${item?.budget} & above)` :""}  <b></b></span>}
                 labelPlacement="start"
                 className="flex-grow md:text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
               />

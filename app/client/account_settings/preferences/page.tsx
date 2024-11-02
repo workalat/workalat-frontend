@@ -77,7 +77,10 @@ const PreferenceSettings = () => {
 
   async function handleSave(){
     try{
-      
+
+      if(userData?.adminAccess === false){
+        return generateSnackbar("Admin has Restricted Your Account", "error");
+      }      
       let userChatRef = doc(db, "usersChats", userData?.userId);
       let userChatsSnapShot : any = await getDoc(userChatRef);
       if(userChatsSnapShot.exists()){
@@ -135,26 +138,6 @@ const PreferenceSettings = () => {
             :(
               <Box className="mt-3 px-6 sm:px-12 py-12 border border-dark border-opacity-30 rounded-xl relative">
         <Grid container spacing={4} component={"form"}>
-          {/* {formItems.map((item) => (
-            <Grid key={item.label} item xs={12} sm={6} md={4} lg={4}>
-              <Box className="bg-white rounded-lg border border-dark border-opacity-30 p-4 shadow-medium">
-                <FormControlLabel
-                  value="start"
-                  control={
-                    <Switch
-                      color="primary"
-                      name={item.name}
-                      // checked={}
-                      //  onChange={handleTwoFact}
-                    />
-                  }
-                  label={item.label}
-                  labelPlacement="start"
-                  className="flex justify-between"
-                />
-              </Box>
-            </Grid>
-          ))} */}
            <Grid item xs={12} sm={6} md={4} lg={4}>
               <Box className="bg-white rounded-lg border border-dark border-opacity-30 p-4 shadow-medium">
                 <FormControlLabel
@@ -164,7 +147,12 @@ const PreferenceSettings = () => {
                       color="primary"
                       name={"markUnavailable"}
                       checked={markUnavailable}
-                       onChange={(e)=>{setMarkUnavailable(!markUnavailable)}}
+                       onChange={(e)=>{
+                        if(userData?.adminAccess === false){
+                          return generateSnackbar("Admin has Restricted Your Account", "error");
+                        }  
+                        setMarkUnavailable(!markUnavailable)
+                      }}
                     />
                   }
                   label={"Mark as Unavailable"}
@@ -182,7 +170,13 @@ const PreferenceSettings = () => {
                       color="primary"
                       name="activateChat"
                       checked={activateChat}
-                      onChange={(e)=>{setActivateChat(!activateChat)}}
+                      onChange={(e)=>{
+                        if(userData?.adminAccess === false){
+                          return generateSnackbar("Admin has Restricted Your Account", "error");
+                        }  
+                        setActivateChat(!activateChat)
+                      }}
+                      disabled={userData?.adminAccess === true ? true  : false}
                     />
                   }
                   label={"Active Chat"}

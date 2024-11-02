@@ -184,10 +184,7 @@ let [kycDocumentData, setKycDocumentData] : any  = useState({
              return generateSnackbar("Please Fill all Data.", "error");
       }
       else{
-        event.preventDefault();
-      // console.log(userData);
-      // console.log(files);
-  
+        event.preventDefault();  
       const formData = new FormData();
       formData.append('userId', userData.userId);
       formData.append('userType', userData.userType);

@@ -45,7 +45,7 @@ export default function LeadsPage() {
             router.push("/professional/onboard/formpage");
             return;
           }
-          let res : any = await showLeads({ userId: ver.userId });
+          let res : any = await showLeads({ userId: ver.userId , choice : "leads"});
           if (res?.status !== 400 || res?.data?.status === "success") {
             setLeadsData(res?.data?.data);
           } else {

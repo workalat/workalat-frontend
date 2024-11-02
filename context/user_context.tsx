@@ -272,7 +272,6 @@ async function findAllServices(){
 
   async function professionalSignupFunction(userData :  any ){
         try{
-          // console.log(userData);
           const response  : any  = await axios.post('/signupEmail', {
             clientId : "",
             name : userData.fullName,
@@ -294,7 +293,6 @@ async function findAllServices(){
 
   async function verifyOtp({otp, userId, userType, type : type = "auth"}  : any )  {
     try{
-      // console.log(otp, userId, userType);
       const response  : any  = await axios.post('/verify-emailOtp', {
         userId : userId,
         otp : otp,
@@ -351,60 +349,13 @@ async function signinProfessional({email, password, userType} : any ){
         Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
         return({response : response , isTwoFactAuth : true});
       }     
-      // }
-    // else{
-    //   const response  : any  = await axios.post('/signinEmail', {
-    //     email : email,
-    //     pass : password,
-    //     userType : userType
-    //   });
-  
-
-    //   if(response?.data.userStatus === 'success' || response?.data.userStatus === 'SUCCESS'){
-    //     const verifyToken = await axios.post('/verify', {
-    //       type : "client",
-    //       token : response?.data?.token,
-    //       auth : true
-    //     });
-    //     // console.log("Token", verifyToken)
-    //     setUserData({
-    //       token : response?.data?.token,
-    //       userId : verifyToken?.data?.userId,
-    //       userName : verifyToken?.data?.data[0]?.fullName,
-    //       userPicture : verifyToken?.data?.data[0]?.pictureLink,
-    //       userType : verifyToken?.data?.userType,
-    //       userRegisterAs : verifyToken?.data?.data[0]?.registerAs,
-    //     })
-    
-    //     // console.log( verifyToken.data?.userType);
-    //     Cookies.set("token", response?.data?.token, { secure: true, sameSite: 'None',expires: 30 });
-    //     Cookies.set("userType", verifyToken.data?.userType,  { secure: true, sameSite: 'None',expires: 30 });
-    //     return({response : response ,tokenData : verifyToken, isTwoFactAuth : false});
-    //   }
-    //   else if(response?.data.userStatus === 'PENDING'){
-    //     setUserData({
-    //       ...userData,
-    //       userId : response?.data?.data[0]?.userId,
-    //       userType : response?.data?.data[0]?.userType,
-    //     });
-    //     setTempUserData({...tempUserData, "userEmail" :response?.data?.data[0]?.email});
-    //     setUserId(response?.data?.data[0]?.userId);
-    //     Cookies.set("userType",response?.data?.data[0]?.userType, { secure: true, sameSite: 'None',expires: 30 });
-    //     Cookies.set("userId", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
-    //     // Cookies.set("userType", response?.data?.data[0]?.userId, { secure: true, sameSite: 'None',expires: 30 });
-    //     return({response : response , isTwoFactAuth : true});
-    //   } 
-
-    // }
   }
   catch(e){
-    // console.log(e);
     return(e);
   }
 }
 
   async function sendPhoneOtp({userId, userType, phoneNo}  : any ){
-    // console.log(userId, userType, phoneNo)
     try{
       const response  : any = await axios.post('/sendPhoneOtp', {
         userId : userId,
@@ -449,9 +400,6 @@ async function signinProfessional({email, password, userType} : any ){
   };
 
   async function addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes}  : any ){
-    // console.log("REached");
-    // console.log(name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes);
-    console.log(userId)
     try{
       const response : any = await axios.post('/addDetailsProfessionals', {
         userId : userId,
@@ -530,9 +478,6 @@ async function continueWithGoogleProfessional(data  : any, userType :   any) {
 
 ///////////////////////////////CLIENTS CONTEXT////////////////////////////, 
 async function clientSignup({phoneNo, country, countryCode}  : any ){
-  // console.log(phoneNo);
-  // console.log(country);
-  // console.log(countryCode);
   try{
     const response  : any  = await axios.post('/signup-phone', {
       phoneNo,
@@ -1289,10 +1234,11 @@ async function confirmWalletPurchase({ sessionId}){
   }
 }
 
-async function showLeads({ userId}){
+async function showLeads({ userId, choice}){
   try{
     const response  : any  = await axios.post('/showLeads', {
-      userId
+      userId,
+      choice
       });
       return(response);
   }
