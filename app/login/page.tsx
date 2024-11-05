@@ -39,7 +39,7 @@ const LoginPage = () => {
   const user = session?.user;
 
   // console.log(user);
-
+ 
   useEffect(() => {
     theme.toggleTheme();
   }, []);
@@ -98,6 +98,7 @@ const LoginPage = () => {
           userFullName: data?.name,
           email: data?.email,
           userPictureLink: data?.image,
+          userType : "client"
         };
 
         const response: any = await axios.post(
@@ -143,6 +144,7 @@ const LoginPage = () => {
         let d: any = {
           userFullName: data?.name,
           email: data?.email,
+          userType : "client"
         };
 
         const response: any = await axios.post(

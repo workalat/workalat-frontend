@@ -222,7 +222,7 @@ const ProfessionalSignupForm = () => {
 
         const response: any = await axios.post(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/signinLinkedin`,
-          d
+          d 
         );
         if (response?.status !== 400 || response?.data?.status === "success") {
           const customToken = response?.data?.token; // Retrieve your custom token
