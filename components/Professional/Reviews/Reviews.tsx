@@ -131,7 +131,6 @@ export default function Reviews({ params }: any) {
                         <h4 className="capitalize">
                           <b>Review from {data?.clientReview?.giverName}</b>{" "}
                           (Professional){" "}
-                          (Client){" "}
                         </h4>
 
                         <div className="flex gap-2 items-center">

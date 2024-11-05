@@ -62,7 +62,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
               })}
               `
                 :
-                ''
+                <></>
               }
               
               
