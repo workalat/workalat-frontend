@@ -68,6 +68,7 @@ export default function ForgetPassword() {
         setMessage("Sending OTP on your Email...")
         setLoading(true);
         let res : any  = await forgotPassword({email});
+        console.log(res);
         if(res?.status !== 400 || res?.data?.status === "success") {
             setUserId(res?.data?.data[0]?.userId);
             setEmail(res?.data?.data[0]?.email)
@@ -141,6 +142,7 @@ export default function ForgetPassword() {
      const handleResend = async (e) => {
         try { 
             e.preventDefault();
+            console.log(userId)
             if(userId.length > 0) {
 
                 setMessage("Resending OTP...");
@@ -166,6 +168,7 @@ export default function ForgetPassword() {
             }
             
         } catch (error) {
+            console.log(error);
           generateSnackbar("An error occurred, please try again later.", "error");
         }
       };
