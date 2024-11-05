@@ -123,7 +123,7 @@ const [selectedService, setSelectedService] : any = useState<string>("");
       // onSubmit={handleSearch}
     >
       {/* Services Input */}
-      <div className="flex w-full md:max-w-[350px]">
+      <div className="flex w-full md:max-w-[340px]">
         <img
           alt=""
           className={inputFocus || category !== "" ? "opacity-100" : "opacity-40"}
@@ -182,7 +182,7 @@ const [selectedService, setSelectedService] : any = useState<string>("");
       </div>
 
       {/* Postcode Input */}
-      <div className="flex w-full md:max-w-[250px]">
+      <div className="flex w-full md:max-w-[270px]">
 
         <Autocomplete
           disablePortal
