@@ -40,6 +40,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
     
     if (event.data.paymentStatus === 'success') {
         setPayPayment("paid")
+        generateSnackbar("Click To Contact Client", "success");
         // Display success message or handle it accordingly
     } else {
         // console.log("Payment failed or no status received");
@@ -47,58 +48,76 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
 });
 
 
+async function handleAdd(current, user2, projectTitle) {
+  // console.log("Current", current);
+  // console.log("User", user2);
+  // console.log("Project", projectTitle);
+  
+  try {
+    const chatRef = collection(db, "chats");
+    // console.log("ChatRef", chatRef);
+    const userChatRef = collection(db, "usersChats");
+    // console.log("UserChatRef", userChatRef);
 
-async function handleAdd(current, user2, projectTitle){
-  try{
-    let chatRef : any = collection(db, "chats")
-    let userChatRef : any = collection(db, "usersChats");
-
-    let currentUser : any = await userChatDetilas({
-      userId : current.userId,
-      userType : current.userType === "client" ? "client" : "professional"
-    })
-    let user : any = await userChatDetilas({
-      userId : user2.clientId,
-      userType : current.userType === "client" ? "professional" : "client"
+    const currentUser = await userChatDetilas({
+      userId: current.userId,
+      userType: current.userType === "client" ? "client" : "professional"
     });
+    // console.log("Current User", currentUser);
 
+    const user = await userChatDetilas({
+      userId: user2.clientId,
+      userType: current.userType === "client" ? "professional" : "client"
+    });
+    // console.log("Other User", user);
 
-    let newChatRef : any = doc(chatRef);
+    // Create or reference new chat document
+    const newChatRef = doc(chatRef);
+    // console.log("New chat Ref Details", newChatRef);
+
     await setDoc(newChatRef, {
-      createdAt : serverTimestamp(),
-      message : [],
-    });
+      createdAt: serverTimestamp(),
+      message: [],
+    }, { merge: true });
 
-    await updateDoc(doc(userChatRef, user?.data?.data?.id  ), {//RECIEVER ID / jisko bhej rha hu
-      chats : arrayUnion({
-        chatId : newChatRef?.id,
-        lastMessage : "",
-        flag : false,
-        projectTitle : projectTitle,
-        activeChat : currentUser?.data?.data?.activeChat,
-        chatNotifications : currentUser?.data?.data?.chatNotifications,
-        receiverId : currentUser?.data?.data?.id,  //My ID / SENDER ID
-        updatedAt : Date.now()
+    // console.log("New Chat Ref created or updated");
+
+    // Update chat reference for the other user
+    await setDoc(doc(userChatRef, user?.data?.data?.id), {
+      chats: arrayUnion({
+        chatId: newChatRef?.id,
+        lastMessage: "",
+        flag: false,
+        projectTitle: projectTitle,
+        activeChat: currentUser?.data?.data?.activeChat,
+        chatNotifications: currentUser?.data?.data?.chatNotifications,
+        receiverId: currentUser?.data?.data?.id, // Sender ID (current user)
+        updatedAt: Date.now()
       })
-    });
-    
-    await updateDoc(doc(userChatRef, currentUser?.data?.data?.id,), { //My ID / SENDER ID
-      chats : arrayUnion({
-        chatId : newChatRef?.id,
-        lastMessage : "",
-        flag : false,
-        projectTitle : projectTitle,
-        activeChat : user?.data?.data?.activeChat,
-        chatNotifications : user?.data?.data?.chatNotifications,
-        receiverId : user?.data?.data?.id, //RECIEVER ID / jisko bhej rha hu
-        updatedAt : Date.now()
+    }, { merge: true });
+
+    // console.log("Update Current user Chat Ref");
+
+    // Update chat reference for the current user
+    await setDoc(doc(userChatRef, currentUser?.data?.data?.id), {
+      chats: arrayUnion({
+        chatId: newChatRef?.id,
+        lastMessage: "",
+        flag: false,
+        projectTitle: projectTitle,
+        activeChat: user?.data?.data?.activeChat,
+        chatNotifications: user?.data?.data?.chatNotifications,
+        receiverId: user?.data?.data?.id, // Receiver ID (other user)
+        updatedAt: Date.now()
       })
-    });
-  } 
-  catch(e){
-    // console.log(e);
+    }, { merge: true });
+
+
+  } catch (e) {
+    // console.error("Error in handleAdd function:", e);
   }
-};
+}
+
 
   async function payAsGenerate(projectId, professionalId){
     try{

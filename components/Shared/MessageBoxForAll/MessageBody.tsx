@@ -183,7 +183,7 @@ export default function MessageBody() {
                                     {message?.projectTitle?.substring(0, 13)}...
                                   </p>
                                   <p className="text-[10px] text-[#989BA1] font-semibold tracking-wide capitalize">
-                                    {message?.user?.data?.username}
+                                    {message?.user?.data?.businessName.length > 0 ? message?.user?.data?.businessName  : message?.user?.data?.username}
                                   </p>
                                 </div>
                               </div>

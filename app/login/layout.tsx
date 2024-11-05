@@ -12,7 +12,7 @@ interface Props {
 
 const AuthLayout : any  = async ({ children }) => {
   const session  : any  = await Session();
-  const user  : any  = session?.user;
+  const user  : any  = session?.user; 
 
   const data  : any  = {
     ...user,

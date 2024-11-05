@@ -166,11 +166,11 @@ async function getUser(){
                             <div className="flex items-end gap-2 flex-col lg:flex-row p-4 my-2 shadow bg-[#F3F3F3]" key={i}>
                                 <div className="w-full lg:w-3/4">
                                     <div className="flex">
-                                        <Link href={`/professional/profile/${d?._id}`} target="_blank">
+                                        <Link href={`/professional/profile/${d?.professionalId}`} target="_blank">
                                         <img className="w-[60px] h-[60px] object-cover" src={d?.professionalPicture} alt="work alat" />
                                         </Link>
                                         <div className="px-2">
-                                        <Link href={`/professional/profile/${d?._id}`} target="_blank">
+                                        <Link href={`/professional/profile/${d?.professionalId}`} target="_blank">
                                             <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center capitalize">{d?.professionalName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /></span></h2>
                                             </Link>
                                             <div className="flex items-center gap-1">

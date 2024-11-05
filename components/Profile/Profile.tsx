@@ -41,7 +41,8 @@ export default function Profile({data, isData}  : any ) {
                     <span className="!font-mono capitalize flex items-center gap-2 !text-sm">
                         {Icon}
                         {name} {isVerified ? "Verified" : "Unverified"}
-                        <DoneIcon className="text-green-600 w-4 h-4 -mt-0.5" />
+                        {isVerified ? <DoneIcon className="text-green-600 w-4 h-4 -mt-0.5" /> : <></>}
+                        
                         {data.isprofessionalEmailVerify }
                     </span>
                 }

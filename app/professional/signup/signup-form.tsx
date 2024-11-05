@@ -1,9 +1,12 @@
 "use client";
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'; 
 import { GoogleLogin } from '@react-oauth/google';
+import Recaptcha from "./recaptcha";
 import {jwtDecode} from "jwt-decode"; 
+
+import { loginWithGoogle, loginWithLinkedin } from "./action";
 import {
   Box,
   Button,
@@ -13,7 +16,7 @@ import {
   TextField 
 } from "@mui/material";
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { useUserContext } from '@/context/user_context';
 import VerifyUser from '@/app/middleware/VerifyUser';
@@ -26,6 +29,8 @@ import linkedInIcon from "@/public/icons/linkedin_logo.svg";
 import { useTheme } from '@/context/navbar_theme';
 import { db } from '@/context/firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 
 const ProfessionalSignupForm = () => {
@@ -35,6 +40,11 @@ const ProfessionalSignupForm = () => {
   const [loading, setLoading] : any  = useState(false);
 
   
+  
+  const { data: session } = useSession();
+  const user = session?.user;
+
+
   // loading
   const [loading2, setLoading2] : any  = useState(false);
 
@@ -44,6 +54,7 @@ const ProfessionalSignupForm = () => {
 
   // Theme
   const theme : any  = useTheme();
+  const [isHuman, setIsHuman] = useState<boolean>(false);
 
   // Alert
   const { generateSnackbar } : any  = useSnackbar();
@@ -79,6 +90,8 @@ const ProfessionalSignupForm = () => {
   const [showPassword, setShowPassword] : any  = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] : any  = useState(false);
   let [googleData, setGoogleData] : any  = useState({});
+  
+  const hasRun = useRef(false);
 
 
   const handleShowPasswordToggle = () => {
@@ -143,52 +156,124 @@ const ProfessionalSignupForm = () => {
     }
   };
 
-  async function handleContinueWithGoole(){
-    try{
-      if(Object.keys(googleData).length !== 0){
-          let res : any  = await continueWithGoogleProfessional(googleData, "professional");
 
-      if(res?.data?.userStatus === "SUCCESS"){
+  async function loginUserGoogle() {
+    try {
+      let data: any = user;
 
-        if(res?.data?.newAccount === true || res?.data?.newAccount ){
-          // redirect
-          generateSnackbar("Account Created Successfully", "success");
-          Cookies.set("token", res.data?.token, { secure: true, sameSite: 'None'}); 
-         router.push("/professional/onboard/phone");
+      if (
+        data?.image !== undefined ||
+        data?.image?.includes("https://lh3.googleusercontent.com")
+      ) {
+        let d: any = {
+          userFullName: data?.name,
+          email: data?.email,
+          userPictureLink: data?.image,
+          userType : "professional"
+        };
 
+        console.log(d);
+
+        const response: any = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/signinGoogle`,
+          d
+        );
+        if (response?.status !== 400 || response?.data?.status === "success") {
+          const customToken = response?.data?.token; // Retrieve your custom token
+          generateSnackbar(response?.data?.message, "success");
+          if (response?.data?.userType === "client") {
+            Cookies.set("token", customToken, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            Cookies.set("userType", response?.data?.userType, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            router.push("/client/dashboard");
+          } else {
+            Cookies.set("token", customToken, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            Cookies.set("userType", response?.data?.userType, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            router.push("/professional/onboard/phone");
+          }
+        } else {
+          generateSnackbar(
+            response?.response?.data?.message ||
+              "Some Error Occur, Please Try Again.",
+            "error"
+          );
         }
-        else if(res?.data?.newAccount === false || !res?.data?.newAccount ){
-          generateSnackbar("Loggedin Successfully", "success"); 
-          Cookies.set("token", res?.data?.token, { secure: true, sameSite: 'None'}); 
-         router.push("/professional/onboard/phone");
-        }
-        else{
-          generateSnackbar("Some error Occur, please Try Again.", "error"); 
-        }
+      } else {
+        let d: any = {
+          userFullName: data?.name,
+          email: data?.email,
+          userType : "professional"
+        };
 
+        const response: any = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/signinLinkedin`,
+          d
+        );
+        if (response?.status !== 400 || response?.data?.status === "success") {
+          const customToken = response?.data?.token; // Retrieve your custom token
+          generateSnackbar(response?.data?.message, "success");
+          if (response?.data?.userType === "client") {
+            Cookies.set("token", customToken, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            Cookies.set("userType", response?.data?.userType, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            router.push("/client/dashboard");
+          } else {
+            Cookies.set("token", customToken, {
+              secure: true,
+              sameSite: "None",
+              expires: 30, 
+            });
+            Cookies.set("userType", response?.data?.userType, {
+              secure: true,
+              sameSite: "None",
+              expires: 30,
+            });
+            router.push("/professional/onboard/phone");
+          }
+        } else {
+          generateSnackbar(
+            response?.response?.data?.message ||
+              "Some Error Occur, Please Try Again.",
+            "error"
+          );
+        }
       }
-      else if(res?.data?.userStatus === "PENDING"){
-          setUserId(res?.data?.data[0]?.userId);
-          Cookies.set("userId", res?.data?.data[0]?.userId);
-          generateSnackbar("Please Verify OTP", "success");
-
-        // redirect
-        router.push("/professional/signup/verify-email");
-      }
-      else{
-        generateSnackbar("Some error Occur, please Try Again.", "error"); 
-      }
-    
-      }
-      else{
-        generateSnackbar("please Try Again.", "error"); 
-      }
-    }
-    catch(e){
-      generateSnackbar("Some error Occur, please Try Again.", "error"); 
-    }
-    
+    } catch (e) {}
   }
+
+  useEffect(() => {
+    if (user !== undefined) {
+      if (hasRun.current) return;
+      hasRun.current = true;
+      loginUserGoogle();
+    }
+  }, [user]);
+
+
+
+
   return (
     <>
     {
@@ -266,10 +351,13 @@ const ProfessionalSignupForm = () => {
                 onChange={handleInput}
               />
             </div>
+            
+            <Recaptcha setIsHuman={setIsHuman}/>
             <Button
               fullWidth
               type='submit'
               variant="contained"
+              disabled={!isHuman}
               className="bg-secondary capitalize shadow-none font-bold text-dark text-lg font-mono hover:bg-secondary"
             >
               Create Account
@@ -286,7 +374,7 @@ const ProfessionalSignupForm = () => {
               href={"/"}
               className="border border-main border-opacity-30 transition-colors shadow-md flex font-semibold sm:text-lg rounded-md"
             > */}
-              <div className='flex justify-center items-center'>
+              {/* <div className='flex justify-center items-center'>
               <GoogleLogin
                 onSuccess={(credentialResponse : any ) => {
                     let decode = jwtDecode(credentialResponse.credential);
@@ -297,15 +385,48 @@ const ProfessionalSignupForm = () => {
                     console.log('Login Failed');
                 }}
                 />
-              </div>
-            {/* </Link> */}
-            <button 
+              </div> */}
+            {/* <button 
             // onClick={handleLinkedInLogin }
               className="bg-main hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
             >
               <img src={linkedInIcon.src} alt="" />
               Continue with LinkedIn
-            </button>
+            </button> */}
+
+              
+<Button
+                  onClick={() => {
+                    loginWithGoogle();
+                  }}
+                  disabled={!isHuman}
+                  href={""}
+                  style={{
+                    border: "1px solid main",
+                    color: "black",
+                  }}
+                  className="border border-main border-opacity-15 transition-colors hover:bg-secondary shadow-md flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
+                >
+                  <img src={gmailIcon.src} alt="" />
+                  Continue with Google
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    loginWithLinkedin();
+                  }}
+                  disabled={!isHuman}
+                  style={{
+                    border: "1px solid main",
+                    color: "black",
+                  }}
+                  className="border border-main border-opacity-15 transition-colors hover:bg-secondary shadow-md flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
+                  // className=" hover:bg-opacity-85 transition-colors text-white flex items-center justify-center py-3 font-semibold gap-2 sm:text-lg rounded-md"
+                >
+                  <img src={linkedInIcon.src} alt="" />
+                  Continue with LinkedIn
+                </Button>
+
           </div>
           <div className="text-sm text-center mt-10 font-bold">
             <p>

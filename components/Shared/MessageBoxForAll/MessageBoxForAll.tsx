@@ -25,8 +25,6 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
     const [isModalOpen, setIsModalOpen]  : any  = useState<boolean>(false);
     const [modalImage, setModalImage]  : any  = useState<string | null>(null);
 
-    console.log(data);
-
     const toggleEmojiPicker = () => setShowEmojiPicker(prev => !prev);
 
     const handleEmojiClick = (emojiObject: any) => {
@@ -71,20 +69,6 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
     // emoji box responsive
     const [screenWidth, setScreenWidth] = useState<number | undefined>(undefined);
 
-    // useEffect(() => {
-    //     // Function to update the screen width
-    //     const handleResize = () => {
-    //         setScreenWidth(window.innerWidth);
-    //     };
-
-    //     handleResize();
-
-    //     window.addEventListener('resize', handleResize);
-
-    //     return () => {
-    //         window.removeEventListener('resize', handleResize);
-    //     };
-    // }, []);
 
     let [chat,setChat]  : any  = useState(false);
     let [text, setText]  : any  = useState("");
@@ -194,7 +178,7 @@ export default function MessageBoxForAll({ data, currentUser }  : any ) {
                   <div className="px-2">
                       <p className="text-[17px] text-[#989BA1] font-semibold tracking-wide capitalize">
                           
-                          {data?.user?.data?.username}
+                      {data?.user?.data?.businessName.length > 0 ? data?.user?.data?.businessName  : data?.user?.data?.username}
                       </p>
                       <p className="text-[13px] text-[#989BA1] font-semibold tracking-wide capitalize">
                         {data?.projectTitle.slice(0,45)}...

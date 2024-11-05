@@ -29,7 +29,7 @@ import logo_light from "@/public/logo_light.png";
 
 
 
-export const Navbar = ({ mode = "light" }: { mode: "light" | "dark" }) => {
+export const Navbar = ({ mode = "dark" }: { mode: "light" | "dark" }) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
   
@@ -67,64 +67,6 @@ const verificationCache = new Map();
   let [userData,setUserData]  : any  = useState({});
 
   const pathname = usePathname().replace(/\//g, "");
-
-  // useEffect(() => {
-  //   const verifyUsers = async () => {
-  //     try {
-  //       const token = Cookies.get("token");
-  //       const userType = Cookies.get("userType");
-  //       const pathSegment = pathname.split("/")[1];
-  //       const typeToVerify = pathSegment || userType;
-  
-  //       // Check if we have necessary data
-  //       if (!token || !typeToVerify) {
-  //         console.log("No token")
-  //         setLoading2(false);
-  //         return;
-  //       }
-  
-  //       // Create cache key
-  //       const cacheKey = `${token}-${typeToVerify}`;
-  
-  //       // Check cache
-  //       const cachedResult = verificationCache.get(cacheKey);
-  //       if (cachedResult) {
-  //         const { data, timestamp } = cachedResult;
-  //         const fiveMinutes = 5 * 60 * 1000;
-  //         if (Date.now() - timestamp < fiveMinutes) {
-  //           setUserData(data);
-  //           setLoading2(false);
-  //           return;
-  //         }
-  //       }
-  //       console.log(token, typeToVerify,userType)
-  
-  //       // Proceed with verification
-  //       const response = await VerifyUser(token, typeToVerify);
-  //       console.log(response);
-  //       if (response?.status === "success") {
-  //         // Cache the result
-  //         verificationCache.set(cacheKey, { data: response, timestamp: Date.now() });
-  //         setUserData(response);
-  //         setLoading2(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("Verification error:", error);
-  //     } finally {
-  //       setLoading2(false);
-  //     }
-  //   };
-  
-  //   verifyUsers();
-  
-  //   // Cleanup function to abort any pending requests
-  //   return () => {
-  //     if (abortControllerRef.current) {
-  //       abortControllerRef.current.abort();
-  //     }
-  //   };
-  // }, [path]); // Only depend on pathname changes
-
 
 
   useEffect(() => {

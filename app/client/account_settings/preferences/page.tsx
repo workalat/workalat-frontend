@@ -176,7 +176,7 @@ const PreferenceSettings = () => {
                         }  
                         setActivateChat(!activateChat)
                       }}
-                      disabled={userData?.adminAccess === true ? true  : false}
+                      disabled={!userData}
                     />
                   }
                   label={"Active Chat"}

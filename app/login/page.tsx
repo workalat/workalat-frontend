@@ -168,7 +168,7 @@ const LoginPage = () => {
             Cookies.set("token", customToken, {
               secure: true,
               sameSite: "None",
-              expires: 30,
+              expires: 30, 
             });
             Cookies.set("userType", response?.data?.userType, {
               secure: true,
