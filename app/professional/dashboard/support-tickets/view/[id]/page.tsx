@@ -163,7 +163,7 @@ export default function ViewSupportTickets() {
                             <div className="pt-3 pb-2 gap-2 md:gap-0 flex flex-wrap justify-between">
                                 <div className="w-[48%] md:w-auto">
                                     <h5 className="text-[20px] font-semibold tracking-wide text-white">Subject</h5>
-                                    <p className="capitalize text-[15px] text-white font-semibold tracking-wide leading-[1.5]">{ticketData?.ticketSubject}</p>
+                                     <p className="capitalize text-[15px] text-white font-semibold tracking-wide leading-[1.5]">{ticketData?.ticketSubject}</p>
                                 </div>
                                 <div className="w-[48%] md:w-auto">
                                     <h5 className="text-[20px] font-semibold tracking-wide text-white">Ticket ID</h5>
