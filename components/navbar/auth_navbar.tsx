@@ -296,7 +296,7 @@ const AuthNavbar = () => {
                 </Link>
                 <Link
                 href={""}
-                  onClick={()=>{{pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? handleIntoProfessional() : handleIntoClient();}}}
+                  onClick={()=>{{pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/")  || userData?.userType === "client"  ? handleIntoProfessional() : handleIntoClient();}}}
                 >
                   <Box
                     className={`flex items-center gap-4 p-2 px-3  border-b border-dark border-opacity-20 hover:!bg-fadedwhite hover:!bg-opacity-20 hover:rounded-lg`}
@@ -312,7 +312,8 @@ const AuthNavbar = () => {
                     </div>
                     <span
                     >
-                      {pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "Switch to Seller" : "Switch to Client"}
+                      
+                      {pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") || userData?.userType === "client" ? "Switch to Seller" : "Switch to Client"}
                     </span>
                   </Box>
                 </Link>
