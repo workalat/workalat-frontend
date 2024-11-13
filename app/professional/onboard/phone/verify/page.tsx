@@ -75,6 +75,7 @@ const PhoneOTPVerify = () => {
                         
         // TODO: Implement resend
                 // console.log(tempUserData);
+                setOtp("");
                 let res = await sendPhoneOtp({
                     userId : ver.userId,
                     userType    : ver.userType,

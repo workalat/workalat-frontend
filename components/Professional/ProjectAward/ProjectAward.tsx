@@ -133,7 +133,7 @@ export default function ProjectAward() {
 
           <div className="relative z-10 mt-6 container mx-auto max-w-7xl px-6">
             <div className="pb-12">
-              <h3 className="text-2xl font-bold text-[#07242B]">My Projects</h3>
+              <h3 className="text-2xl font-bold text-[#07242B]">My Responses</h3>
               <Link
                 className="text-xs text-[#FFBE00] underline underline-offset-4 font-bold"
                 href="/professional/project-history"
@@ -163,10 +163,9 @@ export default function ProjectAward() {
                       <p className="text-center text-[#07242B] text-sm mb-4 sm:mb-0">
                         {moment(data?.projectTimeStamp).format("dddd, D MMMM")}
                       </p> 
-                      {/* <p className="sm:text-[20px] text-[#323C47] text-justify sm:text-center md:px-8 xl:px-12"> */}
-                      <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.serviceDes?.substring(0, 210))}...` }} />
-                        {/* {data?.serviceDes?.substring(0, 210)}... */}
-                      {/* </p> */}
+                      <pre className="sm:text-[20px] text-[#323C47] flex justify-center items-baseline text-justify sm:text-center md:px-8 xl:px-12">
+                      <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.serviceDes?.substring(0, 65))}`}} />...
+                      </pre> 
 
                       <div className="flex gap-5 gap-y-2 flex-col sm:flex-row justify-center pt-8 sm:pt-5">
                         <Link

@@ -80,16 +80,26 @@ const PhoneOtp = ({
     });
     let res : any  =  await clientSignup({phoneNo : phoneNumber, country : countryCode, countryCode:countryCallingCode  });
 
+    console.log(res);
     if(res?.status !== 400 || res?.data?.status === 'success'){
-      setTempUserData({...tempUserData, userId : res.data?.data?.userId, userPhone : phoneNumber,});
+      // setTempUserData({...tempUserData,
+      //    userId : res.data?.data?.userId, userPhone : phoneNumber,
+      //   });
+        setTempUserData({
+          ...tempUserData,
+          userPhone : phoneNumber,
+          country_code: countryCode,
+          country_calling_code: `+${countryCallingCode}`,
+          phoneVerificationId : res?.data?.data?.verificationId
+         });
       
-      await setDoc(doc(db, "usersChats", res.data?.data?.userId), {
-        chats : [],
-      });
-      Cookies.set("userId", res.data?.data?.userId ,{ secure: true, sameSite: 'None', expires: 10 });
+    //   await setDoc(doc(db, "usersChats", res.data?.data?.userId), {
+    //     chats : [],
+    //   });
+    //   Cookies.set("userId", res.data?.data?.userId ,{ secure: true, sameSite: 'None', expires: 10 });
       Cookies.set("userPhone",phoneNumber ,{ secure: true, sameSite: 'None', expires: 10 });
       generateSnackbar("OTP sent successfully.", "success");
-      setProjectData({...projectData, ["userId"] : res.data?.data?.userId});
+    //   setProjectData({...projectData, ["userId"] : res.data?.data?.userId});
       handleNext();
 
     }

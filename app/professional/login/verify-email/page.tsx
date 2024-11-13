@@ -44,7 +44,7 @@ export default function VerifyEmail() {
             e.preventDefault();
             let id : any = Cookies.get("userId");
             if(id?.length > 0) {
-
+                setOtp("");
                 let res : any  = await sendEmailOtp({
                 userId: Cookies.get("userId"),
                 userType: "professional",

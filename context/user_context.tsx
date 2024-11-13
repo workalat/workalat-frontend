@@ -39,10 +39,12 @@ interface UserContextType {
   setSignupProfessional : (signupProfessional : SignupProfessional) => void;
   professionalSignupFunction : (data : SignupProfessional) => any;
   verifyOtp : (data : any) => any;
+  verifyOtpWoId : (data : any) => any;
   signinProfessional : (data : any) => any;
   sendPhoneOtp(data  : any) : any;
   sendEmailOtp : (data : any) => any;
   verifyPhoneOtp : (userId : any, userType : any, otp : any) => any; 
+  verifyPhoneWoOtp : (verificationId : any, userType : any, otp : any)  => any;
   addProfessionalDetails :  (data : any) => any; 
   addLeadsToProfessioal : (data : any) => any; 
   continueWithGoogleProfessional : (data  : any, userType :   any) => any;
@@ -101,12 +103,15 @@ interface UserContextType {
   walletPointsData : (data : any) => any;
   phoneVerifyPage : (data : any) => any;
   userChatDetilas : (data : any) => any;
+  sendPhoneOtpWid : (data : any) => any;
+  sendEmailOtpWid : (data : any) => any;
 
   
 
   //Client Context
   clientSignup : (data : any) => any;
   clientDetailsAdd : (data : any) => any;
+  sendEmailOtpClient : (data : any) => any;
   getClientsData : (data : any) => any;
   addClientsData : (data : any) => any;
   clientDetails : (data : any) => any;
@@ -197,6 +202,15 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     userEmail :Cookies.get("userEmail") || "" ,
     userPhone :  Cookies.get("userPhone") || "",
     userType : Cookies.get("userType") || "",
+    userName : "",
+    userPassword : "",
+    userConfirmPassword : "",
+    phoneVerificationId : "",
+    emailVerificationId : "",
+    country_code : "",
+    country_calling_code : "",
+    isEmailVerify : false,
+    isPhoneVerify : false,
     userPrimaryService : Cookies.get("userPrimaryService") || "",
     professionalFormData : {
       name : Cookies.get("name") || "",
@@ -307,6 +321,21 @@ async function findAllServices(){
     }
 };
 
+async function verifyOtpWoId({otp, verificationId, userType,}  : any )  {
+  try{
+    const response  : any  = await axios.post('/verifyEmailOtpWoId', {
+      verificationId : verificationId,
+      otp : otp,
+      userType : userType,
+    });
+
+    return(response)
+  }
+  catch(e){
+    return(e);
+  }
+};
+
 
 async function signinProfessional({email, password, userType} : any ){
   try{
@@ -383,15 +412,58 @@ async function signinProfessional({email, password, userType} : any ){
     }
   };
 
+
+
+  async function sendPhoneOtpWid({userId, userType, phoneNo}  : any ){
+    try{
+      const response  : any = await axios.post('/resendPhoneOtpWId', {
+        userId : userId,
+        userType : userType,
+        phoneNo : phoneNo
+      });
+      return(response);
+    }
+    catch(e){
+      return(e);
+    }
+  };
+  async function sendEmailOtpWid({userType, email}  : any ){
+    try{
+      const response  : any = await axios.post('/resendEmailOtpWId', {
+        userType : userType,
+        userEmail : email
+      });
+      return(response);
+    }
+    catch(e){
+      // console.log(e);
+      return(e);
+    }
+  };
+
   async function verifyPhoneOtp(userId : any, userType : any, otp : any){
+    try{
+      const response  : any  = await axios.post('/verify-phoneOtp', {
+        userId : userId,
+        otp : otp,
+        userType : userType
+        });
+        // console.log(response);
+  
+        return(response)
+      }
+      catch(e){
+        return(e);
+      }
+};
+
+  async function verifyPhoneWoOtp(verificationId : any, userType : any, otp : any){
       try{
-        const response  : any  = await axios.post('/verify-phoneOtp', {
-          userId : userId,
+        const response  : any  = await axios.post('/verifyPhoneOtpWoId', {
+          verificationId : verificationId,
           otp : otp,
           userType : userType
           });
-          // console.log(response);
-    
           return(response)
         }
         catch(e){
@@ -492,18 +564,39 @@ async function clientSignup({phoneNo, country, countryCode}  : any ){
 };
 
 
-async function clientDetailsAdd({clientId, email, name, pass, confirmPass, userType}  : any ){
+
+async function sendEmailOtpClient({email}  : any ){
+  // console.log(clientId, email, name, pass, confirmPass, userType)
+  
+  try{
+    const response  : any  = await axios.post('/clientSendEmailOtp', {
+      email: email,
+      });
+      // console.log(response);  
+      return(response)
+    }
+    catch(e){
+      return(e);
+    }
+};
+
+async function clientDetailsAdd({email, name, pass, confirmPass, userType,phone ,country, countryCode,isPhoneVerify, isEmailVerify}  : any ){
   // console.log(clientId, email, name, pass, confirmPass, userType)
   
   try{
     const response  : any  = await axios.post('/signupEmail', {
-      clientId: clientId,
       email: email,
+      phone : phone,
       name: name,
       pass: pass,
-      confirmPass: confirmPass,
+      confirmPass : confirmPass,
+      country : country,
+      countryCode : countryCode,
+      isPhoneVerify : isPhoneVerify, 
+      isEmailVerify : isEmailVerify,
       userType: userType,
       professionalService : ""
+
       });
       // console.log(response);  
       return(response)
@@ -1602,10 +1695,12 @@ async function userChatDetilas({ userId ,userType }){
       setSignupProfessional, //set professional signup state
       professionalSignupFunction,  // function for professional signup
       verifyOtp,
+      verifyOtpWoId,
       signinProfessional,
       sendPhoneOtp,
       sendEmailOtp,
       verifyPhoneOtp,
+      verifyPhoneWoOtp,
       addProfessionalDetails,
       addLeadsToProfessioal,
       continueWithGoogleProfessional,
@@ -1641,6 +1736,8 @@ async function userChatDetilas({ userId ,userType }){
       logout,
       phoneVerifyPage ,
       userChatDetilas,
+      sendPhoneOtpWid,
+      sendEmailOtpWid,
 
       //PRofessional
       intoClient,
@@ -1673,6 +1770,7 @@ async function userChatDetilas({ userId ,userType }){
       //Clietn Context
       clientSignup,
       clientDetailsAdd,
+      sendEmailOtpClient,
       getClientsData,
       addClientsData,
       clientDetails ,

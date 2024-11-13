@@ -5,6 +5,7 @@ import {
   FormControl,
   IconButton,
   InputAdornment,
+  Modal,
   OutlinedInput,
   TextField,
 } from "@mui/material";
@@ -35,8 +36,9 @@ SetupAccountProps) {
     password : "",
     confirmPassword : "",
   });
-  const {userData,clientDetailsAdd, tempUserData, setTempUserData}  : any = useUserContext();
+  const {userData,clientDetailsAdd, sendEmailOtpClient ,tempUserData, setTempUserData}  : any = useUserContext();
   const { generateSnackbar }  : any = useSnackbar();
+  let [loading, setLoading] = useState(false);
 
   function handleInput(e){
     let name= e.target.name;
@@ -58,31 +60,51 @@ SetupAccountProps) {
   const handleSubmit = async (e: any ) => {
     try{
       e.preventDefault();
-      let clientId : any  = userData.clientId || Cookies.get("userId") ;
-    let res : any  = await clientDetailsAdd({
-      clientId : clientId,
-      email : userDetails.email,
-      name : userDetails.name,
-      pass : userDetails.password,
-      confirmPass : userDetails.confirmPassword,
-      userType : "client",
-    })
+
+      if(userDetails.password !== userDetails.confirmPassword){
+        return ("Password do not match.")
+      }
+      setLoading(true);
+      let res : any  = await sendEmailOtpClient({
+        email : userDetails.email,
+      })
+
+     
+
+    //   let clientId : any  = userData.clientId || Cookies.get("userId") ;
+    // let res : any  = await clientDetailsAdd({
+    //   clientId : clientId,
+    //   email : userDetails.email,
+    //   name : userDetails.name,
+    //   pass : userDetails.password,
+    //   confirmPass : userDetails.confirmPassword,
+    //   userType : "client",
+    // });
 
     if(res?.status !== 400 || res?.status === "success"){
-      setTempUserData({...tempUserData,
-        userId : res.data?.data[0]?.userId,
-        userEmail : res.data?.data[0]?.email,
+      setTempUserData({
+        ...tempUserData,
+        emailVerificationId : res?.data?.data[0]?.verificationId,
+        userEmail : res?.data?.data[0]?.email,
+        userName : userDetails.name,
+        userPassword : userDetails.password,
+        userConfirmPassword : userDetails.confirmPassword,
         userType : "client",
       });
-        Cookies.set("userId", res.data?.data[0]?.userId ,{ secure: true, sameSite: 'None', expires: 10 });
-        Cookies.set("userEmail", res.data?.data[0]?.email ,{ secure: true, sameSite: 'None', expires: 10 });
-        Cookies.set("userType", "client",{ secure: true, sameSite: 'None', expires: 10 });
+        // Cookies.set("userId", res.data?.data[0]?.userId ,{ secure: true, sameSite: 'None', expires: 10 });
+        // Cookies.set("userEmail", res.data?.data[0]?.email ,{ secure: true, sameSite: 'None', expires: 10 });
+        // Cookies.set("userType", "client",{ secure: true, sameSite: 'None', expires: 10 });
         
       generateSnackbar( "OTP Sent, Please verify your Email.", "success");
+      setLoading(false);
       handleNext();
     }
     else{ 
-      generateSnackbar( res.response?.data?.message || "Some error Occur, please Try Again.", "error");
+      setLoading(false);
+      if(res?.response?.data?.message?.includes("connect ETIMEDOUT 74.125.206.109:587")){
+       return generateSnackbar("Please Try Again.", "error");
+      }
+      generateSnackbar( res?.response?.data?.message || "Some error Occur, please Try Again.", "error");
     }
     }
     catch(e){
@@ -204,6 +226,14 @@ SetupAccountProps) {
           </Button>
         </Box>
       </form>
+      <Modal open={loading}>
+        <Box className="flex justify-center items-center w-full h-full">
+          <Box className="bg-white p-6 rounded-md shadow-md text-center">
+            <img src="/images/loader.gif" alt="Loading..." className="w-40 mx-auto" />
+            <h1 className="font-bold text-xl mt-4">Sending OTP...</h1>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 }

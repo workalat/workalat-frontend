@@ -63,7 +63,7 @@ export default function LocationPage() {
       // let s : any =  JSON.parse(Cookies?.get("skills"));
       let skills = tempUserData?.skills
       let isData = tempUserData?.isData || Cookies.get("isData") || true;
-      let userId = userData?.userId || tempUserData?.userId || Cookies.get("userId") ;
+      let userId = Cookies.get("userId") ;
 
       let res  : any  = await addProfessionalDetails({name, companyName,website,bio,companySize,skills,isData,userId,selectedPostcodes});
       if(res?.status !==400 || res.data?.status === "success"){

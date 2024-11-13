@@ -51,6 +51,7 @@ const Page = () => {
         setLoading2(true);
         let token : any = Cookies.get("token");
         let ver : any = await VerifyUser(token, "client");
+        console.log(ver);
         if(ver?.status === "success" && ver?.userType === "client"){
           setUserData(ver);
           let dash : any = await dashboardData({userId : ver?.userId, userType : ver?.userType});

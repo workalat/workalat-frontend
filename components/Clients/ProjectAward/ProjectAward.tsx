@@ -212,9 +212,9 @@ export default function ProjectAward() {
                       <p className="text-center text-[#07242B] text-sm mb-4 sm:mb-0">
                         {moment(data?.projectTimeStamp).format("dddd, D MMMM")}
                       </p>
-                      <p className="sm:text-[20px] text-[#323C47] text-justify sm:text-center md:px-8 xl:px-12">
-                      <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.serviceDes?.substring(0, 210))}...` }} />
-                      </p> 
+                      <pre className="sm:text-[20px] text-[#323C47] flex justify-center items-baseline text-justify sm:text-center md:px-8 xl:px-12">
+                      <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(data?.serviceDes?.substring(0, 65))}`}} />...
+                      </pre> 
                       
                      
 

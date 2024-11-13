@@ -12,6 +12,8 @@ import VerifyUser from "@/app/middleware/VerifyUser";
 
 import arrowRightIcon from "@/public/icons/arrow_right.svg";
 import { useRouter } from "next/router";
+import { doc, setDoc } from "@firebase/firestore";
+import { db } from "@/context/firebase";
 
 interface VerifyOTPProps {
   handleNext: () => void;
@@ -27,7 +29,7 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
     // let router = useRouter();
 
     //context
-        let { userId, verifyOtp, tempUserData,sendEmailOtp, userData, setUserData } : any  = useUserContext();
+        let { userId, verifyOtpWoId, tempUserData,sendEmailOtpWid, userData, setUserData,clientDetailsAdd, setTempUserData } : any  = useUserContext();
 
          
   const { projectData, setProjectData } : any  = useUserContext();
@@ -37,15 +39,21 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
     try { 
         e.preventDefault();
         let id : any = Cookies.get("userId");
+        setOtp("");
         if(id?.length > 0) {
 
-            let res : any  = await sendEmailOtp({
-            userId: Cookies.get("userId"),
-            userType: "professional",
-            email: tempUserData.userEmail || Cookies.get("userEmail"),
+            let res : any  = await sendEmailOtpWid({
+            userType: "client",
+            email: tempUserData?.userEmail || Cookies.get("userEmail"),
           });
     
           if (res?.status !== 400 || res?.data?.status === "success") {
+            setTempUserData({
+              ...tempUserData,
+              emailVerificationId : res?.data?.data[0]?.verificationId,
+              userEmail : res?.data?.data[0]?.email,
+              userType : "client",
+            });
             return generateSnackbar("OTP resend successfully", "success");
           } else {
             generateSnackbar("Please login again.", "error");
@@ -68,23 +76,56 @@ const EmailOTP = ({ handleNext, handlePrev , Router}: VerifyOTPProps) => {
    try{
     e.preventDefault();
     if (otp.length !== 4) return alert("Enter valid OTP");
-    let userId = tempUserData?.userId || Cookies.get("userId");
+    let verificationId = tempUserData?.emailVerificationId;
 
-    let res : any  = await verifyOtp({otp, userId, userType : "client" })
-
+    let res : any  = await verifyOtpWoId({otp, verificationId, userType : "client" })
+    console.log(res);
         if(res?.status === 200 || res?.response?.data?.status === "success"){
+          console.log(tempUserData);
+          let submitDetails : any  = await clientDetailsAdd({
+            email: tempUserData?.userEmail,
+            name: tempUserData?.userName,
+            pass: tempUserData?.userPassword,
+            phone : tempUserData?.userPhone,
+            confirmPass : tempUserData?.userConfirmPassword,
+            country : tempUserData?.country_code,
+            countryCode : tempUserData?.country_calling_code,
+            isPhoneVerify : tempUserData?.isPhoneVerify,
+            isEmailVerify : res?.data?.emailVerify,
+            userType : "client",
+          });
+
+          if(submitDetails?.status === 200 || submitDetails?.response?.data?.status === "success"){
+            
+    
+          let clientId : any  = submitDetails?.data?.id || Cookies.get("userId") ;
           setUserData({
             ...userData,
-            token : res.data?.token
+            userId : submitDetails?.data?.id ,
+            token : submitDetails?.data?.data[0]?.token
           });
+
+            await setDoc(doc(db, "usersChats", submitDetails?.data?.id ), {
+              chats : [],
+            });
           
-            Cookies.set("token", res.data?.token ,{ secure: true, sameSite: 'None', expires: 30 });
-            generateSnackbar("Email verified.", "success")
+            setProjectData({...projectData, ["userId"] : submitDetails?.data?.id });
+            Cookies.set("token", submitDetails?.data?.data[0]?.token,{ secure: true, sameSite: 'None'});
+            Cookies.set("userId", submitDetails?.data?.id,{ secure: true, sameSite: 'None',});
+            Cookies.set("userEmail", tempUserData?.userEmail ,{ secure: true, sameSite: 'None',});
+            Cookies.set("userType", "client",{ secure: true, sameSite: 'None',});
+
+            generateSnackbar( submitDetails?.data?.message ||  "Account Created Successfully.", "success")
             handleNext();
+
+          }
+          else{
+            generateSnackbar(submitDetails?.response?.data?.message || "Some error occur, please Try Again." ,"error")
+          }
         }
         else{
             // OTP verification failed
-            generateSnackbar(res.response?.data?.message || "Some error occur, please Try Again." ,"error")
+            generateSnackbar(res?.response?.data?.message || "Some error occur, please Try Again." ,"error")
         }
 
    }
