@@ -323,7 +323,7 @@ export default function ProjectAward() {
                         <p className="mt-4 sm:mt-0 capitalize">
                           Project Title: <br className="block sm:hidden" />{" "}
                           <strong>
-                            {modalData?.serviceTitle?.slice(0, 20)}...
+                            {modalData?.serviceTitle}
                           </strong>
                         </p>
 

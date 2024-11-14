@@ -42,39 +42,57 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
     else{
       // console.log(projectData);
       setProject(projectData);
+      // setProjectDes(`
+      //        I need ${projectData?.serviceNeeded} service in ${projectData?.postCodeRegion} for ${projectData?.serviceFrequency} basis, <br /><br /><br />
+
+      //        <b><p className={"text-yellow-400"} style={{color : "yellow"}}>Additional Information</p></b><br />
+      //   ${
+      //     projectData?.serviceQuestions?.map((val, i)=>{
+      //       console.log(val?.answer.length>0);
+      //       return(`
+      //         ${
+      //           val?.answer?.length>0
+
+      //           ?
+      //           `
+      //           <b className="capitalize">${toTitleCase(val?.questionTitle)}</b><br />
+              
+      //         ${val?.answer.map((va)=>{
+      //           return(`<p className="capitalize">${toTitleCase(va)}</p><br/>`)
+      //         })}
+      //         `
+      //           :
+      //           <></>
+      //         }              
+      //         `)
+      //     })
+      //   }
+      //   `);
+
+
       setProjectDes(`
-             I need a ${projectData?.serviceNeeded} in ${projectData?.postCodeRegion} for ${projectData?.serviceFrequency} basis, <br /><br /><br />
+        I need ${projectData?.serviceNeeded} service in ${projectData?.postCodeRegion} for ${projectData?.serviceFrequency} basis, <br /><br /><br />
 
-             <b><p className={"text-yellow-400"} style={{color : "yellow"}}>Additional Information</p></b><br />
+        <b><p className={"text-yellow-400"} style={{color : "yellow"}}>Additional Information</p></b><br />
+
         ${
-          projectData?.serviceQuestions?.map((val, i)=>{
-            // console.log(val);
-            return(`
-              ${
-                val?.answer?.length>0
-
-                ?
-                `
+          projectData?.serviceQuestions?.map((val, i) => {
+            // Check if `answer` array has entries
+            if (val?.answer?.length > 0) {
+              return `
                 <b className="capitalize">${toTitleCase(val?.questionTitle)}</b><br />
-              
-              ${val?.answer.map((va)=>{
-                return(`<p className="capitalize">${toTitleCase(va)}</p><br/>`)
-              })}
-              `
-                :
-                <></>
-              }
-              
-              
-              `)
-          })
+                ${val?.answer.map((va) => `<p className="capitalize">${toTitleCase(va)}</p><br/>`).join('')}
+              `;
+            }
+            // Return an empty string if there are no answers
+            return '';
+          }).join('')  // Join all strings to prevent commas
         }
-
-        `);
-      // setProjectDes(projectData?.serviceDes);
-      setProjectTitle(`I need a ${projectData?.serviceNeeded} in ${projectData?.postCodeRegion}`)
-    }
-  },[])
+      `)
+            // setProjectDes(projectData?.serviceDes);
+            setProjectTitle(`I need ${projectData?.serviceNeeded} service in ${projectData?.postCodeRegion}`)
+          }
+        },[])
   
   
 

@@ -254,7 +254,7 @@ async function getUser(){
                                         <div className="pt-4">
                                             <div className="text-center">
                                                 <h4 className="font-semibold uppercase text-[17px]">Award Project</h4>
-                                                <p className="py-2 capitalize">Award <b>{modalData?.professionalName}</b> the <b>({data?.serviceLocationPostal}, {data?.serviceLocationTown})</b></p>
+                                                <p className="py-2 capitalize">Award <b>{modalData?.professionalName}</b> the <b>({data?.serviceLocationTown})</b></p>
                                             </div>
 
                                             <div className="w-full h-full">

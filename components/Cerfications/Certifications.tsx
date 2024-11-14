@@ -26,6 +26,7 @@ export default function Certifications() {
     });
     let [file, setFile]  : any = useState({});
     const [filePill, setFilePill] : any = useState(null);
+    let [expireFields, setExpireFields] = useState(false);
     let [loading,setLoading] : any  = useState(false);
 
     const openModal = () => {
@@ -111,6 +112,7 @@ export default function Certifications() {
                       'Content-Type': 'multipart/form-data',
                     },
                   });
+                  console.log(res);
                   if (res?.status !== 400 || res?.data?.status === "success") {
                     setLoading(false);
                     setFilePill(null);
@@ -119,15 +121,16 @@ export default function Certifications() {
                     router.refresh();
                   }
                   else {
+                    setLoading(false);
+                    console.log(res);
                     generateSnackbar(res?.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
                   }
-    
             }
-            
-
         }
-        catch(e){
-            generateSnackbar("Some Error occurs, please try again in a few minutes", "error");
+        catch(error){
+            setLoading(false);
+            
+            generateSnackbar("Please check if you have uploaded the file.", "error");
         }
       };
 
@@ -202,13 +205,13 @@ export default function Certifications() {
                                 </div>
                                 <div className="w-full mt-3 py-2 px-3">
                                     <ul>
-                                        <li className="flex border-y border-black/30 py-3 justify-between items-center">
+                                        {/* <li className="flex border-y border-black/30 py-3 justify-between items-center">
                                             <div>
                                                 <h4 className="text-lg font-semibold">CompTIA Security</h4>
                                                 <p className="text-sm">September 2024</p>
                                             </div>
                                             <button onClick={addCertification}><MdEditSquare className="size-5 text-secondary" /></button>
-                                        </li>
+                                        </li> */}
                                         <li className="flex py-3 justify-between items-center border-b">
                                             <div className="px-3">
                                                 <p className="text-sm text-[#7A7A7A]">Add another certification / licence</p>
@@ -249,10 +252,10 @@ export default function Certifications() {
                                             <div className="flex flex-col md:flex-row gap-3 items-end">
                                                 <div className="w-full md:w-1/2">
                                                     <label className="block pb-2" htmlFor="date">Expiration Date</label>
-                                                    <input type="text" id="date" value={certificateData.month} onChange={(e)=>{setCertificateData({...certificateData, ["month"] : e.target.value})}} name="month" placeholder="Month" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
+                                                    <input type="text" id="date" value={certificateData.month} disabled={expireFields} onChange={(e)=>{setCertificateData({...certificateData, ["month"] : e.target.value})}} name="month" placeholder="Month" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
                                                 </div>
                                                 <div className="w-full md:w-1/2">
-                                                    <input type="text" placeholder="Year" value={certificateData.year} onChange={(e)=>{setCertificateData({...certificateData, ["year"] : e.target.value})}} name="year" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
+                                                    <input type="text" placeholder="Year" value={certificateData.year} disabled={expireFields}  onChange={(e)=>{setCertificateData({...certificateData, ["year"] : e.target.value})}} name="year" className="w-full px-3 py-2 rounded-md shadow-md border outline-none" />
                                                 </div>
                                             </div>
                                         </div>
@@ -266,7 +269,21 @@ export default function Certifications() {
                                             <div className="flex flex-col md:flex-row gap-2 items-center">
                                                 <div className="w-full md:w-1/3">
                                                     <div className="flex items-center gap-2">
-                                                        <input className="h-5 w-5 shadow" id="check" type="checkbox" checked={certificateData.isExpired} onChange={(e)=>{setCertificateData({...certificateData, ["isExpired"] : (!certificateData.isExpired)})}} />
+                                                        <input className="h-5 w-5 shadow" id="check" type="checkbox" checked={certificateData.isExpired} onChange={(e)=>{
+                                                            if(certificateData.isExpired === true){
+                                                                setCertificateData({...certificateData,
+                                                                    ["isExpired"] : (!certificateData.isExpired), 
+                                                                    month : "",
+                                                                    year : ""})
+                                                            }
+                                                            else{
+                                                                setCertificateData({...certificateData,
+                                                                    ["isExpired"] : (!certificateData.isExpired), 
+                                                                    month : "--",
+                                                                    year : "--"})
+                                                            }
+                                                            setExpireFields(prev => !prev)
+                                                            }} />
                                                         <label className="block text-xs" htmlFor="check">Does not expire</label>
                                                    </div>
                                                 </div>

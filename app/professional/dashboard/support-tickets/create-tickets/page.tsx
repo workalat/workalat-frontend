@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import MenuIcon from "@mui/icons-material/Menu";
 import { usePathname } from "next/navigation";
-import { formatDateTime } from "@/utils/helper";
+import { formatDateTime } from "@/utils/helper"; 
 import { useUserContext } from '@/context/user_context';
 import VerifyUser from '@/app/middleware/VerifyUser';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useSnackbar } from "@/context/snackbar_context";
 
@@ -20,6 +20,8 @@ export default function CreateSupportTicket() {
 
     const [isClientDashboard, setIsClientDashboard] : any  = useState<boolean>(false);
 
+    const searchParams = useSearchParams();
+    let [totalRecords, setTotalRecords] : any = useState(0);
     const [isSideNavOpen, setIsSideNavOpen] : any  = useState(false);
     let {  createTicket } : any  = useUserContext();
      // State to hold the projects fetched from the backend
@@ -75,6 +77,8 @@ export default function CreateSupportTicket() {
     
   useEffect(() => {
     async function verify(){
+        const t = searchParams.get('t'); 
+        setTotalRecords(t);
       try{ 
         setLoading2(true);
         let token : any  = Cookies.get("token");
@@ -180,7 +184,7 @@ export default function CreateSupportTicket() {
 
                         {/* header */}
                         <div className="flex justify-between items-center pt-5">
-                            <h4 className="font-bold text-[20px]">{ticketsData?.length} Records</h4>
+                            <h4 className="font-bold text-[20px]">{totalRecords} Records</h4>
                             {/* users type selector */}
                             <div className="flex justify-end gap-4">
                                 <Link href={isClientDashboard ? "/client/dashboard/support-tickets" : "/professional/dashboard/support-tickets"} className="bg-transparent flex items-center justify-center text-[15px] py-2 font-semibold rounded-md px-8 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer">All</Link>

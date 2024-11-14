@@ -6,7 +6,7 @@ import { RiCloseFill, RiRefreshLine } from "react-icons/ri";
 import { FaArrowRight } from "react-icons/fa6";
 import Link from "next/link";
 
-import MenuIcon from "@mui/icons-material/Menu";
+import MenuIcon from "@mui/icons-material/Menu"; 
 import SideNav from "@/components/sideNav";
 import { usePathname } from "next/navigation";
 import { useSnackbar } from "@/context/snackbar_context";
@@ -158,7 +158,7 @@ export default function SupportTickets() {
                                 {/* button for refresh */}
                                 <button onClick={() => window.location.reload()} className="flex justify-center items-center px-5 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] "><RiRefreshLine className="size-[15px]" /></button>
                                 {/* open new ticket button */}
-                                <Link href={isClientDashboard ? "/client/dashboard/support-tickets/create-tickets" : "/professional/dashboard/support-tickets/create-tickets"} className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
+                                <Link href={isClientDashboard ? `/client/dashboard/support-tickets/create-tickets?t=${allTicketData?.length}` : `/professional/dashboard/support-tickets/create-tickets?t=${allTicketData?.length}` } className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
                                 {/* all tickets */}
                                 <button className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] text-[15px] font-bold ">All Tickets<FaArrowRight className="size-3" /></button>
                             </div>

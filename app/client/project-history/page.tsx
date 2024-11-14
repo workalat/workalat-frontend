@@ -1,17 +1,6 @@
-// import ProjectHistory from "@/components/ProjectHistory/ProjectHistory";
-
-// export default function ProjectHistoryPage() {
-//     return (
-//         <div>
-//             <ProjectHistory />
-//         </div>
-//     )
-// }
-
 "use client";
 
 import VerifyUser from "@/app/middleware/VerifyUser";
-import { projectHistory } from "@/utils/projectClientsData";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -116,7 +105,7 @@ export default function projects() {
                                             </td>
                             <td className="p-4 text-[15px] capitalize">
                               {moment(data?.projectTimeStamp).format(
-                                "dddd, D MMMM"
+                                 "dddd, D MMMM  h:mm A"
                               )}
                             </td>
                             <td className="p-4 text-[15px] capitalize">
@@ -127,7 +116,7 @@ export default function projects() {
                                   : data?.projectStatusProfessional}
                             </td>
                             <td className={`p-4 text-[15px] capitalize`}>
-                              £{data?.confirmedPrice}
+                              {data?.projectPriceTitle}
                             </td>
                             <td className="p-4">
                               <button

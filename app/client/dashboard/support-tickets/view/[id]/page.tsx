@@ -36,7 +36,6 @@ export default function ViewSupportTickets() {
   
   
 
-
     useEffect(() => {
         async function getTicketData(){
             try{

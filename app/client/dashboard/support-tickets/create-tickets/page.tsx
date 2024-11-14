@@ -5,12 +5,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import MenuIcon from "@mui/icons-material/Menu";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { formatDateTime } from "@/utils/helper";
 import { useUserContext } from '@/context/user_context';
 import VerifyUser from '@/app/middleware/VerifyUser';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
+import { useRouter,useSearchParams  } from 'next/navigation';
 
 import { useSnackbar } from "@/context/snackbar_context";
 
@@ -18,6 +18,7 @@ export default function CreateSupportTicket() {
     // here tickets data will be dynamically from the backend. for now i using "import { ticketsData } from "@/utils/TicketsData";" as a demo tickets data. and here also will be post operation for create ticket
 
 
+    const searchParams = useSearchParams();
     const [isClientDashboard, setIsClientDashboard] : any  = useState<boolean>(false);
 
     const [isSideNavOpen, setIsSideNavOpen] : any  = useState(false);
@@ -37,6 +38,7 @@ export default function CreateSupportTicket() {
     let [userData,setUserData] : any  = useState({});
     // loading
     const [loading2, setLoading2] : any  = useState(true);
+    let [totalRecords, setTotalRecords] : any = useState(0);
     let router : any  = useRouter();
 
     let [ticketData, setTicketData] : any  = useState({
@@ -72,9 +74,13 @@ export default function CreateSupportTicket() {
         }
     }, [pathname]);
 
+    let r= useRouter();
     
   useEffect(() => {
     async function verify(){
+        const t = searchParams.get('t'); 
+        console.log(t);
+        setTotalRecords(t);
       try{
         setLoading2(true);
         let token : any  = Cookies.get("token");
@@ -181,7 +187,7 @@ export default function CreateSupportTicket() {
 
                         {/* header */}
                         <div className="flex justify-between items-center pt-5">
-                            <h4 className="font-bold text-[20px]">{ticketsData?.length} Records</h4>
+                            <h4 className="font-bold text-[20px]">{totalRecords} Records</h4>
                             {/* users type selector */}
                             <div className="flex justify-end gap-4">
                                 <Link href={isClientDashboard ? "/client/dashboard/support-tickets" : "/professional/dashboard/support-tickets"} className="bg-transparent flex items-center justify-center text-[15px] py-2 font-semibold rounded-md px-8 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer">All</Link>

@@ -113,7 +113,7 @@ async function handleAcceptProject(choice  : any ){
                         <div className="w-full lg:w-2/3 xl:w-3/4 border border-black/20 px-3 py-5">
                             <div className="flex justify-between items-center">
                                 <h4 className="text-xl font-bold text-[#E88B00]">Details</h4>
-                                <h4 className="text-xl font-bold text-[#E88B00]">£{data?.projectPrice}</h4>
+                                <h4 className="text-xl font-bold text-[#E88B00]">{data?.projectPriceTitle}</h4>
                             </div>
                             <p className="text-md leading-[1.4] py-3 capitalize">{data?.projectTitle}</p>
                             <p className="text-black text-md font-bold pb-4">Project overview:</p>

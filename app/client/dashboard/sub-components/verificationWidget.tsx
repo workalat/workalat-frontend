@@ -15,7 +15,7 @@ const VerificationWidget = ({ isClientDashboard ,data, userType}) => {
     { name: 'Identity Verified', status: (data.isProfileComplete ? 'verified' :'unverified') },
     { name: 'Phone Verified', status: (data.isPhoneVerify ? 'verified' :'unverified') },
     { name: 'Email Verified', status: (data.isEmailVerify ? 'verified' :'unverified') },
-    { name: 'Payment Verified', status: (data.isPaymentVerify ? 'verified' :'unverified') },
+    // { name: 'Payment Verified', status: (data.isPaymentVerify ? 'verified' :'unverified') },
   ];
 
   return (

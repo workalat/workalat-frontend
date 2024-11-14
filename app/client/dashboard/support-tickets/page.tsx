@@ -82,6 +82,7 @@ export default function SupportTickets() {
             if(ver?.status === "success"){
               setUserData(ver);
               let res : any = await findAllTickets({userId :ver.userId, userType : ver.userType});
+              console.log(res)
               if(res?.status !== 400 || res?.data?.status === "success"){
                     setAllTicketData(res?.data?.data);
                     sessionStorage.setItem('projectData', JSON.stringify(res?.data?.projectData));
@@ -93,7 +94,7 @@ export default function SupportTickets() {
             }
             else{
               router.push("/"); 
-            }
+            } 
           }
           catch(e){
             generateSnackbar("Some Error Occur, Please try Again." ,"error")
@@ -150,7 +151,7 @@ export default function SupportTickets() {
                                 <option className="bg-[#07242B] text-white" value="all">All</option>
                                 <option className="bg-[#07242B] text-white" value="client">Client</option>
                                 <option className="bg-[#07242B] text-white" value="professional">Professional</option>
-                            </select> */}
+                            </select> */} 
                         </div>
                         <div className="h-[1px] w-full bg-black mt-5"></div>
                         <div className="py-2 w-full">
@@ -158,7 +159,7 @@ export default function SupportTickets() {
                                 {/* button for refresh */}
                                 <button onClick={() => window.location.reload()} className="flex justify-center items-center px-5 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] "><RiRefreshLine className="size-[15px]" /></button>
                                 {/* open new ticket button */}
-                                <Link href={isClientDashboard ? "/client/dashboard/support-tickets/create-tickets" : "/professional/dashboard/support-tickets/create-tickets"} className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
+                                <Link href={isClientDashboard ? `/client/dashboard/support-tickets/create-tickets?t=${allTicketData?.length}` : `/professional/dashboard/support-tickets/create-tickets?t=${allTicketData?.length}` } className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link>
                                 {/* all tickets */}
                                 <button className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] text-[15px] font-bold ">All Tickets<FaArrowRight className="size-3" /></button>
                             </div>

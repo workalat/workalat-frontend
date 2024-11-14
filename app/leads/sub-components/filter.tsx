@@ -24,24 +24,24 @@ import postcodesData from "@/postcodes.json";
 import regionsData from "@/postcode_region.json";
 
 // Services list
-const SERVICES_LIST = [
-  "end of tenancy cleaning",
-  "general plumbing",
-  "house cleaning",
-  "office cleaning",
-  "gas safety check",
-  "carpet cleaning",
-  "window cleaners",
-  "phone repair",
-  "water heater installation",
-  "oven cleaning",
-  "dry cleaning",
-  "water heater maintenance",
-  "chimney cleaning",
-  "rug cleaning",
-  "warehouse cleaning",
-  "ironing"
-];
+// const SERVICES_LIST = [
+//   "end of tenancy cleaning",
+//   "general plumbing",
+//   "house cleaning",
+//   "office cleaning",
+//   "gas safety check",
+//   "carpet cleaning",
+//   "window cleaners",
+//   "phone repair",
+//   "water heater installation",
+//   "oven cleaning",
+//   "dry cleaning",
+//   "water heater maintenance",
+//   "chimney cleaning",
+//   "rug cleaning",
+//   "warehouse cleaning",
+//   "ironing"
+// ];
 
 interface JobSearchCriteria {
   keyword: string;
@@ -65,7 +65,8 @@ interface JobSearchCriteria {
   };
 }
 
-export default function LeadsFilter({setFilterProjects, professionalId } : any) {
+export default function LeadsFilter({setFilterProjects, professionalId, userSkills } : any) {
+  const SERVICES_LIST =userSkills;
   // Main filter state
   const [filters, setFilters] : any = useState<JobSearchCriteria>({
     keyword: "",

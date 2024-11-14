@@ -314,7 +314,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
               handleIntoProfessional();
             }}
           >
-            Professional
+            Switch to Professional
           </Button>
             :
 
@@ -325,7 +325,7 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
                 handleIntoClient()
               }}
             >
-              Client
+              Switch to Client
             </Button>
           }
           {/* <Button

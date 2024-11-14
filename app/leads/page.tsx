@@ -24,6 +24,8 @@ export default function LeadsPage() {
   const [userData, setUserData] : any = useState({});
   const [activeJob, setActiveJob] : any = useState(null);
   const [appliedToJob, setAppliedToJob] : any = useState(false);
+  let [userSkills, setUserSkills] : any = useState([]);
+  let [userPrimaryService, setUserPrimaryService] : any = useState("");
 
   const { showLeads } : any = useUserContext();
   const { generateSnackbar } : any = useSnackbar();
@@ -46,16 +48,19 @@ export default function LeadsPage() {
             return;
           }
           let res : any = await showLeads({ userId: ver.userId , choice : "leads"});
+          console.log(res);
           if (res?.status !== 400 || res?.data?.status === "success") {
             setLeadsData(res?.data?.data);
+            setUserSkills(res?.data?.userSkills);
+            setUserPrimaryService(res?.data?.userPrimarySkill);
           } else {
             generateSnackbar("Failed to fetch leads. Please try again.", "error");
             setTimeout(() => {
-              router.push("/professional/login");
+              router.push("/login");
             }, 1500);
           }
         } else {
-          router.push("/professional/login");
+          router.push("/login");
         }
       } catch (e) {
         generateSnackbar("Some Error Occurred. Please try Again.", "error");
@@ -93,9 +98,9 @@ export default function LeadsPage() {
         <div className="w-[100%] h-screen flex justify-center items-center">
           <div className="loader m-auto" />
         </div>
-      ) : (
+      ) : ( 
         <Box className="flex gap-x-6 gap-y-1 items-start flex-col lg:flex-row">
-          <LeadsFilter setFilterProjects={setLeadsData} professionalId={userData.userId} />
+          <LeadsFilter setFilterProjects={setLeadsData} professionalId={userData.userId} userSkills={userSkills} />
           <Box className="grid grid-cols-1 gap-4 py-5 flex-grow">
             {leadsData.map((lead, i) => (
               <LeadCard key={i} lead={lead} openJobDetails={openJobDetails} />

@@ -109,7 +109,7 @@ export default function projects() {
                                             </td> */}
                             <td className="p-4 text-[15px] capitalize">
                               {moment(data?.projectTimeStamp).format(
-                                "dddd, D MMMM"
+                                "dddd, D MMMM  h:mm A"
                               )}
                             </td>
                             <td className="p-4 text-[15px] capitalize">
@@ -120,7 +120,7 @@ export default function projects() {
                                   : data?.projectStatusClient}
                             </td>
                             <td className={`p-4 text-[15px] capitalize`}>
-                              £{data?.confirmedPrice}
+                              £{data?.projectPriceTitle}
                             </td>
                             <td className="p-4">
                               <button

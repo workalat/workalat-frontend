@@ -59,7 +59,7 @@ const Page = () => {
           setTotalLeads(leadsCount?.data?.data);
           setDashData(dash?.data?.data)
           setLoading2(false);
-        }
+        } 
         else{
           router.push("/"); 
         }
