@@ -1,12 +1,16 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import Menus from "../Menus/Menus"
+import Menus from "../Menus/Menus" 
 import { certificate } from "@/utils/certificationData";
 import CertificationModal from "./CertificationModal";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { PiFilesDuotone } from "react-icons/pi";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import moment from "moment";
 
 export default function Certification() {
     // here users will be dynamically from the backend. for now i using "import {certificate} from "@utils/certificationData"" as a demo certificate users data
@@ -52,14 +56,64 @@ export default function Certification() {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalData, setModalData] = useState<any>();
 
-    const openModal = (data: any) => {
-        setModalData(data);
-        setIsModalOpen(true);
-    };
+   
 
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+
+
+    const {showAllCertificate, showSingleCertificate} : any  = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
+    let [allCertificateData, setAllCertificateData] : any = useState([]);
+    const { generateSnackbar } : any  = useSnackbar();
+    let [questionTitle, setQuestionsTitle] = useState("");
+    let router = useRouter();
+
+    useEffect(() => {
+        async function getData() {
+            setLoading2(true);
+          try {
+            let res = await showAllCertificate();
+            console.log(res);
+            if (res?.status === 200 || res?.data?.status === "success") {
+                setAllCertificateData(res?.data?.data?.reverse());
+               setLoading2(false);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+        }
+        getData();
+      }, []);
+
+
+      const openModal = (id: any) => {
+        async function getData() {
+            setLoading2(true);
+          try {
+            let res = await showSingleCertificate({id : id});
+            if (res?.status === 200 || res?.data?.status === "success") {
+                console.log(res?.data?.data?.certifications[0])
+               setModalData(res?.data?.data?.certifications[0]);
+            //    setModalData(filteredUsers[0]);
+               setIsModalOpen(true);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+        }
+        getData();
+    };
+
+
+
+
     return (
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
@@ -108,27 +162,27 @@ export default function Certification() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredUsers.map((user) => (
-                                    <tr key={user?.id} className="border-b border-black">
+                                {allCertificateData.map((user) => (
+                                    <tr key={user?._id} className="border-b border-black">
                                         <td className="p-4">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedUsers.includes(user?.id)}
-                                                onChange={() => toggleSelectUser(user?.id)}
+                                                checked={selectedUsers.includes(user?._id)}
+                                                onChange={() => toggleSelectUser(user?._id)}
                                                 className="w-4 h-4"
                                             />
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-[15px] font-semibold capitalize">{user?.firstName} {user?.lastName}</p>
+                                            <p className="text-[15px] font-semibold capitalize">{user?.certifications[0]?.professionalName}</p>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-gray-500 text-[15px] capitalize">{user?.id}</p>
+                                            <p className="text-gray-500 text-[15px] capitalize">{user?._id}</p>
                                         </td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.orderDate}</td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.orderTime}</td>
-                                        <td className={`p-4 text-[15px] capitalize ${user?.status == "approved" ? "text-[#04842F]" : user?.status == "pending" ? "text-[#FFBE00]" : user?.status == "declined" && "text-[#FE321F]"}`}>{user?.status}</td>
+                                    <td className="p-4 text-[15px] capitalize">{moment(user?.certifications[0]?.timeStamp).format("DD-MM-YYYY")}</td>
+                                    <td className="p-4 text-[15px] capitalize">{moment(user?.certifications[0]?.timeStamp).format("HH:mm A")}</td>
+                                        <td className={`p-4 text-[15px] capitalize ${user?.certifications[0]?.status == "approved" ? "text-[#04842F]" : user?.certifications[0]?.status == "pending" ? "text-[#FFBE00]" : user?.certifications[0]?.status == "rejected" && "text-[#FE321F]"}`}>{user?.certifications[0]?.status}</td>
                                         <td className="p-4">
-                                            <button onClick={() => openModal(user)} className="bg-transparent border-2 border-[#FFBE00] text-black px-4 py-2 font-semibold rounded flex justify-center items-center gap-2 text-[15px]">Manage
+                                            <button onClick={() => openModal(user?.certifications[0]?._id)} className="bg-transparent border-2 border-[#FFBE00] text-black px-4 py-2 font-semibold rounded flex justify-center items-center gap-2 text-[15px]">Manage
                                             </button>
                                         </td>
                                     </tr>
@@ -159,26 +213,28 @@ export default function Certification() {
                                                 <div className="pt-1 flex flex-wrap">
                                                     <div className="py-2 w-full px-1">
                                                         <label className="block pb-1">Certificate</label>
-                                                        <input className="w-full border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" defaultValue={modalData?.certificationName} />
+                                                        <input className="w-full border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" readOnly type="text" defaultValue={modalData?.certificateTitle} />
                                                     </div>
                                                     <div className="py-2 w-full px-1">
                                                         <label className="block pb-1">Expiration Date</label>
                                                         <div className="flex flex-wrap gap-3">
-                                                            <input className="w-full md:w-[48.5%] border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" placeholder="Month" />
-                                                            <input className="w-full md:w-[48.5%] border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" type="text" placeholder="Year" />
+                                                            <input className="w-full md:w-[48.5%] border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" readOnly type="text" placeholder="Month" defaultValue={modalData?.certificateExpirationMonth} />
+                                                            <input className="w-full md:w-[48.5%] border border-slate-300 rounded-md shadow-md outline-none py-2 px-3 capitalize" readOnly type="text" placeholder="Year"  defaultValue={modalData?.certificateExpirationYear} />
                                                         </div>
                                                     </div>
                                                     <div className="py-2 w-full px-1">
                                                         <label className="block pb-1">Uploaded File</label>
                                                         <div className="flex justify-between items-center">
-                                                            <div className="w-auto flex gap-2">
-                                                                <PiFilesDuotone className="size-[25px] text-black/60" /> <p>{modalData?.uploadedFile?.fileName}</p>
+                                                            <div className="w-auto flex gap-2 cursor-pointer">
+                                                                <a href={`${modalData?.certificationImage}`} target="_blank" rel="noreferrer" download={true}  className="size-[25px] text-black/60 flex justify-start items-center w-[100%]" >
+                                                                    <PiFilesDuotone className="size-[25px] text-black/60" /> Image
+                                                                </a>
                                                             </div>
-                                                            <select className="border rounded-md outline-none py-1 px-2 border-black/50" name="view" defaultValue={"View"}>
+                                                            {/* <select className="border rounded-md outline-none py-1 px-2 border-black/50" name="view" defaultValue={"View"}>
                                                                 <option value="View" disabled>View</option>
                                                                 <option value="Download">Download</option>
                                                                 <option value="Preview">Preview</option>
-                                                            </select>
+                                                            </select> */}
                                                         </div>
                                                     </div>
                                                     <div className="pt-2 pb-1 px-1 w-full">

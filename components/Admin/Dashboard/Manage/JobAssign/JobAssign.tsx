@@ -7,13 +7,16 @@ import PagesEditModal from "../Pages/PagesEditModal/PagesEditModal";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 import { jobAssignData } from "@/utils/manageData";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io"; 
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useRouter } from "next/navigation";
 
 export default function JobAssign({ data }: any) {
     // modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => {
-        setIsModalOpen(true);
+        setIsModalOpen(true); 
     };
     const closeModal = () => {
         setIsModalOpen(false);
@@ -46,10 +49,19 @@ export default function JobAssign({ data }: any) {
 
     // Filter mode based on selected mode
     useEffect(() => {
+        console.log(jobAssignData)
         const filteredData = jobAssignData?.find((item) => item?.mode === selectedMode);
+        console.log(selectedMode);
         if (filteredData) {
-            setFilteredModeType(filteredData);
-            setFilteredOptions(filteredData?.type || []); // Initialize with all options
+            if(selectedMode === "category"){
+                setFilteredModeType(allCategoryData);
+                setFilteredOptions(allCategoryData || []); // Initialize with all options
+            }
+            else if(selectedMode === "service") {
+                console.log(allServiceStringData);
+                setFilteredModeType(allServiceStringData);
+                setFilteredOptions(allServiceStringData || []); // Initialize with all options
+            }
         }
     }, [selectedMode, jobAssignData]);
 
@@ -81,6 +93,90 @@ export default function JobAssign({ data }: any) {
 
     const [selectedTypeOfAssign, setSelectTypeOfAssign] = useState<any>();
 
+
+
+
+    
+     // BACKEND INTEGRATION
+     const {showAllAssignedQuestions,findAllServices ,addJobsQuestions,showAllServiceAdmin,showCategory} : any  = useUserContext();
+     const [loading2, setLoading2] : any  = useState(true);
+     let [allQuestionsCategoryData, setAllQuestionsCategoryData] : any = useState([]);
+     let [allQuestionsServiceData, setAllQuestionsServiceData] : any = useState([]);
+     let [allServiceData, setAllServiceData] : any = useState([]);
+     let [allCategoryData, setAllCategoryData] : any = useState([]);
+     let [allServiceStringData, setAllServiceStringData] : any = useState([]);
+     let [term, setTerm] = useState("");
+     const { generateSnackbar } : any  = useSnackbar();
+     let [questionTitle, setQuestionsTitle] = useState("");
+     let router = useRouter();
+ 
+     useEffect(() => {
+         async function getData() {
+             setLoading2(true);
+           try {
+             let res = await showAllAssignedQuestions();
+             let service = await showAllServiceAdmin();
+             let allService = await findAllServices();
+             let category = await showCategory();
+
+             if (res?.status === 200 || res?.data?.status === "success") {
+                setAllQuestionsCategoryData(res?.data?.data[0]?.categoryQuesions.reverse());
+                setAllQuestionsServiceData(res?.data?.data[0]?.serviceQuestions.reverse());
+                setAllServiceStringData(allService?.data?.reverse())
+                setAllServiceData(service?.data?.data[0].services.reverse());
+                setAllCategoryData(category?.data?.data[0].category.reverse());
+                setLoading2(false);
+               } else {
+                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+               }
+           } catch (e) {
+            // console.log(e);
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+         }
+         getData();
+       }, []);
+ 
+ 
+       
+       async function saveService(e : any) {
+         // setLoading2(true);
+         e.preventDefault();
+         console.log(selectedMode, selectedTypeOfAssign, term);
+         let slugs = term.split(",");
+
+         if(selectedMode.length <1 || selectedTypeOfAssign?.length<1 || term.length<1){
+            return generateSnackbar("Please Fill all the Fields.", "error");
+         }  
+       try {
+         let res = await addJobsQuestions({
+             mode : selectedMode,
+             type : selectedTypeOfAssign,
+             slugs : slugs
+         });
+         console.log(res);
+         if (res?.status === 200 || res?.data?.status === "success") {
+             generateSnackbar(res?.data?.message , "success");
+             router.refresh();
+             closeModal();
+           } else {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+       } catch (e) {
+         // console.log(e);
+         generateSnackbar("Some error occurred, Please Try Again.", "error");
+       }
+     }
+ 
+
+
+       function changeStateType(data){
+        console.log(data);
+        // setUserType()
+       }
+
+
+
     return (
         <div className="w-full px-2 py-2">
             {/* page heading */}
@@ -94,7 +190,7 @@ export default function JobAssign({ data }: any) {
                         name="users"
                         className="bg-[#FFBE00] hidden sm:block w-auto text-[10px] sm:text-[15px] py-2 font-semibold rounded-md px-2 ring-2 ring-[#FFBE00] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
+                        onChange={(e) => changeStateType(e.target.value)}
                     >
                         <option className="bg-[#EDEDED] text-black" value="all">
                             All
@@ -135,13 +231,8 @@ export default function JobAssign({ data }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredUsers?.map((item: any, i: number) => (
+                            {allQuestionsCategoryData?.map((item: any, i: number) => (
                                 <tr className="border-b border-black/10" key={i}>
-                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.mode}
-                                        </p>
-                                    </td>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
                                         <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
                                             {item?.type}
@@ -149,7 +240,46 @@ export default function JobAssign({ data }: any) {
                                     </td>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
                                         <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.term}
+                                            CATEGORY
+                                        </p>
+                                    </td>
+                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                                        {item?.slugs.map((val, index) => {
+                                            return index === item.slugs.length - 1 ? `${val}` : `${val}, `;
+                                        })}
+                                        </p>
+                                    </td>
+                                    <td className="p-4">
+                                        <div className="flex items-center justify-end">
+                                            <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
+                                                Edit
+                                            </button>
+                                            <button>
+                                                <MdDelete className="size-[20px] text-[#F52933]" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+
+                            {allQuestionsServiceData?.map((item: any, i: number) => (
+                                <tr className="border-b border-black/10" key={i}>
+                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                                            {item?.type}
+                                        </p>
+                                    </td>
+                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                                            SERVICE
+                                        </p>
+                                    </td>
+                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                                        {item?.slugs.map((val, index) => {
+                                            return index === item.slugs.length - 1 ? `${val}` : `${val}, `;
+                                        })}
                                         </p>
                                     </td>
                                     <td className="p-4">
@@ -240,11 +370,11 @@ export default function JobAssign({ data }: any) {
                                                                                 key={i}
                                                                                 className="py-2 px-4 cursor-pointer hover:bg-gray-200 capitalize"
                                                                                 onClick={() => {
-                                                                                    setSelectTypeOfAssign(type.itemName);
+                                                                                    setSelectTypeOfAssign(type);
                                                                                     setIsDropdownOpen(false); // Close dropdown on selection
                                                                                 }}
                                                                             >
-                                                                                {type.itemName}
+                                                                                {type}
                                                                             </li>
                                                                         ))
                                                                     ) : (
@@ -260,7 +390,7 @@ export default function JobAssign({ data }: any) {
                                                     <label htmlFor="term" className="block pb-2 font-semibold">
                                                         Term
                                                     </label>
-                                                    <input type="text" className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md" />
+                                                    <input type="text" className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md" value={term} onChange={(e)=>{setTerm(e.target.value)}} />
                                                     <p className="text-[12px] font-bold pt-3">Please enter the ID in the right order and separate with a comma (,)</p>
                                                 </div>
 
@@ -268,6 +398,7 @@ export default function JobAssign({ data }: any) {
                                                     <button
                                                         className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]"
                                                         type="submit"
+                                                        onClick={saveService}
                                                     >
                                                         Save <FaArrowRight className="size-[15px] text-black" />
                                                     </button>

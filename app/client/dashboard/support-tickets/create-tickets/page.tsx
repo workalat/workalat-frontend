@@ -81,6 +81,7 @@ export default function CreateSupportTicket() {
         const t = searchParams.get('t'); 
         console.log(t);
         setTotalRecords(t);
+        console.log("HELLO");
       try{
         setLoading2(true);
         let token : any  = Cookies.get("token");
@@ -140,6 +141,7 @@ export default function CreateSupportTicket() {
             relatedProjectId : ticketData.relatedProjectId,
             createdBy : ticketData.createdBy,
             creatorId : ticketData.creatorId,
+            creatorName : userData?.userName,
             ticketStatus : ticketData.ticketStatus,
             message : ticketData.message
         });
@@ -151,8 +153,6 @@ export default function CreateSupportTicket() {
             generateSnackbar(res?.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
         }     
         }
-        
-
     }
     catch(e){
         generateSnackbar("Some Error Occur, Please try Again." ,"error")

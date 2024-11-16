@@ -13,7 +13,7 @@ import { useSnackbar } from "@/context/snackbar_context";
 import VerifyUser from "@/app/middleware/VerifyUser";
 import moment from "moment";
 
-type PropsType = {
+type PropsType = { 
     path: any
 }
 export default function ViewSupportTickets() {

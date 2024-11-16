@@ -6,6 +6,9 @@ import { allUsersData } from "@/utils/usersData";
 import { AiFillCloseSquare, AiOutlineControl, AiOutlineSearch } from "react-icons/ai";
 import UserModal from "./UserModal";
 import { FaArrowRight } from "react-icons/fa6";
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useRouter } from "next/navigation";
 
 export default function UsersDashboard() {
 
@@ -68,211 +71,296 @@ export default function UsersDashboard() {
 
     const closeModal = () => {
         setIsModalOpen(false);
-    };
+    }; 
+
+
+
+
+    
+
+     // BACKEND INTEGRATION
+     const {allUsers} : any  = useUserContext();
+     const [loading2, setLoading2] : any  = useState(true);
+     let [allClientsData, setAllClientsData] : any = useState([]);
+     let [allProfessionalData, setAllProfessionalData] : any = useState([]);
+     const { generateSnackbar } : any  = useSnackbar();
+     let router = useRouter();
+ 
+     useEffect(() => {
+         async function getData() {
+             setLoading2(true);
+           try {
+             let res = await allUsers();
+             if (res?.status === 200  || res?.data?.status === "success" ) {
+                setAllClientsData(res?.data?.data?.clientsData?.reverse());
+                setAllProfessionalData(res?.data?.data?.professioanlData?.reverse());
+                setLoading2(false);
+               } else {
+                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+               }
+           } catch (e) {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+         }
+         getData();
+       }, []);
+ 
+ 
+
 
     return (
+        <>
+        
+        {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
-            <div className="w-full lg:w-[180px] xl:w-[256px]">
-                <Menus />
-            </div>
-            <div className="w-auto flex-grow px-3 py-2 overflow-y-scroll relative hiddenScroll">
+        <div className="w-full lg:w-[180px] xl:w-[256px]">
+            <Menus />
+        </div>
+        <div className="w-auto flex-grow px-3 py-2 overflow-y-scroll relative hiddenScroll">
 
-                {/* heading of the users dashboard */}
+            {/* heading of the users dashboard */}
 
-                {/* users type selector */}
-                <select
-                    name="users"
-                    className="bg-[#FFBE00] text-[15px] py-2 font-semibold rounded-md px-2 ring-2 ring-[#FFBE00] outline-none border-none cursor-pointer mt-3"
-                    value={userType}
-                    onChange={(e) => setUserType(e.target.value)}
-                >
-                    <option className="bg-[#07242B] text-white" value="all">All Users</option>
-                    <option className="bg-[#07242B] text-white" value="client">Clients</option>
-                    <option className="bg-[#07242B] text-white" value="professional">Professional</option>
-                </select>
+            {/* users type selector */}
+            <select
+                name="users"
+                className="bg-[#FFBE00] text-[15px] py-2 font-semibold rounded-md px-2 ring-2 ring-[#FFBE00] outline-none border-none cursor-pointer mt-3"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+            >
+                <option className="bg-[#07242B] text-white" value="all">All Users</option>
+                <option className="bg-[#07242B] text-white" value="client">Clients</option>
+                <option className="bg-[#07242B] text-white" value="professional">Professional</option>
+            </select>
 
-                {/* header */}
-                <div className="flex justify-between items-center pt-5">
-                    <h3 className="text-black font-bold text-[20px]">{filteredUsers?.length} Records</h3>
+            {/* header */}
+            <div className="flex justify-between items-center pt-5">
+                <h3 className="text-black font-bold text-[20px]">{filteredUsers?.length} Records</h3>
 
-                    <div className="flex items-center justify-end">
-                        {/* search box */}
-                        <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-[250px]">
-                            <AiOutlineSearch className="size-[20px] text-[#909090]" />
-                            <input
-                                type="search"
-                                placeholder="Search Name/Username"
-                                className="outline-none bg-transparent ml-2 text-gray-500 placeholder-gray-400 w-full py-1"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
+                <div className="flex items-center justify-end">
+                    {/* search box */}
+                    <div className="flex items-center border border-gray-300 rounded-md px-3 py-1 w-[250px]">
+                        <AiOutlineSearch className="size-[20px] text-[#909090]" />
+                        <input
+                            type="search"
+                            placeholder="Search Name/Username"
+                            className="outline-none bg-transparent ml-2 text-gray-500 placeholder-gray-400 w-full py-1"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
                 </div>
+            </div>
 
-                <div className="w-full pt-5">
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full">
-                            <thead className="py-2 border-y border-black">
-                                <tr>
-                                    <th className="p-4 text-left">
+            <div className="w-full pt-5">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                        <thead className="py-2 border-y border-black">
+                            <tr>
+                                <th className="p-4 text-left">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectAll}
+                                        onChange={toggleSelectAll}
+                                        className="w-4 h-4"
+                                    />
+                                </th>
+                                <th className="p-6 text-left"></th>
+                                <th className="p-4 text-left">User ID</th>
+                                <th className="p-4 text-left">Name</th>
+                                <th className="p-4 text-left">Status</th>
+                                {/* <th className="p-4 text-left">Country</th> */}
+                                <th className="p-4 text-left"></th>
+                                <th className="p-4 text-left"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {allClientsData.map((user: any) => (
+                                <tr key={user?._id} className="border-b border-black">
+                                    <td className="p-4">
                                         <input
                                             type="checkbox"
-                                            checked={selectAll}
-                                            onChange={toggleSelectAll}
+                                            checked={selectedUsers.includes(user?._id)}
+                                            onChange={() => toggleSelectUser(user?._id)}
                                             className="w-4 h-4"
                                         />
-                                    </th>
-                                    <th className="p-6 text-left"></th>
-                                    <th className="p-4 text-left">User ID</th>
-                                    <th className="p-4 text-left">Name</th>
-                                    <th className="p-4 text-left">Status</th>
-                                    <th className="p-4 text-left">Country</th>
-                                    <th className="p-4 text-left"></th>
-                                    <th className="p-4 text-left"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredUsers.map((user: any) => (
-                                    <tr key={user?.id} className="border-b border-black">
-                                        <td className="p-4">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedUsers.includes(user?.id)}
-                                                onChange={() => toggleSelectUser(user?.id)}
-                                                className="w-4 h-4"
-                                            />
-                                        </td>
-                                        <td className="p-0">
-                                            <img src={user?.userPhoto} alt={user?.userDisplayName} className="w-12 h-12 rounded-full mr-2 object-cover" />
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="text-[15px]">{user?.id}</p>
-                                        </td>
-                                        <td className="p-4">
-                                            <div>
-                                                <p className="font-bold capitalize text-[20px]">{user?.userDisplayName}</p>
-                                                <p className="text-gray-500 text-[15px]">{user?.userEmail}</p>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.status}</td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.country}</td>
-                                        <td className="p-4">
-                                            <button onClick={() => openModal(user)} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
-                                                <AiOutlineControl className="rotate-90 text-white size-[15px] xl:size-[20px]" /> View
-                                            </button>
-                                        </td>
-                                        <td className="p-4 flex flex-col gap-2">
-
-                                            {/* the action buttons are currently act as demo it need to connect backend for taking action on the user with Put or patch method in api */}
-
-                                            <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold">Access Account</button>
-                                            <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold">
-                                                <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]" /> Ban Account
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* modal */}
-
-                        {/* in this modal have form for manage user and taking action. so here form i did with demo data but it need to make dynamic with backend and make for CRUD operation */}
-                        {modalData && (
-                            <UserModal
-                                isOpen={isModalOpen}
-                                onRequestClose={closeModal}
-                                content={
-                                    <div className="w-full flex-col sm:flex-row max-h-[80vh] h-screen sm:max-h-full sm:h-auto overflow-y-auto flex gap-3 justify-center items-start">
-                                        <div className="bg-white w-full h-screen sm:w-[420px] sm:max-h-[85vh] p-3 rounded-md overflow-y-auto hiddenScroll">
-                                            <button className="ms-auto block" onClick={closeModal}>
-                                                <AiFillCloseSquare className="size-[20px]" />
-                                            </button>
-                                            <div className="w-full text-center">
-                                                <h4 className="font-semibold text-[20px]">Manage User</h4>
-                                                <form className="w-full">
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="fullName" className="block pb-2 font-semibold">Full Name</label>
-                                                        <input type="text" id="fullName" name="fullName" defaultValue={modalData?.userDisplayName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="userId" className="block pb-2 font-semibold">User ID</label>
-                                                        <input type="text" id="userId" name="userId" defaultValue={modalData?.id} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="businessName" className="block pb-2 font-semibold">Business Name</label>
-                                                        <input type="text" id="businessName" name="businessName" defaultValue={modalData?.companyName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="status" className="block pb-2 font-semibold">User Type</label>
-                                                        <input type="text" id="status" name="status" defaultValue={modalData?.status} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="country" className="block pb-2 font-semibold">Country</label>
-                                                        <input type="text" id="country" name="country" defaultValue={modalData?.country} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="userEmail" className="block pb-2 font-semibold">Email</label>
-                                                        <input type="email" id="userEmail" name="userEmail" defaultValue={modalData?.userEmail} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="userPhone" className="block pb-2 font-semibold">Phone Number</label>
-                                                        <input type="number" id="userPhone" name="userPhone" defaultValue={modalData?.userPhone} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                    <div className="py-2 text-start">
-                                                        <label htmlFor="registered" className="block pb-2 font-semibold">Registered</label>
-                                                        <input type="text" id="registered" name="registered" defaultValue={modalData?.registered} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
-                                                    </div>
-                                                </form>
-                                            </div>
+                                    </td>
+                                    <td className="p-0">
+                                        <img src={user?.clientPictureLink} alt={user?.clientFullName} className="w-12 h-12 rounded-full mr-2 object-cover" />
+                                    </td>
+                                    <td className="p-4">
+                                        <p className="text-[15px]">{user?._id.slice(0,15)}...</p>
+                                    </td>
+                                    <td className="p-4">
+                                        <div>
+                                            <p className="font-bold capitalize text-[20px]">{user?.clientFullName}</p>
+                                            <p className="text-gray-500 text-[15px]">{user?.clientEmail}</p>
                                         </div>
-                                        <div className="sm:w-[350px] w-full h-screen overflow-y-auto sm:h-auto sm:overflow-hidden">
-                                            <div className="w-full bg-white p-3 rounded-md">
-                                                <h4 className="text-center font-semibold text-[20px]">Activity</h4>
-                                                <form className="w-full">
-                                                    <div className="py-2">
-                                                        <label htmlFor="activity" className="block pb-2 font-semibold">Activity</label>
-                                                        <input type="text" defaultValue={`Registered as ${modalData?.status}`} className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
-                                                    </div>
-                                                    <div className="py-2">
-                                                        <label htmlFor="lastlog" className="block pb-2 font-semibold">Last Login</label>
-                                                        <input type="text" id="lastlog" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" defaultValue={modalData?.lastLogin} />
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div className="w-full bg-white p-3 rounded-md mt-3">
-                                                <h4 className="text-center font-semibold text-[20px]">Action</h4>
-                                                <form className="w-full">
-                                                    <div className="py-2">
-                                                        <label htmlFor="action" className="block pb-2 font-semibold">Action</label>
-                                                        <select className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" name="action" id="action">
-                                                            <option value="access">Access account</option>
-                                                            <option value="ban">Ban account</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="py-2">
-                                                        <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Continue <FaArrowRight className="size-[15px] text-black" /></button>
-                                                    </div>
-                                                </form>
-                                                <form className="w-full">
-                                                    <div className="py-2">
-                                                        <label htmlFor="assign" className="block pb-2 font-semibold">Assign point</label>
-                                                        <input type="text" placeholder="Type" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
-                                                    </div>
-                                                    <div className="py-2">
-                                                        <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Save <FaArrowRight className="size-[15px] text-black" /></button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                    </td>
+                                    <td className="p-4 text-[15px] capitalize">Client</td>
+                                    {/* <td className="p-4 text-[15px] capitalize">{user?.country}</td> */}
+                                    <td className="p-4">
+                                        <button onClick={() => openModal(user)} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
+                                            <AiOutlineControl className="rotate-90 text-white size-[15px] xl:size-[20px]" /> View
+                                        </button>
+                                    </td>
+                                    <td className="p-4 flex flex-col gap-2">
+
+                                        {/* the action buttons are currently act as demo it need to connect backend for taking action on the user with Put or patch method in api */}
+
+                                        <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold">Access Account</button>
+                                        <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold">
+                                            <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]" /> Ban Account
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                             {allProfessionalData.map((user: any) => (
+                                <tr key={user?._id} className="border-b border-black">
+                                    <td className="p-4">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedUsers.includes(user?._id)}
+                                            onChange={() => toggleSelectUser(user?._id)}
+                                            className="w-4 h-4"
+                                        />
+                                    </td>
+                                    <td className="p-0">
+                                        <img src={user?.professionalPictureLink} alt={user?.professionalFullName} className="w-12 h-12 rounded-full mr-2 object-cover" />
+                                    </td>
+                                    <td className="p-4">
+                                        <p className="text-[15px]">{user?._id.slice(0,15)}...</p>
+                                    </td>
+                                    <td className="p-4">
+                                        <div>
+                                            <p className="font-bold capitalize text-[20px]">{user?.professionalFullName}</p>
+                                            <p className="text-gray-500 text-[15px]">{user?.professionalEmail}</p>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 text-[15px] capitalize">Professional</td>
+                                    {/* <td className="p-4 text-[15px] capitalize">{user?.country}</td> */}
+                                    <td className="p-4">
+                                        <button onClick={() => openModal(user)} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
+                                            <AiOutlineControl className="rotate-90 text-white size-[15px] xl:size-[20px]" /> View
+                                        </button>
+                                    </td>
+                                    <td className="p-4 flex flex-col gap-2">
+
+                                        {/* the action buttons are currently act as demo it need to connect backend for taking action on the user with Put or patch method in api */}
+
+                                        <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold">Access Account</button>
+                                        <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold">
+                                            <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]" /> Ban Account
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* modal */}
+
+                    {/* in this modal have form for manage user and taking action. so here form i did with demo data but it need to make dynamic with backend and make for CRUD operation */}
+                    {modalData && (
+                        <UserModal
+                            isOpen={isModalOpen}
+                            onRequestClose={closeModal}
+                            content={
+                                <div className="w-full flex-col sm:flex-row max-h-[80vh] h-screen sm:max-h-full sm:h-auto overflow-y-auto flex gap-3 justify-center items-start">
+                                    <div className="bg-white w-full h-screen sm:w-[420px] sm:max-h-[85vh] p-3 rounded-md overflow-y-auto hiddenScroll">
+                                        <button className="ms-auto block" onClick={closeModal}>
+                                            <AiFillCloseSquare className="size-[20px]" />
+                                        </button>
+                                        <div className="w-full text-center">
+                                            <h4 className="font-semibold text-[20px]">Manage User</h4>
+                                            <form className="w-full">
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="fullName" className="block pb-2 font-semibold">Full Name</label>
+                                                    <input type="text" id="fullName" name="fullName" defaultValue={modalData?.userDisplayName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="userId" className="block pb-2 font-semibold">User ID</label>
+                                                    <input type="text" id="userId" name="userId" defaultValue={modalData?.id} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="businessName" className="block pb-2 font-semibold">Business Name</label>
+                                                    <input type="text" id="businessName" name="businessName" defaultValue={modalData?.companyName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="status" className="block pb-2 font-semibold">User Type</label>
+                                                    <input type="text" id="status" name="status" defaultValue={modalData?.status} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="country" className="block pb-2 font-semibold">Country</label>
+                                                    <input type="text" id="country" name="country" defaultValue={modalData?.country} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="userEmail" className="block pb-2 font-semibold">Email</label>
+                                                    <input type="email" id="userEmail" name="userEmail" defaultValue={modalData?.userEmail} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="userPhone" className="block pb-2 font-semibold">Phone Number</label>
+                                                    <input type="number" id="userPhone" name="userPhone" defaultValue={modalData?.userPhone} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                                <div className="py-2 text-start">
+                                                    <label htmlFor="registered" className="block pb-2 font-semibold">Registered</label>
+                                                    <input type="text" id="registered" name="registered" defaultValue={modalData?.registered} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                }
-                            />
-                        )}
-                    </div>
+                                    <div className="sm:w-[350px] w-full h-screen overflow-y-auto sm:h-auto sm:overflow-hidden">
+                                        <div className="w-full bg-white p-3 rounded-md">
+                                            <h4 className="text-center font-semibold text-[20px]">Activity</h4>
+                                            <form className="w-full">
+                                                <div className="py-2">
+                                                    <label htmlFor="activity" className="block pb-2 font-semibold">Activity</label>
+                                                    <input type="text" defaultValue={`Registered as ${modalData?.status}`} className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
+                                                </div>
+                                                <div className="py-2">
+                                                    <label htmlFor="lastlog" className="block pb-2 font-semibold">Last Login</label>
+                                                    <input type="text" id="lastlog" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" defaultValue={modalData?.lastLogin} />
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div className="w-full bg-white p-3 rounded-md mt-3">
+                                            <h4 className="text-center font-semibold text-[20px]">Action</h4>
+                                            <form className="w-full">
+                                                <div className="py-2">
+                                                    <label htmlFor="action" className="block pb-2 font-semibold">Action</label>
+                                                    <select className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" name="action" id="action">
+                                                        <option value="access">Access account</option>
+                                                        <option value="ban">Ban account</option>
+                                                    </select>
+                                                </div>
+                                                <div className="py-2">
+                                                    <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Continue <FaArrowRight className="size-[15px] text-black" /></button>
+                                                </div>
+                                            </form>
+                                            <form className="w-full">
+                                                <div className="py-2">
+                                                    <label htmlFor="assign" className="block pb-2 font-semibold">Assign point</label>
+                                                    <input type="text" placeholder="Type" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
+                                                </div>
+                                                <div className="py-2">
+                                                    <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Save <FaArrowRight className="size-[15px] text-black" /></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        />
+                    )}
                 </div>
             </div>
         </div>
+    </div>
+      )
+    }
+        </>
     )
 }

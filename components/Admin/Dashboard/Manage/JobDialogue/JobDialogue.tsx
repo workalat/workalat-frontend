@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { AiFillCloseSquare, AiOutlineMinusCircle } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 import PagesEditModal from "../Pages/PagesEditModal/PagesEditModal";
 import { FiPlusCircle } from "react-icons/fi";
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useRouter } from "next/navigation";
 
 export default function JobDialogue({ data }: any) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,6 +65,73 @@ export default function JobDialogue({ data }: any) {
 
 
 
+     // BACKEND INTEGRATION
+     const {showAllQuestions, addAllQuestions} : any  = useUserContext();
+     const [loading2, setLoading2] : any  = useState(true);
+     let [allQuestionsData, setAllQuestionsData] : any = useState([]);
+     const { generateSnackbar } : any  = useSnackbar();
+     let [questionTitle, setQuestionsTitle] = useState("");
+     let router = useRouter();
+ 
+     useEffect(() => {
+         async function getData() {
+             setLoading2(true);
+           try {
+             let res = await showAllQuestions();
+             console.log(res);
+             if (res?.status === 200 || res?.data?.status === "success") {
+                setAllQuestionsData(res?.data?.data?.reverse());
+                 setLoading2(false);
+               } else {
+                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+               }
+           } catch (e) {
+            console.log(e);
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+         }
+         getData();
+       }, []);
+ 
+ 
+       
+       async function addQuestions(e : any) {
+         // setLoading2(true);
+         e.preventDefault();
+         console.log(inputFields.length <1 , fieldType == "Select Field" , questionTitle.length<1)
+         if(inputFields.length <1 || fieldType == "Select Field" || questionTitle.length<1){
+            return generateSnackbar("Please Fill all the Fields.", "error");
+         }  
+         let answers = inputFields
+         ?.filter((val) => val.isChecked === true) 
+         .map((val) => val.value);
+         
+         console.log(answers, fieldType, questionTitle);
+       try {
+         let res = await addAllQuestions({
+            questionTitle : questionTitle,
+             questionType : fieldType,
+             questionChoices : answers
+         });
+         console.log(res);
+         if (res?.status === 200 || res?.data?.status === "success") {
+             generateSnackbar(res?.data?.message , "success");
+        //      setCategoryName("");
+        //      setSelectedService("");
+        //      setLoading2(false);
+             router.refresh();
+             closeModal();
+           } else {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+       } catch (e) {
+         // console.log(e);
+         generateSnackbar("Some error occurred, Please Try Again.", "error");
+       }
+     }
+ 
+
+
     return (
         <div className="w-full px-2 py-2">
             {/* page heading */}
@@ -97,16 +167,16 @@ export default function JobDialogue({ data }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.pageItems?.map((item: any, i: number) => (
+                            {allQuestionsData?.map((item: any, i: number) => (
                                 <tr className="border-b border-black/10" key={i}>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.title}
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md uppercase">
+                                            {item?.questionTitle}
                                         </p>
                                     </td>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.field}
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md uppercase">
+                                            {item?.questionType}
                                         </p>
                                     </td>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
@@ -115,8 +185,8 @@ export default function JobDialogue({ data }: any) {
                                         </p>
                                     </td>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.options?.substring(0, 17)}...
+                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md uppercase">
+                                            {item?.questionChoices[0]?.substring(0, 17)}...
                                         </p>
                                     </td>
                                     <td className="p-4">
@@ -162,6 +232,8 @@ export default function JobDialogue({ data }: any) {
                                                         name="title"
                                                         className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md"
                                                         placeholder="Enter title"
+                                                        value={questionTitle}
+                                                        onChange={(e)=>{setQuestionsTitle(e.target.value)}}
                                                     />
                                                 </div>
 
@@ -180,7 +252,7 @@ export default function JobDialogue({ data }: any) {
                                                         >
                                                             <option value="Select Field">Select Field</option>
                                                             <option value="radio">Radio</option>
-                                                            <option value="dropdown">Dropdown</option>
+                                                            {/* <option value="dropdown">Dropdown</option> */}
                                                             <option value="multi-choice">Multi Choice</option>
                                                         </select>
                                                     </div>
@@ -232,7 +304,7 @@ export default function JobDialogue({ data }: any) {
                                                 </div>
 
                                                 <div className="py-2 text-start">
-                                                    <button type="submit" className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]">
+                                                    <button type="submit" className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]" onClick={addQuestions}>
                                                         Save <FaArrowRight className="size-[15px] text-black" />
                                                     </button>
                                                 </div>

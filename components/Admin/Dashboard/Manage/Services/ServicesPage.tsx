@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { FaArrowRight } from "react-icons/fa6";
+import { FaArrowRight } from "react-icons/fa6"; 
 import PagesEditModal from "../Pages/PagesEditModal/PagesEditModal";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import { useRouter } from "next/navigation";
 
 export default function ServicesPage({ data }: any) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +20,70 @@ export default function ServicesPage({ data }: any) {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+
+    
+
+    // BACKEND INTEGRATION
+    const {showAllServiceAdmin, showCategory ,addServicesAdmin} : any  = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
+    let [allServiceData, setAllServiceData] : any = useState([]);
+    let [allCategoryData, setAllCategoryData] : any = useState([]);
+    let [categoryName, setCategoryName]  : any = useState("");
+    const { generateSnackbar } : any  = useSnackbar();
+    let [selectedCategory, setSelectedCategory] : any = useState("");
+    let [selectedService, setSelectedService]  : any = useState("");
+    let router = useRouter();
+
+    useEffect(() => {
+        async function getData() {
+            setLoading2(true);
+          try {
+            let res = await showAllServiceAdmin();
+            let category = await showCategory();
+            console.log(res, category);
+            if ((res?.status === 200  && category?.status === 200)|| (res?.data?.status === "success" && category?.data?.status )) {
+                setAllServiceData(res?.data?.data[0].services.reverse());
+                setAllCategoryData(category?.data?.data[0].category.reverse());
+                setSelectedCategory(category?.data?.data[0].category.reverse()[0]);
+                setLoading2(false);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+        }
+        getData();
+      }, []);
+
+
+      
+      async function addServiceValue(e : any) {
+        // setLoading2(true);
+        e.preventDefault();
+        if(selectedCategory.length === 0 || selectedService.length === 0){
+            return generateSnackbar("Plese Select Category and Service.", "error");
+        }
+      try {
+        let res = await addServicesAdmin({category : selectedCategory,service : selectedService});
+        console.log(res);
+        if (res?.status === 200 || res?.data?.status === "success") {
+            generateSnackbar(res?.data?.message , "success");
+            setCategoryName("");
+            setSelectedService("");
+            setLoading2(false);
+            router.refresh();
+            closeModal();
+          } else {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    }
+
 
     return (
         <div className="w-full px-2 py-2">
@@ -47,29 +114,48 @@ export default function ServicesPage({ data }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.pageItems?.map((item: any, i: number) => (
-                                <tr className="border-b border-black/10" key={i}>
-                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.itemName}
-                                        </p>
-                                    </td>
-                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.category}
-                                        </p>
-                                    </td>
-                                    <td className="p-4">
-                                        <div className="flex items-center justify-end">
-                                            <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
-                                                Edit
-                                            </button>
-                                            <button>
-                                                <MdDelete className="size-[20px] text-[#F52933]" />
-                                            </button>
-                                        </div>
-                                    </td>
+                            {allServiceData?.map((item: any, i: number) => (
+                                <>
+                                    {
+                                        (item?.service?.length>0)
+                                        ?
+                                        <>
+                                        {
+                                            item?.service?.map((val, i)=>{
+                                                return(
+                                                    <>
+                                                    <tr className="border-b border-black/10" key={i}>
+                                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                                                            {val}
+                                                        </p>
+                                                    </td>
+                                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">   
+                                                            {item?.category}
+                                                        </p>
+                                                    </td>
+                                                    <td className="p-4">
+                                                    <div className="flex items-center justify-end">
+                                                        <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
+                                                            Edit
+                                                        </button>
+                                                        <button>
+                                                            <MdDelete className="size-[20px] text-[#F52933]" />
+                                                        </button>
+                                                    </div>
+                                                </td>
                                 </tr>
+                                                    </>
+                                                )
+                                            }) 
+                                        }
+                                        </>
+                                        :
+                                        <></>
+                                    }
+                                    </>
+                                    
                             ))}
                         </tbody>
                     </table>
@@ -102,6 +188,8 @@ export default function ServicesPage({ data }: any) {
                                                         name="name"
                                                         className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md"
                                                         placeholder="Enter service name"
+                                                        value={selectedService}
+                                                        onChange={(e)=>{setSelectedService(e.target.value)}}
                                                     />
                                                 </div>
                                                 <div className="py-2 text-start">
@@ -109,20 +197,21 @@ export default function ServicesPage({ data }: any) {
                                                     <select
                                                         id="category"
                                                         name="category"
-                                                        className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md capitalize"
-                                                        defaultValue="Select"
+                                                        className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md capitalize"                                                        
+                                                        value={selectedCategory}
+                                                        onChange={(e) => setSelectedCategory(e.target.value)} 
                                                     >
                                                         <option disabled value="Select">Select category</option>
                                                         {
-                                                            data?.pageItems?.map((catg: any, i: number) => (
-                                                                <option key={i} value={catg?.category}>{catg?.category}</option>
+                                                            allCategoryData?.map((catg: any, i: number) => (
+                                                                <option key={i} value={catg} className="capitalize">{catg}</option>
                                                             ))
                                                         }
                                                     </select>
                                                 </div>
 
                                                 <div className="py-2 text-start">
-                                                    <button className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]">
+                                                    <button className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]" onClick={addServiceValue}>
                                                         Save <FaArrowRight className="size-[15px] text-black" />
                                                     </button>
                                                 </div>

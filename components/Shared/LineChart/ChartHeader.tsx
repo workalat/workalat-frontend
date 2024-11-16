@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 
-const ChartHeader: React.FC = () => {
+const ChartHeader = ({totalClients, totalProfessionals} : any) => {
     const [selectedRange, setSelectedRange] = useState('Nov - July');
 
     return (
@@ -28,7 +28,7 @@ const ChartHeader: React.FC = () => {
                         <span className="w-3 h-3 bg-gray-800 rounded-full"></span>
                         <span className="text-[10px] text-gray-400 font-semibold">CLIENTS</span>
                     </div>
-                    <p className="text-[17px] font-semibold text-gray-800 text-end">475273</p>
+                    <p className="text-[17px] font-semibold text-gray-800 text-end">{totalClients}</p>
                 </div>
 
                 {/* Professionals */}
@@ -37,7 +37,7 @@ const ChartHeader: React.FC = () => {
                         <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
                         <span className="text-[10px] text-gray-400 font-semibold">PROFESSIONALS</span>
                     </div>
-                    <p className="text-[17px] font-semibold text-gray-800 text-end">782396</p>
+                    <p className="text-[17px] font-semibold text-gray-800 text-end">{totalProfessionals}</p>
                 </div>
             </div>
         </div>

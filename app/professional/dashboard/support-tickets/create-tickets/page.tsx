@@ -137,6 +137,7 @@ export default function CreateSupportTicket() {
             relatedProject : ticketData.relatedProject,
             relatedProjectId : ticketData.relatedProjectId,
             createdBy : ticketData.createdBy,
+            creatorName : userData?.userName,
             creatorId : ticketData.creatorId,
             ticketStatus : ticketData.ticketStatus,
             message : ticketData.message

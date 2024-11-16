@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 import PagesEditModal from "../Pages/PagesEditModal/PagesEditModal";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
 
 export default function CategoriesPage({ data }: any) {
     // modal state
@@ -19,7 +21,64 @@ export default function CategoriesPage({ data }: any) {
         setIsModalOpen(false);
     };
 
+
+    
+
+    // BACKEND INTEGRATION
+    const {showCategory,addCategories} : any  = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
+    let [allcategoryData, setCategoryData] : any = useState([]);
+    let [categoryName, setCategoryName]  : any = useState("");
+    const { generateSnackbar } : any  = useSnackbar();
+
+    useEffect(() => {
+        async function getData() {
+            setLoading2(true);
+          try {
+            let res = await showCategory();
+            console.log(res);
+            if (res?.status !== 400 || res?.data?.status === "success") {
+                setCategoryData(res?.data?.data[0].category.reverse());
+                setLoading2(false);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+        }
+        getData();
+      }, []);
+      
+      async function addCategoryValue(e : any) {
+        setLoading2(true);
+        e.preventDefault();
+        console.log(categoryName);
+      try {
+        let res = await addCategories({category : categoryName});
+        if (res?.status !== 400 || res?.data?.status === "success") {
+            generateSnackbar(res?.data?.message || `${categoryName.toUpperCase()} Addedd Suuccessfully.`, "success");
+            setCategoryName("");
+            allcategoryData.unshift(categoryName);
+            setLoading2(false);
+            closeModal();
+          } else {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+      } catch (e) {
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    }
+
+      
     return (
+
+        <>
+               {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
         <div className="w-full py-2">
             {/* page heading */}
             <div className="flex justify-between items-center border-b border-black/40 px-3 pb-3">
@@ -39,13 +98,13 @@ export default function CategoriesPage({ data }: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.pageItems?.map((item: any, i: number) => (
+                        {allcategoryData?.map((item: any, i: number) => (
                             <tr className="border-b border-black/10" key={i}>
                                 <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
                                     <p
                                         className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md"
                                     >
-                                        {item?.itemName}
+                                        {item}
                                     </p>
                                 </td>
                                 <td className="p-4">
@@ -82,11 +141,11 @@ export default function CategoriesPage({ data }: any) {
                                             <h4 className="font-semibold uppercase text-[17px]">Add New Category</h4>
                                         </div>
 
-                                        <div className="w-full h-full">
+                                        <div className="w-full h-full" onSubmit={addCategoryValue}>
                                             <form className="w-full">
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="name" className="block pb-2 font-semibold">Name</label>
-                                                    <input type="text" id="name" name="name" className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md" placeholder="Enter category name" />
+                                                    <input type="text" id="name" name="name" value={categoryName} onChange={(e)=>{setCategoryName(e.target.value)}} className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md" placeholder="Enter category name" />
                                                 </div>
 
 
@@ -103,5 +162,10 @@ export default function CategoriesPage({ data }: any) {
                 />
             )}
         </div>
+      )
+    }
+    </>
+
+        
     );
 }

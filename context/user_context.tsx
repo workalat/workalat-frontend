@@ -133,6 +133,28 @@ interface UserContextType {
   clientCancelProject : (data : any) => any;
   professionlalAwardedChoice : (data : any) => any;
   AllProjectHistory : (data : any) => any;
+
+
+  //Milestone 3
+  showLeadsAdmin : () => any;
+  showSingleLeadsData : (data : any) => any;
+  showLeadsBids : (data : any) => any;
+  changeLeadsStatus : (data : any) => any;
+  showCategory : () => any;
+  addCategories : (data : any) => any;
+  showAllServiceAdmin : () => any;
+  addServicesAdmin : (data : any) => any;
+  showAllQuestions : () => any;
+  addAllQuestions : (data : any) => any;
+  showAllAssignedQuestions : () => any; 
+  showAllKycData : (data : any) => any;
+  showSingleKycData : (data : any ) => any;
+  showAllCertificate : () => any;
+  showSingleCertificate : (data : any ) => any;
+  dashboarData : () => any;
+  showAllTickets : () => any;
+  addJobsQuestions : (data : any ) => any;
+  allUsers : () => any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -1126,7 +1148,7 @@ async function createTicket({ department, subject, relatedProject, relatedProjec
       ticketStatus : ticketStatus, //active / closed / admin /customer
       ticketMessages : message,
       });
-      // console.log(response);
+      console.log(response);
       return(response);
   }
   catch(e){
@@ -1668,9 +1690,256 @@ async function userChatDetilas({ userId ,userType }){
 
 
 
+/////////////////////////Milestone 3 , Admin Panel //////////////////////
+
+async function showLeadsAdmin(){
+  try{
+    const response  : any  = await axios.post('/showAllLeads');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function showSingleLeadsData({id}){
+  try{
+    const response  : any  = await axios.post('/showSingleLeadsAdmin',{
+      projectId : id
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function showLeadsBids({id}){
+  try{
+    const response  : any  = await axios.post('/showsingleProjectBids',{
+      projectId : id,
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function changeLeadsStatus({id, choice}){
+  try{
+    const response  : any  = await axios.post('/changeLeadsStatus',{
+      projectId : id,
+      choice : choice
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function addCategories({category}){
+  try{
+    const response  : any  = await axios.post('/addCategory',{
+      category
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showCategory(){
+  try{
+    const response  : any  = await axios.get('/showCategory');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function showAllServiceAdmin(){
+  try{
+    const response  : any  = await axios.post('/allServiceAdmin');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function addServicesAdmin({category, service}){
+  try{
+    const response  : any  = await axios.post('/addService', {
+      category,
+      service
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showAllQuestions(){
+  try{
+    const response  : any  = await axios.get('/showAllQuestions');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+async function addAllQuestions({questionTitle, questionType,questionChoices}){
+  try{
+    const response  : any  = await axios.post('/addQuestions',{
+      questionTitle,
+      questionType,
+      questionChoices
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
 
 
 
+
+async function showAllAssignedQuestions(){
+  try{
+    const response  : any  = await axios.get('/showAllAssignedQuestions');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function addJobsQuestions({mode, type,slugs} : any){
+  try{
+    const response  : any  = await axios.post('/addJobsQuestions', {
+      mode, type,slugs
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showAllKycData({userType}){
+  try{
+    const response  : any  = await axios.post('/showAllKyc', {
+      userType
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showSingleKycData({userType, id}){
+  try{
+    const response  : any  = await axios.post('/showSingleKyc', {
+      userType,
+      userId : id
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showAllCertificate(){
+  try{
+    const response  : any  = await axios.post('/showallCertificate');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showSingleCertificate({id}){
+  try{
+    const response  : any  = await axios.post('/showSingleCertificate',{
+      certificationId : id
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function dashboarData(){
+  try{
+    const response  : any  = await axios.post('/dashboard');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function showAllTickets(){
+  try{
+    const response  : any  = await axios.get('/allTicketsData');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function allUsers(){
+  try{
+    const response  : any  = await axios.post('/allUserAdmin');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
 
 
 
@@ -1789,7 +2058,29 @@ async function userChatDetilas({ userId ,userType }){
       clientCancelProject,
       professionalGivingReview,
       professionlalAwardedChoice,
-      AllProjectHistory
+      AllProjectHistory,
+
+
+      //Milestone 3 
+      showLeadsAdmin,
+      showSingleLeadsData,
+      showLeadsBids,
+      changeLeadsStatus,
+      showCategory,
+      addCategories,
+      showAllServiceAdmin,
+      addServicesAdmin,
+      showAllQuestions,
+      addAllQuestions,
+      showAllAssignedQuestions,
+      showAllKycData,
+      showSingleKycData,
+      showAllCertificate,
+      showSingleCertificate,
+      dashboarData,
+      showAllTickets,
+      addJobsQuestions,
+      allUsers
        }}>
       {children}
     </UserContext.Provider>

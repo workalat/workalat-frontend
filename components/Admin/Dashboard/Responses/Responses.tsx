@@ -1,7 +1,7 @@
 "use client"
 import Menus from "../Menus/Menus";
 import { IoFilterSharp, IoReloadOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import DatePicker from "react-datepicker";
 import './Responses.css'
@@ -12,6 +12,13 @@ import { HiMiniCheckBadge } from "react-icons/hi2";
 import { GiCheckedShield } from "react-icons/gi";
 import { ResponsesData } from "@/utils/responsesData";
 import ResponsesModal from "./ResponsesModal";
+
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+import moment from "moment";
+import { Rating, Typography } from "@mui/material";
+import DOMPurify from 'dompurify';
+
 
 export default function Responses() {
 
@@ -48,17 +55,78 @@ export default function Responses() {
     const [modalData, setModalData] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = (data: any) => {
-        setModalData(data);
-        setIsModalOpen(true);
-    };
+    // const openModal = (data: any) => {
+    //     setModalData(data);
+    //     setIsModalOpen(true);
+    // };
 
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
 
+    // BACKEND INTEGRATION
+    const {showLeadsAdmin, showLeadsBids, changeLeadsStatus} : any  = useUserContext();
+    const [loading2, setLoading2] : any  = useState(true);
+    let [allLeadsData, setAllLeadsData] = useState([]);
+    const { generateSnackbar } : any  = useSnackbar();
+
+    useEffect(() => {
+        async function getData() {
+            setLoading2(true);
+          try {
+            let res = await showLeadsAdmin();
+            if (res?.status !== 400 || res?.data?.status === "success") {
+                setAllLeadsData(res?.data?.data.reverse());
+                setLoading2(false);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+        }
+        getData();
+      }, []);
+
+
+      const openModal = async (id: any) => {
+        try {
+            let res = await showLeadsBids({id});
+            if (res?.status !== 400 || res?.data?.status === "success") {
+                setModalData(res?.data?.data[0]);
+                // setModalData(filteredData[0]);
+                 setIsModalOpen(true);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+    };
+
+    // const changeProjectStatus= async (id: any, choice : any) => {
+    //     try {
+    //         let res = await changeLeadsStatus({id, choice});
+    //         if (res?.status !== 400 || res?.data?.status === "success") {
+    //             generateSnackbar(res?.data?.message || "Status Changed Successfully", "success");
+    //             setIsModalOpen(false);
+    //           } else {
+    //             generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+    //             setIsModalOpen(false);
+    //           }
+    //       } catch (e) {
+    //         generateSnackbar("Some error occurred, Please Try Again.", "error");
+    //       }
+    // };
+
     return (
+        <>
+               {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
                 <Menus />
@@ -121,29 +189,29 @@ export default function Responses() {
                         <tbody>
                             <tr className="h-4"></tr>
                             {
-                                filteredData.map((data: any, i: number) => (
+                                allLeadsData.map((data: any, i: number) => (
                                     <tr key={i} className="bg-[#07242B] text-white border-y-8 border-white">
                                         {/* Username column */}
                                         <td className="py-4 px-3 text-[17px] xl:text-[20px] font-semibold capitalize">
-                                            {data?.userDisplayName}
+                                            {data?.clientName}
                                         </td>
                                         {/* Project title column */}
                                         <td className="py-2 px-3 text-[15px] xl:text-[17px] text-[#ACACAC] capitalize">
-                                            {data?.projectTitle}
+                                            {data?.serviceNeeded}
                                         </td>
                                         {/* Location column */}
                                         <td className="py-2 px-3 text-[15px] xl:text-[17px] text-[#ACACAC] capitalize">
                                             <div className="flex gap-3 items-center">
                                                 <RiMapPin5Fill className="text-[#FFBE00]" />
-                                                <p>{data?.location}</p>
+                                                <p>{data?.serviceLocationTown}</p>
                                             </div>
                                         </td>
                                         {/* Date/Time and Responses column */}
                                         <td className="py-2 px-3 text-right">
                                             <div className="text-[10px] xl:text-[14px] text-[#ACACAC] flex items-center justify-between">
-                                                <p>Date/Time: {data?.date} | {data?.time}</p>
-                                                <p className="text-[#FFBE00]">{data?.pendingResponse} of {data?.totalResponse} Responses</p>
-                                                <button onClick={() => openModal(data)} className="py-[5px] px-5 bg-[#FFBE00] rounded-md text-black font-semibold hover:bg-[#d3a416] transition-all duration-300">View Responses</button>
+                                                <p>Date/Time:  { moment(data?.projectTimeStamp).format("DD/MM/YYYY | hh:mm A")}</p>
+                                                <p className="text-[#FFBE00]">{data?.totalProposals} of 5 Responses</p>
+                                                <button onClick={() => openModal(data?._id)} className="py-[5px] px-5 bg-[#FFBE00] rounded-md text-black font-semibold hover:bg-[#d3a416] transition-all duration-300">View Responses</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -162,42 +230,70 @@ export default function Responses() {
                                     <div className="py-3 px-2">
                                         <div className="flex justify-between pb-2">
                                             <div className="flex">
-                                                <img className="w-[60px] h-[60px] object-cover" src={modalData?.userPhoto} alt="work alat" />
+                                                <img className="w-[60px] h-[60px] object-cover" src={modalData?.clientPictureLink} alt="work alat" />
 
                                                 <div className="px-2">
-                                                    <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{modalData?.userDisplayName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
-                                                        <GiCheckedShield className="size-[12px] text-[#F76C10]" /></span></h2>
-                                                    <p className="text-sm font-semibold capitalize">Project title: {modalData.projectTitle}</p>
+                                                    <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{modalData?.clientName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
+                                                    {
+                                                    (modalData?.isClientEmailVerify && modalData?.isClientPhoneNoVerify)
+                                                    ?
+                                                    <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
+                                                    :
+                                                    <></>
+                                                    }
+                                                    {
+                                                    (modalData?.kycStatus === "approved")
+                                                    ?
+                                                    <GiCheckedShield className="size-[12px] text-[#F76C10]" />
+                                                    :
+                                                    <></>
+                                                }{
+                                                    (modalData?.kycStatus === "approved")
+                                                    ?
+                                                    <GiCheckedShield className="size-[12px] text-[#F76C10]" />
+                                                    :
+                                                    <></>
+                                                }
+                                                        </span></h2>
+                                                    <p className="text-sm font-semibold capitalize">Project title: {modalData?.serviceTitle}</p>
                                                 </div>
                                             </div>
 
-                                            <p className="text-[#FFBE00] text-[12px]">{modalData?.pendingResponse} of {modalData?.totalResponse} Responses</p>
+                                            <p className="text-[#FFBE00] text-[12px]">{modalData?.totalProposals} of 5 Responses</p>
                                         </div>
 
                                         <div className="pt-3 overflow-x-hidden overflow-y-scroll hiddenScroll h-[300px]">
                                             <ul className="py-1">
                                                 {
-                                                    modalData?.responses?.map((response: any, i: number) => (
+                                                    modalData?.proposals?.map((response: any, i: number) => (
                                                         <li className="p-3 my-2 rounded-sm bg-[#F3F3F3]" key={i}>
                                                             <div className="flex justify-between items-start pb-2">
                                                                 <div className="flex">
-                                                                    <img className="w-[45px] h-[45px] object-cover" src={modalData?.userPhoto} alt="work alat" />
+                                                                    <img className="w-[45px] h-[45px] object-cover" src={response?.professionalPicture} alt="work alat" />
 
                                                                     <div className="px-2">
-                                                                        <h2 className="capitalize font-semibold text-[13px] flex gap-1 items-center">{modalData?.userDisplayName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[13px] text-[#29B1FD]" />
+                                                                        <h2 className="capitalize font-semibold text-[13px] flex gap-1 items-center">{response?.professionalName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
+                                                                            {/* <HiMiniCheckBadge className="size-[13px] text-[#29B1FD]" /> */}
                                                                         </span></h2>
                                                                         <div className="flex py-px">
                                                                             <div className="flex gap-[3px] items-center">
-                                                                                {
-                                                                                    [...Array(response?.ratings)].map((_, i) => (
+                                                                                {/* {
+                                                                                    [...Array(response?.professionalTotalRatings)].map((_, i) => (
                                                                                         <FaStar key={i} className="size-[10px] text-amber-300" />
                                                                                     ))
-                                                                                }
-                                                                                <p className="text-[12px]">{parseFloat(response?.ratings).toFixed(1)}</p>
+                                                                                } */}
+
+                                                                                <div className="flex gap-1 items-center"> 
+                                                                                    <Rating precision={0.1} value={(response?.professionalTotalRatings / response.professionalTotalReviews )} readOnly style={{fontSize : "15px"}} />
+                                                                                    <p className="text-xs">{  response.professionalTotalReviews>0 ? Number((response?.professionalTotalRatings / response.professionalTotalReviews )).toFixed(1) : 0}</p>
+                                                                                </div>
                                                                             </div>
-                                                                            <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]"><img className="size-[13px]" src="/flag.png" alt="workalat" /><p>{modalData?.location}</p></div>
+                                                                            <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]">
+                                                                                {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
+                                                                            {/* <p>{modalData?.location}</p> */}
+                                                                            </div>
                                                                         </div>
-                                                                        <p className="text-sm font-semibold capitalize text-[10px]">Project title: {modalData.projectTitle}</p>
+                                                                        <p className="text-sm font-semibold capitalize text-[10px]">Project title: {modalData?.serviceTitle}</p>
                                                                     </div>
                                                                 </div>
 
@@ -205,7 +301,7 @@ export default function Responses() {
                                                                 <button className="block bg-[#F52933] px-4 text-[12px] font-semibold py-2 rounded-md hover:bg-[#f52933dc] transition-all duration-300 text-white">Declined</button>
                                                             </div>
 
-                                                            <p className="text-[13px]">{response?.content}</p>
+                                                            <p className="text-[13px]">{response?.proposal}</p>
                                                         </li>
                                                     ))
                                                 }
@@ -222,5 +318,9 @@ export default function Responses() {
                 </div>
             </div>
         </div>
+      )
+    }
+   </>
+        
     )
 }
