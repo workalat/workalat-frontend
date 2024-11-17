@@ -66,6 +66,7 @@ interface JobSearchCriteria {
 }
 
 export default function LeadsFilter({setFilterProjects, professionalId, userSkills } : any) {
+  console.log("User skills",userSkills)
   const SERVICES_LIST =userSkills;
   // Main filter state
   const [filters, setFilters] : any = useState<JobSearchCriteria>({
@@ -108,6 +109,7 @@ export default function LeadsFilter({setFilterProjects, professionalId, userSkil
     async function getServices() {
       try {
         const data : any = await findAllServices();
+        console.log(data);
         setAvailableServices(data?.data);
       } catch (e) {
         console.log(e);
@@ -278,7 +280,7 @@ export default function LeadsFilter({setFilterProjects, professionalId, userSkil
           <Box className="mt-6">
             <p className="font-bold mb-1">Services</p>
             <Box className="flex flex-col gap-1">
-              {displayedServices.map((service) => (
+              {displayedServices.length>0 ?  displayedServices.map((service) => (
                 <Box key={service} className="flex items-center">
                   <Checkbox
                     id={service}
@@ -297,7 +299,7 @@ export default function LeadsFilter({setFilterProjects, professionalId, userSkil
                     {toCamelCase(service)}
                   </label>
                 </Box>
-              ))}
+              )) : <p className="text-gray-600 text-[.8rem]">No Services Added.</p>}
               {SERVICES_LIST.length > 7 && (
                 <Button
                   variant="text"
