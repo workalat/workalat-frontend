@@ -4,6 +4,11 @@ import { reviewsData } from "@/utils/reviewsData";
 import { useEffect, useState } from "react";
 import { MdDelete, MdOutlineStarOutline } from "react-icons/md";
 import Menus from "../Menus/Menus";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import Cookies from "js-cookie";
+import { Rating } from "@mui/material";
 
 export default function Reviews() {
     // here reviews will be dynamically from the backend. for now i using "import { reviewsData } from "@/utils/reviewsData";" as a demo review data
@@ -45,8 +50,114 @@ export default function Reviews() {
         setFilteredUsers(result);
     }, [userType]);
 
+
+
+
+
+  // BACKEND INTEGRATION
+  const {
+    showAllReviews,
+    verifyAdmin,
+    deleteReview
+  }: any = useUserContext();
+  const [loading2, setLoading2]: any = useState(true);
+  let [allClientsData, setAllClientsData] : any = useState([]);
+  let [allProfessionalData, setAllProfessionalData] : any = useState([]);
+  let [allFilterData, setAllFilterData] : any = useState([]);
+  const { generateSnackbar }: any = useSnackbar();
+  let router = useRouter();
+  let [totalUsers, setTotalUsers] = useState(0);
+
+ 
+  async function getData() {
+    setLoading2(true);
+    try {
+      let res = await showAllReviews();
+      console.log(res);
+      if (res?.status === 200 || res?.data?.status === "success") {
+        setAllClientsData(res?.data?.data?.clientsData?.reverse());
+        setAllProfessionalData(res?.data?.data?.professionalData?.reverse());
+        setAllFilterData([...res?.data?.data?.clientsData?.reverse(), ...res?.data?.data?.professionalData?.reverse()]);
+
+        setTotalUsers(res?.data?.data?.clientsData?.length + res?.data?.data?.professionalData?.length)
+        setLoading2(false);
+      } else {
+        generateSnackbar(
+          res?.response?.data?.message ||
+            "Some error occurred, Please Try Again.",
+          "error"
+        );
+      }
+    } catch (e) {
+      generateSnackbar("Some error occurred, Please Try Again.", "error");
+    }
+  }
+
+  useEffect(() => {
+    async function verify() {
+      try {
+        setLoading2(true);
+        let adminToken: any = Cookies.get("adminToken");
+
+        if (adminToken !== undefined) {
+          let res: any = await verifyAdmin({ adminToken });
+          if (
+            res?.status === 200 ||
+            res?.data?.status === "success" ||
+            res?.data?.data?.verify === true
+          ) {
+              getData();
+          } else {
+            router.push("/admin-login");
+          }
+        } else {
+          router.push("/admin-login");
+        }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Something went wrong, please Try Again.", "error");
+      }
+    };
+    verify();
+  }, []);
+
+
+
+  async function deleteAReview(totalRatings, projectId, userType) {
+    try {
+      console.log(totalRatings, projectId, userType)
+      let res = await  deleteReview({projectId,totalRatings,userType})
+      if (res?.status === 200 || res?.data?.status === "success") {
+        generateSnackbar(
+          res?.data?.message ,
+          "success"
+        );
+        router.refresh();
+
+      } else {
+        generateSnackbar(
+          res?.response?.data?.message ||
+            "Some error occurred, Please Try Again.",
+          "error"
+        );
+      }
+    } catch (e) {
+      // console.log(e);
+      generateSnackbar("Something went wrong, please Try Again.", "error");
+    }
+  };
+ 
+
+
     return (
-        <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex bg-slate-100">
+        <>
+         {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
+        <> 
+            <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex bg-slate-100">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
                 <Menus />
             </div>
@@ -62,7 +173,21 @@ export default function Reviews() {
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
+                        onChange={(e) =>{
+                           setUserType(e.target.value);
+                           if(e.target.value === "client"){
+                            setAllFilterData(allClientsData);
+                            setTotalUsers(allClientsData?.length);
+                          }   
+                          else if (e.target.value === "professional"){
+                              setAllFilterData(allProfessionalData);
+                              setTotalUsers(allProfessionalData?.length);
+                          }   
+                          else if(e.target.value === "all"){
+                              setAllFilterData([...allClientsData, ...allProfessionalData]);
+                              setTotalUsers(allClientsData?.length + allProfessionalData?.length) 
+                          } 
+                          }}
                     >
                         <option className="bg-[#07242B] text-white" value="all">All</option>
                         <option className="bg-[#07242B] text-white" value="client">Client</option>
@@ -103,38 +228,41 @@ export default function Reviews() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredUsers.map((user: any) => (
-                                    <tr key={user?.id} className="border-b border-black/20">
+                                {
+                                allFilterData.map((user: any, i) => (
+                                    <tr key={i} className="border-b border-black/20">
                                         <td className="p-4">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedUsers.includes(user?.id)}
-                                                onChange={() => toggleSelectUser(user?.id)}
+                                                checked={selectedUsers.includes(user?.giverId)}
+                                                onChange={() => toggleSelectUser(user?.giverId)}
                                                 className="w-4 h-4"
                                             />
                                         </td>
                                         <td className="p-0">
-                                            <img src={user?.userPhoto} alt={user?.userDisplayName} className="w-12 h-12 rounded-full mr-2 object-cover" />
+                                            <img src={user?.giverPictureLink} alt={user?.giverName} className="w-12 h-12 rounded-full mr-2 object-cover" />
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-[15px] font-semibold capitalize">{user?.firstName} {user?.lastName}</p>
+                                            <p className="text-[15px] font-semibold capitalize">{user?.giverName}</p>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-gray-500 text-[15px] capitalize">{user?.projectTitle}</p>
+                                            <p className="text-gray-500 text-[15px] capitalize">{user?.projectName}</p>
                                         </td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.description}</td>
-                                        <td className="p-4 text-[15px] capitalize w-[110px]">{Array(user?.review || 0)
+                                        <td className="p-4 text-[15px] capitalize">{user?.giverReview.slice(0.20)}...</td>
+                                        <td className="p-4 text-[15px] capitalize w-[110px]">
+                                          {/* {Array(user?.review || 0)
                                             .fill(0)
                                             .map((_, index) => (
                                                 <MdOutlineStarOutline key={index} className="inline-block size-[15px] text-black/50" />
-                                            ))}
+                                            ))} */}
+                                            <Rating precision={0.1} value={user?.giverRating} style={{fontSize : ".9rem"}} readOnly />
                                         </td>
                                         <td className="p-4 text-[15px] capitalize">{user?.userType}</td>
                                         <td className="p-4">
                                             {/* this buttons will be connected with backend for some function or operation */}
                                             <div className="flex items-center gap-2">
                                                 <button className="text-[17px] text-[#FFBE00] font-semibold">Edit</button>
-                                                <button><MdDelete className="text-[#F52933] cursor-pointer" size={17} /></button>
+                                                <button onClick={()=>{deleteAReview(user?.giverRating, user?.projectId, user?.userType)}}><MdDelete className="text-[#F52933] cursor-pointer" size={17} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -145,5 +273,10 @@ export default function Reviews() {
                 </div>
             </div>
         </div>
-    )
+   
+        </>
+      )
+    }
+        </>
+            )
 }

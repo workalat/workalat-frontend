@@ -9,6 +9,13 @@ import { GiCheckedShield } from "react-icons/gi";
 import ActivitiesModal from "./ActivitiesModal";
 import { HiMiniCheckBadge } from "react-icons/hi2";
 
+
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import Cookies from "js-cookie";
+import moment from "moment";
+
 export default function Activities() {
     // here users will be dynamically from the backend. for now i using "import { activitiesData } from "@/utils/activitiesData";" as a demo users data
 
@@ -62,7 +69,113 @@ export default function Activities() {
         setIsModalOpen(false);
     };
 
+
+
+     // BACKEND INTEGRATION
+  const {
+    ActivitiesData,
+    verifyAdmin,
+    refundTransaction
+  }: any = useUserContext();
+  const [loading2, setLoading2]: any = useState(true);
+  let [allData, setAllData]: any = useState([]);
+  let [allFilterData, setAllFilterData]: any = useState([]);
+  const { generateSnackbar }: any = useSnackbar();
+  let router = useRouter();
+  let [choice, setChoice] = useState("access");
+  let [points, setPoints] = useState(0);
+  let [totalUsers, setTotalUsers] = useState(0);
+
+  let [newAdmin, setNewAdmin] = useState({
+    admin_name : "",
+    admin_email : "",
+    admin_password : "",
+    admin_status : "user",
+  })
+
+
+  async function getData() {
+    setLoading2(true);
+    try {
+      let res = await ActivitiesData();
+      if (res?.status === 200 || res?.data?.status === "success") {
+        setAllData(res?.data?.data);
+        setAllFilterData(
+            res?.data?.data,
+        );
+        setTotalUsers(res?.data?.data?.length);
+        setLoading2(false);
+      } else {
+        generateSnackbar(
+          res?.response?.data?.message ||
+            "Some error occurred, Please Try Again.",
+          "error"
+        );
+      }
+    } catch (e) {
+      generateSnackbar("Some error occurred, Please Try Again.", "error");
+    }
+  }
+
+  useEffect(() => {
+    async function verify() {
+      try {
+        setLoading2(true);
+        let adminToken: any = Cookies.get("adminToken");
+
+        if (adminToken !== undefined) {
+          let res: any = await verifyAdmin({ adminToken });
+          if (
+            res?.status === 200 ||
+            res?.data?.status === "success" ||
+            res?.data?.data?.verify === true
+          ) {
+            getData();
+          } else {
+            router.push("/admin-login");
+          }
+        } else {
+          router.push("/admin-login");
+        }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Something went wrong, please Try Again.", "error");
+      }
+    }
+    verify();
+  }, []);
+
+
+
+  async function initiateRefund(transactionId : string) {
+    try {
+        console.log(transactionId);
+        let res: any = await refundTransaction({ transactionId });
+        if (
+          res?.status === 200 ||
+          res?.data?.status === "success" 
+        ) {
+            generateSnackbar(res?.data?.message, "success");
+            router.refresh();
+        } else {
+            generateSnackbar(res?.response?.data?.message ||"Something went wrong, please Try Again." , "error");
+        }
+    } catch (e) {
+      // console.log(e);
+      generateSnackbar("Something went wrong, please Try Again.", "error");
+    }
+  }
+
     return (
+
+        <>
+        
+        {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
+        
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex bg-slate-100">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
                 <Menus />
@@ -80,22 +193,51 @@ export default function Activities() {
 
                 {/* header */}
                 <div className="flex justify-between items-center pt-5">
-                    <h4 className="font-bold text-[20px]">{activitiesData?.length} Records</h4>
+                    <h4 className="font-bold text-[20px]">{totalUsers} Records</h4>
                     {/* users type selector */}
                     <select
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
+                        onChange={(e) => {
+                            setUserType(e.target.value);
+                            if(e.target.value === "all"){
+                                setAllFilterData(allData);
+                                setTotalUsers(allData?.length);
+                            }   
+                            else if (e.target.value === "pending"){
+                                let data = allData.filter((val)=>{if(val.transactionStatus === "pending"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            }   
+                            else if(e.target.value === "success"){
+                                let data = allData.filter((val)=>{if(val.transactionStatus === "success"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            } 
+                            else if(e.target.value === "fail"){
+                                let data = allData.filter((val)=>{if(val.transactionStatus === "fail"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            }
+                            else if(e.target.value === "refunded"){
+                                let data = allData.filter((val)=>{if(val.transactionStatus === "refunded"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            }
+                            
+                        }}
                     >
                         <option className="bg-[#07242B] text-white" value="all">All</option>
-                        <option className="bg-[#07242B] text-white" value="client">Client</option>
-                        <option className="bg-[#07242B] text-white" value="professional">Professional</option>
+                        <option className="bg-[#07242B] text-white" value="success">Success</option>
+                        <option className="bg-[#07242B] text-white" value="pending">Pending</option>
+                        <option className="bg-[#07242B] text-white" value="fail">Failed</option>
+                        <option className="bg-[#07242B] text-white" value="refunded">Refunded</option>
                     </select>
                 </div>
                 <div className="h-[1px] w-full bg-black mt-5"></div>
                 <div className="py-2">
-                    <p className="text-[15px] text-black/50 capitalize">Professional: <b>{userType}</b></p>
+                    <p className="text-[15px] text-black/50 capitalize">Filter: <b>{userType}</b></p>
                 </div>
 
                 <div className="w-full pt-5">
@@ -130,36 +272,36 @@ export default function Activities() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredUsers.map((user) => (
-                                    <tr key={user?.id} className="border-b border-black/20">
+                                {allFilterData.map((user, i) => (
+                                    <tr key={i} className="border-b border-black/20">
                                         <td className="p-4">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedUsers.includes(user?.id)}
-                                                onChange={() => toggleSelectUser(user?.id)}
+                                                checked={selectedUsers.includes(user?._id)}
+                                                onChange={() => toggleSelectUser(user?._id)}
                                                 className="w-4 h-4"
                                             />
                                         </td>
                                         <td className="p-0">
-                                            <img src={user?.userPhoto} alt="work alat" className="w-12 h-12 rounded-full mr-2 object-cover" />
+                                            <img src={user?.userPicture} alt="work alat" className="w-12 h-12 rounded-full mr-2 object-cover" />
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-[15px] font-semibold capitalize">{user?.firstName} {user?.lastName}</p>
+                                            <p className="text-[15px] font-semibold capitalize">{user?.userName} </p>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-gray-500 text-[15px] capitalize">{user?.orderDate} | {user?.orderTime}</p>
+                                            <p className="text-gray-500 text-[15px] capitalize">{moment(user?.transactionTimeStamp).format('DD-MM-YYYY | HH:mm')}</p>
                                         </td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.invoiceId}</td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.activity}</td>
+                                        <td className="p-4 text-[15px] capitalize">{user?.transactionId.slice(0,20)}...</td>
+                                        <td className="p-4 text-[15px] capitalize">{user?.des}</td>
                                         <td className="p-4 text-[15px] capitalize">
-                                            {user?.amount}
+                                            £{user?.transactionAmount} ({user?.points} Points)
                                         </td>
-                                        <td className={`p-4 text-[15px] capitalize ${user?.status == "successful" ? "text-[#04842F]" : user?.status == "pending" ? "text-[#FFBE00]" : user?.status == "cancelled" && "text-[#FE321F]"}`}>{user?.status}</td>
+                                        <td className={`p-4 text-[15px] capitalize ${user?.transactionStatus == "success" ? "text-[#04842F]" : user?.transactionStatus == "pending" ? "text-[#FFBE00]" :( user?.transactionStatus == "cancelled" || user?.transactionStatus == "failed"  || user?.transactionStatus == "fail" || user?.transactionStatus =="refunded" )&& "text-[#FE321F]"}`}>{user?.transactionStatus}</td>
                                         <td className="p-4">
                                             {/* this button will be connected with backend for some function or operation */}
                                             <div className="flex justify-end gap-2 items-center">
                                                 {
-                                                    user?.isRefund && <button className="bg-[#FFBE00] px-4 py-2 text-white font-semibold rounded-md">Refund</button>
+                                                    user?.transactionStatus === "success" && <button className="bg-[#FFBE00] px-4 py-2 text-white font-semibold rounded-md" onClick={()=>{initiateRefund(user?._id)}}>Refund</button>
                                                 }
                                                 <button onClick={() => openModal(user)} className="bg-[#242424] px-8 py-2 text-white font-semibold rounded-md">View</button>
                                             </div>
@@ -180,13 +322,15 @@ export default function Activities() {
                         content={
                             <div className="py-3 px-2">
                                 <div className="flex pb-2">
-                                    <img className="w-[60px] h-[60px] object-cover" src={modalData?.userPhoto} alt="work alat" />
+                                    <img className="w-[60px] h-[60px] object-cover" src={modalData?.userPicture} alt="work alat" />
 
                                     <div className="px-2">
-                                        <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{modalData?.firstName} {modalData?.lastName} <span className="text-sm font-thin lowercase flex gap-0 items-center"><HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />
-                                            <GiCheckedShield className="size-[12px] text-[#F76C10]" /></span></h2>
-                                        <p className="text-sm font-semibold capitalize">Invoice ID: {modalData.invoiceId}</p>
-                                        <p className="text-sm font-semibold capitalize">Status: {modalData.status}</p>
+                                        <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{modalData?.userName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
+                                           {modalData?.userVerify && <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /> } 
+                                           {modalData?.userKycVerify && <GiCheckedShield className="size-[12px] text-[#F76C10]" /> } 
+                                            </span></h2>
+                                        <p className="text-sm font-semibold capitalize break-words text-wrap my-2 flex-wrap">Invoice ID: {modalData.transactionId}</p>
+                                        <p className="text-sm font-semibold capitalize">Status: {modalData.transactionStatus}</p>
                                     </div>
                                 </div>
 
@@ -194,11 +338,11 @@ export default function Activities() {
                                     <ul className="py-1">
                                         <li className="py-1">
                                             <p className="font-semibold text-[15px]">Amount</p>
-                                            <p className="text-[15px] text-[#323C47]">{modalData?.amount}</p>
+                                            <p className="text-[15px] text-[#323C47]">{modalData?.points} Points (£{modalData?.transactionAmount})</p>
                                         </li>
                                         <li className="py-1">
                                             <p className="font-semibold text-[15px]">Activity</p>
-                                            <p className="text-[15px] text-[#323C47]">{modalData?.activity}</p>
+                                            <p className="text-[15px] text-[#323C47] capitalize">{modalData?.des}</p>
                                         </li>
                                     </ul>
                                 </div>
@@ -207,5 +351,10 @@ export default function Activities() {
                     />)}
             </div>
         </div>
+      )
+    }
+        
+        </>
+
     );
 }

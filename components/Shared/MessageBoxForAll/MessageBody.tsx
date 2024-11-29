@@ -40,12 +40,15 @@ export default function MessageBody() {
       async function findUserAndChats() {
         try {
           let token : any = Cookies.get("token");
+          console.log(token);
           let ver  : any  = await VerifyUser(token, window.location.pathname.split("/")[1]);
+          console.log(ver);
   
           let currentUser  : any  = await userChatDetilas({
             userId: ver.userId,
             userType: ver.userType === "client" ? "client" : "professional",
           });
+          console.log(currentUser);
   
           setCurrentUs(currentUser?.data?.data);
   
@@ -94,11 +97,7 @@ export default function MessageBody() {
       };
     }, [pathname]);
   
-    // Recalculate the 'seen' value when 'chats' changes
-    useEffect(() => {
-      const unseenMessages = chats?.filter((message: any) => !message?.isSeen).length;
-      setSeen(unseenMessages || 0);
-    }, [chats]);
+    
   
     // Filter chats based on the search input
     const filteredChats = chats.filter((message: any) =>

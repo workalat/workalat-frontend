@@ -1,30 +1,213 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa6";
 import PagesEditModal from "../Pages/PagesEditModal/PagesEditModal";
-
+import { useSnackbar } from "@/context/snackbar_context";
+import { useRouter } from "next/navigation";
+import { useUserContext } from "@/context/user_context";
+ 
+import Cookies from "js-cookie";
 export default function PointsPage({ data }: any) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+
 
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
+
+
+     // BACKEND INTEGRATION
+     const {verifyAdmin,pointsPage, deletePointsPoints,showCategory,addPointsRule, editPointsRule} : any  = useUserContext();
+     const [loading2, setLoading2] : any  = useState(true);
+     let [allData, setAllData] : any = useState([]);
+     const { generateSnackbar } : any  = useSnackbar();
+     let [heading,setHeading] : any = useState("");
+     let [points,setPoints] : any = useState("");
+     let [amount,setAmount] : any = useState("");
+     let [walletId,setWalletId] : any = useState("");
+     let [allCategoryData, setAllCategoryData] : any = useState([]);
+     let [selectedCategory, setSelectedCategory] : any = useState("");
+     let [selectedFrequency, setSelectedFrequency] : any = useState("daily");
+
+    
+     let router = useRouter();
+     function sortByPointsAscending(array) {
+         return array.sort((a, b) => a.point - b.point);
+     }
+ 
+         async function getData() {
+             setLoading2(true);
+           try {
+ 
+             let res = await pointsPage();
+             let category = await showCategory();
+             console.log(res);
+             if (res?.status === 200|| res?.data?.status === "success" ) {
+                 let data = sortByPointsAscending(res?.data?.data[0]?.pointRules)
+                 setAllData(data);
+                 setAllCategoryData(category?.data?.data[0].category.reverse());
+                 setSelectedCategory(category?.data?.data[0].category.reverse()[0]);
+                 setLoading2(false);
+               } else {
+                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+               }
+           } catch (e) {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+         }
+ 
+ 
+         useEffect(() => {
+             async function verify() {
+               try {
+                 setLoading2(true);
+                 let adminToken: any = Cookies.get("adminToken");
+         
+                 if (adminToken !== undefined) {
+                   let res: any = await verifyAdmin({ adminToken });
+                   console.log(res);
+                   if (
+                     res?.status === 200 ||
+                     res?.data?.status === "success" ||
+                     res?.data?.data?.verify === true
+                   ) {
+                     if(res?.data?.data?.status === "system"){
+                         getData();
+                         setLoading2(false);
+                     }
+                     else{
+                         router.push("/admin");
+                     }
+     
+                   } else {
+                     router.push("/admin-login");
+                   }
+                 } else {
+                   router.push("/admin-login");
+                 }
+               } catch (e) {
+                 // console.log(e);
+                 generateSnackbar("Something went wrong, please Try Again.", "error");
+               }
+             }
+             verify();
+           }, []);
+ 
+ 
+       
+       async function addNewPoints(e : any) {
+         // setLoading2(true);
+         e.preventDefault();
+         if(amount.length === 0 || points.length === 0){
+             return generateSnackbar("Plese Enter Amount and Points.", "error");
+         }
+         console.log(amount, points, selectedFrequency, selectedCategory);
+       try {
+         let res = await addPointsRule({
+            points : points,
+            category : selectedCategory,
+            frequency : selectedFrequency,
+            budget : amount
+
+         });
+         if (res?.status === 200 || res?.data?.status === "success") {
+             generateSnackbar(res?.data?.message , "success");
+             router.refresh();
+            
+           } else {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+       } catch (e) {
+         // console.log(e);
+         generateSnackbar("Some error occurred, Please Try Again.", "error");
+       }
+     }
+ 
+     const openModal = (type : any , data : any) => {
+         console.log(type,data);
+         if(type === "add"){
+           setIsModalOpen(true);
+           setHeading("Add")
+         }
+         else{
+             setHeading("Edit");
+             setAmount(data?.budget);
+             setPoints(data?.point);
+             setWalletId(data?._id);
+             setSelectedCategory(data?.category);
+             setSelectedFrequency(data?.frequency);
+             setIsModalOpen(true);
+         }
+       };
+ 
+       async function editPoints(e : any) {
+         // setLoading2(true);
+         e.preventDefault();
+         if(amount.length === 0 || points.length === 0){
+             return generateSnackbar("Plese Enter Amount and Points.", "error");
+         }
+       try {
+             let res = await editPointsRule({
+                walletId : walletId,
+                newPoint : points,
+                newBudget : amount,
+                newCategory : selectedCategory,
+                newFrequency : selectedFrequency
+         });
+         if (res?.status === 200 || res?.data?.status === "success") {
+             generateSnackbar(res?.data?.message , "success");
+             router.refresh();
+             closeModal();
+           } else {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+       } catch (e) {
+         // console.log(e);
+         generateSnackbar("Some error occurred, Please Try Again.", "error");
+       }
+     }
+ 
+     async function deletePoint(walletId) {
+       try {
+         let res = await deletePointsPoints({
+             walletId
+     });
+         if (res?.status === 200 || res?.data?.status === "success") {
+             generateSnackbar(res?.data?.message , "success");
+             router.refresh();
+             closeModal();
+           } else {
+             generateSnackbar("Some error occurred, Please Try Again.", "error");
+           }
+       } catch (e) {
+         // console.log(e);
+         generateSnackbar("Some error occurred, Please Try Again.", "error");
+       }
+     }
+ 
+ 
+
+     
     return (
-        <div className="w-full px-2 py-2">
+        <>
+                          {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
+        <>
+         <div className="w-full px-2 py-2">
             {/* page heading */}
             <div className="flex justify-between items-center border-b border-black/40 px-3 pb-3">
                 <h1 className="sm:text-[17px] text-[15px] font-semibold text-black uppercase">{data?.pageName}</h1>
                 <button
-                    onClick={openModal}
+                    onClick={()=>{openModal("add", "")}}
                     className="sm:text-[17px] text-[12px] text-white bg-[#07242B] px-[20px] py-[10px] rounded-md flex gap-2 items-center"
                 >
                     Add New <IoArrowForwardOutline className="size-[17px] text-white" />
@@ -53,7 +236,7 @@ export default function PointsPage({ data }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.pageItems?.map((item: any, i: number) => (
+                            {allData.map((item: any, i: number) => (
                                 <tr className="border-b border-black/10" key={i}>
                                     <td className="p-3 uppercase text-black sm:text-[16px] text-[13px] font-semibold">
                                         <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
@@ -67,20 +250,20 @@ export default function PointsPage({ data }: any) {
                                     </td>
                                     <td className="p-3 uppercase text-black sm:text-[16px] text-[13px] font-semibold">
                                         <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.jobFrequency}
+                                            {item?.frequency}
                                         </p>
                                     </td>
                                     <td className="p-3 uppercase text-black sm:text-[16px] text-[13px] font-semibold">
                                         <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.clientBudget}
+                                        {(item?.budget >=0 && item?.budget <=150) ? `Small Project (Below £150)` : (item?.budget >=151 && item?.budget <=500) ? `Mini Project (Below £500)` : (item?.budget >=501 && item?.budget <=3000) ? `Mega Project (Below £3000)` : (item?.budget > 3000) ? `Premium Project (£3000 & above)` :""}
                                         </p>
                                     </td>
                                     <td className="p-3">
                                         <div className="flex items-center justify-end">
-                                            <button className="px-2 text-[#FFBE00] sm:text-[16px] text-[12px] font-semibold">
+                                            <button onClick={()=>{openModal("edit", item)}} className="px-2 text-[#FFBE00] sm:text-[16px] text-[12px] font-semibold">
                                                 Edit
                                             </button>
-                                            <button>
+                                            <button onClick={()=>{deletePoint(item?._id)}}>
                                                 <MdDelete className="size-[20px] text-[#F52933]" />
                                             </button>
                                         </div>
@@ -105,7 +288,7 @@ export default function PointsPage({ data }: any) {
                                 <div className="w-full text-center">
                                     <div className="pt-4">
                                         <div className="text-center">
-                                            <h4 className="font-semibold uppercase text-[17px]">Add Point Rule</h4>
+                                            <h4 className="font-semibold uppercase text-[17px]">{heading} Point Rule</h4>
                                         </div>
 
                                         <div className="w-full h-full">
@@ -118,6 +301,8 @@ export default function PointsPage({ data }: any) {
                                                         name="points"
                                                         className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md"
                                                         placeholder="Enter points"
+                                                        value={points}
+                                                        onChange={(e : any)=>{setPoints(e.target.value)}}
                                                     />
                                                 </div>
                                                 <div className="py-2 text-start">
@@ -127,11 +312,13 @@ export default function PointsPage({ data }: any) {
                                                         name="category"
                                                         className="w-full capitalize ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md"
                                                         defaultValue="Select"
+                                                        value={selectedCategory}
+                                                        onChange={(e : any)=>{setSelectedCategory(e.target.value)}}
                                                     >
-                                                        <option value="Select">Select Category</option>
+                                                        <option value="Select" disabled>Select Category</option>
                                                         {
-                                                            data?.pageItems?.map((catg: any, i: number) => (
-                                                                <option key={i} value={catg?.category}>{catg?.category}</option>
+                                                            allCategoryData?.map((catg: any, i: number) => (
+                                                                <option key={i} value={catg} className="capitalize">{catg}</option>
                                                             ))
                                                         }
                                                     </select>
@@ -143,8 +330,10 @@ export default function PointsPage({ data }: any) {
                                                         name="frequency"
                                                         className="w-full capitalize ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md"
                                                         defaultValue="Select"
+                                                        value={selectedFrequency}
+                                                        onChange={(e : any)=>{setSelectedFrequency(e.target.value)}}
                                                     >
-                                                        <option value="Select">Select Frequency</option>
+                                                        <option value="Select" disabled>Select Frequency</option>
                                                         <option value="daily">Daily</option>
                                                         <option value="monthly">Monthly</option>
                                                         <option value="yearly">Yearly</option>
@@ -158,11 +347,16 @@ export default function PointsPage({ data }: any) {
                                                         name="budget"
                                                         className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md"
                                                         placeholder="Enter client budget"
+                                                        value={amount}
+                                                        onChange={(e : any)=>{setAmount(e.target.value)}}
                                                     />
                                                 </div>
 
                                                 <div className="py-2 text-start">
-                                                    <button className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]">
+                                                    <button onClick={(e : any)=>{
+                                                        heading == "Add" ? addNewPoints(e) : editPoints(e)
+                                                        
+                                                    }} className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]">
                                                         Save <FaArrowRight className="size-[15px] text-black" />
                                                     </button>
                                                 </div>
@@ -176,5 +370,10 @@ export default function PointsPage({ data }: any) {
                 />
             )}
         </div>
+
+        </>
+      )
+    }
+        </>
     );
 }

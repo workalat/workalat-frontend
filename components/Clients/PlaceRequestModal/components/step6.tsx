@@ -122,7 +122,7 @@ const Step6: React.FC<Step5Props> = ({
                 value={item?.budget}
                 control={<Radio />}
                 onChange={handlePriceChange}
-                label={<span>{(item?.budget >=0 && item?.budget <=150) ? `Small Project (Below £${item?.budget})` : (item?.budget >=151 && item?.budget <=500) ? `Mini Project (Below £${item?.budget})` : (item?.budget >=501 && item?.budget <=3000) ? `Mega Project (Below £${item?.budget})` : (item?.budget > 3000) ? `Premium Project (£${item?.budget} & above)` :""}  <b></b></span>}
+                label={<span>{(item?.budget >=0 && item?.budget <=150) ? `Small Project (Below £150)` : (item?.budget >=151 && item?.budget <=500) ? `Mini Project (Below £500)` : (item?.budget >=501 && item?.budget <=3000) ? `Mega Project (Below £3000)` : (item?.budget > 3000) ? `Premium Project (£3000 & above)` :""}  <b></b></span>}
                 labelPlacement="start"
                 className="flex-grow md:text-xl py-1 border-b border-b-dark border-opacity-30 flex justify-between px-1"
               />

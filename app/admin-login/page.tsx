@@ -4,7 +4,7 @@ import AdminNavbar from "@/components/navbar/admin_navbar";
 export default function AdminLoginPage() {
     return (
         <div>
-            <AdminNavbar />
+            {/* <AdminNavbar /> */}
             <Login />
         </div>
     )

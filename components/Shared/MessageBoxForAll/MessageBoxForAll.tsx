@@ -14,7 +14,7 @@ import moment from "moment"
 
 type PropsType = {
     data: any
-}
+} 
 
 export default function MessageBoxForAll({ data, currentUser }  : any ) {
 

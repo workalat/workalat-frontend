@@ -128,8 +128,8 @@ export default function Certifications() {
             }
         }
         catch(error){
+            console.log(error);
             setLoading(false);
-            
             generateSnackbar("Please check if you have uploaded the file.", "error");
         }
       };

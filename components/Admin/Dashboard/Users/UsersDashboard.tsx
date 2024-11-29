@@ -9,6 +9,8 @@ import { FaArrowRight } from "react-icons/fa6";
 import { useUserContext } from "@/context/user_context";
 import { useSnackbar } from "@/context/snackbar_context";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import moment from "moment";
 
 export default function UsersDashboard() {
 
@@ -64,10 +66,10 @@ export default function UsersDashboard() {
     const [modalData, setModalData] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = (data: any) => {
-        setModalData(data);
-        setIsModalOpen(true);
-    };
+    // const openModal = (data: any) => {
+    //     setModalData(data);
+    //     setIsModalOpen(true);
+    // };
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -79,33 +81,138 @@ export default function UsersDashboard() {
     
 
      // BACKEND INTEGRATION
-     const {allUsers} : any  = useUserContext();
+     const {allUsers, verifyAdmin, singleUser,changeUserStatus, addPoints} : any  = useUserContext();
      const [loading2, setLoading2] : any  = useState(true);
      let [allClientsData, setAllClientsData] : any = useState([]);
      let [allProfessionalData, setAllProfessionalData] : any = useState([]);
+     let [allFilterData, setAllFilterData] : any = useState([]);
      const { generateSnackbar } : any  = useSnackbar();
      let router = useRouter();
+     let [choice, setChoice] = useState("access");
+     let [points, setPoints] = useState(0);
+     let [totalUsers, setTotalUsers] = useState(0);
+
+
+     async function getData() {
+        setLoading2(true);
+      try {
+        let res = await allUsers();
+        if (res?.status === 200  || res?.data?.status === "success" ) {
+           setAllClientsData(res?.data?.data?.clientsData?.reverse());
+           setAllProfessionalData(res?.data?.data?.professioanlData?.reverse());
+           setAllFilterData([...res?.data?.data?.clientsData?.reverse(),...res?.data?.data?.professioanlData?.reverse()])
+           setTotalUsers(res?.data?.data?.clientsData?.length + res?.data?.data?.professioanlData?.length)
+           setLoading2(false);
+          } else {
+            generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+          }
+      } catch (e) {
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    }
  
-     useEffect(() => {
-         async function getData() {
-             setLoading2(true);
-           try {
-             let res = await allUsers();
-             if (res?.status === 200  || res?.data?.status === "success" ) {
-                setAllClientsData(res?.data?.data?.clientsData?.reverse());
-                setAllProfessionalData(res?.data?.data?.professioanlData?.reverse());
-                setLoading2(false);
-               } else {
-                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
-               }
-           } catch (e) {
-             generateSnackbar("Some error occurred, Please Try Again.", "error");
-           }
-         }
-         getData();
-       }, []);
- 
- 
+
+     useEffect(()=>{
+        async function verify(){
+            try{
+                setLoading2(true);
+                let adminToken : any = Cookies.get("adminToken");
+                
+                if(adminToken !== undefined){
+                    let res : any = await verifyAdmin({adminToken});
+                    if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                        getData();
+                    }   
+                    else{
+                        router.push("/admin-login");
+                    }
+                }
+                else{
+                    router.push("/admin-login")
+                }
+            }
+            catch(e){
+                // console.log(e);
+                generateSnackbar("Something went wrong, please Try Again.", "error");   
+            }
+        };
+        verify();
+    }, []);
+
+    
+    const openModal = async (id: any, userType) => {
+        try{
+            let res = await singleUser({userId : id, userType});
+            if(res?.status === 200 || res?.data?.status === "success"){
+                setModalData(res?.data?.data);
+                setIsModalOpen(true);
+            }
+            else{
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error"); 
+            }
+        }
+        catch(e){
+            // console.log(e);
+            generateSnackbar("Some error occurred, Please Try Again.", "error"); 
+        }
+    };
+
+
+    async function changeAccountStatus(userId, userType,userChoice){
+        try{
+                let res : any = await changeUserStatus({
+                    userId,
+                    userType,
+                    choice : userChoice
+                });
+                if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                    generateSnackbar( res?.data?.message , "success"); 
+                }   
+                else{
+                    generateSnackbar("Something went wrong, please Try Again.", "error");   
+                }
+        }
+        catch(e){
+            // console.log(e);
+            generateSnackbar("Something went wrong, please Try Again.", "error");   
+        }
+    };
+
+    async function assignPoints(userId){
+        try{
+                let res : any = await addPoints({
+                    userId,points
+                });
+                if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                    generateSnackbar( res?.data?.message , "success"); 
+                }   
+                else{
+                    generateSnackbar("Something went wrong, please Try Again.", "error");   
+                }
+        }
+        catch(e){
+            // console.log(e);
+            generateSnackbar("Something went wrong, please Try Again.", "error");   
+        }
+    };
+
+
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    if(e.target.value.length <0){        
+        setAllFilterData(allClientsData,allProfessionalData);
+    }
+
+    const filteredClients = allClientsData.filter(client =>
+      client.userName.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    const filteredProfessionals = allProfessionalData.filter(professional =>
+      professional.userName.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+
+    setAllFilterData(filteredClients,filteredProfessionals);
+  };
 
 
     return (
@@ -129,7 +236,21 @@ export default function UsersDashboard() {
                 name="users"
                 className="bg-[#FFBE00] text-[15px] py-2 font-semibold rounded-md px-2 ring-2 ring-[#FFBE00] outline-none border-none cursor-pointer mt-3"
                 value={userType}
-                onChange={(e) => setUserType(e.target.value)}
+                onChange={(e) => {
+                    setUserType(e.target.value);    
+                    if(e.target.value === "client"){
+                        setAllFilterData(allClientsData);
+                        setTotalUsers(allClientsData?.length);
+                    }   
+                    else if (e.target.value === "professional"){
+                        setAllFilterData(allProfessionalData);
+                         setTotalUsers(allProfessionalData?.length);
+                    }   
+                    else if(e.target.value === "all"){
+                        setAllFilterData([...allClientsData,...allProfessionalData]);
+                         setTotalUsers(allClientsData?.length + allProfessionalData?.length) 
+                    }          
+                }}
             >
                 <option className="bg-[#07242B] text-white" value="all">All Users</option>
                 <option className="bg-[#07242B] text-white" value="client">Clients</option>
@@ -138,7 +259,7 @@ export default function UsersDashboard() {
 
             {/* header */}
             <div className="flex justify-between items-center pt-5">
-                <h3 className="text-black font-bold text-[20px]">{filteredUsers?.length} Records</h3>
+                <h3 className="text-black font-bold text-[20px]">{totalUsers} Records</h3>
 
                 <div className="flex items-center justify-end">
                     {/* search box */}
@@ -149,7 +270,9 @@ export default function UsersDashboard() {
                             placeholder="Search Name/Username"
                             className="outline-none bg-transparent ml-2 text-gray-500 placeholder-gray-400 w-full py-1"
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={
+                                handleSearch
+                            }
                         />
                     </div>
                 </div>
@@ -178,7 +301,7 @@ export default function UsersDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {allClientsData.map((user: any) => (
+                            {allFilterData.map((user: any) => (
                                 <tr key={user?._id} className="border-b border-black">
                                     <td className="p-4">
                                         <input
@@ -189,21 +312,21 @@ export default function UsersDashboard() {
                                         />
                                     </td>
                                     <td className="p-0">
-                                        <img src={user?.clientPictureLink} alt={user?.clientFullName} className="w-12 h-12 rounded-full mr-2 object-cover" />
+                                        <img src={user?.userPictureLink} alt={user?.userName} className="w-12 h-12 rounded-full mr-2 object-cover" />
                                     </td>
                                     <td className="p-4">
                                         <p className="text-[15px]">{user?._id.slice(0,15)}...</p>
                                     </td>
                                     <td className="p-4">
                                         <div>
-                                            <p className="font-bold capitalize text-[20px]">{user?.clientFullName}</p>
-                                            <p className="text-gray-500 text-[15px]">{user?.clientEmail}</p>
+                                            <p className="font-bold capitalize text-[20px]">{user?.userName}</p>
+                                            <p className="text-gray-500 text-[15px]">{user?.userEmail}</p>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-[15px] capitalize">Client</td>
+                                    <td className="p-4 text-[15px] capitalize">{user?.userType}</td>
                                     {/* <td className="p-4 text-[15px] capitalize">{user?.country}</td> */}
                                     <td className="p-4">
-                                        <button onClick={() => openModal(user)} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
+                                        <button onClick={() => openModal(user?._id, "client")} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
                                             <AiOutlineControl className="rotate-90 text-white size-[15px] xl:size-[20px]" /> View
                                         </button>
                                     </td>
@@ -211,53 +334,20 @@ export default function UsersDashboard() {
 
                                         {/* the action buttons are currently act as demo it need to connect backend for taking action on the user with Put or patch method in api */}
 
-                                        <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold">Access Account</button>
-                                        <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold">
-                                            <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]" /> Ban Account
+                                        <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold" onClick={(e : any)=>{
+                                            setChoice("access");
+                                            changeAccountStatus(user?._id, user?.userType, "access");
+                                        }}>Access Account</button>
+                                        <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold" onClick={(e : any)=>{
+                                            setChoice("ban");
+                                            changeAccountStatus(user?._id, user?.userType, "ban");
+                                        }}>
+                                            <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]"  /> Ban Account
                                         </button>
                                     </td>
                                 </tr>
                             ))}
-                             {allProfessionalData.map((user: any) => (
-                                <tr key={user?._id} className="border-b border-black">
-                                    <td className="p-4">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedUsers.includes(user?._id)}
-                                            onChange={() => toggleSelectUser(user?._id)}
-                                            className="w-4 h-4"
-                                        />
-                                    </td>
-                                    <td className="p-0">
-                                        <img src={user?.professionalPictureLink} alt={user?.professionalFullName} className="w-12 h-12 rounded-full mr-2 object-cover" />
-                                    </td>
-                                    <td className="p-4">
-                                        <p className="text-[15px]">{user?._id.slice(0,15)}...</p>
-                                    </td>
-                                    <td className="p-4">
-                                        <div>
-                                            <p className="font-bold capitalize text-[20px]">{user?.professionalFullName}</p>
-                                            <p className="text-gray-500 text-[15px]">{user?.professionalEmail}</p>
-                                        </div>
-                                    </td>
-                                    <td className="p-4 text-[15px] capitalize">Professional</td>
-                                    {/* <td className="p-4 text-[15px] capitalize">{user?.country}</td> */}
-                                    <td className="p-4">
-                                        <button onClick={() => openModal(user)} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
-                                            <AiOutlineControl className="rotate-90 text-white size-[15px] xl:size-[20px]" /> View
-                                        </button>
-                                    </td>
-                                    <td className="p-4 flex flex-col gap-2">
 
-                                        {/* the action buttons are currently act as demo it need to connect backend for taking action on the user with Put or patch method in api */}
-
-                                        <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold">Access Account</button>
-                                        <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold">
-                                            <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]" /> Ban Account
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
                         </tbody>
                     </table>
 
@@ -279,35 +369,40 @@ export default function UsersDashboard() {
                                             <form className="w-full">
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="fullName" className="block pb-2 font-semibold">Full Name</label>
-                                                    <input type="text" id="fullName" name="fullName" defaultValue={modalData?.userDisplayName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="text" id="fullName" name="fullName" defaultValue={modalData?.userFullName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2 capitalize" />
                                                 </div>
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="userId" className="block pb-2 font-semibold">User ID</label>
-                                                    <input type="text" id="userId" name="userId" defaultValue={modalData?.id} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="text" id="userId" name="userId" defaultValue={modalData?.userId} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
                                                 </div>
                                                 <div className="py-2 text-start">
-                                                    <label htmlFor="businessName" className="block pb-2 font-semibold">Business Name</label>
-                                                    <input type="text" id="businessName" name="businessName" defaultValue={modalData?.companyName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    { 
+                                                    modalData?.userType === "professional" && 
+                                                        <>
+                                                            <label htmlFor="businessName" className="block pb-2 font-semibold">Business Name</label>
+                                                            <input type="text" id="businessName" name="businessName" defaultValue={modalData?.userCompanyName} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                        </>
+                                                    }
                                                 </div>
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="status" className="block pb-2 font-semibold">User Type</label>
-                                                    <input type="text" id="status" name="status" defaultValue={modalData?.status} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="text" id="status" name="status" defaultValue={modalData?.userType} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2 capitalize" />
                                                 </div>
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="country" className="block pb-2 font-semibold">Country</label>
-                                                    <input type="text" id="country" name="country" defaultValue={modalData?.country} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="text" id="country" name="country" defaultValue={modalData?.userCountry} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2 capitalize" />
                                                 </div>
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="userEmail" className="block pb-2 font-semibold">Email</label>
-                                                    <input type="email" id="userEmail" name="userEmail" defaultValue={modalData?.userEmail} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="email" id="userEmail" name="userEmail" defaultValue={modalData?.userEmail ? modalData?.userEmail  : ""} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
                                                 </div>
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="userPhone" className="block pb-2 font-semibold">Phone Number</label>
-                                                    <input type="number" id="userPhone" name="userPhone" defaultValue={modalData?.userPhone} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="number" id="userPhone" name="userPhone" defaultValue={modalData?.userPhoneNo ? modalData?.userPhoneNo  : ""} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
                                                 </div>
                                                 <div className="py-2 text-start">
                                                     <label htmlFor="registered" className="block pb-2 font-semibold">Registered</label>
-                                                    <input type="text" id="registered" name="registered" defaultValue={modalData?.registered} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
+                                                    <input type="text" id="registered" name="registered" defaultValue={ moment(modalData?.accountCreationDate).format("DD/MM/YYYY HH:mm")} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" />
                                                 </div>
                                             </form>
                                         </div>
@@ -318,20 +413,23 @@ export default function UsersDashboard() {
                                             <form className="w-full">
                                                 <div className="py-2">
                                                     <label htmlFor="activity" className="block pb-2 font-semibold">Activity</label>
-                                                    <input type="text" defaultValue={`Registered as ${modalData?.status}`} className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
+                                                    <input type="text" defaultValue={`Registered as ${modalData?.userRegisterAs}`} className="capitalize  w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
                                                 </div>
                                                 <div className="py-2">
                                                     <label htmlFor="lastlog" className="block pb-2 font-semibold">Last Login</label>
-                                                    <input type="text" id="lastlog" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" defaultValue={modalData?.lastLogin} />
+                                                    <input type="text" id="lastlog" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" defaultValue={ moment(modalData?.lastLoginDate).format("DD/MM/YYYY HH:mm")} />
                                                 </div>
                                             </form>
                                         </div>
                                         <div className="w-full bg-white p-3 rounded-md mt-3">
                                             <h4 className="text-center font-semibold text-[20px]">Action</h4>
-                                            <form className="w-full">
+                                            <form className="w-full" onSubmit={(e)=>{
+                                                        e.preventDefault();
+                                                        changeAccountStatus(modalData?.userId, modalData?.userType, choice);
+                                                    }}>
                                                 <div className="py-2">
                                                     <label htmlFor="action" className="block pb-2 font-semibold">Action</label>
-                                                    <select className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" name="action" id="action">
+                                                    <select className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" value={choice} onChange={(e : any)=>{setChoice(e.target.value)}} name="action" id="action">
                                                         <option value="access">Access account</option>
                                                         <option value="ban">Ban account</option>
                                                     </select>
@@ -340,15 +438,23 @@ export default function UsersDashboard() {
                                                     <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Continue <FaArrowRight className="size-[15px] text-black" /></button>
                                                 </div>
                                             </form>
-                                            <form className="w-full">
-                                                <div className="py-2">
-                                                    <label htmlFor="assign" className="block pb-2 font-semibold">Assign point</label>
-                                                    <input type="text" placeholder="Type" className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
-                                                </div>
-                                                <div className="py-2">
-                                                    <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Save <FaArrowRight className="size-[15px] text-black" /></button>
-                                                </div>
-                                            </form>
+                                            {
+                                                modalData?.userType === "professional" && 
+                                                <>
+                                                <form className="w-full" onSubmit={(e)=>{
+                                                    e.preventDefault();
+                                                    assignPoints(modalData?.userId);
+                                                }}>
+                                                    <div className="py-2">
+                                                        <label htmlFor="assign" className="block pb-2 font-semibold">Assign point</label>
+                                                        <input type="text" placeholder="Type" value={points} onChange={(e : any)=>{setPoints(e.target.value)}} className="w-full py-2 px-3 ring-[1px] ring-gray-600 outline-none border-none rounded-md" />
+                                                    </div>
+                                                    <div className="py-2">
+                                                        <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Save <FaArrowRight className="size-[15px] text-black" /></button>
+                                                    </div>
+                                                    </form>
+                                                </>
+                                            }
                                         </div>
                                     </div>
                                 </div>

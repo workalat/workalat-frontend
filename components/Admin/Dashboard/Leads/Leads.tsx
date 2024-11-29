@@ -20,8 +20,10 @@ import { GiCheckedShield } from "react-icons/gi";
 
 import { useUserContext } from "@/context/user_context";
 import { useSnackbar } from "@/context/snackbar_context";
+import { useRouter } from "next/navigation";
 import moment from "moment";
 import { Typography } from "@mui/material";
+import Cookies from "js-cookie";
 
 export default function Leads() {
 
@@ -67,12 +69,12 @@ export default function Leads() {
 
 
     // BACKEND INTEGRATION
-    const {showLeadsAdmin, showSingleLeadsData, changeLeadsStatus} : any  = useUserContext();
+    const {showLeadsAdmin, showSingleLeadsData, changeLeadsStatus, verifyAdmin} : any  = useUserContext();
     const [loading2, setLoading2] : any  = useState(true);
     let [allLeadsData, setAllLeadsData] = useState([]);
     const { generateSnackbar } : any  = useSnackbar();
+    let router = useRouter();
 
-    useEffect(() => {
         async function getData() {
             setLoading2(true);
           try {
@@ -87,13 +89,46 @@ export default function Leads() {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
         }
-        getData();
-      }, []);
+
+      useEffect(()=>{
+        async function verify(){
+            try{
+                setLoading2(true);
+                let adminToken : any = Cookies.get("adminToken");
+                
+                if(adminToken !== undefined){
+                    let res : any = await verifyAdmin({adminToken});
+                    if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                        if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
+                            getData();
+                            setLoading2(false);
+                        }
+                        else{
+                            router.push("/admin");
+                        }
+                    }   
+                    else{
+                        router.push("/admin-login");
+                    }
+                }
+                else{
+                    router.push("/admin-login")
+                }
+            }
+            catch(e){
+                // console.log(e);
+                generateSnackbar("Something went wrong, please Try Again.", "error");   
+            }
+        };
+        verify();
+    }, []);
 
 
       const openModal = async (id: any) => {
         try {
+            console.log("Id", id);
             let res = await showSingleLeadsData({id});
+            console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setModalData(res?.data?.data[0]);
                  setIsModalOpen(true);
@@ -281,7 +316,7 @@ export default function Leads() {
                                     <div className="flex flex-col sm:flex-row justify-between items-center w-full bg-[#F3F3F3] py-2 px-3 mx-auto">
                                         <div className="flex gap-2 w-[40%] justify-start items-center">
                                             <FaPhone className="size-[15px] text-[#FFBE00]" />
-                                            <p className="text-[15px]"><MaskedPhoneNumber phoneNumber={modalData?.clientPhoneNo} /></p>
+                                            <p className="text-[15px]"><MaskedPhoneNumber phoneNumber={modalData?.clientPhoneNo ? modalData?.clientPhoneNo  : ""} /></p>
                                         </div>
                                         <div className="w-[2px] bg-[#ABABAB] h-[19px] sm:block hidden"></div>
                                         <div className="flex w-[40%] justify-center items-center">

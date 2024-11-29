@@ -11,6 +11,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useUserContext } from "@/context/user_context";
 import { useSnackbar } from "@/context/snackbar_context";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function JobAssign({ data }: any) {
     // modal
@@ -98,19 +99,18 @@ export default function JobAssign({ data }: any) {
 
     
      // BACKEND INTEGRATION
-     const {showAllAssignedQuestions,findAllServices ,addJobsQuestions,showAllServiceAdmin,showCategory} : any  = useUserContext();
+     const {showAllAssignedQuestions,findAllServices,verifyAdmin ,addJobsQuestions,deleteJobsQuestions ,showAllServiceAdmin,showCategory} : any  = useUserContext();
      const [loading2, setLoading2] : any  = useState(true);
      let [allQuestionsCategoryData, setAllQuestionsCategoryData] : any = useState([]);
      let [allQuestionsServiceData, setAllQuestionsServiceData] : any = useState([]);
      let [allServiceData, setAllServiceData] : any = useState([]);
      let [allCategoryData, setAllCategoryData] : any = useState([]);
      let [allServiceStringData, setAllServiceStringData] : any = useState([]);
+         
+     let router = useRouter();
      let [term, setTerm] = useState("");
      const { generateSnackbar } : any  = useSnackbar();
-     let [questionTitle, setQuestionsTitle] = useState("");
-     let router = useRouter();
  
-     useEffect(() => {
          async function getData() {
              setLoading2(true);
            try {
@@ -134,8 +134,43 @@ export default function JobAssign({ data }: any) {
              generateSnackbar("Some error occurred, Please Try Again.", "error");
            }
          }
-         getData();
-       }, []);
+    
+      useEffect(() => {
+        async function verify() {
+          try {
+            setLoading2(true);
+            let adminToken: any = Cookies.get("adminToken");
+    
+            if (adminToken !== undefined) {
+              let res: any = await verifyAdmin({ adminToken });
+              console.log(res);
+              if (
+                res?.status === 200 ||
+                res?.data?.status === "success" ||
+                res?.data?.data?.verify === true
+              ) {
+                if(res?.data?.data?.status === "system"){
+                    getData();
+                    setLoading2(false);
+                }
+                else{
+                    router.push("/admin");
+                }
+
+              } else {
+                router.push("/admin-login");
+              }
+            } else {
+              router.push("/admin-login");
+            }
+          } catch (e) {
+            // console.log(e);
+            generateSnackbar("Something went wrong, please Try Again.", "error");
+          }
+        }
+        verify();
+      }, []);
+      
  
  
        
@@ -167,7 +202,28 @@ export default function JobAssign({ data }: any) {
          generateSnackbar("Some error occurred, Please Try Again.", "error");
        }
      }
+
+     async function deleteQuestions(mode : any, type : any) {
+      try {
+        let res = await deleteJobsQuestions({
+            mode : mode,
+            type : type,
+        });
+        console.log()
+        if (res?.status === 200 || res?.data?.status === "success") {
+            generateSnackbar(res?.data?.message , "success");
+            router.refresh();
+            closeModal();
+          } else {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    }
  
+     
 
 
        function changeStateType(data){
@@ -255,7 +311,7 @@ export default function JobAssign({ data }: any) {
                                             <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
                                                 Edit
                                             </button>
-                                            <button>
+                                            <button onClick={()=>{deleteQuestions("category",item?.type)}}>
                                                 <MdDelete className="size-[20px] text-[#F52933]" />
                                             </button>
                                         </div>
@@ -287,7 +343,7 @@ export default function JobAssign({ data }: any) {
                                             <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
                                                 Edit
                                             </button>
-                                            <button>
+                                            <button  onClick={()=>{deleteQuestions("service",item?.type)}}>
                                                 <MdDelete className="size-[20px] text-[#F52933]" />
                                             </button>
                                         </div>

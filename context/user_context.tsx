@@ -140,6 +140,7 @@ interface UserContextType {
   showSingleLeadsData : (data : any) => any;
   showLeadsBids : (data : any) => any;
   changeLeadsStatus : (data : any) => any;
+  declineProposal : (data : any) => any;
   showCategory : () => any;
   addCategories : (data : any) => any;
   showAllServiceAdmin : () => any;
@@ -149,12 +150,45 @@ interface UserContextType {
   showAllAssignedQuestions : () => any; 
   showAllKycData : (data : any) => any;
   showSingleKycData : (data : any ) => any;
+  changeKycStatus : (data : any) => any;
   showAllCertificate : () => any;
   showSingleCertificate : (data : any ) => any;
+  changeCertificateStatus : (data : any) => any;
   dashboarData : () => any;
   showAllTickets : () => any;
   addJobsQuestions : (data : any ) => any;
   allUsers : () => any;
+  singleUser : (data : any ) => any;
+  changeUserStatus : (data : any ) => any;
+  addPoints : (data : any ) => any;
+  loginAdmin : (data : any ) => any;
+  verifyAdmin : (data : any ) => any;
+  allAdmin : () => any;
+  createNewAdmin : (data : any ) => any;
+  showAllReviews : () => any;
+  deleteReview : (data : any ) => any;
+  ActivitiesData  : () => any;
+  refundTransaction : (data : any ) => any;
+  membershipPageData : () => any;
+  changeMembershipStatus : (data : any ) => any;
+  creditAndWallet : () => any;
+  editCategory : (data : any ) => any;
+  deleteCategory : (data : any ) => any;
+  editService :  (data : any ) => any;
+  deleteService : (data : any ) => any;
+  walletPage : () => any;
+  addPointsWallet : (data : any ) => any;
+  editPointsWallet : (data : any ) => any;
+  deletePointsWallet : (data : any ) => any;
+  pointsPage : ( ) => any;
+  addPointsRule : (data : any ) => any;
+  editPointsRule : (data : any ) => any;
+  deletePointsPoints : (data : any ) => any;
+  deleteQuestions : (data : any ) => any;
+  deleteJobsQuestions  : (data : any ) => any;
+  editJobsQuestions : (data : any ) => any;
+  logoutAdmin : (data : any ) => any;
+  
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -1745,6 +1779,21 @@ async function changeLeadsStatus({id, choice}){
 }
 
 
+async function declineProposal({projectId, professoinalId}){
+  try{
+    const response  : any  = await axios.post('/declineProposal',{
+      projectId,
+      professoinalId
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
 async function addCategories({category}){
   try{
     const response  : any  = await axios.post('/addCategory',{
@@ -1822,6 +1871,19 @@ async function addAllQuestions({questionTitle, questionType,questionChoices}){
   }
 }
 
+async function deleteQuestions({questionId} : any){
+  try{
+    const response  : any  = await axios.post('/deleteQuestions',{
+      questionId
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
 
 
 
@@ -1848,7 +1910,36 @@ async function addJobsQuestions({mode, type,slugs} : any){
     // console.log(e);
     return(e);
   }
+};
+
+
+async function editJobsQuestions({questionId, questionTitle,questionType,questionChoices,questionSlug} : any){
+  try{
+    const response  : any  = await axios.post('/addJobsQuestions', {
+      questionId, questionTitle,questionType,questionChoices,questionSlug
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
 }
+
+
+async function deleteJobsQuestions({mode, type} : any){
+  try{
+    const response  : any  = await axios.post('/deleteJobsQuestions', {
+      mode, type
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
 
 
 async function showAllKycData({userType}){
@@ -1880,6 +1971,20 @@ async function showSingleKycData({userType, id}){
 }
 
 
+async function changeKycStatus({userId, userType,adminComment,choice}){
+  try{
+    const response  : any  = await axios.post('/kycApproval', {
+      userId, userType,adminComment,choice
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
 async function showAllCertificate(){
   try{
     const response  : any  = await axios.post('/showallCertificate');
@@ -1896,6 +2001,20 @@ async function showSingleCertificate({id}){
   try{
     const response  : any  = await axios.post('/showSingleCertificate',{
       certificationId : id
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function changeCertificateStatus({professionalId, certificationId,adminComment,choice}){
+  try{
+    const response  : any  = await axios.post('/certificationApproval', {
+      professionalId, certificationId,adminComment,choice
     });
       return(response);
   }
@@ -1941,6 +2060,357 @@ async function allUsers(){
   }
 }
 
+
+async function singleUser({userId, userType} : any){
+  try{
+    const response  : any  = await axios.post('/getSingleUserAdmin', {
+      userId,
+      userType
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function changeUserStatus({userId, userType, choice} : any){
+  try{
+    const response  : any  = await axios.post('/changeUserStatusAdmin', {
+      userId,
+      userType,
+      choice
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function addPoints({userId, points} : any){
+  try{
+    const response  : any  = await axios.post('/addPointsProfessional', {
+      userId,
+      points
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+
+async function loginAdmin({email, password} : any){
+  try{
+    const response  : any  = await axios.post('/adminLogin', {
+      email,
+      password
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function verifyAdmin({adminToken} : any){
+  try{
+    const response  : any  = await axios.post('/verifyAdmin', {
+      adminToken
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function allAdmin(){
+  try{
+    const response  : any  = await axios.get('/showAllAdmin');
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+async function createNewAdmin({admin_name,admin_email,admin_password,admin_status} : any){
+  try{
+    const response  : any  = await axios.post('/addAdmins', {
+      admin_name,
+      admin_email,
+      admin_password,
+      admin_status,
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
+
+
+
+async function showAllReviews(){
+  try{
+    const response  : any  = await axios.get('/showReviews');
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+
+async function deleteReview({projectId, totalRatings, userType}){
+  try{
+    const response  : any  = await axios.post('/deleteReview', {
+      projectId,totalRatings,userType
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+
+async function ActivitiesData(){
+  try{
+    const response  : any  = await axios.get('/activities');
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+async function refundTransaction({transactionId}  : any){
+  try{
+    const response  : any  = await axios.post('/refudTransaction',{
+      transactionId
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+
+async function membershipPageData(){
+  try{
+    const response  : any  = await axios.get('/membership');
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+async function changeMembershipStatus({professoinalId,choice} : any){
+  try{
+    const response  : any  = await axios.post('/changeMembershipStatus', {
+      professoinalId,choice
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+
+async function creditAndWallet(){
+  try{
+    const response  : any  = await axios.get('/creditAndWallet');
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+async function editCategory({ oldValue, newValue } : any){
+  try{
+    const response  : any  = await axios.post('/editCategory', {
+      oldValue,
+      newValue
+      });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function deleteCategory({ oldValue } : any){
+  try{
+    const response  : any  = await axios.post('/deleteCategory', {
+      oldValue,
+      });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+}
+
+
+async function editService({ category,oldValue, newValue } : any){
+  try{
+    const response  : any  = await axios.post('/editService', {
+      category,
+      oldValue,
+      newValue
+      });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+async function deleteService({ category,serviceValue } : any){
+  try{
+    const response  : any  = await axios.post('/deleteService', {
+      category,
+      serviceValue,
+      });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function walletPage(){
+  try{
+    const response  : any  = await axios.get('/showWalletData');
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function addPointsWallet({point, amount} : any){
+  try{
+    const response  : any  = await axios.post('/addPointsWalletData',{
+      point  ,
+      amount 
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function editPointsWallet({walletId,newPoint, newAmount} : any){
+  try{
+    const response  : any  = await axios.post('/editWalletData',{
+      walletId,newPoint, newAmount
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+async function deletePointsWallet({walletId} : any){
+  try{
+    const response  : any  = await axios.post('/deleteWalletData',{
+      walletId
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+
+async function pointsPage(){
+  try{
+    const response  : any  = await axios.get('/showPointsWalletData');
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function deletePointsPoints({walletId} : any){
+  try{
+    const response  : any  = await axios.post('/deletePointsWalletData',{
+      walletId
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+async function addPointsRule({points,category,frequency,budget} : any){
+  try{
+    const response  : any  = await axios.post('/addPointsRule',{
+      points,category,frequency,budget
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function editPointsRule({walletId,newPoint,newCategory,newFrequency,newBudget} : any){
+  try{
+    const response  : any  = await axios.post('/editPointsWalletData',{
+      walletId,newPoint,newCategory,newFrequency,newBudget
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+
+
+async function logoutAdmin({ token } : any){
+  try{
+    const response  : any  = await axios.post('/logout-admin', {
+      token
+      });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
+}
 
 
 
@@ -2066,6 +2536,7 @@ async function allUsers(){
       showSingleLeadsData,
       showLeadsBids,
       changeLeadsStatus,
+      declineProposal,
       showCategory,
       addCategories,
       showAllServiceAdmin,
@@ -2075,12 +2546,45 @@ async function allUsers(){
       showAllAssignedQuestions,
       showAllKycData,
       showSingleKycData,
+      changeKycStatus,
       showAllCertificate,
       showSingleCertificate,
+      changeCertificateStatus,
       dashboarData,
       showAllTickets,
       addJobsQuestions,
-      allUsers
+      allUsers,
+      singleUser,
+      changeUserStatus,
+      addPoints,
+      loginAdmin,
+      verifyAdmin,
+      allAdmin,
+      createNewAdmin,
+      showAllReviews,
+      deleteReview,
+      ActivitiesData,
+      refundTransaction,
+      membershipPageData,
+      changeMembershipStatus,
+      creditAndWallet,
+      editCategory,
+      deleteCategory,
+      editService,
+      deleteService,
+      walletPage,
+      addPointsWallet,
+      editPointsWallet,
+      deletePointsWallet,
+      pointsPage,
+      addPointsRule,
+      editPointsRule,
+      deletePointsPoints,
+      deleteQuestions,
+      deleteJobsQuestions,
+      editJobsQuestions,
+      logoutAdmin,
+
        }}>
       {children}
     </UserContext.Provider>

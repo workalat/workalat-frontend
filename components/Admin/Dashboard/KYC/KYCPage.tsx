@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import moment from "moment";
 import FilePile from "./components/FilePile";
 import { PiFilesDuotone } from "react-icons/pi";
+import Cookies from "js-cookie";
 
 export default function KYCPage() {
     // here users will be dynamically from the backend. for now i using "import {kycData} from "@utils/kycData"" as a demo kyc users data
@@ -62,6 +63,7 @@ export default function KYCPage() {
     const closeModal = () => {
         setIsModalOpen(false);
         setIsNext(false);
+        setComment("");
     };
 
 
@@ -69,15 +71,17 @@ export default function KYCPage() {
 
      
      // BACKEND INTEGRATION
-     const {showAllKycData, showSingleKycData} : any  = useUserContext();
+     const {showAllKycData, showSingleKycData,changeKycStatus,verifyAdmin} : any  = useUserContext();
      const [loading2, setLoading2] : any  = useState(true);
      let [allKycDataClient, setAllKycDataClient] : any = useState([]);
      let [allKycDataProfessional, setAllKycDataProfessional] : any = useState([]);
+     let [currentUser, setCurrentUser] : any = useState("");
+     let [currentUserType, setCurrentUserType] : any = useState("");
+     let [comment, setComment] : any = useState("");
      const { generateSnackbar } : any  = useSnackbar();
      let [questionTitle, setQuestionsTitle] = useState("");
      let router = useRouter();
  
-     useEffect(() => {
          async function getData() {
              setLoading2(true);
            try {
@@ -94,8 +98,40 @@ export default function KYCPage() {
              generateSnackbar("Some error occurred, Please Try Again.", "error");
            }
          }
-         getData();
-       }, []);
+
+
+       useEffect(()=>{
+        async function verify(){
+            try{
+                setLoading2(true);
+                let adminToken : any = Cookies.get("adminToken");
+                
+                if(adminToken !== undefined){
+                    let res : any = await verifyAdmin({adminToken});
+                    if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                        if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
+                            getData();
+                            setLoading2(false);
+                        }
+                        else{
+                            router.push("/admin");
+                        }
+                    }   
+                    else{
+                        router.push("/admin-login");
+                    }
+                }
+                else{
+                    router.push("/admin-login")
+                }
+            }
+            catch(e){
+                // console.log(e);
+                generateSnackbar("Something went wrong, please Try Again.", "error");   
+            }
+        };
+        verify();
+    }, []);
  
  
        const openModal = async (id: any, userType : any) => {
@@ -103,6 +139,9 @@ export default function KYCPage() {
             let res = await showSingleKycData({id, userType});
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setModalData(res?.data?.data?.kyc[0]);
+                setCurrentUser(res?.data?.data?._id);
+                setCurrentUserType(userType);
+                setComment(res?.data?.data?.kyc[0]?.adminComment);
                 //  setModalData(filteredUsers[0]);
                  setIsModalOpen(true);
               } else {
@@ -117,6 +156,27 @@ export default function KYCPage() {
     const showNext = async (data) => {
         try {
             setIsNext(true)
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+    };
+
+
+    const changeKyc = async (choice) => {
+        try {
+            let res = await changeKycStatus({
+                userId : currentUser,
+                userType : currentUserType,
+                adminComment : comment,
+                choice : choice
+            });
+            if (res?.status === 200 || res?.data?.status === "success") {
+                generateSnackbar(res?.data?.message , "success");
+                closeModal();
+                router.refresh();
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
           } catch (e) {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
@@ -149,7 +209,9 @@ export default function KYCPage() {
                     name="users"
                     className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                     value={userType}
-                    onChange={(e) => setUserType(e.target.value)}
+                    onChange={(e) => {
+                        setUserType(e.target.value);
+                    }}
                 >
                     <option className="bg-[#07242B] text-white" value="all">All</option>
                     <option className="bg-[#07242B] text-white" value="client">Client</option>
@@ -179,7 +241,9 @@ export default function KYCPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {allKycDataClient.map((user) => (
+                            {
+                            (userType==="client" || userType === "all" )
+                             &&  allKycDataClient.map((user) => (
                                 <tr key={user?.id} className="border-b border-black">
                                     <td className="p-4">
                                         <input
@@ -205,7 +269,9 @@ export default function KYCPage() {
                                 </tr>
                             ))}
 
-                            {allKycDataProfessional.map((user) => (
+                            {
+                                (userType==="professional" || userType === "all" ) && 
+                            allKycDataProfessional.map((user) => (
                                 <tr key={user?.id} className="border-b border-black">
                                     <td className="p-4">
                                         <input
@@ -270,8 +336,8 @@ export default function KYCPage() {
                                                                 <div className="w-full">
                                                                 {modalData?.documentPictures?.map((file, index) => (
                                                                     // <FilePile key={index} fileName={`File ${index + 1}`} fileUrl={file} />
-                                                                    <a href={`${modalData?.certificationImage}`} key={index} target="_blank" rel="noreferrer" download={true}  className="size-[25px] text-black/60 flex justify-start items-center w-[100%]" >
-                                                                        <PiFilesDuotone className="size-[25px] text-black/60" />fileName={`File ${index + 1}`}
+                                                                    <a href={`${file}`} key={index} target="_blank" rel="noreferrer" download={true}  className="size-[25px] text-black/60 flex justify-start items-center w-[100%]" >
+                                                                        <PiFilesDuotone className="size-[25px] text-black/60" />{`File ${index + 1}`}
                                                                     </a>
                                                                     ))}
                                                                     {/* <p>{modalData?.uploadedFile?.fileName}</p> */}
@@ -286,12 +352,12 @@ export default function KYCPage() {
                                                         <div className="pt-2 pb-1 px-1 w-full">
                                                             <form className="w-full">
                                                                 <label htmlFor="comment" className="pb-1 block">Comment</label>
-                                                                <textarea name="comment" id="comment" className="w-full h-32 outline-none border border-black/50 rounded-md px-2 py-1 text-[15px]" placeholder="Comment"></textarea>
+                                                                <textarea name="comment" id="comment" value={comment} onChange={(e : any) =>{setComment(e?.target?.value)}} className="w-full h-32 outline-none border border-black/50 rounded-md px-2 py-1 text-[15px]" placeholder="Comment"></textarea>
                                                             </form>
 
                                                             <div className="flex gap-2 pt-3 flex-col sm:flex-row w-full">
-                                                                <button className="text-black font-semibold px-4 py-2 bg-[#FFBE00] rounded-md w-full sm:w-1/2">Accept</button>
-                                                                <button className="text-white font-semibold px-4 py-2 bg-[#FE321F] flex items-center justify-center rounded-md w-full sm:w-1/2"><AiFillCloseSquare className="size-[15px] text-white" /> Reject</button>
+                                                                <button className="text-black font-semibold px-4 py-2 bg-[#FFBE00] rounded-md w-full sm:w-1/2" onClick={()=>{changeKyc("approved")}}>Accept</button>
+                                                                <button className="text-white font-semibold px-4 py-2 bg-[#FE321F] flex items-center justify-center rounded-md w-full sm:w-1/2" onClick={()=>{changeKyc("rejected")}}><AiFillCloseSquare className="size-[15px] text-white" /> Reject</button>
                                                             </div>
                                                         </div>
                                                     </div>

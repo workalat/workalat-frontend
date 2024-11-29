@@ -3,8 +3,18 @@
 import { walletData } from "@/utils/walletData"
 import Menus from "../Menus/Menus"
 import { IoArrowDownCircleOutline, IoArrowUpCircleOutline } from "react-icons/io5"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+
+
+
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import Cookies from "js-cookie";
+import moment from "moment";
+
+
 
 export default function CreditAndWallet() {
 
@@ -17,14 +27,130 @@ export default function CreditAndWallet() {
     const transactionsPerPage = 5; // Set the number of transactions per page
 
     // Calculate the index for slicing the data
-    const indexOfLastTransaction = currentPage * transactionsPerPage;
-    const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-    const currentTransactions = walletData.slice(indexOfFirstTransaction, indexOfLastTransaction);
+    // const indexOfLastTransaction = currentPage * transactionsPerPage;
+    // const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+    // const currentTransactions = walletData.slice(indexOfFirstTransaction, indexOfLastTransaction);
 
-    console.log(currentTransactions);
+    // console.log(currentTransactions);
+
+
+
+    
+       // BACKEND INTEGRATION
+  const {
+    creditAndWallet,
+    verifyAdmin,
+    generateInvoice
+  }: any = useUserContext();
+  const [loading2, setLoading2]: any = useState(true);
+  let [allData, setAllData]: any = useState([]);
+  let [allFilterData, setAllFilterData]: any = useState([]);
+  const { generateSnackbar }: any = useSnackbar();
+  let router = useRouter();
+  let [totalUsers, setTotalUsers] = useState(0);
+
+
+
+
+  async function getData() {
+    setLoading2(true);
+    try {
+      let res = await creditAndWallet();
+      if (res?.status === 200 || res?.data?.status === "success") {
+        setAllData(res?.data?.data.reverse());
+        
+    const indexOfLastTransaction = currentPage * res?.data?.data?.length;
+    const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+    const currentTransactions = res?.data?.data?.slice(indexOfFirstTransaction, indexOfLastTransaction);
+    setAllFilterData(currentTransactions);
+
+        setLoading2(false);
+      } else {
+        generateSnackbar(
+          res?.response?.data?.message ||
+            "Some error occurred, Please Try Again.",
+          "error"
+        );
+      }
+    } catch (e) {
+      generateSnackbar("Some error occurred, Please Try Again.", "error");
+    }
+  }
+
+  useEffect(() => {
+    async function verify() {
+      try {
+        setLoading2(true);
+        let adminToken: any = Cookies.get("adminToken");
+
+        if (adminToken !== undefined) {
+          let res: any = await verifyAdmin({ adminToken });
+          if (
+            res?.status === 200 ||
+            res?.data?.status === "success" ||
+            res?.data?.data?.verify === true
+          ) { 
+            if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
+            getData();
+            setLoading2(false);
+            }
+            else{
+                router.push("/admin");
+            }
+          } else {
+            router.push("/admin-login");
+          }
+        } else {
+          router.push("/admin-login");
+        }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Something went wrong, please Try Again.", "error");
+      }
+    }
+    verify();
+  }, []);
+
+
+    // Handle page change
+    function handlePageChange(pageNumber: number) {
+        setCurrentPage(pageNumber);
+        const indexOfLastTransaction = pageNumber * transactionsPerPage;
+        const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+        const currentTransactions = allData.slice(indexOfFirstTransaction, indexOfLastTransaction);
+        setAllFilterData(currentTransactions);
+      }
+
+
+
+    async function handleInvoiceGeneration(sessionId){
+        try{
+           let res : any = await generateInvoice({
+            sessionId
+           });
+           if(res?.status !== 400 && res?.data?.status === "success"){
+            window.open(res?.data?.hostedInvoiceUrl, '_blank')
+           }
+           else{
+            generateSnackbar(res?.response?.data?.message || "Some error Occur, Please Try Again.", "error")
+           }
+        }
+        catch(e){
+            // console.log(e);
+            generateSnackbar("Some error Occur, Please Try Again.", "error")
+        }
+    }
 
 
     return (
+        <>
+        
+        {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
+        <>
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex bg-slate-100">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
                 <Menus />
@@ -53,43 +179,43 @@ export default function CreditAndWallet() {
                                 <tr>
                                     <th className="p-3 text-left">Description</th>
                                     <th className="p-3 text-left">Transaction ID</th>
-                                    <th className="p-3 text-left">Method</th>
+                                    {/* <th className="p-3 text-left">Method</th> */}
                                     <th className="p-3 text-left">Date</th>
                                     <th className="p-3 text-left">Amount</th>
                                     <th className="p-3 text-left">Receipt</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentTransactions?.map((data) => (
-                                    <tr key={data?.id} className="border-b border-black/10">
+                                {allFilterData?.map((data, i) => (
+                                    <tr key={i} className="border-b border-black/10">
                                         <td className="p-0">
                                             {
-                                                data?.quality == "up" ? <div className="px-3 flex gap-2 items-center">
+                                                data?.transactionType == "credit" ? <div className="px-3 flex gap-2 items-center">
                                                     <IoArrowUpCircleOutline className="size-[30px] text-[#FFBE00]" />
-                                                    <p className="text-[15px] capitalize">{data?.description}</p>
-                                                </div> : data?.quality == "down" && <div className="px-3 flex gap-2 items-center">
+                                                    <p className="text-[15px] capitalize">{data?.des}</p>
+                                                </div> : data?.transactionType == "debit"  && <div className="px-3 flex gap-2 items-center">
                                                     <IoArrowDownCircleOutline className="size-[30px] text-[#FFBE00]" />
-                                                    <p className="text-[15px] capitalize">{data?.description}</p>
+                                                    <p className="text-[15px] capitalize">{data?.des}</p>
                                                 </div>
                                             }
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-[15px] font-semibold capitalize">{data?.transactionId}</p>
+                                            <p className="text-[15px] font-semibold">{data?.transactionId.slice(0,20)}...</p>
                                         </td>
-                                        <td className="p-4">
+                                        {/* <td className="p-4">
                                             <p className="text-gray-500 text-[15px] capitalize">{data?.method}</p>
-                                        </td>
-                                        <td className="p-4 text-[15px] capitalize">{data?.date}</td>
+                                        </td> */}
+                                        <td className="p-4 text-[15px] capitalize">{moment(data?.transactionTimeStamp).format('DD MMM, hh:mm A')}</td>
                                         <td className="p-4 text-[15px] capitalize">{
-                                            data?.quality == "up" ? <div className="px-3">
-                                                <p className={`text-[15px] capitalize text-[#16DBAA] font-semibold`}>+${data?.amount}</p>
-                                            </div> : data?.quality == "down" && <div className="px-3">
-                                                <p className="text-[15px] capitalize text-[#FE5C73] font-semibold">-${data?.amount}</p>
+                                            data?.transactionType == "credit"  ? <div className="px-3">
+                                                <p className={`text-[15px] capitalize text-[#16DBAA] font-semibold`}>+${data?.transactionAmount}</p>
+                                            </div> : data?.transactionType == "debit" && <div className="px-3">
+                                                <p className="text-[15px] capitalize text-[#FE5C73] font-semibold">-${data?.transactionAmount}</p>
                                             </div>
                                         }</td>
                                         <td className="p-4">
                                             {/* this button will be connected with backend for download receipt */}
-                                            <button className="bg-transparent border border-[#123288] px-7 py-2 text-[#123288] font-semibold rounded-[20px]">Download</button>
+                                            <button className="bg-transparent border border-[#123288] px-7 py-2 text-[#123288] font-semibold rounded-[20px]" onClick={()=>{handleInvoiceGeneration(data?.transactionId)}}>Download</button>
                                         </td>
                                     </tr>
                                 ))}
@@ -101,7 +227,7 @@ export default function CreditAndWallet() {
                 {/* Pagination controls */}
                 <div className="flex justify-end items-center py-5">
                     <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
+                        onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className={`px-4 py-2 rounded-md font-semibold flex items-center ${currentPage === 1 ? 'opacity-50' : 'opacity-100 text-[#07242B]'}`}
                     >
@@ -109,10 +235,10 @@ export default function CreditAndWallet() {
                     </button>
 
                     <div className="flex items-center gap-2">
-                        {Array.from({ length: Math.ceil(walletData.length / transactionsPerPage) }, (_, number) => (
+                        {Array.from({ length: Math.ceil(allData.length / transactionsPerPage) }, (_, number) => (
                             <button
                                 key={number + 1}
-                                onClick={() => setCurrentPage(number + 1)}
+                                onClick={() => handlePageChange(number + 1)}
                                 className={`px-[15px] py-[5px] font-semibold rounded-md ${currentPage === number + 1 ? 'bg-[#07242B] text-white' : 'bg-transparent'}`}
                             >
                                 {number + 1}
@@ -130,5 +256,9 @@ export default function CreditAndWallet() {
                 </div>
             </div>
         </div>
+        </>
+      )
+    }
+        </>
     )
 }

@@ -25,7 +25,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   axios.defaults.baseURL = "https://workalat-backend.vercel.app";
   axios.defaults.withCredentials = true;
 
-  return (
+  return ( 
     <NextUIProvider navigate={router.push}>
       
       <ReCaptchaProvider reCaptchaKey="6LcBYycqAAAAAJ2TLYgKkSUDcGGul6R0B69BSZun">

@@ -1,8 +1,8 @@
 'use client'
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react";
 import { BsClipboard2Data, BsSend, BsTicket } from "react-icons/bs";
 import { HiOutlineBanknotes } from "react-icons/hi2";
 import { IoCashOutline, IoMenu, IoPersonOutline } from "react-icons/io5";
@@ -11,11 +11,63 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { PiCertificate, PiPause } from "react-icons/pi";
 import { SlCalender } from "react-icons/sl";
 
+
+import { useUserContext } from "@/context/user_context";
+import { useSnackbar } from "@/context/snackbar_context";
+import Cookies from "js-cookie";
+
 export default function Menus() {
     const pathname = usePathname();
 
     // menu bar
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+
+    // BACKEND INTEGRATION
+  const {
+    logoutAdmin,
+    verifyAdmin,
+  }: any = useUserContext();
+  const [loading2, setLoading2]: any = useState(true);
+  let [loading, setLoading]  : any  = useState(false);
+  let [adminsData, setAdminsData]: any = useState([]);
+  const { generateSnackbar }: any = useSnackbar();
+  let [loadingMessage, setLoadingMessage]: any = useState("");
+
+
+  let router = useRouter();
+    
+  useEffect(() => {
+    async function verify() {
+      try {
+        setLoading2(true);
+        let adminToken: any = Cookies.get("adminToken");
+
+        if (adminToken !== undefined) {
+          let res: any = await verifyAdmin({ adminToken });
+          console.log(res);
+          if (
+            res?.status === 200 ||
+            res?.data?.status === "success" ||
+            res?.data?.data?.verify === true
+          ) {
+            // getData();
+            setAdminsData(res?.data?.data);
+            setLoading2(false);
+          } else {
+            router.push("/admin-login");
+          }
+        } else {
+          router.push("/admin-login");
+        }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Something went wrong, please Try Again.", "error");
+      }
+    }
+    verify();
+  }, []);
+
 
     return (
         <div className="w-full h-fit transition-all duration-300 lg:h-full bg-[#07242B] lg:overflow-y-scroll lg:overflow-x-hidden hiddenScroll">
@@ -29,12 +81,16 @@ export default function Menus() {
                 <li className={`${pathname == "/admin/leads" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
                     <Link className="flex gap-[26px]" href="/admin/leads"><PiPause className="size-[20px] rotate-90" /> Leads</Link>
                 </li>
+
                 <li className={`${pathname == "/admin/user" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
                     <Link className="flex gap-[26px]" href="/admin/user"><IoPersonOutline className="size-[20px]" /> User</Link>
                 </li>
-                <li className={`${pathname == "/admin/administrator" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/administrator"><IoPersonOutline className="size-[20px]" /> Administrator</Link>
-                </li>
+                {
+                    (adminsData.status === "admin" || adminsData.status === "user" )&& 
+                    <li className={`${pathname == "/admin/administrator" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                        <Link className="flex gap-[26px]" href="/admin/administrator"><IoPersonOutline className="size-[20px]" /> Administrator</Link>
+                    </li>
+                }
                 <li className={`${pathname == "/admin/messages" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
                     <Link className="flex gap-[26px]" href="/admin/messages"><LuMail className="size-[20px]" /> Messages</Link>
                 </li>
@@ -51,27 +107,50 @@ export default function Menus() {
                         }
                         Activities</Link>
                 </li>
-                <li className={`${pathname == "/admin/manage" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/manage"><SlCalender className="size-[20px]" /> Manage</Link>
-                </li>
-                <li className={`${pathname == "/admin/responses" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/responses"><BsSend className="size-[20px]" /> Responses</Link>
-                </li>
-                <li className={`${pathname == "/admin/wallet" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/wallet"><HiOutlineBanknotes className="size-[20px]" /> Credit/Wallet</Link>
-                </li>
-                <li className={`${pathname.startsWith("/admin/support-tickets/") || pathname == "/admin/support-tickets" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/support-tickets"><BsTicket className="size-[20px]" /> Support Tickets</Link>
-                </li>
-                <li className={`${pathname == "/admin/reviews" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/reviews"><BsClipboard2Data className="size-[20px]" /> Reviews</Link>
-                </li>
-                <li className={`${pathname == "/admin/kyc" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/kyc"><IoCashOutline className="size-[20px]" /> KYC</Link>
-                </li>
-                <li className={`${pathname == "/admin/certificate" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
-                    <Link className="flex gap-[26px]" href="/admin/certificate"><PiCertificate className="size-[20px]" /> Certificate</Link>
-                </li>
+                {
+                    adminsData.status === "system" && 
+                        <li className={`${pathname == "/admin/manage" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                        <Link className="flex gap-[26px]" href="/admin/manage"><SlCalender className="size-[20px]" /> Manage</Link>
+                        </li>
+                }
+                {
+                     (adminsData.status === "system"  ||  adminsData.status === "user" ) && 
+                     <li className={`${pathname == "/admin/responses" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                         <Link className="flex gap-[26px]" href="/admin/responses"><BsSend className="size-[20px]" /> Responses</Link>
+                     </li>
+                }
+                {
+                     (adminsData.status === "system"  ||  adminsData.status === "user" ) && 
+                     <li className={`${pathname == "/admin/wallet" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                        <Link className="flex gap-[26px]" href="/admin/wallet"><HiOutlineBanknotes className="size-[20px]" /> Credit/Wallet</Link>
+                    </li>
+                }
+
+                
+                
+                   
+                    <li className={`${pathname.startsWith("/admin/support-tickets/") || pathname == "/admin/support-tickets" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                         <Link className="flex gap-[26px]" href="/admin/support-tickets"><BsTicket className="size-[20px]" /> Support Tickets</Link>
+                    </li>
+                
+                    <li className={`${pathname == "/admin/reviews" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                        <Link className="flex gap-[26px]" href="/admin/reviews"><BsClipboard2Data className="size-[20px]" /> Reviews</Link>
+                    </li>
+                
+                {
+                     (adminsData.status === "system"  ||  adminsData.status === "user" ) && 
+                     <li className={`${pathname == "/admin/kyc" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                         <Link className="flex gap-[26px]" href="/admin/kyc"><IoCashOutline className="size-[20px]" /> KYC</Link>
+                     </li>
+                }
+                {
+                     (adminsData.status === "system"  ||  adminsData.status === "user" ) && 
+                     <li className={`${pathname == "/admin/certificate" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
+                        <Link className="flex gap-[26px]" href="/admin/certificate"><PiCertificate className="size-[20px]" /> Certificate</Link>
+                     </li>
+                }
+
+                
             </ul>
         </div>
     )

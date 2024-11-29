@@ -178,11 +178,14 @@ export default function ManageMembershipPage() {
 
                             <div className="px-4 py-5">
                                 {
-                                    (membershipData.membershipStatus === "active") 
+                                    (membershipData.membershipStatus === "active"  || membershipData.membershipStatus === "pending") 
                                     ?
-                                    <button onClick={handleCancelMembership} className="text-white bg-red px-4 py-2 rounded-md font-semibold gap-2 flex items-center justify-center">
+                                    <>
+                                    { membershipData.membershipStatus === "pending" && <p className="text-sm mb-2 text-[#909090]">Membership Status is Pending</p> }  
+                                    <button onClick={handleCancelMembership} disabled={membershipData.membershipStatus === "pending" ? true : false} className={`text-white ${membershipData.membershipStatus === "pending" ? "bg-slate-500" : "bg-red"}  px-4 py-2 rounded-md font-semibold gap-2 flex items-center justify-center`}>
                                         Cancel Membership <FaArrowRight className="size-4 text-white" />
                                     </button>
+                                    </>
                                     :
                                     
                                     <button onClick={()=>{router.push("/membership")}} className="text-white bg-secondary px-4 py-2 rounded-md font-semibold gap-2 flex items-center justify-center">

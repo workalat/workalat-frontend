@@ -10,6 +10,7 @@ import { PiFilesDuotone } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
+import Cookies from "js-cookie";
 import moment from "moment";
 
 export default function Certification() {
@@ -64,14 +65,17 @@ export default function Certification() {
 
 
 
-    const {showAllCertificate, showSingleCertificate} : any  = useUserContext();
+    const {showAllCertificate, showSingleCertificate,verifyAdmin,changeCertificateStatus} : any  = useUserContext();
     const [loading2, setLoading2] : any  = useState(true);
     let [allCertificateData, setAllCertificateData] : any = useState([]);
+    let [currentUser, setCurrentUser] : any = useState("");
+    let [currentCertificate, setCurrentCertificate] : any = useState("");
+    let [allFilterData, setAllFilterData] : any = useState([]);
+    let [comment, setComment] : any = useState("");
     const { generateSnackbar } : any  = useSnackbar();
     let [questionTitle, setQuestionsTitle] = useState("");
     let router = useRouter();
 
-    useEffect(() => {
         async function getData() {
             setLoading2(true);
           try {
@@ -87,19 +91,53 @@ export default function Certification() {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
         }
-        getData();
-      }, []);
 
 
-      const openModal = (id: any) => {
+      
+      useEffect(()=>{
+        async function verify(){
+            try{
+                setLoading2(true);
+                let adminToken : any = Cookies.get("adminToken");
+                
+                if(adminToken !== undefined){
+                    let res : any = await verifyAdmin({adminToken});
+                    if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                        if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
+                            getData();
+                            setLoading2(false);
+                        }
+                        else{
+                            router.push("/admin");
+                        }
+                    }   
+                    else{
+                        router.push("/admin-login");
+                    }
+                }
+                else{
+                    router.push("/admin-login")
+                }
+            }
+            catch(e){
+                // console.log(e);
+                generateSnackbar("Something went wrong, please Try Again.", "error");   
+            }
+        };
+        verify();
+    }, []);
+
+
+      const openModal = (certificateId: any, userId : any) => {
         async function getData() {
-            setLoading2(true);
           try {
-            let res = await showSingleCertificate({id : id});
+            let res = await showSingleCertificate({id : certificateId});
             if (res?.status === 200 || res?.data?.status === "success") {
                 console.log(res?.data?.data?.certifications[0])
                setModalData(res?.data?.data?.certifications[0]);
-            //    setModalData(filteredUsers[0]);
+               setComment(res?.data?.data?.certifications[0]?.adminComment)
+               setCurrentUser(userId);
+               setCurrentCertificate(certificateId);
                setIsModalOpen(true);
               } else {
                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
@@ -113,9 +151,40 @@ export default function Certification() {
 
 
 
+    const changeKyc = async (choice : any) => {
+        try {
+            console.log(currentUser,currentCertificate,choice,comment)
+            let res = await changeCertificateStatus({
+                professionalId : currentUser,
+                certificationId : currentCertificate,
+                adminComment : comment,
+                choice : choice
+            });
+            if (res?.status === 200 || res?.data?.status === "success") {
+                generateSnackbar(res?.data?.message , "success");
+                closeModal();
+                router.refresh();
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+    };
+
+
 
     return (
-        <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
+
+        <>
+        
+        {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
+        <> 
+         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
                 <Menus />
             </div>
@@ -132,11 +201,30 @@ export default function Certification() {
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
+                        onChange={(e) => {
+                            setUserType(e.target.value);
+                            if(e.target.value === "all"){
+                                setAllFilterData(allCertificateData);
+                            }   
+                            else if (e.target.value === "pending"){
+                                let data = allCertificateData.filter((val)=>{if(val.status === "pending"){return(val)}});
+                                setAllFilterData(data);
+                            }   
+                            else if(e.target.value === "approved"){
+                                let data = allCertificateData.filter((val)=>{if(val.status === "approved"){return(val)}});
+                                setAllFilterData(data);
+                            } 
+                            else if(e.target.value === "rejected"){
+                                let data = allCertificateData.filter((val)=>{if(val.status === "rejected"){return(val)}});
+                                setAllFilterData(data);
+                            }
+                            ;
+                        }}
                     >
                         <option className="bg-[#07242B] text-white" value="all">All</option>
-                        <option className="bg-[#07242B] text-white" value="client">Client</option>
-                        <option className="bg-[#07242B] text-white" value="professional">Professional</option>
+                        <option className="bg-[#07242B] text-white" value="pending">Pending</option>
+                        <option className="bg-[#07242B] text-white" value="approved">Approved</option>
+                        <option className="bg-[#07242B] text-white" value="rejected">Rejected</option>
                     </select>
                 </div>
 
@@ -162,27 +250,27 @@ export default function Certification() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {allCertificateData.map((user) => (
-                                    <tr key={user?._id} className="border-b border-black">
+                                {allFilterData.map((user) => (
+                                    <tr key={user?.userId} className="border-b border-black">
                                         <td className="p-4">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedUsers.includes(user?._id)}
-                                                onChange={() => toggleSelectUser(user?._id)}
+                                                checked={selectedUsers.includes(user?.userId)}
+                                                onChange={() => toggleSelectUser(user?.userId)}
                                                 className="w-4 h-4"
                                             />
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-[15px] font-semibold capitalize">{user?.certifications[0]?.professionalName}</p>
+                                            <p className="text-[15px] font-semibold capitalize">{user?.professionalName}</p>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-gray-500 text-[15px] capitalize">{user?._id}</p>
+                                            <p className="text-gray-500 text-[15px] capitalize">{user?.userId}</p>
                                         </td>
-                                    <td className="p-4 text-[15px] capitalize">{moment(user?.certifications[0]?.timeStamp).format("DD-MM-YYYY")}</td>
-                                    <td className="p-4 text-[15px] capitalize">{moment(user?.certifications[0]?.timeStamp).format("HH:mm A")}</td>
-                                        <td className={`p-4 text-[15px] capitalize ${user?.certifications[0]?.status == "approved" ? "text-[#04842F]" : user?.certifications[0]?.status == "pending" ? "text-[#FFBE00]" : user?.certifications[0]?.status == "rejected" && "text-[#FE321F]"}`}>{user?.certifications[0]?.status}</td>
+                                    <td className="p-4 text-[15px] capitalize">{moment(user?.timeStamp).format("DD-MM-YYYY")}</td>
+                                    <td className="p-4 text-[15px] capitalize">{moment(user?.timeStamp).format("HH:mm A")}</td>
+                                        <td className={`p-4 text-[15px] capitalize ${user?.status == "approved" ? "text-[#04842F]" : user?.status == "pending" ? "text-[#FFBE00]" : user?.status == "rejected" && "text-[#FE321F]"}`}>{user?.status}</td>
                                         <td className="p-4">
-                                            <button onClick={() => openModal(user?.certifications[0]?._id)} className="bg-transparent border-2 border-[#FFBE00] text-black px-4 py-2 font-semibold rounded flex justify-center items-center gap-2 text-[15px]">Manage
+                                            <button onClick={() => openModal(user?.certificateId,user?.userId)} className="bg-transparent border-2 border-[#FFBE00] text-black px-4 py-2 font-semibold rounded flex justify-center items-center gap-2 text-[15px]">Manage
                                             </button>
                                         </td>
                                     </tr>
@@ -227,7 +315,7 @@ export default function Certification() {
                                                         <div className="flex justify-between items-center">
                                                             <div className="w-auto flex gap-2 cursor-pointer">
                                                                 <a href={`${modalData?.certificationImage}`} target="_blank" rel="noreferrer" download={true}  className="size-[25px] text-black/60 flex justify-start items-center w-[100%]" >
-                                                                    <PiFilesDuotone className="size-[25px] text-black/60" /> Image
+                                                                    <PiFilesDuotone className="size-[25px] text-black/60" />Certification Image
                                                                 </a>
                                                             </div>
                                                             {/* <select className="border rounded-md outline-none py-1 px-2 border-black/50" name="view" defaultValue={"View"}>
@@ -240,12 +328,12 @@ export default function Certification() {
                                                     <div className="pt-2 pb-1 px-1 w-full">
                                                         <form className="w-full">
                                                             <label htmlFor="comment" className="pb-1 block">Comment</label>
-                                                            <textarea name="comment" id="comment" className="w-full h-32 outline-none border border-black/50 rounded-md px-2 py-1 text-[15px]" placeholder="Comment"></textarea>
+                                                            <textarea name="comment" id="comment" value={comment} onChange={(e : any) =>{setComment(e?.target?.value)}}  className="w-full h-32 outline-none border border-black/50 rounded-md px-2 py-1 text-[15px]" placeholder="Comment"></textarea>
                                                         </form>
 
                                                         <div className="flex gap-2 pt-3 flex-col sm:flex-row w-full">
-                                                            <button className="text-black font-semibold px-4 py-2 bg-[#FFBE00] rounded-md w-full sm:w-1/2">Approve</button>
-                                                            <button className="text-white font-semibold px-4 py-2 bg-[#FE321F] flex items-center justify-center rounded-md w-full sm:w-1/2"><AiFillCloseSquare className="size-[15px] text-white" /> Reject</button>
+                                                            <button className="text-black font-semibold px-4 py-2 bg-[#FFBE00] rounded-md w-full sm:w-1/2" onClick={()=>{changeKyc("approved")}}>Approve</button>
+                                                            <button className="text-white font-semibold px-4 py-2 bg-[#FE321F] flex items-center justify-center rounded-md w-full sm:w-1/2"  onClick={()=>{changeKyc("rejected")}}><AiFillCloseSquare className="size-[15px] text-white" /> Reject</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -259,5 +347,10 @@ export default function Certification() {
                 </div>
             </div>
         </div>
+        </>
+      )
+    }
+        
+        </>
     )
 }

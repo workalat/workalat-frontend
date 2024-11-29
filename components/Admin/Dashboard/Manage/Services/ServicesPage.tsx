@@ -10,12 +10,13 @@ import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
 import { useRouter } from "next/navigation";
 
+import Cookies from "js-cookie";
+
 export default function ServicesPage({ data }: any) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    let [heading,setHeading] : any = useState("");
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+  
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -25,7 +26,7 @@ export default function ServicesPage({ data }: any) {
     
 
     // BACKEND INTEGRATION
-    const {showAllServiceAdmin, showCategory ,addServicesAdmin} : any  = useUserContext();
+    const {showAllServiceAdmin, showCategory ,addServicesAdmin,verifyAdmin, editService, deleteService} : any  = useUserContext();
     const [loading2, setLoading2] : any  = useState(true);
     let [allServiceData, setAllServiceData] : any = useState([]);
     let [allCategoryData, setAllCategoryData] : any = useState([]);
@@ -33,9 +34,9 @@ export default function ServicesPage({ data }: any) {
     const { generateSnackbar } : any  = useSnackbar();
     let [selectedCategory, setSelectedCategory] : any = useState("");
     let [selectedService, setSelectedService]  : any = useState("");
+    let [oldData, setOldData]  : any = useState({});
     let router = useRouter();
 
-    useEffect(() => {
         async function getData() {
             setLoading2(true);
           try {
@@ -54,8 +55,43 @@ export default function ServicesPage({ data }: any) {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
         }
-        getData();
-      }, []);
+
+
+        useEffect(() => {
+            async function verify() {
+              try {
+                setLoading2(true);
+                let adminToken: any = Cookies.get("adminToken");
+        
+                if (adminToken !== undefined) {
+                  let res: any = await verifyAdmin({ adminToken });
+                  console.log(res);
+                  if (
+                    res?.status === 200 ||
+                    res?.data?.status === "success" ||
+                    res?.data?.data?.verify === true
+                  ) {
+                    if(res?.data?.data?.status === "system"){
+                        getData();
+                        setLoading2(false);
+                    }
+                    else{
+                        router.push("/admin");
+                    }
+    
+                  } else {
+                    router.push("/admin-login");
+                  }
+                } else {
+                  router.push("/admin-login");
+                }
+              } catch (e) {
+                // console.log(e);
+                generateSnackbar("Something went wrong, please Try Again.", "error");
+              }
+            }
+            verify();
+          }, []);
 
 
       
@@ -84,14 +120,81 @@ export default function ServicesPage({ data }: any) {
       }
     }
 
+    const openModal = (type, service, category) => {
+        console.log(type,service,category);
+        if(type === "add"){
+          setIsModalOpen(true);
+          setHeading("Add New")
+        }
+        else{
+            setHeading("Edit");
+            setOldData(service);
+            setSelectedService(service)
+            setSelectedCategory(category)
+            setIsModalOpen(true);
+        }
+      };
+
+      async function editServiceValue(e : any) {
+        // setLoading2(true);
+        e.preventDefault();
+        console.log(selectedCategory, selectedService,oldData)
+        if(selectedService.length === 0){
+            return generateSnackbar("Plese Fill the Service.", "error");
+        }
+      try {
+        let res = await editService({
+            category : selectedCategory,
+            oldValue : oldData,
+            newValue : selectedService
+    });
+        if (res?.status === 200 || res?.data?.status === "success") {
+            generateSnackbar(res?.data?.message , "success");
+            router.refresh();
+            closeModal();
+          } else {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    }
+
+    async function deleteServiceValue(category, service) {
+      try {
+        let res = await deleteService({
+            category : category,
+            serviceValue : service,
+    });
+        if (res?.status === 200 || res?.data?.status === "success") {
+            generateSnackbar(res?.data?.message , "success");
+            router.refresh();
+            closeModal();
+          } else {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    }
+
 
     return (
-        <div className="w-full px-2 py-2">
+        <>
+                       {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
+        <>
+          <div className="w-full px-2 py-2">
             {/* page heading */}
             <div className="flex justify-between items-center border-b border-black/40 px-3 pb-3">
                 <h1 className="sm:text-[17px] text-[15px] font-semibold text-black uppercase">{data?.pageName}</h1>
                 <button
-                    onClick={openModal}
+                    onClick={()=>{openModal("add", "", "")}}
                     className="sm:text-[17px] text-[12px] text-white bg-[#07242B] px-[20px] py-[10px] rounded-md flex gap-2 items-center"
                 >
                     Add New <IoArrowForwardOutline className="size-[17px] text-white" />
@@ -137,10 +240,10 @@ export default function ServicesPage({ data }: any) {
                                                     </td>
                                                     <td className="p-4">
                                                     <div className="flex items-center justify-end">
-                                                        <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
+                                                        <button onClick={()=>{openModal("edit", val, item?.category)}} className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
                                                             Edit
                                                         </button>
-                                                        <button>
+                                                        <button onClick={()=>{deleteServiceValue(item?.category, val)}}>
                                                             <MdDelete className="size-[20px] text-[#F52933]" />
                                                         </button>
                                                     </div>
@@ -175,7 +278,7 @@ export default function ServicesPage({ data }: any) {
                                 <div className="w-full text-center">
                                     <div className="pt-4">
                                         <div className="text-center">
-                                            <h4 className="font-semibold uppercase text-[17px]">Add New Service</h4>
+                                            <h4 className="font-semibold uppercase text-[17px]">{heading} Service</h4>
                                         </div>
 
                                         <div className="w-full h-full">
@@ -199,6 +302,7 @@ export default function ServicesPage({ data }: any) {
                                                         name="category"
                                                         className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md capitalize"                                                        
                                                         value={selectedCategory}
+                                                        disabled={heading == "Add New" ? false : true}
                                                         onChange={(e) => setSelectedCategory(e.target.value)} 
                                                     >
                                                         <option disabled value="Select">Select category</option>
@@ -211,7 +315,9 @@ export default function ServicesPage({ data }: any) {
                                                 </div>
 
                                                 <div className="py-2 text-start">
-                                                    <button className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]" onClick={addServiceValue}>
+                                                    <button className="py-3 px-5 rounded-md text-[15px] font-semibold flex justify-center mx-auto items-center gap-2 bg-[#FFBE00]" onClick={
+                                                        (e : any)=>{heading == "Add New" ? addServiceValue(e) : editServiceValue(e)}
+                                                    }>
                                                         Save <FaArrowRight className="size-[15px] text-black" />
                                                     </button>
                                                 </div>
@@ -225,5 +331,11 @@ export default function ServicesPage({ data }: any) {
                 />
             )}
         </div>
+
+        </>
+      )
+    }  
+        </>
+      
     );
 }

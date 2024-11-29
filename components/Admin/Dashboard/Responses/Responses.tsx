@@ -18,6 +18,8 @@ import { useSnackbar } from "@/context/snackbar_context";
 import moment from "moment";
 import { Rating, Typography } from "@mui/material";
 import DOMPurify from 'dompurify';
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 
 export default function Responses() {
@@ -54,6 +56,7 @@ export default function Responses() {
 
     const [modalData, setModalData] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    let router = useRouter();
 
     // const openModal = (data: any) => {
     //     setModalData(data);
@@ -66,12 +69,11 @@ export default function Responses() {
 
 
     // BACKEND INTEGRATION
-    const {showLeadsAdmin, showLeadsBids, changeLeadsStatus} : any  = useUserContext();
+    const {showLeadsAdmin, showLeadsBids,declineProposal,verifyAdmin} : any  = useUserContext();
     const [loading2, setLoading2] : any  = useState(true);
     let [allLeadsData, setAllLeadsData] = useState([]);
     const { generateSnackbar } : any  = useSnackbar();
 
-    useEffect(() => {
         async function getData() {
             setLoading2(true);
           try {
@@ -87,12 +89,44 @@ export default function Responses() {
           }
         }
         getData();
-      }, []);
 
+      useEffect(()=>{
+        async function verify(){
+            try{
+                setLoading2(true);
+                let adminToken : any = Cookies.get("adminToken");
+                
+                if(adminToken !== undefined){
+                    let res : any = await verifyAdmin({adminToken});
+                    if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                        if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
+                            getData();
+                            setLoading2(false);
+                        }
+                        else{
+                            router.push("/admin");
+                        }
+                    }   
+                    else{
+                        router.push("/admin-login");
+                    }
+                }
+                else{
+                    router.push("/admin-login")
+                }
+            }
+            catch(e){
+                // console.log(e);
+                generateSnackbar("Something went wrong, please Try Again.", "error");   
+            }
+        };
+        verify();
+    }, []);
 
       const openModal = async (id: any) => {
         try {
             let res = await showLeadsBids({id});
+            console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setModalData(res?.data?.data[0]);
                 // setModalData(filteredData[0]);
@@ -105,20 +139,22 @@ export default function Responses() {
           }
     };
 
-    // const changeProjectStatus= async (id: any, choice : any) => {
-    //     try {
-    //         let res = await changeLeadsStatus({id, choice});
-    //         if (res?.status !== 400 || res?.data?.status === "success") {
-    //             generateSnackbar(res?.data?.message || "Status Changed Successfully", "success");
-    //             setIsModalOpen(false);
-    //           } else {
-    //             generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
-    //             setIsModalOpen(false);
-    //           }
-    //       } catch (e) {
-    //         generateSnackbar("Some error occurred, Please Try Again.", "error");
-    //       }
-    // };
+    const projectDecline= async (projectId: any, professoinalId : any) => {
+        try {
+            console.log(projectId,professoinalId);
+            let res = await declineProposal({projectId, professoinalId});
+            if (res?.status !== 400 || res?.data?.status === "success") {
+                generateSnackbar(res?.data?.message || "Status Changed Successfully", "success");
+                router.refresh();
+                setIsModalOpen(false);
+              } else {
+                generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
+                setIsModalOpen(false);
+              }
+          } catch (e) {
+            generateSnackbar("Some error occurred, Please Try Again.", "error");
+          }
+    };
 
     return (
         <>
@@ -298,7 +334,9 @@ export default function Responses() {
                                                                 </div>
 
 
-                                                                <button className="block bg-[#F52933] px-4 text-[12px] font-semibold py-2 rounded-md hover:bg-[#f52933dc] transition-all duration-300 text-white">Declined</button>
+                                                                <button className="block bg-[#F52933] px-4 text-[12px] font-semibold py-2 rounded-md hover:bg-[#f52933dc] transition-all duration-300 text-white" onClick={(e)=>{
+                                                                    projectDecline(modalData?._id,response?.professionalId)
+                                                                }}>Declined</button>
                                                             </div>
 
                                                             <p className="text-[13px]">{response?.proposal}</p>

@@ -10,6 +10,7 @@ import { FiPlusCircle } from "react-icons/fi";
 import { useUserContext } from "@/context/user_context";
 import { useSnackbar } from "@/context/snackbar_context";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function JobDialogue({ data }: any) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function JobDialogue({ data }: any) {
 
 
     // for select choices
-    const [fieldType, setFieldType] = useState<string>('Select Field');
+    const [fieldType, setFieldType] = useState<string>('radio');
 
 
     // Handle field type change
@@ -33,7 +34,7 @@ export default function JobDialogue({ data }: any) {
         setFieldType(selectedValue);
     };
 
-    const [inputFields, setInputFields] = useState([{ value: '', isChecked: false }]);
+        const [inputFields, setInputFields] = useState([{ value: '', isChecked: false }]);
 
     // Handler to add a new input field
     const handleAddField = () => {
@@ -66,14 +67,13 @@ export default function JobDialogue({ data }: any) {
 
 
      // BACKEND INTEGRATION
-     const {showAllQuestions, addAllQuestions} : any  = useUserContext();
+     const {showAllQuestions, addAllQuestions,verifyAdmin, deleteQuestions, editJobsQuestions} : any  = useUserContext();
      const [loading2, setLoading2] : any  = useState(true);
      let [allQuestionsData, setAllQuestionsData] : any = useState([]);
      const { generateSnackbar } : any  = useSnackbar();
-     let [questionTitle, setQuestionsTitle] = useState("");
+     let [questionTitle, setQuestionsTitle] : any = useState("");
      let router = useRouter();
  
-     useEffect(() => {
          async function getData() {
              setLoading2(true);
            try {
@@ -90,8 +90,42 @@ export default function JobDialogue({ data }: any) {
              generateSnackbar("Some error occurred, Please Try Again.", "error");
            }
          }
-         getData();
-       }, []);
+    
+         useEffect(() => {
+           async function verify() {
+             try {
+               setLoading2(true);
+               let adminToken: any = Cookies.get("adminToken");
+       
+               if (adminToken !== undefined) {
+                 let res: any = await verifyAdmin({ adminToken });
+                 console.log(res);
+                 if (
+                   res?.status === 200 ||
+                   res?.data?.status === "success" ||
+                   res?.data?.data?.verify === true
+                 ) {
+                   if(res?.data?.data?.status === "system"){
+                       getData();
+                       setLoading2(false);
+                   }
+                   else{
+                       router.push("/admin");
+                   }
+   
+                 } else {
+                   router.push("/admin-login");
+                 }
+               } else {
+                 router.push("/admin-login");
+               }
+             } catch (e) {
+               // console.log(e);
+               generateSnackbar("Something went wrong, please Try Again.", "error");
+             }
+           }
+           verify();
+         }, []);
  
  
        
@@ -128,7 +162,61 @@ export default function JobDialogue({ data }: any) {
          // console.log(e);
          generateSnackbar("Some error occurred, Please Try Again.", "error");
        }
-     }
+     };
+
+         
+     async function editQuestions(data : any) {
+    //     console.log(data);
+    //     const updatedFields = data.questionChoices.map((val) => ({
+    //         value: val,
+    //         isChecked: false,
+    //     }));
+    //     setInputFields(updatedFields);
+    //     setQuestionsTitle(data?.questionTitle);
+    //     setFieldType(data?.questionType);
+    //     openModal();
+    //   try {
+    //     let res = await addAllQuestions({
+    //        questionTitle : questionTitle,
+    //         questionType : fieldType,
+    //         questionChoices : answers
+    //     });
+    //     console.log(res);
+    //     if (res?.status === 200 || res?.data?.status === "success") {
+    //         generateSnackbar(res?.data?.message , "success");
+    //    //      setCategoryName("");
+    //    //      setSelectedService("");
+    //    //      setLoading2(false);
+    //         router.refresh();
+    //         closeModal();
+    //       } else {
+    //         generateSnackbar("Some error occurred, Please Try Again.", "error");
+    //       }
+    //   } catch (e) {
+    //     // console.log(e);
+    //     generateSnackbar("Some error occurred, Please Try Again.", "error");
+    //   }
+    }
+
+
+
+     async function deleteSingleQuestions(questionId) {
+        try {
+          let res = await deleteQuestions({
+            questionId
+      });
+          if (res?.status === 200 || res?.data?.status === "success") {
+              generateSnackbar(res?.data?.message , "success");
+              router.refresh();
+              closeModal();
+            } else {
+              generateSnackbar("Some error occurred, Please Try Again.", "error");
+            }
+        } catch (e) {
+          // console.log(e);
+          generateSnackbar("Some error occurred, Please Try Again.", "error");
+        }
+      }
  
 
 
@@ -191,10 +279,12 @@ export default function JobDialogue({ data }: any) {
                                     </td>
                                     <td className="p-4">
                                         <div className="flex items-center justify-end">
-                                            <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
+                                            <button onClick={()=>{
+                                                editQuestions(item);
+                                            }} className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
                                                 Edit
                                             </button>
-                                            <button>
+                                            <button onClick={()=>{deleteSingleQuestions(item?._id)}}>
                                                 <MdDelete className="size-[20px] text-[#F52933]" />
                                             </button>
                                         </div>
@@ -250,7 +340,6 @@ export default function JobDialogue({ data }: any) {
                                                             value={fieldType}
                                                             onChange={handleFieldTypeChange}
                                                         >
-                                                            <option value="Select Field">Select Field</option>
                                                             <option value="radio">Radio</option>
                                                             {/* <option value="dropdown">Dropdown</option> */}
                                                             <option value="multi-choice">Multi Choice</option>

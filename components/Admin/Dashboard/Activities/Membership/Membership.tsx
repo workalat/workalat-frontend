@@ -7,6 +7,14 @@ import Menus from "../../Menus/Menus";
 import Link from "next/link";
 import { IoMdClose } from "react-icons/io";
 
+
+
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/context/snackbar_context";
+import { useUserContext } from "@/context/user_context";
+import Cookies from "js-cookie";
+import moment from "moment";
+
 export default function Membership() {
     // here users will be dynamically from the backend. for now i using "import { activitiesData } from "@/utils/activitiesData";" as a demo users data
 
@@ -47,7 +55,106 @@ export default function Membership() {
         setFilteredUsers(result);
     }, [userType]);
 
+
+
+
+
+       // BACKEND INTEGRATION
+  const {
+    membershipPageData,
+    verifyAdmin,
+    changeMembershipStatus
+  }: any = useUserContext();
+  const [loading2, setLoading2]: any = useState(true);
+  let [allData, setAllData]: any = useState([]);
+  let [allFilterData, setAllFilterData]: any = useState([]);
+  const { generateSnackbar }: any = useSnackbar();
+  let router = useRouter();
+  let [totalUsers, setTotalUsers] = useState(0);
+
+
+
+
+  async function getData() {
+    setLoading2(true);
+    try {
+      let res = await membershipPageData();
+      console.log(res);
+      if (res?.status === 200 || res?.data?.status === "success") {
+        setAllData(res?.data?.data.reverse());
+        setAllFilterData(
+            res?.data?.data.reverse()
+        );
+        setTotalUsers(res?.data?.data?.length);
+        setLoading2(false);
+      } else {
+        generateSnackbar(
+          res?.response?.data?.message ||
+            "Some error occurred, Please Try Again.",
+          "error"
+        );
+      }
+    } catch (e) {
+      generateSnackbar("Some error occurred, Please Try Again.", "error");
+    }
+  }
+
+  useEffect(() => {
+    async function verify() {
+      try {
+        setLoading2(true);
+        let adminToken: any = Cookies.get("adminToken");
+
+        if (adminToken !== undefined) {
+          let res: any = await verifyAdmin({ adminToken });
+          if (
+            res?.status === 200 ||
+            res?.data?.status === "success" ||
+            res?.data?.data?.verify === true
+          ) {
+            getData();
+          } else {
+            router.push("/admin-login");
+          }
+        } else {
+          router.push("/admin-login");
+        }
+      } catch (e) {
+        // console.log(e);
+        generateSnackbar("Something went wrong, please Try Again.", "error");
+      }
+    }
+    verify();
+  }, []);
+
+
+  async function membershipStatus(professoinalId : string, choice) {
+    try {
+        console.log(professoinalId,choice);
+        let res: any = await changeMembershipStatus({ professoinalId, choice});
+        if (
+          res?.status === 200 ||
+          res?.data?.status === "success" 
+        ) {
+            generateSnackbar(res?.data?.message, "success");
+            router.refresh();
+        } else {
+            generateSnackbar(res?.response?.data?.message ||"Something went wrong, please Try Again." , "error");
+        }
+    } catch (e) {
+      // console.log(e);
+      generateSnackbar("Something went wrong, please Try Again.", "error");
+    }
+  }
+
+
     return (
+      <> 
+       {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex bg-slate-100">
             <div className="w-full lg:w-[180px] xl:w-[256px]">
                 <Menus />
@@ -65,22 +172,50 @@ export default function Membership() {
 
                 {/* header */}
                 <div className="flex justify-between items-center pt-5">
-                    <h4 className="font-bold text-[20px]">{activitiesData?.length} Records</h4>
+                    <h4 className="font-bold text-[20px]">{totalUsers} Records</h4>
                     {/* users type selector */}
                     <select
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
+                        onChange={(e) => {
+                          setUserType(e.target.value);
+                            if(e.target.value === "all"){
+                              setAllFilterData(allData);
+                              setTotalUsers(allData?.length);
+                            }   
+                            else if (e.target.value === "active"){
+                                let data = allData.filter((val)=>{if(val.membershipStatus === "active"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            }   
+                            else if(e.target.value === "pending"){
+                                let data = allData.filter((val)=>{if(val.membershipStatus === "pending"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            } 
+                            else if(e.target.value === "cancelled"){
+                                let data = allData.filter((val)=>{if(val.membershipStatus === "cancelled"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            }
+                            else if(e.target.value === "expired"){
+                                let data = allData.filter((val)=>{if(val.membershipStatus === "expired"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
+                            }
+                          }}
                     >
                         <option className="bg-[#07242B] text-white" value="all">All</option>
-                        <option className="bg-[#07242B] text-white" value="client">Client</option>
-                        <option className="bg-[#07242B] text-white" value="professional">Professional</option>
+                        <option className="bg-[#07242B] text-white" value="active">Active</option>
+                        <option className="bg-[#07242B] text-white" value="pending">Pending </option>
+                        <option className="bg-[#07242B] text-white" value="cancelled">Cancelled </option>
+                        <option className="bg-[#07242B] text-white" value="expired">Expired </option>
                     </select>
                 </div>
                 <div className="h-[1px] w-full bg-black mt-5"></div>
                 <div className="py-2">
-                    <p className="text-[15px] text-black/50 capitalize">Professional: <b>{userType}</b></p>
+                    <p className="text-[15px] text-black/50 capitalize">Filter: <b>{userType}</b></p>
                 </div>
 
                 <div className="w-full pt-5">
@@ -113,36 +248,36 @@ export default function Membership() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredUsers.map((user) => (
-                                    <tr key={user?.id} className="border-b border-black/20">
+                                {allFilterData.map((user, i) => (
+                                    <tr key={i} className="border-b border-black/20">
                                         <td className="p-4">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedUsers.includes(user?.id)}
-                                                onChange={() => toggleSelectUser(user?.id)}
+                                                checked={selectedUsers.includes(user?._id)}
+                                                onChange={() => toggleSelectUser(user?._id)}
                                                 className="w-4 h-4"
                                             />
                                         </td>
                                         <td className="p-0">
-                                            <img src={user?.userPhoto} alt="work alat" className="w-12 h-12 rounded-full mr-2 object-cover" />
+                                            <img src={user?.professionalPictureLink} alt="work alat" className="w-12 h-12 rounded-full mr-2 object-cover" />
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-[15px] font-semibold capitalize">{user?.firstName} {user?.lastName}</p>
+                                            <p className="text-[15px] font-semibold capitalize">{user?.professionalFullName}</p>
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-gray-500 text-[15px] capitalize">{user?.id}</p>
+                                            <p className="text-gray-500 text-[15px] capitalize">{user?._id}</p>
                                         </td>
-                                        <td className="p-4 text-[15px] capitalize">{user?.activateDate}</td>
-                                        <td className="p-4 text-[15px] capitalize">{
-                                            user?.isMemberShip ? <p className="text-[13px] text-[#00A770] font-semibold">Active</p> : <p className="text-[13px] font-semibold text-[#C8102E]">Cancelled</p>
-                                        }</td>
+                                        <td className="p-4 text-[15px] capitalize">{moment(user?.memberShipExpirationDate).subtract(30, 'days').format('MMM, DD, YYYY | hh:mm A')}</td>
+                                        <td className="p-4 text-[15px] capitalize">
+                                             <p className={`text-[13px] capitalize ${user?.membershipStatus === "active" ? "text-[#00A770]" : user?.membershipStatus === "pending" ? "text-[#FFBE00]"  :"text-[#C8102E]" }  font-semibold`}>{user?.membershipStatus}</p> 
+                                        </td>
                                         <td className="p-4 text-end">
                                             {/* this button will be connected with backend for some function or operation */}
 
                                             {
-                                                user?.isMemberShip ? <button className="bg-[#F52933] px-3 py-2 text-white font-semibold rounded-md flex items-center justify-center gap-1 mx-auto"><IoMdClose className="text-[17px] text-white" /> Cancel Membership</button>
+                                                user?.membershipStatus === "active" ? <button className="bg-[#F52933] px-3 py-2 text-white font-semibold rounded-md flex items-center justify-center gap-1 mx-auto" onClick={()=>{membershipStatus(user?._id, "cancelled")}} ><IoMdClose className="text-[17px] text-white" /> Cancel Membership</button>
                                                     :
-                                                    <button className="bg-[#242424] mx-auto flex items-center justify-center px-4 py-2 text-white font-semibold rounded-md">Active Membership</button>
+                                                    <button className="bg-[#242424] mx-auto flex items-center justify-center px-4 py-2 text-white font-semibold rounded-md" onClick={()=>{membershipStatus(user?._id, "active")}}>Active Membership</button>
                                             }
                                         </td>
                                     </tr>
@@ -153,5 +288,9 @@ export default function Membership() {
                 </div>
             </div>
         </div>
+      )
+    }
+      
+      </>
     );
 }

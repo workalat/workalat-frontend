@@ -147,11 +147,12 @@ const ProfessionalSignupForm = () => {
 
       }
       else {
+        console.log(res.response?.data?.message )
         return generateSnackbar(res.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
       }
     }
     catch (e : any ) {
-      // console.log(e);
+      console.log(e);
       return generateSnackbar(e?.message || "Some Error occurs, please try again in a few minutes", "error");
     }
   };
