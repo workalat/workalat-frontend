@@ -71,13 +71,14 @@ export default function Responses() {
     // BACKEND INTEGRATION
     const {showLeadsAdmin, showLeadsBids,declineProposal,verifyAdmin} : any  = useUserContext();
     const [loading2, setLoading2] : any  = useState(true);
-    let [allLeadsData, setAllLeadsData] = useState([]);
+    let [allLeadsData, setAllLeadsData] : any = useState([]);
     const { generateSnackbar } : any  = useSnackbar();
 
         async function getData() {
             setLoading2(true);
           try {
             let res = await showLeadsAdmin();
+            console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setAllLeadsData(res?.data?.data.reverse());
                 setLoading2(false);
@@ -88,7 +89,6 @@ export default function Responses() {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
         }
-        getData();
 
       useEffect(()=>{
         async function verify(){
@@ -101,7 +101,6 @@ export default function Responses() {
                     if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
                         if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
                             getData();
-                            setLoading2(false);
                         }
                         else{
                             router.push("/admin");
