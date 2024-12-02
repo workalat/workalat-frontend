@@ -1915,7 +1915,7 @@ async function addJobsQuestions({mode, type,slugs} : any){
 
 async function editJobsQuestions({questionId, questionTitle,questionType,questionChoices,questionSlug} : any){
   try{
-    const response  : any  = await axios.post('/addJobsQuestions', {
+    const response  : any  = await axios.post('/editQuestions', {
       questionId, questionTitle,questionType,questionChoices,questionSlug
     });
       return(response);
@@ -2395,6 +2395,12 @@ async function editPointsRule({walletId,newPoint,newCategory,newFrequency,newBud
     return(e);
   }
 };
+
+
+
+
+
+
 
 
 

@@ -20,7 +20,11 @@ export default function JobAssign({ data }: any) {
         setIsModalOpen(true); 
     };
     const closeModal = () => {
-        setIsModalOpen(false);
+            setSelectedMode("category");
+            setHeading('Add');
+            setSelectTypeOfAssign("");
+            setTerm("");
+            setIsModalOpen(false);
     };
 
     // assign type selector
@@ -40,7 +44,7 @@ export default function JobAssign({ data }: any) {
     }, [userType, data]);
 
     // filtering mode and type
-    const [selectedMode, setSelectedMode] = useState<any>();
+    const [selectedMode, setSelectedMode] = useState<any>("category");
     const [filteredModeType, setFilteredModeType] = useState<any>();
     const [searchQuery, setSearchQuery] = useState(""); // For the search input in the type selector
     const [filteredOptions, setFilteredOptions] = useState<any[]>([]); // To store filtered options
@@ -50,18 +54,20 @@ export default function JobAssign({ data }: any) {
 
     // Filter mode based on selected mode
     useEffect(() => {
-        console.log(jobAssignData)
         const filteredData = jobAssignData?.find((item) => item?.mode === selectedMode);
-        console.log(selectedMode);
         if (filteredData) {
             if(selectedMode === "category"){
                 setFilteredModeType(allCategoryData);
                 setFilteredOptions(allCategoryData || []); // Initialize with all options
+                
+                heading ==  "Add New"  ? setSelectTypeOfAssign("") : "";
             }
             else if(selectedMode === "service") {
-                console.log(allServiceStringData);
                 setFilteredModeType(allServiceStringData);
                 setFilteredOptions(allServiceStringData || []); // Initialize with all options
+
+                heading == "Add New" ? setSelectTypeOfAssign("") : "";
+                
             }
         }
     }, [selectedMode, jobAssignData]);
@@ -106,9 +112,12 @@ export default function JobAssign({ data }: any) {
      let [allServiceData, setAllServiceData] : any = useState([]);
      let [allCategoryData, setAllCategoryData] : any = useState([]);
      let [allServiceStringData, setAllServiceStringData] : any = useState([]);
+     let [viewService, setViewService] : any = useState(true);
+     let [viewCategory, setViewCategory] : any = useState(true);
          
+     let [heading, setHeading] : any = useState("");
      let router = useRouter();
-     let [term, setTerm] = useState("");
+     let [term, setTerm] : any = useState("");
      const { generateSnackbar } : any  = useSnackbar();
  
          async function getData() {
@@ -130,7 +139,6 @@ export default function JobAssign({ data }: any) {
                  generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
                }
            } catch (e) {
-            // console.log(e);
              generateSnackbar("Some error occurred, Please Try Again.", "error");
            }
          }
@@ -143,7 +151,6 @@ export default function JobAssign({ data }: any) {
     
             if (adminToken !== undefined) {
               let res: any = await verifyAdmin({ adminToken });
-              console.log(res);
               if (
                 res?.status === 200 ||
                 res?.data?.status === "success" ||
@@ -151,7 +158,6 @@ export default function JobAssign({ data }: any) {
               ) {
                 if(res?.data?.data?.status === "system"){
                     getData();
-                    setLoading2(false);
                 }
                 else{
                     router.push("/admin");
@@ -164,7 +170,6 @@ export default function JobAssign({ data }: any) {
               router.push("/admin-login");
             }
           } catch (e) {
-            // console.log(e);
             generateSnackbar("Something went wrong, please Try Again.", "error");
           }
         }
@@ -177,7 +182,6 @@ export default function JobAssign({ data }: any) {
        async function saveService(e : any) {
          // setLoading2(true);
          e.preventDefault();
-         console.log(selectedMode, selectedTypeOfAssign, term);
          let slugs = term.split(",");
 
          if(selectedMode.length <1 || selectedTypeOfAssign?.length<1 || term.length<1){
@@ -189,7 +193,6 @@ export default function JobAssign({ data }: any) {
              type : selectedTypeOfAssign,
              slugs : slugs
          });
-         console.log(res);
          if (res?.status === 200 || res?.data?.status === "success") {
              generateSnackbar(res?.data?.message , "success");
              router.refresh();
@@ -198,7 +201,6 @@ export default function JobAssign({ data }: any) {
              generateSnackbar("Some error occurred, Please Try Again.", "error");
            }
        } catch (e) {
-         // console.log(e);
          generateSnackbar("Some error occurred, Please Try Again.", "error");
        }
      }
@@ -209,7 +211,6 @@ export default function JobAssign({ data }: any) {
             mode : mode,
             type : type,
         });
-        console.log()
         if (res?.status === 200 || res?.data?.status === "success") {
             generateSnackbar(res?.data?.message , "success");
             router.refresh();
@@ -218,7 +219,6 @@ export default function JobAssign({ data }: any) {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
       } catch (e) {
-        // console.log(e);
         generateSnackbar("Some error occurred, Please Try Again.", "error");
       }
     }
@@ -226,14 +226,16 @@ export default function JobAssign({ data }: any) {
      
 
 
-       function changeStateType(data){
-        console.log(data);
-        // setUserType()
-       }
-
-
 
     return (
+        <>
+        
+        
+        {loading2 ? (
+        <div className="w-[100%] h-screen flex justify-center items-center">
+          <div className="loader m-auto" />
+        </div>
+      ) : (
         <div className="w-full px-2 py-2">
             {/* page heading */}
             <div className="flex justify-between items-center border-b border-black/40 px-3 pb-3">
@@ -246,7 +248,21 @@ export default function JobAssign({ data }: any) {
                         name="users"
                         className="bg-[#FFBE00] hidden sm:block w-auto text-[10px] sm:text-[15px] py-2 font-semibold rounded-md px-2 ring-2 ring-[#FFBE00] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => changeStateType(e.target.value)}
+                        onChange={(e) => {
+                            setUserType(e.target.value)
+                            if(e.target.value === "all"){
+                                setViewCategory(true);
+                                setViewService(true);
+                            }
+                            else if(e.target.value === "category"){
+                                setViewCategory(true);
+                                setViewService(false);
+                            }
+                            else if(e.target.value === "service"){
+                                setViewCategory(false);
+                                setViewService(true);
+                            }
+                        }}
                     >
                         <option className="bg-[#EDEDED] text-black" value="all">
                             All
@@ -260,7 +276,11 @@ export default function JobAssign({ data }: any) {
                     </select>
 
                     <button
-                        onClick={openModal}
+                        onClick={()=>{
+                            setHeading('Add New');
+                            setSelectedMode("category");
+                            openModal();
+                        }}
                         className="sm:text-[17px] text-[10px] text-white bg-[#07242B] px-4 sm:px-[20px] py-1 sm:py-[10px] rounded-md flex gap-2 items-center"
                     >
                         Add New <IoArrowForwardOutline className="size-[17px] text-white" />
@@ -287,7 +307,8 @@ export default function JobAssign({ data }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {allQuestionsCategoryData?.map((item: any, i: number) => (
+                            {viewCategory &&  allQuestionsCategoryData?.filter((item: any) => item?.type !== null && item?.slugs !== null) 
+            .map((item: any, i: number) => (
                                 <tr className="border-b border-black/10" key={i}>
                                     <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
                                         <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
@@ -308,7 +329,16 @@ export default function JobAssign({ data }: any) {
                                     </td>
                                     <td className="p-4">
                                         <div className="flex items-center justify-end">
-                                            <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
+                                            <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold" onClick={()=>{
+                                            setSelectedMode("category");
+                                            setHeading("Edit");
+                                            setSelectTypeOfAssign(item?.type);
+                                            let t = item?.slugs?.join();
+                                            setTerm(t);
+                                            setTimeout(() => {
+                                                openModal();
+                                            }, 0.4); // Let React update state before modal opens
+                                        }}>
                                                 Edit
                                             </button>
                                             <button onClick={()=>{deleteQuestions("category",item?.type)}}>
@@ -319,37 +349,50 @@ export default function JobAssign({ data }: any) {
                                 </tr>
                             ))}
 
-                            {allQuestionsServiceData?.map((item: any, i: number) => (
-                                <tr className="border-b border-black/10" key={i}>
-                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            {item?.type}
-                                        </p>
-                                    </td>
-                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                            SERVICE
-                                        </p>
-                                    </td>
-                                    <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
-                                        <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
-                                        {item?.slugs.map((val, index) => {
-                                            return index === item.slugs.length - 1 ? `${val}` : `${val}, `;
-                                        })}
-                                        </p>
-                                    </td>
-                                    <td className="p-4">
-                                        <div className="flex items-center justify-end">
-                                            <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold">
-                                                Edit
-                                            </button>
-                                            <button  onClick={()=>{deleteQuestions("service",item?.type)}}>
-                                                <MdDelete className="size-[20px] text-[#F52933]" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+            {viewService && allQuestionsServiceData
+            ?.filter((item: any) => item?.type !== null && item?.slugs !== null) 
+            .map((item: any, i: number) => (
+                <tr className="border-b border-black/10" key={i}>
+                <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                    <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                    {item?.type}
+                    </p>
+                </td>
+                <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                    <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                    SERVICE
+                    </p>
+                </td>
+                <td className="p-4 uppercase text-black sm:text-[17px] text-[15px] font-semibold">
+                    <p className="hover:bg-[#E6E6E6] w-fit px-2 rounded-md">
+                    {item?.slugs?.length > 0 &&
+                        item?.slugs?.map((val, index) => {
+                        return index === item.slugs.length - 1 ? `${val}` : `${val}, `;
+                        })}
+                    </p>
+                </td>
+                <td className="p-4">
+                    <div className="flex items-center justify-end">
+                    <button className="px-2 text-[#FFBE00] sm:text-[17px] text-[12px] font-semibold" onClick={()=>{
+                        setSelectedMode("service");
+                        setHeading("Edit");
+                        setSelectTypeOfAssign(item?.type);
+                        let t = item?.slugs?.join();
+                        setTerm(t);
+                        setTimeout(() => {
+                            openModal();
+                        }, 0.4); // Let React update state before modal opens
+                    }}>
+                        Edit
+                    </button>
+                    <button onClick={() => deleteQuestions("service", item?.type)}>
+                        <MdDelete className="size-[20px] text-[#F52933]" />
+                    </button>
+                    </div>
+                </td>
+                </tr>
+            ))
+            }
                         </tbody>
                     </table>
                 </div>
@@ -369,7 +412,7 @@ export default function JobAssign({ data }: any) {
                                 <div className="w-full text-center">
                                     <div className="pt-4">
                                         <div className="text-center">
-                                            <h4 className="font-semibold uppercase text-[17px]">Add New Job Assign</h4>
+                                            <h4 className="font-semibold uppercase text-[17px]">{heading} Job Assign</h4>
                                         </div>
 
                                         <div className="w-full h-full">
@@ -383,16 +426,19 @@ export default function JobAssign({ data }: any) {
                                                         className="w-full ring-[1px] ring-gray-400 rounded-md px-3 py-3 outline-none border-none shadow-md capitalize"
                                                         name="mode"
                                                         id="mode"
-                                                        defaultValue="select"
+                                                        value={selectedMode}
                                                     >
-                                                        <option value="select" disabled>
-                                                            Select
+                                                        <option value="category">
+                                                            Category
                                                         </option>
-                                                        {jobAssignData?.map((mode: any, i: number) => (
+                                                        <option value="service">
+                                                        Service
+                                                        </option>
+                                                        {/* {jobAssignData?.map((mode: any, i: number) => (
                                                             <option key={i} value={mode?.mode}>
                                                                 {mode?.mode}
                                                             </option>
-                                                        ))}
+                                                        ))} */}
                                                     </select>
                                                 </div>
 
@@ -469,5 +515,8 @@ export default function JobAssign({ data }: any) {
                 />
             )}
         </div>
+      )
+    }
+        </>
     );
 }

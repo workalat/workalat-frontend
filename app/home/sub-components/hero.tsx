@@ -113,7 +113,7 @@ const [selectedService, setSelectedService] : any = useState<string>("");
 
 <div className="flex items-center justify-between w-full h-full container mx-auto max-w-7xl px-6 py-0 mt-[-10%]">
   <div className="max-w-[800px] flex flex-col gap-7 relative z-10">
-    <h1 className="text-white text-4xl md:text-5xl font-bold">
+    <h1 className="text-white text-4xl md:text-5xl font-bold mt-[12%]">
       Find verified professionals you can trust
     </h1>
     <p className="text-white text-xl sm:text-xl">It takes a few clicks...</p>
