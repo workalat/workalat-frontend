@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Box, Button, Grid, Modal, Switch, Typography } from "@mui/material";
+import { Box, Button, Chip, Grid, Modal, Switch, Typography } from "@mui/material";
 import ChangePasswordModal from "./change_password";
 
 import arrowRight from "@/public/icons/arrow_right.svg";
@@ -300,44 +300,29 @@ let [kycDocumentData, setKycDocumentData]  : any  = useState({
                       Verify
                       <Image alt="Change password" src={arrowRight} />
                     </Button>
-                  </Box>
+                  </Box> 
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Box className="rounded-xl border border-dark border-opacity-30 px-6 py-4 pb-6 space-y-4 bg-white md:bg-transparent">
+                <Box className="rounded-xl border border-dark border-opacity-30 px-6 py-4 pb-6 space-y-4 bg-white md:bg-transparent">
                     <Typography
                       gutterBottom
-                      className="text-xl font-semibold border-b border-dark border-opacity-30 pb-2"
+                      className="text-xl font-semibold border-b flex justify-between border-dark border-opacity-30 pb-2"
                     >
                       KYC
+                      <Chip label={`${kycStatus === "pending" ? "Pending" : kycStatus === "approved" ? "Verified" : "Unverified"}`}style={{ color:"white", backgroundColor : `${kycStatus === "pending" ? "yellow" : kycStatus === "approved" ? "green" : "red"}`}} />
                     </Typography>
                     <Typography>Last Changed {formatDate(pageDate.kycLast)}</Typography>
                     {
                       (kycStatus === "pending" )
 
                       ?
-                      <Button
-                        variant="contained"
-                        // onClick={openModal}
-                        color="primary"
-                        className="gap-2 py-3 px-6 font-semibold"
-                        // disabled={true}
-                      >
-                        Pending
-                      </Button>
+                      <></>
 
                       :
                       (kycStatus === "approved")
 
                       ?
-                      <Button
-                        variant="contained"
-                        // onClick={openModal}
-                        className="gap-2 py-3 px-6 font-semibold"
-                        style={{color : "green"}}
-                      >
-                        Approved
-                        {/* <Image alt="Change password" src={arrowRight} /> */}
-                      </Button>
+                      <></>
 
                       :
                       <Button
