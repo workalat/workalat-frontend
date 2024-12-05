@@ -19,7 +19,7 @@ import DOMPurify from 'dompurify';
 import moment from "moment";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { Typography } from "@mui/material";
-
+ 
 export default function ProjectAward() {
   const [loading2, setLoading2] : any  = useState(true);
   const router : any  = useRouter();
@@ -350,10 +350,14 @@ export default function ProjectAward() {
                           onSubmit={handleReviewSubmit}
                         >
                           <label
-                            className="block font-semibold text-sm"
+                            className="block font-semibold text-sm capitalize"
                             htmlFor="review"
                           >
-                            Leave Your Review
+                            <div className="flex gap-3 items-end">
+                              
+                            <img src={modalData?.awardedProfessionalPictureLink} alt="" className="w-[70px] h-[70px]" />
+                            Leave Your Review for {modalData?.awardedProfessionalFullName}
+                            </div>
                           </label>
                           <textarea
                             name="review"

@@ -266,10 +266,13 @@ export default function ProjectAward() {
                           onSubmit={handleReviewSubmit}
                         >
                           <label
-                            className="block font-semibold text-sm"
+                            className="block font-semibold text-sm capitalize"
                             htmlFor="review"
-                          >
-                            Leave Your Review
+                          > <div className="flex gap-3 items-end">
+                              
+                          <img src={modalData?.clientPictureLink} alt="" className="w-[70px] h-[70px]" />
+                          Leave Your Review for {modalData?.clientName}
+                          </div>
                           </label>
                           <textarea
                             name="review"
