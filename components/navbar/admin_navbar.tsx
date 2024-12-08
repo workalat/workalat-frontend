@@ -14,11 +14,6 @@ import clsx from "clsx";
 import { fontSans } from "@/config/fonts";
 import logo_dark from "@/public/logo_dark.png";
 import logoutIcon from "@/public/icons/logout.svg";
-import settingsIcon from "@/public/icons/settings.svg";
-import notificationsIcon from "@/public/icons/notifications.svg";
-import switchIcon from "@/public/icons/switch.svg";
-import testimonial3Img from "@/public/images/testimonial3.png";
-import businessIcon from "@/public/icons/business.svg";
 import { TiArrowSortedUp } from "react-icons/ti";
 import { FaBell } from "react-icons/fa6";
 import { usePathname, useRouter } from "next/navigation";
@@ -39,30 +34,6 @@ const AdminNavbar = () => {
             text: "Dashboard",
             href: "/admin"
         },
-        // {
-        //     key: "projects",
-        //     icon: businessIcon,
-        //     text: "My Projects",
-        //     href: "/my-projects",
-        // },
-        // {
-        //     key: "notifications",
-        //     icon: notificationsIcon,
-        //     text: "Notifications",
-        //     href: "/notifications",
-        // },
-        // {
-        //     key: "switch",
-        //     icon: switchIcon,
-        //     text: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "Switch to Seller" : "Switch to Client"}`,
-        //     href: `${pathname === "/client/dashboard" || pathname.startsWith("/client/dashboard/") ? "/professional/dashboard" : "/client/dashboard"}`,
-        // },
-        // {
-        //     key: "settings",
-        //     icon: settingsIcon,
-        //     text: "Settings",
-        //     href: "/settings",
-        // },
         {
             key: "logout",
             icon: logoutIcon,
@@ -128,16 +99,17 @@ const AdminNavbar = () => {
           router.push("/")
       }
       else{
-        let log : any = await logoutAdmin({
+        let logginout : any = await logoutAdmin({
           token: token,
         });
-      
-      if(log?.status !== 400 || log?.data?.status === "success"){
-       
-        router.push("/admin");
+        console.log(logginout);
+      if(logginout?.status == 200 || logginout?.data?.status === "success"){
+        console.log("Logging out");
+        Cookies.remove("adminToken");
+        router.push("/admin-login");
     }
     else{
-        generateSnackbar(log.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
+        generateSnackbar(logginout.response?.data?.message || "Some Error Occur, Please try Again." ,"error")
     }
       }
       

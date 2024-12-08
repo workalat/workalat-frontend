@@ -43,25 +43,25 @@ export default function Dashboard() {
     const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     // the circular data example
-    const leadsStatus = {
-        thisMonth: {
-            title: "this month",
-            openLead: 50,
-            awarded: 30,
-            rejected: 60
-        },
-        thisYear: {
-            title: "this year",
-            openLead: 300,
-            awarded: 200,
-            rejected: 100
-        },
-    }
+    // const leadsStatus = {
+    //     thisMonth: {
+    //         title: "this month",
+    //         openLead: 50,
+    //         awarded: 30,
+    //         rejected: 60
+    //     },
+    //     thisYear: {
+    //         title: "this year",
+    //         openLead: 300,
+    //         awarded: 200,
+    //         rejected: 100
+    //     },
+    // }
 
     const [timeFrame, setTimeFrame] = useState<string>("this month");
-    const openLeadData = timeFrame == "this month" ? leadsStatus.thisMonth.openLead : timeFrame == "this year" && leadsStatus.thisYear.openLead;
-    const rejectedLeadData = timeFrame == "this month" ? leadsStatus.thisMonth.rejected : timeFrame == "this year" && leadsStatus.thisYear.rejected;
-    const awardedLeadData = timeFrame == "this month" ? leadsStatus.thisMonth.awarded : timeFrame == "this year" && leadsStatus.thisYear.awarded
+    // const openLeadData = timeFrame == "this month" ? leadsStatus.thisMonth.openLead : timeFrame == "this year" && leadsStatus.thisYear.openLead;
+    // const rejectedLeadData = timeFrame == "this month" ? leadsStatus.thisMonth.rejected : timeFrame == "this year" && leadsStatus.thisYear.rejected;
+    // const awardedLeadData = timeFrame == "this month" ? leadsStatus.thisMonth.awarded : timeFrame == "this year" && leadsStatus.thisYear.awarded
 
 
 
@@ -80,6 +80,7 @@ export default function Dashboard() {
              setLoading2(true);
            try {
              let res = await dashboarData();
+             console.log(res);
              if (res?.status === 200  || res?.data?.status === "success" ) {
                 setAllDashboardData(res?.data?.data);
                 setLoading2(false);
@@ -162,11 +163,9 @@ export default function Dashboard() {
                         <div className="w-full">
                             {/* this chart also will be dynamic */}
                             <CircleChart
-                                openLeads={allDashboardData?.totalOpenLeads}
-                                awardedLeads={allDashboardData?.totalAwardedLeads}
-                                rejectedLeads={allDashboardData?.totalRejectedLeads}
+                                data={allDashboardData?.leadsData}
                                 title="Leads Status"
-                                timeframe={timeFrame}
+                                timeframe={timeFrame} 
                                 setTimeFrame={setTimeFrame}
                             />
                         </div>

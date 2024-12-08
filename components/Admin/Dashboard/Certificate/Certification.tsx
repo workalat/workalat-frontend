@@ -83,6 +83,7 @@ export default function Certification() {
             console.log(res);
             if (res?.status === 200 || res?.data?.status === "success") {
                 setAllCertificateData(res?.data?.data?.reverse());
+                setAllFilterData(res?.data?.data?.reverse());
                setLoading2(false);
               } else {
                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
@@ -105,7 +106,6 @@ export default function Certification() {
                     if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
                         if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
                             getData();
-                            setLoading2(false);
                         }
                         else{
                             router.push("/admin");

@@ -326,7 +326,7 @@ export default function UsersDashboard() {
                                     <td className="p-4 text-[15px] capitalize">{user?.userType}</td>
                                     {/* <td className="p-4 text-[15px] capitalize">{user?.country}</td> */}
                                     <td className="p-4">
-                                        <button onClick={() => openModal(user?._id, "client")} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
+                                        <button onClick={() => openModal(user?._id, user?.userType)} className="bg-[#07242B] text-white px-4 py-2 rounded flex justify-center items-center gap-2 text-[15px]">
                                             <AiOutlineControl className="rotate-90 text-white size-[15px] xl:size-[20px]" /> View
                                         </button>
                                     </td>

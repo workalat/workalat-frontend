@@ -162,6 +162,7 @@ export default function ServicesPage({ data }: any) {
     }
 
     async function deleteServiceValue(category, service) {
+      console.log(category, service);
       try {
         let res = await deleteService({
             category : category,
@@ -175,7 +176,7 @@ export default function ServicesPage({ data }: any) {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
       } catch (e) {
-        // console.log(e);
+        console.log(e);
         generateSnackbar("Some error occurred, Please Try Again.", "error");
       }
     }

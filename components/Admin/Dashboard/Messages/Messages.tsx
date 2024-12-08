@@ -86,7 +86,7 @@ export default function Messages() {
                       promises.push({ userDocSnap, chatItem });
                     }
                   } catch (error) {
-                    console.error("Error fetching userDocRef for chatItem", chatItem, error);
+                    // console.error("Error fetching userDocRef for chatItem", chatItem, error);
                   }
                 }
           
@@ -242,7 +242,7 @@ export default function Messages() {
                               setMessageListOpen(false);
                             }}
                             className={`w-full  ${
-                              selectedMessage?.receiverId === message?.receiverId
+                              selectedMessage?.chatId === message?.chatId && selectedMessage?.receiverId === message?.receiverId
                                 ? "bg-[#07242B]"
                                 : "bg-[#F2F2F2]"
                             } p-3 mb-[1px] cursor-pointer`}
