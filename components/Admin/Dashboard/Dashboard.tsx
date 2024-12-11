@@ -166,7 +166,7 @@ export default function Dashboard() {
                                 data={allDashboardData?.leadsData}
                                 title="Leads Status"
                                 timeframe={timeFrame} 
-                                setTimeFrame={setTimeFrame}
+                                setTimeFrame={setTimeFrame} 
                             />
                         </div>
                     </div>

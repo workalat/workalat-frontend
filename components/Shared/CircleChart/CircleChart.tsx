@@ -11,7 +11,7 @@ interface CircleChartProps {
     timeframe: string;
     setTimeFrame: any
 }
-
+ 
 const CircleChart: React.FC<CircleChartProps> = ({data, title, setTimeFrame } : any) => {
     // const totalLeads = data[1]?.openLead + data[0]?.awarded + data[0]?.rejected;
     // const openPercentage = (data[0]?.openLead / ( data[0]?.openLead + data[0]?.awarded + data[0]?.rejected)) * 100;
