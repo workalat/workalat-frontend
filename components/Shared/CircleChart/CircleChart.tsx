@@ -4,9 +4,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 interface CircleChartProps {
-    openLeads: any;
-    awardedLeads: any;
-    rejectedLeads: any;
+    data: any;
     title: string;
     timeframe: string;
     setTimeFrame: any
