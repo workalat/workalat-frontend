@@ -40,7 +40,7 @@ export default function ViewSupportTickets({ path }: PropsType) {
     // loading
     const [loading2, setLoading2] = useState(true);
     let router : any = useRouter();
-    let { findSingleTicket, respondTicket } : any = useUserContext();
+    let { findSingleTicket, respondTicket, changeStatusTicket } : any = useUserContext();
     let [ticketData, setTicketData] : any = useState({});
     let [allTicketMessages, setAllTicketMessages] : any = useState([]);
     let [ticketMessages, setTicketMessages] : any = useState("")
@@ -53,7 +53,6 @@ export default function ViewSupportTickets({ path }: PropsType) {
             try{
                 setLoading2(true);
               let res : any = await findSingleTicket({ticketId : params.id});
-              console.log(res);
               if(res?.status !== 400 || res?.data?.status === 'success'){
               setTicketData(res?.data?.data);
               setAllTicketMessages(res?.data?.data?.ticketMessages.reverse());
@@ -109,6 +108,27 @@ export default function ViewSupportTickets({ path }: PropsType) {
         }
     }
 
+    async function changeStatus(type){
+        try{
+                let res = await changeStatusTicket({
+                    ticketId : params.id,
+                    newStatus : type
+                });
+                if(res?.status === 200 || res?.data?.status === 'success'){
+                    generateSnackbar(res?.data?.message, "success");
+                    setTicketData({...ticketData, ticketStatus : type});
+                    window.location.reload();
+                    }
+                    else{
+                        generateSnackbar(res.response?.data?.message || "Some Error Occur, Please try Again.", "error")
+                    }
+            
+        }
+        catch(e){
+            // console.log(e);
+            generateSnackbar("Some Error occurr, please try again", "error")
+        }
+    }
 
     return (
         <div className="w-full 2xl:container 2xl:mx-auto h-auto lg:h-screen overflow-hidden flex-col lg:flex-row flex bg-stone-100">
@@ -125,7 +145,7 @@ export default function ViewSupportTickets({ path }: PropsType) {
                     <div className="flex justify-between">
                         <div className="flex gap-3">
                             <h4 className="text-[20px] text-white font-semibold py-2 tracking-wide">Ticket Details</h4>
-                            <button className="bg-[#FFBE00] text-black px-4 capitalize py-1 rounded text-[12px] xl:text-[15px] font-bold">Waiting on <span className="capitalize">{ticketData?.ticketStatus}</span> </button>
+                            <button className="bg-[#FFBE00] text-black px-4 capitalize py-1 rounded text-[12px] xl:text-[15px] font-bold"> {ticketData?.ticketStatus == "closed" ? <span>Closed</span> : <span>Waiting on {ticketData?.ticketStatus}</span> } </button>
                         </div>
 
                         <div className="relative inline-flex items-center justify-center gap-3">
@@ -156,7 +176,7 @@ export default function ViewSupportTickets({ path }: PropsType) {
                                                 className="px-3 py-2 cursor-pointer hover:bg-gray-200"
                                                 onClick={() => {
                                                     setIsOpen(false);
-                                                    console.log("customer");
+                                                    changeStatus("customer");
                                                 }}
                                             >
                                                 Awaiting customer
@@ -165,19 +185,10 @@ export default function ViewSupportTickets({ path }: PropsType) {
                                                 className="px-3 py-2 cursor-pointer hover:bg-gray-200"
                                                 onClick={() => {
                                                     setIsOpen(false);
-                                                    console.log("closed");
+                                                    changeStatus("closed");
                                                 }}
                                             >
                                                 Closed
-                                            </li>
-                                            <li
-                                                className="px-3 py-2 cursor-pointer hover:bg-gray-200"
-                                                onClick={() => {
-                                                    setIsOpen(false);
-                                                    console.log("Open selected");
-                                                }}
-                                            >
-                                                Open
                                             </li>
                                         </ul>
                                     </div>
@@ -189,9 +200,8 @@ export default function ViewSupportTickets({ path }: PropsType) {
                                     id="change"
                                     className="hidden" // Hide the select element
                                 >
-                                    <option value="waiting">Awaiting customer</option>
+                                    <option value="customer">Awaiting customer</option>
                                     <option value="closed">Closed</option>
-                                    <option value="open">Open</option>
                                 </select>
                             </div>
                         </div>
@@ -219,7 +229,9 @@ export default function ViewSupportTickets({ path }: PropsType) {
 
                 {/* here is post method for post ticket reply also will be dynamic with backend operation*/}
 
-                <div className="pt-5 pb-2">
+                { ticketData?.ticketStatus !== "closed" &&
+                    
+                    <div className="pt-5 pb-2">
                     <h4 className="text-[17px] font-bold tracking-wide pb-3">Post Ticket Reply</h4>
 
                     <form className="w-full px-3 py-3 border border-black/50 rounded-md bg-white">
@@ -227,7 +239,9 @@ export default function ViewSupportTickets({ path }: PropsType) {
 
                         <button className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] mt-3 font-semibold" onClick={handleReplyTicket}>Post reply <FaArrowRight className="size-3" /></button>
                     </form>
-                </div>
+                    </div>
+
+                }
 
 
                 {/* ticket chat need to dynamic it need to post method with backend for question and answer */}

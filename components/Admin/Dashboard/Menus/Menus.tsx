@@ -86,7 +86,7 @@ export default function Menus() {
                     <Link className="flex gap-[26px]" href="/admin/user"><IoPersonOutline className="size-[20px]" /> User</Link>
                 </li>
                 {
-                    (adminsData.status === "admin" || adminsData.status === "user" )&& 
+                    (adminsData.status === "system")&& 
                     <li className={`${pathname == "/admin/administrator" ? "bg-white text-black font-bold" : "text-white"} p-2 rounded-lg text-[14px] leading-[17.86px] tracking-[1%]`}>
                         <Link className="flex gap-[26px]" href="/admin/administrator"><IoPersonOutline className="size-[20px]" /> Administrator</Link>
                     </li>

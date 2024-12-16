@@ -67,16 +67,17 @@ export default function Administrator() {
   const {
     allAdmin,
     verifyAdmin,
-    createNewAdmin
+    createNewAdmin,
+    updateAdmin
   }: any = useUserContext();
   const [loading2, setLoading2]: any = useState(true);
   let [allAdminsData, setAllAdminsData]: any = useState([]);
   let [allFilterData, setAllFilterData]: any = useState([]);
   const { generateSnackbar }: any = useSnackbar();
   let router = useRouter();
-  let [choice, setChoice] = useState("access");
-  let [points, setPoints] = useState(0);
-  let [totalUsers, setTotalUsers] = useState(0);
+  let [totalUsers, setTotalUsers] : any = useState(0);
+  let [currentId, setCurrentId] : any = useState("");
+  let [currentStatus, setCurrentStatus] : any = useState("");
 
   let [newAdmin, setNewAdmin] = useState({
     admin_name : "",
@@ -96,6 +97,7 @@ export default function Administrator() {
             res?.data?.data?.reverse(),
         );
         setTotalUsers(res?.data?.data?.length);
+        setCurrentStatus("Create");
         setLoading2(false);
       } else {
         generateSnackbar(
@@ -122,7 +124,7 @@ export default function Administrator() {
             res?.data?.status === "success" ||
             res?.data?.data?.verify === true
           ) { 
-            if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
+            if(res?.data?.data?.status === "system"){
             getData();
             setLoading2(false);
         }
@@ -157,6 +159,47 @@ export default function Administrator() {
     try {
       e.preventDefault();
       let res = await createNewAdmin(newAdmin);
+      if (res?.status === 200 || res?.data?.status === "success") {
+        setNewAdmin({
+          admin_name : "",
+          admin_email : "",
+          admin_password : "",
+          admin_status : "user",
+        });
+        closeModal();
+        generateSnackbar(
+          res?.data?.message,
+        "success"
+      );
+      router.refresh();
+      } else {
+        generateSnackbar(
+          res?.response?.data?.message ||
+            "Some error occurred, Please Try Again.",
+          "error"
+        );
+      } 
+    } catch (e) {
+      // console.log(e);
+      generateSnackbar("Something went wrong, please Try Again.", "error");
+    }
+  }
+
+
+  
+  async function updateAdminData(e : any) {
+    try {
+      e.preventDefault();
+      console.log("Updating Admin Data");
+      console.log(newAdmin);
+      console.log(currentId);
+      let res = await updateAdmin({
+        adminId : currentId,
+        adminEmail : newAdmin?.admin_email,
+        adminName : newAdmin?.admin_name,
+        adminRole :  newAdmin?.admin_status,
+        adminPassword :  newAdmin?.admin_password
+      });
       if (res?.status === 200 || res?.data?.status === "success") {
         setNewAdmin({
           admin_name : "",
@@ -299,7 +342,13 @@ export default function Administrator() {
                                         {/* <td className="p-4 text-[15px] capitalize">{user?.country}</td> */}
                                         <td className="p-4">
                                             {/* this is manage button. in this figma i didn't seeing what will open here but i think it must would be dynamic and connected with backend */}
-                                            <button className="bg-[#FFBE00] text-black px-4 py-3 rounded flex justify-center items-center gap-2 text-[15px]">
+                                            <button className="bg-[#FFBE00] text-black px-4 py-3 rounded flex justify-center items-center gap-2 text-[15px]" onClick={()=>{
+                                                setNewAdmin(user)
+                                                setCurrentStatus("Update");
+                                                setCurrentId(user?._id);
+                                                setIsModalOpen(true);
+
+                                            }}>
                                                 <AiOutlineControl className="rotate-90 text-black size-[15px] xl:size-[20px]" /> Manage
                                             </button>
                                         </td>
@@ -324,8 +373,17 @@ export default function Administrator() {
                                                 <AiFillCloseSquare className="size-[20px]" />
                                             </button>
                                             <div className="w-full text-center">
-                                                <h4 className="font-semibold text-[20px]">Create Admin</h4>
-                                                <form className="w-full" onSubmit={createAdmin}>
+                                                <h4 className="font-semibold text-[20px]">{currentStatus} Admin</h4>
+                                                <form className="w-full" onSubmit={(e : any)=>{
+
+                                                  if(currentStatus === "Update"){
+                                                    updateAdminData(e);
+                                                  }
+                                                  else{
+                                                    createAdmin(e)
+                                                  }
+
+                                                }}>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="fullName" className="block pb-2 font-semibold">Full Name</label>
                                                         <input type="text" id="fullName"  value={newAdmin?.admin_name} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_name : e.target.value})}} name="fullName" className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Name" />
@@ -350,7 +408,7 @@ export default function Administrator() {
                                                     </div>
 
                                                     <div className="py-2 text-start">
-                                                        <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Create Admin <FaArrowRight className="size-[15px] text-black" /></button>
+                                                        <button className="py-3 px-4 rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">{currentStatus} Admin <FaArrowRight className="size-[15px] text-black" /></button>
                                                     </div>
                                                 </form>
                                             </div>

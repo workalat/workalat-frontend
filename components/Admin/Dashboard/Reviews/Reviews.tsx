@@ -9,6 +9,10 @@ import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
 import Cookies from "js-cookie";
 import { Rating } from "@mui/material";
+import ResponsesModal from "../Responses/ResponsesModal";
+import { GiCheckedShield } from "react-icons/gi";
+import { HiMiniCheckBadge } from "react-icons/hi2";
+import { IoMdClose } from "react-icons/io";
 
 export default function Reviews() {
     // here reviews will be dynamically from the backend. for now i using "import { reviewsData } from "@/utils/reviewsData";" as a demo review data
@@ -19,7 +23,7 @@ export default function Reviews() {
     const [userType, setUserType] = useState('all'); // Filter by user type
     const [filteredUsers, setFilteredUsers] = useState(reviewsData); // Filtered data
 
-    // Toggle select all users
+    // Toggle select all users 
     const toggleSelectAll = () => {
         if (selectAll) {
             setSelectedUsers([]);
@@ -68,12 +72,22 @@ export default function Reviews() {
   let router = useRouter();
   let [totalUsers, setTotalUsers] = useState(0);
 
+  const [isModalOpen, setIsModalOpen] : any = useState(false);
+  const [modalData, setIsModalData] : any= useState({});
+  const openModal = (data: any) => {
+      setIsModalData(data);
+      setIsModalOpen(true);
+  }
+  const closeModal = () => {
+      setIsModalData({});
+      setIsModalOpen(false);
+  }
+
  
   async function getData() {
     setLoading2(true);
     try {
       let res = await showAllReviews();
-      console.log(res);
       if (res?.status === 200 || res?.data?.status === "success") {
         setAllClientsData(res?.data?.data?.clientsData?.reverse());
         setAllProfessionalData(res?.data?.data?.professionalData?.reverse());
@@ -125,7 +139,6 @@ export default function Reviews() {
 
   async function deleteAReview(totalRatings, projectId, userType) {
     try {
-      console.log(totalRatings, projectId, userType)
       let res = await  deleteReview({projectId,totalRatings,userType})
       if (res?.status === 200 || res?.data?.status === "success") {
         generateSnackbar(
@@ -250,18 +263,13 @@ export default function Reviews() {
                                         </td>
                                         <td className="p-4 text-[15px] capitalize">{user?.giverReview.slice(0.20)}...</td>
                                         <td className="p-4 text-[15px] capitalize w-[110px]">
-                                          {/* {Array(user?.review || 0)
-                                            .fill(0)
-                                            .map((_, index) => (
-                                                <MdOutlineStarOutline key={index} className="inline-block size-[15px] text-black/50" />
-                                            ))} */}
                                             <Rating precision={0.1} value={user?.giverRating} style={{fontSize : ".9rem"}} readOnly />
                                         </td>
                                         <td className="p-4 text-[15px] capitalize">{user?.userType}</td>
                                         <td className="p-4">
                                             {/* this buttons will be connected with backend for some function or operation */}
                                             <div className="flex items-center gap-2">
-                                                <button className="text-[17px] text-[#FFBE00] font-semibold">Edit</button>
+                                            <button className="text-[#00a770] cursor-pointer" onClick={() => openModal(user)}>View</button>
                                                 <button onClick={()=>{deleteAReview(user?.giverRating, user?.projectId, user?.userType)}}><MdDelete className="text-[#F52933] cursor-pointer" size={17} /></button>
                                             </div>
                                         </td>
@@ -271,8 +279,43 @@ export default function Reviews() {
                         </table>
                     </div>
                 </div>
+                {modalData && (
+                        <ResponsesModal
+                            isOpen={isModalOpen}
+                            onRequestClose={closeModal}
+                            content={
+                                <div className="py-3 px-2">
+                                <div className="flex justify-end">
+                                    <button onClick={closeModal} style={{fontSize : "1.4rem"}}><IoMdClose /></button>
+                                </div>
+                                    <div className="flex justify-between pb-2">
+                                      
+                                        <div className="flex">
+                                            <img className="w-[60px] h-[60px] object-cover" src={modalData?.giverPictureLink} alt="work alat" />
+
+                                            <div className="px-2">
+                                                <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{modalData?.giverName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
+                                                  { modalData?.isGiverVerify && <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" />}
+                                                   { modalData?.isGiverKycVerify && <GiCheckedShield className="size-[12px] text-[#F76C10]" />}</span></h2>
+                                                <p className="text-sm font-semibold capitalize">Project title: {modalData?.projectName}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-3 overflow-x-hidden overflow-y-scroll hiddenScroll h-[300px]">
+                                        <p>Review: 
+                                        <Rating precision={0.1} value={modalData?.giverRating} style={{fontSize : ".9rem"}} readOnly /></p>
+
+                                        <label className="block pb-2 font-semibold">Description: </label>
+                                        <p>{modalData?.giverReview}</p>
+                                    </div>
+                                </div>
+                            }
+                        />
+                    )
+                    }
+                </div>
             </div>
-        </div>
    
         </>
       )

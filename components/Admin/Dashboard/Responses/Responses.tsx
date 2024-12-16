@@ -7,19 +7,20 @@ import DatePicker from "react-datepicker";
 import './Responses.css'
 import "react-datepicker/dist/react-datepicker.css";
 import { RiMapPin5Fill } from "react-icons/ri";
-import { FaStar } from "react-icons/fa6";
 import { HiMiniCheckBadge } from "react-icons/hi2";
 import { GiCheckedShield } from "react-icons/gi";
-import { ResponsesData } from "@/utils/responsesData";
+import { IoMdClose } from "react-icons/io";
 import ResponsesModal from "./ResponsesModal";
 
 import { useUserContext } from "@/context/user_context";
 import { useSnackbar } from "@/context/snackbar_context";
 import moment from "moment";
-import { Rating, Typography } from "@mui/material";
-import DOMPurify from 'dompurify';
+import { Rating } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+
+// Import postcode and region data 
+import regionsData from "@/postcode_region.json"; 
 
 
 export default function Responses() {
@@ -29,39 +30,13 @@ export default function Responses() {
 
     // date time filtering and location filtering
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
     const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
 
-    const handleDateTimeChange = (date: Date | null) => {
-        setSelectedDate(date);
-        setSelectedTime(date);
-    };
 
-    const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLocation(event.target.value);
-    };
-
-    const uniqueLocations = Array.from(new Set(ResponsesData.map((data: any) => data.location)));
-
-    const dateSelect = selectedDate ? `${format(selectedDate, "dd/MM/yyyy")}` : "";
-    const timeSelect = selectedTime ? `${format(selectedTime, "hh:mm a")}` : "";
-
-    // Filtered data based on selected filters
-    const filteredData = ResponsesData.filter((data: any) => {
-        const matchesDate = dateSelect ? data?.date === dateSelect : true;
-        const matchesTime = timeSelect ? data?.time === timeSelect : true;
-        const matchesLocation = selectedLocation ? data?.location === selectedLocation : true;
-        return matchesDate && matchesTime && matchesLocation;
-    });
 
     const [modalData, setModalData] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     let router = useRouter();
-
-    // const openModal = (data: any) => {
-    //     setModalData(data);
-    //     setIsModalOpen(true);
-    // };
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -73,6 +48,7 @@ export default function Responses() {
     const [loading2, setLoading2] : any  = useState(true);
     let [allLeadsData, setAllLeadsData] : any = useState([]);
     const { generateSnackbar } : any  = useSnackbar();
+    const [filterLeads, setFilterLeads]  : any = useState(false);
 
         async function getData() {
             setLoading2(true);
@@ -81,6 +57,7 @@ export default function Responses() {
             console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setAllLeadsData(res?.data?.data.reverse());
+                setFilterLeads(res?.data?.data.reverse());
                 setLoading2(false);
               } else {
                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
@@ -125,10 +102,8 @@ export default function Responses() {
       const openModal = async (id: any) => {
         try {
             let res = await showLeadsBids({id});
-            console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setModalData(res?.data?.data[0]);
-                // setModalData(filteredData[0]);
                  setIsModalOpen(true);
               } else {
                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
@@ -140,7 +115,6 @@ export default function Responses() {
 
     const projectDecline= async (projectId: any, professoinalId : any) => {
         try {
-            console.log(projectId,professoinalId);
             let res = await declineProposal({projectId, professoinalId});
             if (res?.status !== 400 || res?.data?.status === "success") {
                 generateSnackbar(res?.data?.message || "Status Changed Successfully", "success");
@@ -154,6 +128,54 @@ export default function Responses() {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
     };
+
+  
+    const handleDateTimeChange = (date: Date | null) => {
+        setSelectedDate(date);
+
+    
+        const selectedDateISO = date ? new Date(date).toISOString().split("T")[0] : null;
+    
+        let filter = filterLeads.filter((lead: any) => {
+            if (selectedDateISO === null) {
+                // Only filter by location if no selectedDate
+                return lead?.serviceLocationTown === selectedLocation;
+            } else {
+                // Filter by both location and projectTimeStamp
+                const leadDateISO = lead?.projectTimeStamp ? lead.projectTimeStamp.split("T")[0] : null;
+                return (
+                    lead?.serviceLocationTown === selectedLocation &&
+                    leadDateISO === selectedDateISO
+                );
+            }
+        });
+    
+        setAllLeadsData(filter);
+    };
+
+
+    const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedLocation(event.target.value);
+    
+        const selectedDateISO = selectedDate ? new Date(selectedDate).toISOString().split("T")[0] : null;
+    
+        let filter = filterLeads.filter((lead: any) => {
+            if (selectedDateISO === null) {
+                // Only filter by location if no selectedDate
+                return lead?.serviceLocationTown === event.target.value;
+            } else {
+                // Filter by both location and projectTimeStamp
+                const leadDateISO = lead?.projectTimeStamp ? lead.projectTimeStamp.split("T")[0] : null;
+                return (
+                    lead?.serviceLocationTown === event.target.value &&
+                    leadDateISO === selectedDateISO
+                );
+            }
+        });
+    
+        setAllLeadsData(filter);
+    };
+    
 
     return (
         <>
@@ -171,7 +193,7 @@ export default function Responses() {
 
                 {/* heading */}
                 <div className="w-full flex justify-between pt-4 pb-3 items-center">
-                    <h3 className="font-bold text-[20px]">{filteredData.length} Records</h3>
+                    <h3 className="font-bold text-[20px]">{allLeadsData?.length} Records</h3>
                     <button onClick={() => window.location.reload()} className="w-[30px] h-[30px] flex justify-center items-center rounded-full bg-[#FFBE00]"><IoReloadOutline className="size-[20px] text-black" /></button>
                 </div>
 
@@ -208,11 +230,11 @@ export default function Responses() {
                                             <label htmlFor="location" className="text-gray-700">Location:</label>
                                             <select defaultValue="Select" name="location" id="location" className="font-normal w-full capitalize py-1 outline-none bg-transparent" onChange={handleLocationChange}>
                                                 <option value="Select" disabled>Select location</option>
-                                                {
-                                                    uniqueLocations?.map((data: any, i: number) => (
-                                                        <option key={i} value={data}>{data}</option>
-                                                    ))
-                                                }
+                                                {Object.entries(regionsData).map(([key, value], i) => (
+                                                    <option key={i} value={`${key} , ${value}`}>
+                                                    {value}, {key}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -262,7 +284,10 @@ export default function Responses() {
                                 isOpen={isModalOpen}
                                 onRequestClose={closeModal}
                                 content={
-                                    <div className="py-3 px-2">
+                                    <div className="py-3 px-2 mb-3">
+                                        <div className="flex justify-end">
+                                            <button onClick={closeModal} style={{fontSize : "1.4rem"}}><IoMdClose /></button>
+                                        </div>
                                         <div className="flex justify-between pb-2">
                                             <div className="flex">
                                                 <img className="w-[60px] h-[60px] object-cover" src={modalData?.clientPictureLink} alt="work alat" />
@@ -297,7 +322,7 @@ export default function Responses() {
                                             <p className="text-[#FFBE00] text-[12px]">{modalData?.totalProposals} of 5 Responses</p>
                                         </div>
 
-                                        <div className="pt-3 overflow-x-hidden overflow-y-scroll hiddenScroll h-[300px]">
+                                        <div className="pt-3 overflow-x-hidden overflow-y-auto h-[300px] scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100">
                                             <ul className="py-1">
                                                 {
                                                     modalData?.proposals?.map((response: any, i: number) => (
@@ -308,15 +333,9 @@ export default function Responses() {
 
                                                                     <div className="px-2">
                                                                         <h2 className="capitalize font-semibold text-[13px] flex gap-1 items-center">{response?.professionalName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
-                                                                            {/* <HiMiniCheckBadge className="size-[13px] text-[#29B1FD]" /> */}
                                                                         </span></h2>
                                                                         <div className="flex py-px">
                                                                             <div className="flex gap-[3px] items-center">
-                                                                                {/* {
-                                                                                    [...Array(response?.professionalTotalRatings)].map((_, i) => (
-                                                                                        <FaStar key={i} className="size-[10px] text-amber-300" />
-                                                                                    ))
-                                                                                } */}
 
                                                                                 <div className="flex gap-1 items-center"> 
                                                                                     <Rating precision={0.1} value={(response?.professionalTotalRatings / response.professionalTotalReviews )} readOnly style={{fontSize : "15px"}} />
@@ -333,9 +352,22 @@ export default function Responses() {
                                                                 </div>
 
 
-                                                                <button className="block bg-[#F52933] px-4 text-[12px] font-semibold py-2 rounded-md hover:bg-[#f52933dc] transition-all duration-300 text-white" onClick={(e)=>{
-                                                                    projectDecline(modalData?._id,response?.professionalId)
-                                                                }}>Declined</button>
+                                                                {
+                                                                    modalData?.awardedProfessionalId || modalData?.awardedProfessionalId?.length>0
+
+                                                                    ?
+
+                                                                    modalData?.awardedProfessionalId === response?.professionalId 
+                                                                    ?
+                                                                    <button className="block border-[.5px] border-[#1a741b] text-[#1a741b] px-2 text-[12px] font-semibold py-1 cursor-default rounded-md  transition-all duration-300 " >Awarded</button>
+
+                                                                    :
+                                                                    <></>
+                                                                    :
+                                                                    <button className="block bg-[#F52933] px-4 text-[12px] font-semibold py-2 rounded-md hover:bg-[#f52933dc] transition-all duration-300 text-white" onClick={(e)=>{
+                                                                        projectDecline(modalData?._id,response?.professionalId)
+                                                                    }}>Declined</button>
+                                                                }
                                                             </div>
 
                                                             <p className="text-[13px]">{response?.proposal}</p>

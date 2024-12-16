@@ -25,6 +25,11 @@ import moment from "moment";
 import { Typography } from "@mui/material";
 import Cookies from "js-cookie";
 
+
+// Import postcode and region data 
+import regionsData from "@/postcode_region.json"; 
+import { IoMdClose } from "react-icons/io";
+
 export default function Leads() {
 
     // here is demo data "import { leadsData } from "@/utils/leadsData";", which need to connect api and fetch from api then that data will be here.. and with the api also need to integration for update and delete methods because here is button in "view" and if there click there will show option for approve and reject so depends on that data need to update also. i here taking from leadsData.ts files (demo data)
@@ -33,33 +38,13 @@ export default function Leads() {
 
     // date time filtering and location filtering
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
     const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
 
-    const handleDateTimeChange = (date: Date | null) => {
-        setSelectedDate(date);
-        setSelectedTime(date);
-    };
-
-    const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLocation(event.target.value);
-    };
-
-    const uniqueLocations = Array.from(new Set(leadsData.map((data: any) => data.location)));
-
-    const dateSelect = selectedDate ? `${format(selectedDate, "dd/MM/yyyy")}` : "";
-    const timeSelect = selectedTime ? `${format(selectedTime, "hh:mm a")}` : "";
-
-    // Filtered data based on selected filters
-    const filteredData = leadsData.filter((data: any) => {
-        const matchesDate = dateSelect ? data?.date === dateSelect : true;
-        const matchesTime = timeSelect ? data?.time === timeSelect : true;
-        const matchesLocation = selectedLocation ? data?.location === selectedLocation : true;
-        return matchesDate && matchesTime && matchesLocation;
-    });
+  
  
-    const [modalData, setModalData] = useState<any | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData]  = useState<any | null>(null);
+    const [isModalOpen, setIsModalOpen] : any = useState(false);
+    const [filterLeads, setFilterLeads]  : any = useState(false);
 
    
 
@@ -81,6 +66,7 @@ export default function Leads() {
             let res = await showLeadsAdmin();
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setAllLeadsData(res?.data?.data.reverse());
+                setFilterLeads(res?.data?.data.reverse());
                 setLoading2(false);
               } else {
                 generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
@@ -126,9 +112,7 @@ export default function Leads() {
 
       const openModal = async (id: any) => {
         try {
-            console.log("Id", id);
             let res = await showSingleLeadsData({id});
-            console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setModalData(res?.data?.data[0]);
                  setIsModalOpen(true);
@@ -154,6 +138,54 @@ export default function Leads() {
             generateSnackbar("Some error occurred, Please Try Again.", "error");
           }
     };
+
+    const handleDateTimeChange = (date: Date | null) => {
+        setSelectedDate(date);
+
+    
+        const selectedDateISO = date ? new Date(date).toISOString().split("T")[0] : null;
+    
+        let filter = filterLeads.filter((lead: any) => {
+            if (selectedDateISO === null) {
+                // Only filter by location if no selectedDate
+                return lead?.serviceLocationTown === selectedLocation;
+            } else {
+                // Filter by both location and projectTimeStamp
+                const leadDateISO = lead?.projectTimeStamp ? lead.projectTimeStamp.split("T")[0] : null;
+                return (
+                    lead?.serviceLocationTown === selectedLocation &&
+                    leadDateISO === selectedDateISO
+                );
+            }
+        });
+    
+        setAllLeadsData(filter);
+    };
+
+
+    const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedLocation(event.target.value);
+    
+        const selectedDateISO = selectedDate ? new Date(selectedDate).toISOString().split("T")[0] : null;
+    
+        let filter = filterLeads.filter((lead: any) => {
+            if (selectedDateISO === null) {
+                // Only filter by location if no selectedDate
+                return lead?.serviceLocationTown === event.target.value;
+            } else {
+                // Filter by both location and projectTimeStamp
+                const leadDateISO = lead?.projectTimeStamp ? lead.projectTimeStamp.split("T")[0] : null;
+                return (
+                    lead?.serviceLocationTown === event.target.value &&
+                    leadDateISO === selectedDateISO
+                );
+            }
+        });
+    
+        setAllLeadsData(filter);
+    };
+    
+
 
     return (
         <>
@@ -208,11 +240,11 @@ export default function Leads() {
                                             <label htmlFor="location" className="text-gray-700">Location:</label>
                                             <select defaultValue="Select" name="location" id="location" className="font-normal w-full capitalize py-1 outline-none bg-transparent" onChange={handleLocationChange}>
                                                 <option value="Select" disabled>Select location</option>
-                                                {
-                                                    uniqueLocations?.map((data: any, i: number) => (
-                                                        <option key={i} value={data}>{data}</option>
-                                                    ))
-                                                }
+                                                {Object.entries(regionsData).map(([key, value], i) => (
+                                                    <option key={i} value={`${key} , ${value}`}>
+                                                    {value}, {key}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -262,6 +294,10 @@ export default function Leads() {
                             onRequestClose={closeModal}
                             content={
                                 <div className="py-3 px-2">
+                                    
+                                    <div className="flex justify-end">
+                                        <button onClick={closeModal} style={{fontSize : "1.4rem"}}><IoMdClose /></button>
+                                    </div>
                                     <div className="flex pb-2">
                                         <img className="w-[60px] h-[60px] object-cover" src={modalData?.clientPictureLink} alt="work alat" />
 
@@ -286,23 +322,10 @@ export default function Leads() {
                                         </div>
                                     </div>
 
-                                    <div className="pt-3 mb-2 overflow-x-hidden overflow-y-scroll hiddenScroll h-[250px]">
-                                        {/* <p className="text-[15px] pb-3">{modalData?.projectDescription}</p>         */}
+                                    <div className="pt-3 overflow-x-hidden overflow-y-auto h-[300px] scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-100">
                                             <Typography className='py-2 text-md capitalize' variant="body1"  dangerouslySetInnerHTML={{ __html: `${DOMPurify.sanitize(modalData?.serviceDes)}` }} />
 
                                         <ul className="py-1">
-                                            {/* <li className="py-1">
-                                                <p className="font-semibold text-[15px]">Which kind(s) of performers would you consider?</p>
-                                                <p className="text-[15px] text-[#323C47]">{modalData?.performanceType}</p>
-                                            </li>
-                                            <li className="py-1">
-                                                <p className="font-semibold text-[15px]">Will the performance be outdoors or indoors?</p>
-                                                <p className="text-[15px] text-[#323C47]">{modalData?.performanceSide}</p>
-                                            </li>
-                                            <li className="py-1">
-                                                <p className="font-semibold text-[15px]">What type of event do you need a performer for?</p>
-                                                <p className="text-[15px] text-[#323C47]">{modalData?.typeOfEvent}</p>
-                                            </li> */}
                                             <li className="py-1">
                                                 <p className="font-semibold text-[15px]">Budget</p>
                                                 <div className="flex gap-1">

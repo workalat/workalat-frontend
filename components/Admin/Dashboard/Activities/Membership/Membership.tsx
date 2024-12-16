@@ -6,7 +6,7 @@ import { MdDelete } from "react-icons/md";
 import Menus from "../../Menus/Menus";
 import Link from "next/link";
 import { IoMdClose } from "react-icons/io";
-
+ 
 
 
 import { useRouter } from "next/navigation";
@@ -14,6 +14,9 @@ import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
 import Cookies from "js-cookie";
 import moment from "moment";
+import { AiOutlineSearch } from "react-icons/ai";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 export default function Membership() {
     // here users will be dynamically from the backend. for now i using "import { activitiesData } from "@/utils/activitiesData";" as a demo users data
@@ -70,7 +73,8 @@ export default function Membership() {
   let [allFilterData, setAllFilterData]: any = useState([]);
   const { generateSnackbar }: any = useSnackbar();
   let router = useRouter();
-  let [totalUsers, setTotalUsers] = useState(0);
+  let [totalUsers, setTotalUsers] : any = useState(0);
+    const [searchTerm, setSearchTerm] : any = useState(""); // Search term for filtering
 
 
 
@@ -79,7 +83,6 @@ export default function Membership() {
     setLoading2(true);
     try {
       let res = await membershipPageData();
-      console.log(res);
       if (res?.status === 200 || res?.data?.status === "success") {
         setAllData(res?.data?.data.reverse());
         setAllFilterData(
@@ -130,7 +133,6 @@ export default function Membership() {
 
   async function membershipStatus(professoinalId : string, choice) {
     try {
-        console.log(professoinalId,choice);
         let res: any = await changeMembershipStatus({ professoinalId, choice});
         if (
           res?.status === 200 ||
@@ -147,6 +149,25 @@ export default function Membership() {
     }
   }
 
+
+
+  function downloadData(){
+
+
+            // Create a new workbook and worksheet
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(allFilterData);
+
+            // Append worksheet to workbook
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+            // Write the workbook to a Blob
+            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+            const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+            // Save the Blob as a file
+            saveAs(blob, "ExportedData.xlsx");
+  }
 
     return (
       <> 
@@ -165,16 +186,52 @@ export default function Membership() {
                 <div className="flex justify-between items-start">
                     <h4 className="text-[20px] font-bold">Activities</h4>
 
-                    <Link className="block bg-[#FFBE00] text-[15px] font-semibold text-black px-4 py-3 rounded-md" href="/admin/activities">
+                  <div className="flex gap-3 items-center">
+
+                  <Link className="block bg-[#FFBE00] text-[15px] font-semibold text-black px-4 py-3 rounded-md" href="/admin/activities">
                         Membership History
                     </Link>
+                    
+                    <button  className="block bg-[#FFBE00] text-[15px] font-semibold text-black px-4 py-3 rounded-md" onClick={downloadData}>Downloads</button>
+                  </div>
+
                 </div>
 
                 {/* header */}
                 <div className="flex justify-between items-center pt-5">
                     <h4 className="font-bold text-[20px]">{totalUsers} Records</h4>
                     {/* users type selector */}
-                    <select
+
+                    <div className="flex gap-3">
+
+                    <div className="flex items-center justify-end">
+                            {/* search box */}
+                            <div className="flex items-center border border-gray-300 rounded-md px-3 py-1.5 w-[250px]">
+                                <AiOutlineSearch className="size-[18px] text-[#909090]" />
+                                <input
+                                    type="search"
+                                    placeholder="Search here"
+                                    className="outline-none bg-transparent ml-2 text-gray-500 placeholder-gray-400 w-full"
+                                    value={searchTerm}
+                                    onChange={(e) =>{
+                                      setSearchTerm(e.target.value);
+                                      if(e.target.value == ""){
+                                        setAllFilterData(allData);
+                                      }
+                                      else{
+                                        let filter = allData?.filter((val)=>{
+                                          if(val?.professionalFullName?.includes(e.target.value)){
+                                            return(val);
+                                          }
+                                        });
+                                        setAllFilterData(filter);
+                                        setTotalUsers(filter?.length);
+                                      }
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <select
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
@@ -212,6 +269,8 @@ export default function Membership() {
                         <option className="bg-[#07242B] text-white" value="cancelled">Cancelled </option>
                         <option className="bg-[#07242B] text-white" value="expired">Expired </option>
                     </select>
+                    </div>
+
                 </div>
                 <div className="h-[1px] w-full bg-black mt-5"></div>
                 <div className="py-2">

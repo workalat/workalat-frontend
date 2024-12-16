@@ -165,6 +165,7 @@ interface UserContextType {
   verifyAdmin : (data : any ) => any;
   allAdmin : () => any;
   createNewAdmin : (data : any ) => any;
+  updateAdmin : (data : any ) => any;
   showAllReviews : () => any;
   deleteReview : (data : any ) => any;
   ActivitiesData  : () => any;
@@ -187,6 +188,7 @@ interface UserContextType {
   deleteQuestions : (data : any ) => any;
   deleteJobsQuestions  : (data : any ) => any;
   editJobsQuestions : (data : any ) => any;
+  changeStatusTicket : (data : any ) => any;
   logoutAdmin : (data : any ) => any;
   
 }
@@ -2163,6 +2165,19 @@ async function createNewAdmin({admin_name,admin_email,admin_password,admin_statu
     // console.log(e);
     return(e);
   }
+};
+
+async function updateAdmin({adminId,adminEmail,adminName,adminRole, adminPassword} : any){
+  try{
+    const response  : any  = await axios.post('/updateAdmin', {
+      adminId,adminEmail,adminName,adminRole, adminPassword
+    });
+      return(response);
+  }
+  catch(e){
+    // console.log(e);
+    return(e);
+  }
 }
 
 
@@ -2399,6 +2414,21 @@ async function editPointsRule({walletId,newPoint,newCategory,newFrequency,newBud
 
 
 
+async function changeStatusTicket({ticketId, newStatus} : any){
+  try{
+    const response  : any  = await axios.post('/changeTicketStatus',{
+      ticketId, newStatus
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+
+
 
 
 
@@ -2567,6 +2597,7 @@ async function logoutAdmin({ token } : any){
       verifyAdmin,
       allAdmin,
       createNewAdmin,
+      updateAdmin,
       showAllReviews,
       deleteReview,
       ActivitiesData,
@@ -2589,6 +2620,7 @@ async function logoutAdmin({ token } : any){
       deleteQuestions,
       deleteJobsQuestions,
       editJobsQuestions,
+      changeStatusTicket,
       logoutAdmin,
 
        }}>

@@ -16,6 +16,11 @@ import { useUserContext } from "@/context/user_context";
 import Cookies from "js-cookie";
 import moment from "moment";
 
+
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import { AiOutlineSearch } from "react-icons/ai";
+
 export default function Activities() {
     // here users will be dynamically from the backend. for now i using "import { activitiesData } from "@/utils/activitiesData";" as a demo users data
 
@@ -81,17 +86,10 @@ export default function Activities() {
   let [allData, setAllData]: any = useState([]);
   let [allFilterData, setAllFilterData]: any = useState([]);
   const { generateSnackbar }: any = useSnackbar();
+  const [dataType, setDataType] : any = useState('all'); // Filter by data type
   let router = useRouter();
-  let [choice, setChoice] = useState("access");
-  let [points, setPoints] = useState(0);
   let [totalUsers, setTotalUsers] = useState(0);
-
-  let [newAdmin, setNewAdmin] = useState({
-    admin_name : "",
-    admin_email : "",
-    admin_password : "",
-    admin_status : "user",
-  })
+  const [searchTerm, setSearchTerm] : any = useState(''); // Search term state
 
 
   async function getData() {
@@ -149,7 +147,6 @@ export default function Activities() {
 
   async function initiateRefund(transactionId : string) {
     try {
-        console.log(transactionId);
         let res: any = await refundTransaction({ transactionId });
         if (
           res?.status === 200 ||
@@ -164,7 +161,26 @@ export default function Activities() {
       // console.log(e);
       generateSnackbar("Something went wrong, please Try Again.", "error");
     }
-  }
+  };
+
+  
+    function downloadData(){
+  
+  
+              // Create a new workbook and worksheet
+              const workbook = XLSX.utils.book_new();
+              const worksheet = XLSX.utils.json_to_sheet(allFilterData);
+  
+              // Append worksheet to workbook
+              XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+  
+              // Write the workbook to a Blob
+              const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+              const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  
+              // Save the Blob as a file
+              saveAs(blob, "ExportedData.xlsx");
+    }
 
     return (
 
@@ -186,44 +202,109 @@ export default function Activities() {
                 <div className="flex justify-between items-start">
                     <h4 className="text-[20px] font-bold">Activities</h4>
 
+                    <div className="flex  gap-3 items-center">
                     <Link className="block bg-[#FFBE00] text-[15px] font-semibold text-black px-4 py-3 rounded-md" href="/admin/activities/membership">
                         Membership Activity
                     </Link>
+
+                    <button  className="block bg-[#FFBE00] text-[15px] font-semibold text-black px-4 py-3 rounded-md" onClick={downloadData}>Downloads</button>
+
+                    </div>
+
                 </div>
 
                 {/* header */}
                 <div className="flex justify-between items-center pt-5">
                     <h4 className="font-bold text-[20px]">{totalUsers} Records</h4>
                     {/* users type selector */}
-                    <select
+
+                      {/* users type selector */}
+                      <div className="flex gap-3">
+                        <div className="flex items-center justify-end">
+                            {/* search box */}
+                            <div className="flex items-center border border-gray-300 rounded-md px-3 py-1.5 w-[250px]">
+                                <AiOutlineSearch className="size-[18px] text-[#909090]" />
+                                <input
+                                    type="search"
+                                    placeholder="Search here"
+                                    className="outline-none bg-transparent ml-2 text-gray-500 placeholder-gray-400 w-full"
+                                    value={searchTerm}
+                                    onChange={(e) =>{
+                                         setSearchTerm(e.target.value);
+                                         if(e.target.value == ""){
+                                            setAllFilterData(allData);
+                                            setTotalUsers(allData?.length);
+                                          }
+                                          else{
+                                            let filter = allData?.filter((val)=>{
+                                              if(val?.userName?.includes(e.target.value)){
+                                                return(val);
+                                              }
+                                            });
+                                            setAllFilterData(filter);
+                                            setTotalUsers(filter?.length);
+                                          }
+                                        }} // Update search term
+                                />
+                            </div>
+                        </div>
+                        <select
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
                         onChange={(e) => {
                             setUserType(e.target.value);
-                            if(e.target.value === "all"){
-                                setAllFilterData(allData);
-                                setTotalUsers(allData?.length);
-                            }   
-                            else if (e.target.value === "pending"){
-                                let data = allData.filter((val)=>{if(val.transactionStatus === "pending"){return(val)}});
-                                setAllFilterData(data);
-                                setTotalUsers(data?.length);
-                            }   
-                            else if(e.target.value === "success"){
-                                let data = allData.filter((val)=>{if(val.transactionStatus === "success"){return(val)}});
-                                setAllFilterData(data);
-                                setTotalUsers(data?.length);
-                            } 
-                            else if(e.target.value === "fail"){
-                                let data = allData.filter((val)=>{if(val.transactionStatus === "fail"){return(val)}});
-                                setAllFilterData(data);
-                                setTotalUsers(data?.length);
+                            if(dataType == "all"){
+                                if(e.target.value === "all"){
+                                    setAllFilterData(allData);
+                                    setTotalUsers(allData?.length);
+                                }   
+                                else if (e.target.value === "pending"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "pending"){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                }   
+                                else if(e.target.value === "success"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "success"){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                } 
+                                else if(e.target.value === "fail"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "fail"){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                }
+                                else if(e.target.value === "refunded"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "refunded"){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                }
                             }
-                            else if(e.target.value === "refunded"){
-                                let data = allData.filter((val)=>{if(val.transactionStatus === "refunded"){return(val)}});
-                                setAllFilterData(data);
-                                setTotalUsers(data?.length);
+                            else{
+                                if(e.target.value === "all"){
+                                    setAllFilterData(allData);
+                                    setTotalUsers(allData?.length);
+                                }   
+                                else if (e.target.value === "pending"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "pending" && val?.des == dataType){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                }   
+                                else if(e.target.value === "success"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "success" && val?.des == dataType){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                } 
+                                else if(e.target.value === "fail"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "fail" && val?.des == dataType){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                }
+                                else if(e.target.value === "refunded"){
+                                    let data = allData.filter((val)=>{if(val.transactionStatus === "refunded" && val?.des == dataType){return(val)}});
+                                    setAllFilterData(data);
+                                    setTotalUsers(data?.length);
+                                }
                             }
                             
                         }}
@@ -234,6 +315,57 @@ export default function Activities() {
                         <option className="bg-[#07242B] text-white" value="fail">Failed</option>
                         <option className="bg-[#07242B] text-white" value="refunded">Refunded</option>
                     </select>
+                        <select
+                            name="dataType"
+                            className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
+                            value={dataType}
+                            onChange={(e) =>{
+                                 setDataType(e.target.value)
+
+                                if(e.target.value === "all" && userType === "all"){
+                                    setAllFilterData(allData)
+                                    setTotalUsers(allData?.length);
+                                }
+                                else if(e.target.value === "Leads Purchase"){
+                                    let filter = allData?.filter((val)=>{
+                                        if(userType === "all"){
+                                            if(val?.des == "Leads Purchase"){
+                                              return(val);
+                                            }
+                                        }
+                                        else{
+                                            if(val?.des == "Leads Purchase" && val?.transactionStatus == userType){
+                                            return(val);
+                                          }
+                                        }
+                                      });
+                                      setAllFilterData(filter);
+                                      setTotalUsers(filter?.length);
+                                }
+                                else if(e.target.value === "Wallet Top up"){
+                                    let filter = allData?.filter((val)=>{
+                                        if(userType === "all"){
+                                            if(val?.des == "Wallet Top up"){
+                                              return(val);
+                                            }
+                                        }
+                                        else{
+                                            if(val?.des == "Wallet Top up" && val?.transactionStatus == userType){
+                                                return(val);
+                                              }
+                                        }
+                                      });
+                                      setAllFilterData(filter);
+                                      setTotalUsers(filter?.length);
+                                }
+
+                                }}
+                        >
+                            <option className="bg-[#07242B] text-white" value="all">All</option>
+                            <option className="bg-[#07242B] text-white" value="Leads Purchase">Lead Purchase</option>
+                            <option className="bg-[#07242B] text-white" value="Wallet Top up">Wallet Top Up</option>
+                        </select>
+                    </div>
                 </div>
                 <div className="h-[1px] w-full bg-black mt-5"></div>
                 <div className="py-2">

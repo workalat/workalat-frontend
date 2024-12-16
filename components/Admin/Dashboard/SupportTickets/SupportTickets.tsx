@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/snackbar_context";
 import { useUserContext } from "@/context/user_context";
 
+import Cookies from "js-cookie";
 export default function SupportTickets() {
     // here tickets data will be dynamically from the backend. for now i using "import { ticketsData } from "@/utils/TicketsData";" as a demo tickets data
 
@@ -54,20 +55,20 @@ export default function SupportTickets() {
 
 
      // BACKEND INTEGRATION
-     const {showAllTickets} : any  = useUserContext();
+     const {showAllTickets, verifyAdmin} : any  = useUserContext();
      const [loading2, setLoading2] : any  = useState(true);
      let [allTicketsData, setAllTicketsData] : any = useState([]);
+     let [filterTicketsData, setFilterTicketsData] : any = useState([]);
      const { generateSnackbar } : any  = useSnackbar();
      let router = useRouter();
  
-     useEffect(() => {
          async function getData() {
              setLoading2(true);
            try {
              let res = await showAllTickets();
-             console.log(res);
              if (res?.status === 200  || res?.data?.status === "success" ) {
                 setAllTicketsData(res?.data?.data?.reverse());
+                setFilterTicketsData(res?.data?.data?.reverse())
                 setLoading2(false);
                } else {
                  generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
@@ -76,9 +77,34 @@ export default function SupportTickets() {
              generateSnackbar("Some error occurred, Please Try Again.", "error");
            }
          }
-         getData();
-       }, []);
  
+
+          useEffect(()=>{
+               async function verify(){
+                   try{
+                       setLoading2(true);
+                       let adminToken : any = Cookies.get("adminToken");
+                       
+                       if(adminToken !== undefined){
+                           let res : any = await verifyAdmin({adminToken});
+                           if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                               getData();
+                           }   
+                           else{
+                               router.push("/admin-login");
+                           }
+                       }
+                       else{
+                           router.push("/admin-login")
+                       }
+                   }
+                   catch(e){
+                       // console.log(e);
+                       generateSnackbar("Something went wrong, please Try Again.", "error");   
+                   }
+               };
+               verify();
+           }, []);
  
 
 
@@ -112,7 +138,22 @@ export default function SupportTickets() {
                         name="users"
                         className="bg-transparent text-[15px] py-2 font-semibold rounded-md px-2 ring-[1px] ring-[#7e7e7e85] outline-none border-none cursor-pointer"
                         value={userType}
-                        onChange={(e) => setUserType(e.target.value)}
+                        onChange={(e) =>{
+                             setUserType(e.target.value)
+                            
+                             if(e.target.value === "client"){
+                                let fiter = filterTicketsData?.filter((val)=>{return val?.ticketCreatedBy == "client"})
+                                setAllTicketsData(fiter);
+                            }   
+                            else if (e.target.value === "professional"){
+                                let fiter = filterTicketsData?.filter((val)=>{return val?.ticketCreatedBy == "professional"})
+                                setAllTicketsData(fiter);
+                            }   
+                            else if(e.target.value === "all"){
+                                setAllTicketsData(filterTicketsData);
+                            }          
+                        
+                            }}
                     >
                         <option className="bg-[#07242B] text-white" value="all">All</option>
                         <option className="bg-[#07242B] text-white" value="client">Client</option>
@@ -124,9 +165,6 @@ export default function SupportTickets() {
                     <div className='flex gap-4 justify-end items-center pb-[10px]'>
                         {/* button for refresh */}
                         <button onClick={() => window.location.reload()} className="flex justify-center items-center px-5 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] "><RiRefreshLine className="size-[15px]" /></button>
-                        {/* open new ticket button */}
-                        {/* <Link href="/admin/support-tickets/create-tickets" className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] font-semibold">Open New Ticket<FaArrowRight className="size-3" /></Link> */}
-                        {/* all tickets */}
                         <button className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-white text-[#07242B] border border-[#07242B] text-[15px] font-bold ">All Tickets<FaArrowRight className="size-3" /></button>
                     </div>
                 </div>
@@ -140,8 +178,6 @@ export default function SupportTickets() {
                                         {selectedUsers.length > 0 ? (
                                             <div className="flex items-center">
                                                 <span className="text-slate-600 font-semibold mr-2 text-[15px]">{selectedUsers.length} selected</span>
-                                                {/* here will be functional for selected data for delete method for backend */}
-                                                <MdDelete className="text-slate-500 cursor-pointer" size={15} />
                                             </div>
                                         ) : (
                                             <input
@@ -183,7 +219,7 @@ export default function SupportTickets() {
                                         <td className="p-4">
                                             {/* this button will be connected with backend for some function or operation and it will dynamic */}
                                             {
-                                                user?.ticketStatus !== "closed" ? <Link href={`/admin/support-tickets/view/${user?._id}`} className="flex gap-2 justify-center items-center px-2 py-2 rounded-md bg-[#7A7A7A] text-white text-[15px] font-semibold w-[200px]"><RiCloseFill className="size-[15px] rounded-sm text-[#07242B] bg-white capitalize" />Waiting on <span className="capitalize">{user?.ticketStatus}</span> </Link> : user?.ticketStatus == "closed" && <button className="px-4 py-2 rounded-md bg-[#00A770] text-white text-[15px] font-semibold">Closed</button>
+                                                user?.ticketStatus !== "closed" ? <Link href={`/admin/support-tickets/view/${user?._id}`} className="flex gap-2 justify-center items-center px-2 py-2 rounded-md bg-[#7A7A7A] text-white text-[15px] font-semibold w-[200px]"><RiCloseFill className="size-[15px] rounded-sm text-[#07242B] bg-white capitalize" />Waiting on <span className="capitalize">{user?.ticketStatus}</span> </Link> : user?.ticketStatus == "closed" && <Link  href={`/admin/support-tickets/view/${user?._id}`} className="px-4 py-2 rounded-md bg-[#00A770] text-white text-[15px] font-semibold">Closed</Link>
                                             }
                                         </td>
                                     </tr>

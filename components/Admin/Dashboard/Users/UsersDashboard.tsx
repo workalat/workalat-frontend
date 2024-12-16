@@ -211,7 +211,7 @@ export default function UsersDashboard() {
       professional.userName.toLowerCase().includes(e.target.value.toLowerCase())
     );
 
-    setAllFilterData(filteredClients,filteredProfessionals);
+    setAllFilterData([...filteredClients,...filteredProfessionals]);
   };
 
 
