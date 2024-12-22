@@ -334,6 +334,7 @@ export default function PointsPage({ data }: any) {
                                                         onChange={(e : any)=>{setSelectedFrequency(e.target.value)}}
                                                     >
                                                         <option value="Select" disabled>Select Frequency</option>
+                                                        <option value="one-off">One Off</option>
                                                         <option value="daily">Daily</option>
                                                         <option value="monthly">Monthly</option>
                                                         <option value="yearly">Yearly</option>
