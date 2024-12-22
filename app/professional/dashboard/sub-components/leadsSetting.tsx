@@ -68,7 +68,7 @@ const LeadsSetting = ({data, skills}) => {
 
       <Box mt={2}>
         <Typography className='text-lg font-bold' gutterBottom>
-          Estimated 1027 leads per day
+          {/* Estimated 1027 leads per day */}
         </Typography>
         <Box display="flex" alignItems="center" gap={2} className='mt-3'>
           <Typography className='text-sm'>info@anitamika.site</Typography>

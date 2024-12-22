@@ -60,6 +60,12 @@ export default function Administrator() {
   };
 
   const closeModal = () => {
+    setNewAdmin({
+      admin_name : "",
+      admin_email : "",
+      admin_password : "",
+      admin_status : "user",
+    });
     setIsModalOpen(false);
   };
 

@@ -144,22 +144,25 @@ export default function RankingPage({ data }: any) {
                     case "level_pro":
                         let l = updateData.level_4;
                         let m = updateData.level_pro;
-                        if(m<l || j == 0){
+                        if(m<l || m == 0){
                             return generateSnackbar("Please Ener valid Criteria.", "error");
                         }
                         break;
                 }
 
                 let res = await updateRanking({rank : updateData});
+                console.log(res);
                 if (res?.status === 200 || res?.data?.status === "success") {
                     generateSnackbar(res?.data?.message , "success");
-                    router.refresh();
+                    window.location.reload();
+                    // router.refresh();
                     closeModal();
                   } else {
-                    generateSnackbar("Some error occurred, Please Try Again.", "error");
+                    generateSnackbar(res?.response?.data?.message || "Some error occurred, Please Try Again.", "error");
                   }
             }
             catch(e){
+                // console.log(e);
                 generateSnackbar("Some error occurred, Please Try Again.", "error");
             }
         }

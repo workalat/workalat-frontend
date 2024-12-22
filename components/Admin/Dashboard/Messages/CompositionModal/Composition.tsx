@@ -102,6 +102,7 @@ async function getData(){
                 subject : subject,
                 message : message
             });
+            console.log(res);
             if (
                 res?.status === 200 ||
                 res?.data?.status === "success"
@@ -110,6 +111,7 @@ async function getData(){
                 setMessageSent(true);
               } else {
                 generateSnackbar( res?.response?.data?.message ||  "Something went wrong, please Try Again.", "error");
+                setMessageSending(false);
               }
 
         } catch (error) {

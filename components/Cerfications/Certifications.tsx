@@ -11,6 +11,7 @@ import { useUserContext } from "@/context/user_context";
 import VerifyUser from '@/app/middleware/VerifyUser';
 import Cookies from 'js-cookie';
 import { useSnackbar } from "@/context/snackbar_context";
+import { GrFormView } from "react-icons/gr";
 import axios from "axios";
 import { Box, Chip, Modal } from "@mui/material";
  
@@ -258,7 +259,7 @@ export default function Certifications() {
                                                                 isExpired : val?.isExpired
                                                             })
                                                             setIsAddNewOpen(true);
-                                                        }}><MdEditSquare className="size-5 text-secondary" /></button>
+                                                        }}><GrFormView className="size-9 text-[40px] text-secondary" /></button>
                                                         </div>
                                                     </li>
                                                     
