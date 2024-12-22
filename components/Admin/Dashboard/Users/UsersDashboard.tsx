@@ -8,6 +8,7 @@ import UserModal from "./UserModal";
 import { FaArrowRight } from "react-icons/fa6";
 import { useUserContext } from "@/context/user_context";
 import { useSnackbar } from "@/context/snackbar_context";
+import { GiConfirmed } from "react-icons/gi";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import moment from "moment";
@@ -81,7 +82,7 @@ export default function UsersDashboard() {
     
 
      // BACKEND INTEGRATION
-     const {allUsers, verifyAdmin, singleUser,changeUserStatus, addPoints} : any  = useUserContext();
+     const {allUsers, verifyAdmin, singleUser,changeUserStatus, addPoints, accessUserAccount} : any  = useUserContext();
      const [loading2, setLoading2] : any  = useState(true);
      let [allClientsData, setAllClientsData] : any = useState([]);
      let [allProfessionalData, setAllProfessionalData] : any = useState([]);
@@ -166,6 +167,7 @@ export default function UsersDashboard() {
                     choice : userChoice
                 });
                 if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
+                    router.refresh();
                     generateSnackbar( res?.data?.message , "success"); 
                 }   
                 else{
@@ -185,6 +187,28 @@ export default function UsersDashboard() {
                 });
                 if(res?.status === 200 || res?.data?.status === "success" || res?.data?.data?.verify === true){
                     generateSnackbar( res?.data?.message , "success"); 
+                }   
+                else{
+                    generateSnackbar("Something went wrong, please Try Again.", "error");   
+                }
+        }
+        catch(e){
+            // console.log(e);
+            generateSnackbar("Something went wrong, please Try Again.", "error");   
+        }
+    };
+
+    async function accessAccount(userId , userType){
+        try{
+                let res : any = await accessUserAccount({
+                    userId, userType
+                });
+                if(res?.status === 200 || res?.data?.status === "success"){
+ 
+                    Cookies.set("token", res?.data?.data?.token, { secure: true, sameSite: 'None' });
+                    Cookies.set("userType", res?.data?.data?.userType, { secure: true, sameSite: 'None' });
+
+                    window.open(`/${res?.data?.data?.userType}/dashboard`, "_blank");
                 }   
                 else{
                     generateSnackbar("Something went wrong, please Try Again.", "error");   
@@ -335,14 +359,18 @@ export default function UsersDashboard() {
                                         {/* the action buttons are currently act as demo it need to connect backend for taking action on the user with Put or patch method in api */}
 
                                         <button className="bg-[#FFBE00] text-black px-2 py-2 rounded text-[12px] xl:text-[15px] font-bold" onClick={(e : any)=>{
-                                            setChoice("access");
-                                            changeAccountStatus(user?._id, user?.userType, "access");
+                                            // setChoice("access");
+                                            accessAccount(user?._id, user?.userType)
+                                            // changeAccountStatus(user?._id, user?.userType, "access");
                                         }}>Access Account</button>
-                                        <button className="bg-[#FE321F] text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold" onClick={(e : any)=>{
-                                            setChoice("ban");
-                                            changeAccountStatus(user?._id, user?.userType, "ban");
+                                        <button className={`${ user?.userStatus ? "bg-[#FE321F]" : "bg-[#115a11]" } text-white px-2 py-2 rounded flex items-center text-[12px] xl:text-[15px] justify-center gap-2 font-semibold`} onClick={(e : any)=>{
+                                            setChoice( user?.userStatus ?"ban" : "access");
+                                            changeAccountStatus(user?._id, user?.userType,  user?.userStatus ?"ban" : "access");
                                         }}>
-                                            <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]"  /> Ban Account
+                                            {
+                                                user?.userStatus ? <AiFillCloseSquare className="text-white size-[15px] xl:size-[20px]"  />  : <GiConfirmed className="text-white size-[15px] xl:size-[20px]"  /> 
+                                            }
+                                            { user?.userStatus?"Ban" : "Access"} Account
                                         </button>
                                     </td>
                                 </tr>

@@ -21,6 +21,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 import { useSnackbar } from "@/context/snackbar_context";
+ 
 
 const Page = () => {
   const [isClientDashboard, setIsClientDashboard] = useState<boolean>(false);
@@ -28,12 +29,18 @@ const Page = () => {
   let [userData,setUserData] : any = useState({});
   let [dashData,setDashData] : any = useState({});
   const [isSideNavOpen, setIsSideNavOpen] : any = useState(false);
+  let [showEmailOtpBox, setShowEmailOtpBox] : any = useState(false);
+  let [showPhoneOtpBox, setShowPhoneOtpBox] : any = useState(false);
+  let [isEditEnable, setIsEditEnable] : any = useState(false);
   // loading
   const [loading2, setLoading2] : any = useState(true);
   let router = useRouter();
-  let { dashboardData } : any = useUserContext(); 
-
-
+  let { dashboardData , verifyUserData} : any = useUserContext(); 
+  let [verifyEmailData, setVerifyEmailData] : any = useState({
+    userId : "",
+    userType : "",
+    userEmail : "",
+  });
   const { generateSnackbar } : any = useSnackbar();
 
   const toggleSideNav = () => {
@@ -63,6 +70,7 @@ const Page = () => {
         }
       }
       catch(e){
+        console.log(e);
         generateSnackbar("Some Error Occur, Please try Again." ,"error")
       }
     };
@@ -90,8 +98,6 @@ const Page = () => {
 
 
 
-
-
   return (
     <>
      {loading2 ? (
@@ -102,6 +108,7 @@ const Page = () => {
             :(
               <>
                 <ThemeProvider theme={theme}>
+                  
       <div className="md:hidden fixed bottom-4 right-4 z-50">
         <button
           className="bg-secondary text-main p-2 rounded-full shadow-lg"
@@ -153,6 +160,7 @@ const Page = () => {
             </div>
           </section>
         </section>
+        
       </section>
     </ThemeProvider>
               </>

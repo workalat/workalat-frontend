@@ -163,6 +163,23 @@ export default function JobDetailsSlider({
           <Box>
             <h2 className="font-bold">Budget: </h2>${projectData?.projectPriceTitle}
           </Box>
+          {
+            projectData?.projectFileURL?.length>0 && 
+            <Box>
+              <h2 className="font-bold">Files: </h2>
+              {
+                projectData?.projectFileURL?.map((val)=>{
+                  return (
+                    <Box key={val}>
+                      <a href={val?.url} target="_blank" className="text-[#3838e8]" rel="noopener noreferrer">{val?.fileName}
+                      </a>
+                    </Box>
+                  )
+                })
+              }
+
+            </Box>
+          }
           <Box className="flex gap-6 flex-wrap-reverse">
             <Link href={`/leads?job=${projectData?._id}&apply=true`} className="flex-grow sm:flex-grow-0">
               <Button

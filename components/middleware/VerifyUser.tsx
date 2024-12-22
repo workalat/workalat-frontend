@@ -1,6 +1,4 @@
 "use client"
-
-import { useUserContext } from "@/context/user_context";
 import axios from "axios";
 
 async function VerifyUser (token: any , userType : string){
@@ -9,13 +7,15 @@ async function VerifyUser (token: any , userType : string){
         if(token?.length>0 || !token ){
             const verifyToken : any = await axios.post('/verify', {
               type : userType,
-              token : token
+              token : token 
             });
+            console.log(verifyToken);
             if(verifyToken?.status !== 400 || verifyToken?.data?.status === "success"){
                 let data = {
                     status : verifyToken?.data.status,
                     message : verifyToken?.data?.msg || "User verified successfully",
                     userId : verifyToken?.data?.userId,
+                    userPoints : verifyToken?.data?.userPoints || null,
                     userType : verifyToken?.data?.userType,
                     userEmail : verifyToken?.data?.data[0]?.email,
                     userName : verifyToken?.data?.data[0]?.fullName,

@@ -247,8 +247,8 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
                 className={"bg-secondary"}
                   label={
                     <Box display="flex" alignItems="center">
-                      <span className="text-[.95rem]">Pro</span>
-                      <img src="/pro.png" alt="Loading..." className="w-[25px] h-[25px] ml-1" />
+                      <span className="text-[.95rem]">Alat Pro</span>
+                      {/* <img src="/pro.png" alt="Loading..." className="w-[25px] h-[25px] ml-1" /> */}
                     </Box>
                   }
                   variant="outlined"
@@ -271,18 +271,11 @@ const SideNav = ({ isClientDashboard, setIsClientDashboard }: any) => {
                 :
                 <>
                 
-                <Typography className="text-white">Alat Pro</Typography>
-                <Divider
-                flexItem
-                orientation="vertical"
-                variant="middle"
-                className="border-slate-400"
-              />
                 <button
                   className="py-1"
-                  onClick={() => router.push("/membership/manage")}
+                  onClick={() => router.push("/membership")}
                 >
-                  Manage
+                  Upgrade to Alat Pro
                 </button>
                 
                 </>

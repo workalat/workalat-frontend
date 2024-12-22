@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/snackbar_context";
 import Cookies from "js-cookie";
 import VerifyUser from "@/app/middleware/VerifyUser";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 export default function Tasklist({ params }: any) {
   const dynamicData = projectsData?.find(
@@ -19,23 +21,26 @@ export default function Tasklist({ params }: any) {
   // modal
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [showAllTasks, setShowAllTasks] = useState<boolean>(false);
+  const [head, setHead] : any = useState("Add");
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  
 
   const closeModal = () => {
+    setTasks({});
+    setIndex("");
+    setHead("Add");
     setIsModalOpen(false);
   };
 
   let [data, setData] : any = useState({});
   const [loading2, setLoading2]  : any  = useState(true);
   let router  : any  = useRouter();
-  let { singleProjectDetails, addProjectTasks }  : any  = useUserContext();
+  let { singleProjectDetails, addProjectTasks, editTask,deleteTask }  : any  = useUserContext();
   const { generateSnackbar }  : any  = useSnackbar();
   const [currentPath, setCurrentPath]  : any  = useState("");
   let [userData, setUserData]  : any  = useState({});
   let [lists, setLists]  : any  = useState([]);
+  let [index, setIndex]  : any  = useState("");
   let [tasks, setTasks]  : any  = useState({
     name: "",
     des: "",
@@ -49,6 +54,21 @@ export default function Tasklist({ params }: any) {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+  const openModal = (head, data, index) => {
+    if(head == "Edit"){
+      console.log(data);
+      setHead("Edit");
+      setIndex(index);
+      setTasks({...tasks, "name" : data?.taskListName, "des" : data?.taskListDes});
+      setIsModalOpen(true);
+    }
+    else{
+      
+    setHead("Add");
+    setTasks({});
+    setIsModalOpen(true);
+    }
   };
 
   useEffect(() => {
@@ -121,6 +141,61 @@ export default function Tasklist({ params }: any) {
     }
   };
 
+
+  
+  const handleTaskEdit= async (e) => {
+    e.preventDefault();
+    if (!tasks.name || !tasks.des) {
+      return generateSnackbar("Please Fill in all the Fields", "error");
+    }
+
+    try {
+      console.log(params.id);
+      console.log(index);
+      console.log(tasks)
+      let res  : any  = await editTask({
+        projectId : params.id,
+        taskId : index,
+        taskListName : tasks?.name,
+        taskListDes : tasks?.des
+      });
+      
+      if (res?.statusat === 200 || res?.data?.status == "success") {
+        // Update the lists array with the new task
+        generateSnackbar("Task Updated successfully!", "success");
+        router.refresh();
+      } else {
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    } catch (error) {
+      generateSnackbar("Some Error Occur, please Try Again.", "error");
+    }
+  };
+
+    
+  const deleteTaskList= async (index) => {
+
+
+    try {
+      console.log(params.id);
+      console.log(index);
+      let res  : any  = await deleteTask({
+        projectId : params.id,
+        taskId : index,
+      });
+      
+      if (res?.statusat === 200 || res?.data?.status == "success") {
+        // Update the lists array with the new task
+        generateSnackbar("Task Deleted successfully!", "success");
+        router.refresh();
+      } else {
+        generateSnackbar("Some error occurred, Please Try Again.", "error");
+      }
+    } catch (error) {
+      generateSnackbar("Some Error Occur, please Try Again.", "error");
+    }
+  };
+
   const displayedTasks = showAllTasks ? lists : lists.slice(0, 5);
 
   return (
@@ -160,14 +235,22 @@ export default function Tasklist({ params }: any) {
                             <h4 className="text-lg font-semibold text-main">
                               {task.taskListName}
                             </h4>
+                            <div>
                             <span className="text-sm text-gray-500 capitalize">
                               {formatDate(task.date)}
-                            </span>
+                              </span>
+                            </div>
+                            
                           </div>
                           <p className="text-gray-600 mb-2">{task.taskListDes}</p>
                           <div className="flex items-center text-sm text-gray-500">
                             <span className="capitalize">Created by: {task.name}</span>
                           </div>
+                          
+                          <div  className="flex gap-3 items-baseline justify-end h-[100%]">
+                              <button className="text-[1.2rem]" onClick={()=>{openModal("Edit", task, index)}}><MdEdit /></button>
+                              <button className="hover:text-red hover:duration-75 text-[1.2rem]" onClick={()=>{deleteTaskList(index)}}><MdDelete /></button>
+                            </div>
                         </div>
                       ))}
                       {lists.length > 5 && (
@@ -206,7 +289,7 @@ export default function Tasklist({ params }: any) {
                         (data?.projectStatusAdmin === true ) && (
                           <>
                           <button
-                            onClick={openModal}
+                            onClick={()=>{openModal("Add", {}, -1)}}
                             className="bg-white text-md font-semibold py-2 px-5 mt-4 border-2 shadow border-black/40 rounded-md"
                           >
                             Add Task-list
@@ -232,11 +315,13 @@ export default function Tasklist({ params }: any) {
                       
                           <div className="w-full text-start">
                             <h4 className="font-semibold text-[20px] capitalize">
-                              Create New Task List
+                              {head} Task List
                             </h4>
                           </div>
                       <div className="w-full border-t border-black mt-3 py-2 px-3">
-                        <form onSubmit={handleTaskUpload}>
+                        <form onSubmit={(e)=>{
+                          head === "Add" ? handleTaskUpload(e) : handleTaskEdit(e)
+                        }}>
                           <div className="py-2">
                             <label
                               className="block pb-1 font-semibold"
@@ -289,7 +374,7 @@ export default function Tasklist({ params }: any) {
                               type="submit"
                               className="px-5 py-2 text-black font-semibold bg-secondary flex gap-2 items-center justify-center rounded-md"
                             >
-                              Create
+                              {head == "Add" ? "Create" : "Update"}
                             </button>
                           </div>
                         </form>

@@ -12,26 +12,27 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import arrowDownWhiteIcon from "@/public/icons/arrow_down_white.svg";
-import businessIcon from "@/public/icons/business.svg";
-import logoutIcon from "@/public/icons/logout.svg";
 import notificationsIcon from "@/public/icons/notifications.svg";
 import settingsIcon from "@/public/icons/settings.svg";
-import switchIcon from "@/public/icons/switch.svg";
-import testimonial3Img from "@/public/images/testimonial3.png";
-import logo_dark from "@/public/logo_dark.png";
+import logo_dark from "@/public/logo_dark.png"; 
 import { useSnackbar } from "@/context/snackbar_context";
 import Cookies from 'js-cookie';
 import VerifyUser from "../middleware/VerifyUser";
 import { useUserContext } from "@/context/user_context";
 import { Navbar as NavMain} from "@/components/navbar/navbar";
 import { signOut } from "next-auth/react";
+import EmailOtp from "@/app/professional/dashboard/sub-components/verify/EmailOtp";
+import PhoneOtp from "@/app/professional/dashboard/sub-components/verify/phoneOtp";
+import EmailOtpClient from "@/app/client/dashboard/sub-components/verify/EmailOtp";
+import PhoneOtpClient from "@/app/client/dashboard/sub-components/verify/phoneOtp";
+import PhoneOtpProfessional from "@/app/professional/dashboard/sub-components/verify/phoneOtp";
+import EmailOtpProfessional from "@/app/professional/dashboard/sub-components/verify/EmailOtp";
 
 const AuthNavbar = () => {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = React.useState(false);
   let [userData,setUserData] : any = useState({});
-  const { generateSnackbar } = useSnackbar();
-  let { intoProfessoinal, intoClient,logout} : any = useUserContext();
+  let { intoProfessoinal, intoClient,logout,verifyUserData} : any = useUserContext();
   let [loadingMessage, setLoadingMessage]: any = useState("");
 
   const avatarDropdownMenu = [
@@ -46,7 +47,6 @@ const AuthNavbar = () => {
 
   let [loading2, setLoading2]  : any  = useState(true);
   let [loading, setLoading]  : any  = useState(false);
-  let router  : any  = useRouter();
   
   async function handleIntoProfessional(){
     try{
@@ -98,33 +98,116 @@ const AuthNavbar = () => {
   }
 
 
-  useEffect(() => {
-    async function verify(){
-      try{
-        const token  : any = Cookies.get("token");
-        const userType  : any = Cookies.get("userType");
-        const pathSegment  : any = pathname.split("/")[1];
-        const typeToVerify  : any =  userType || pathSegment
   
-        if (!token || !typeToVerify) {
-          setLoading2(false);
-          return;
+  let [showEmailOtpBoxProfessional, setShowEmailOtpBoxProfessional] : any = useState(false);
+  let [showPhoneOtpBoxProfessional, setShowPhoneOtpBoxProfessional] : any = useState(false);
+  let [showEmailOtpBoxClient, setShowEmailOtpBoxClient] : any = useState(false);
+  let [showPhoneOtpBoxClient, setShowPhoneOtpBoxClient] : any = useState(false);
+  let [isEditEnable, setIsEditEnable] : any = useState(false);
+  const router : any = useRouter();
+  const { generateSnackbar } : any = useSnackbar();
+  let [verifyEmailData, setVerifyEmailData] : any = useState({
+    userId : "",
+    userType : "",
+    userEmail : "",
+  });
+
+  async function verify(){
+    try{
+      const token  : any = Cookies.get("token");
+      const userType  : any = Cookies.get("userType");
+      const pathSegment  : any = pathname.split("/")[1];
+      const typeToVerify  : any =  userType || pathSegment
+
+      if (!token || !typeToVerify) {
+        setLoading2(false);
+        return;
+      }
+
+
+      let ver : any= await VerifyUser(token, typeToVerify);
+      if(ver?.status === "success"){
+        
+
+
+        if(!ver?.isEmailVerify){
+          console.log(ver);
+          let data = await verifyUserData({
+            userType : ver?.userType,
+            userId : ver?.userId,
+            data : "email"
+          });
+          console.log(data);
+          if(userType === "client"){
+            setVerifyEmailData({...verifyEmailData, userId : data?.data?.data?._id, userType: ver?.userType, userEmail : data?.data?.data?.clientEmail})
+              if(data?.data?.data?.clientEmail.includes("@")){
+                setIsEditEnable(false)
+              }
+              else{
+                setIsEditEnable(true);
+              }
+            setShowEmailOtpBoxClient(true);
+            setLoading(false);
+          }
+          else{   
+            setVerifyEmailData({...verifyEmailData, userId : data?.data?.data?._id, userType: ver?.userType, userEmail : data?.data?.data?.professionalEmail})
+              if(data?.data?.data?.professionalEmail.includes("@")){
+              setIsEditEnable(false)
+            }
+            else{
+              setIsEditEnable(true);
+            }
+            setShowEmailOtpBoxProfessional(true);
+            setLoading(false);
+          }
+          
         }
-  
-  
-        let ver : any= await VerifyUser(token, typeToVerify);
-        if(ver?.status === "success"){
-          setUserData(ver);
-          setLoading2(false);
+        else if(!ver?.isPhoneVerify){
+          let data : any = await verifyUserData({
+          userType : ver?.userType,
+          userId : ver?.userId,
+          data : "phone"
+        });
+        if(userType === "client"){
+          setVerifyEmailData({...verifyEmailData, userId : data?.data?.data?._id , userType: ver?.userType, userEmail : data?.data?.data?.clientPhoneNo})
+          if(data?.data?.data?.clientPhoneNo !== ""){
+            setIsEditEnable(false)
+          }
+          else{
+            setIsEditEnable(true);
+          }
+          setShowPhoneOtpBoxClient(true);
+          setLoading(false);
         }
         else{
-          setLoading2(false);
+          setVerifyEmailData({...verifyEmailData, userId : data?.data?.data?._id , userType: ver?.userType, userEmail : data?.data?.data?.professionalPhoneNo})
+          if(data?.data?.data?.professionalPhoneNo !== ""){
+            setIsEditEnable(false)
+          }
+          else{
+            setIsEditEnable(true);
+          }
+          setShowPhoneOtpBoxProfessional(true);
+          setLoading(false);
         }
-      }
-      catch(e){
+        }
+
+
+        setUserData(ver);
         setLoading2(false);
       }
-    };
+      else{
+        setUserData(ver);
+        setLoading2(false);
+      }
+    }
+    catch(e){
+      setLoading2(false);
+    }
+  };
+  
+
+  useEffect(() => {
     verify();
   }, []);
 
@@ -191,6 +274,21 @@ const AuthNavbar = () => {
         userData?.userId
         ?
         <>
+        <div className="z-[100]">
+        {
+            showEmailOtpBoxClient && <EmailOtpClient verifyEmailData={verifyEmailData} setVerifyEmailData={setVerifyEmailData} isEditEnable={isEditEnable} />
+          }
+          {
+            showPhoneOtpBoxClient && <PhoneOtpClient verifyEmailData={verifyEmailData} setVerifyEmailData={setVerifyEmailData} isEditEnable={isEditEnable}  />
+          }
+          {
+            showPhoneOtpBoxProfessional && <PhoneOtpProfessional verifyEmailData={verifyEmailData} setVerifyEmailData={setVerifyEmailData} isEditEnable={isEditEnable}  />
+          }
+          {
+            showEmailOtpBoxProfessional && <EmailOtpProfessional verifyEmailData={verifyEmailData} setVerifyEmailData={setVerifyEmailData} isEditEnable={isEditEnable}  />
+          }
+
+        </div>
          <Navbar
       className="bg-main border-b border-white border-opacity-20"
       position="sticky"

@@ -40,35 +40,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
       handlePrev();
     }
     else{
-      // console.log(projectData);
       setProject(projectData);
-      // setProjectDes(`
-      //        I need ${projectData?.serviceNeeded} service in ${projectData?.postCodeRegion} for ${projectData?.serviceFrequency} basis, <br /><br /><br />
-
-      //        <b><p className={"text-yellow-400"} style={{color : "yellow"}}>Additional Information</p></b><br />
-      //   ${
-      //     projectData?.serviceQuestions?.map((val, i)=>{
-      //       console.log(val?.answer.length>0);
-      //       return(`
-      //         ${
-      //           val?.answer?.length>0
-
-      //           ?
-      //           `
-      //           <b className="capitalize">${toTitleCase(val?.questionTitle)}</b><br />
-              
-      //         ${val?.answer.map((va)=>{
-      //           return(`<p className="capitalize">${toTitleCase(va)}</p><br/>`)
-      //         })}
-      //         `
-      //           :
-      //           <></>
-      //         }              
-      //         `)
-      //     })
-      //   }
-      //   `);
-
 
       setProjectDes(`
         I need ${projectData?.serviceNeeded} service in ${projectData?.postCodeRegion} for ${projectData?.serviceFrequency} basis, <br /><br /><br />
@@ -112,7 +84,7 @@ export default function Requirements({ handleNext, handlePrev }: ReqProps) {
           let ver : any  = await VerifyUser(token, "client");
           if(ver?.status === "success" && ver?.userType === "client"){
             if(!ver?.adminAccess || ver?.adminAccess === false){
-              return generateSnackbar("Admin has restricted our account", "error")
+              return generateSnackbar("Admin has restricted your account", "error")
             }
             if(!ver?.isEmailVerify || ver?.isEmailVerify === false){
               return generateSnackbar("Please Verify Your Email.", "error")

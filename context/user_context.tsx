@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import axios from "axios";
 import Cookies from 'js-cookie';
 
@@ -74,7 +74,8 @@ interface UserContextType {
   checkBid : (data : any) => any;
   applyJob : (data : any) => any;
   payAsGoSession : (data : any) => any;
-  payAsGoSessionData : (data : any) => any
+  payAsGoSessionData : (data : any) => any;
+  certificateDataProfessional : (data : any) => any;
   
 
 
@@ -189,6 +190,18 @@ interface UserContextType {
   deleteJobsQuestions  : (data : any ) => any;
   editJobsQuestions : (data : any ) => any;
   changeStatusTicket : (data : any ) => any;
+  accessUserAccount : (data : any ) => any;
+  filterLineChart : (data : any ) => any;
+  sendBroadcastEmail : (data : any ) => any;
+  recipientsData : () => any;
+  componentRef : () => any;
+  circleRef : () => any;
+  circleChartFilter : (data : any ) => any;
+  verifyUserData :   (data : any ) => any;
+  rankingPage : () => any;
+  updateRanking : (data : any ) => any;
+  editTask :  (data : any ) => any;
+  deleteTask  : (data : any ) => any;
   logoutAdmin : (data : any ) => any;
   
 }
@@ -2231,7 +2244,7 @@ async function refundTransaction({transactionId}  : any){
 
 async function membershipPageData(){
   try{
-    const response  : any  = await axios.get('/membership');
+    const response  : any  = await axios.post('/membership');
       return(response);
   }
   catch(e){
@@ -2239,10 +2252,10 @@ async function membershipPageData(){
   }
 }
 
-async function changeMembershipStatus({professoinalId,choice} : any){
+async function changeMembershipStatus({professoinalId,choice, sessionId} : any){
   try{
     const response  : any  = await axios.post('/changeMembershipStatus', {
-      professoinalId,choice
+      professoinalId,choice,sessionId
     });
       return(response);
   }
@@ -2427,11 +2440,149 @@ async function changeStatusTicket({ticketId, newStatus} : any){
 };
 
 
+async function accessUserAccount({userId, userType} : any){
+  try{
+    const response  : any  = await axios.post('/userAccess',{
+      userId, userType
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+
+async function filterLineChart({year} : any){
+  try{
+    const response  : any  = await axios.post('/lineChart',{
+      year
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
 
 
 
 
+async function certificateDataProfessional({userId} : any){
+  try{
+    const response  : any  = await axios.post('/allCertificates',{
+      userId
+    });
+      return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
 
+
+
+
+async function recipientsData(){
+  try{
+    const response  : any  = await axios.post('/broadcastRecipient');
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function sendBroadcastEmail({fromName, from,to,subject,message} : any){
+  try{
+    const response  : any  = await axios.post('/sendBroadcast', {
+      fromName, from,to,subject,message
+    });
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+const componentRef : any = useRef<HTMLElement | null>(null);
+const circleRef : any = useRef<HTMLElement | null>(null);
+
+
+async function circleChartFilter({year} : any){
+  try{
+    const response  : any  = await axios.post('/circleChart', {
+      year
+    });
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+async function verifyUserData({userType,userId,data} : any){
+  try{
+    const response  : any  = await axios.post('/findVerifyData', {
+      userType,userId,data
+    });
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+
+
+async function rankingPage(){
+  try{
+    const response  : any  = await axios.post('/getRanking');
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function updateRanking({rank} : any){
+  try{
+    const response  : any  = await axios.post('/updateRanking', {
+      rank
+    });
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function editTask({projectId,taskId,taskListName,taskListDes} : any){
+  try{
+    const response  : any  = await axios.post('/editTask', {
+      projectId,taskId,taskListName,taskListDes
+    });
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
+
+async function deleteTask({projectId,taskId} : any){
+  try{
+    const response  : any  = await axios.post('/deleteTask', {
+      projectId,taskId
+    });
+    return(response);
+  }
+  catch(e){
+    return(e);
+  }
+};
 
 
 
@@ -2621,6 +2772,19 @@ async function logoutAdmin({ token } : any){
       deleteJobsQuestions,
       editJobsQuestions,
       changeStatusTicket,
+      accessUserAccount,
+      filterLineChart,
+      certificateDataProfessional,
+      recipientsData,
+      sendBroadcastEmail,
+      componentRef,
+      circleRef,
+      verifyUserData,
+      circleChartFilter,
+      updateRanking,
+      rankingPage,
+      editTask,
+      deleteTask,
       logoutAdmin,
 
        }}>

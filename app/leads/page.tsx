@@ -27,7 +27,8 @@ export default function LeadsPage() {
   let [userSkills, setUserSkills] : any = useState([]);
   let [userPrimaryService, setUserPrimaryService] : any = useState("");
 
-  const { showLeads } : any = useUserContext();
+
+  const { showLeads,verifyUserData } : any = useUserContext();
   const { generateSnackbar } : any = useSnackbar();
 
   useEffect(() => {
@@ -38,19 +39,14 @@ export default function LeadsPage() {
         let ver : any = await VerifyUser(token, "professional");
         if (ver?.status === "success") {
           setUserData(ver);
-          if(ver?.isPhoneVerify === false){
-            generateSnackbar("Please Verify Your Phone Number.", "error");
-            router.push("/professional/account_settings/security/phone");
-            return;
-          }
+          
           if (ver?.isRegistrationComplete === false) {
             router.push("/professional/onboard/formpage");
             return;
           }
           let res : any = await showLeads({ userId: ver.userId , choice : "leads"});
-          console.log(res);
           if (res?.status !== 400 || res?.data?.status === "success") {
-            setLeadsData(res?.data?.data);
+            setLeadsData(res?.data?.data?.reverse());
             setUserSkills(res?.data?.userSkills);
             setUserPrimaryService(res?.data?.userPrimarySkill);
           } else {
@@ -93,13 +89,16 @@ export default function LeadsPage() {
   };
 
   return (
-    <>
+    <> 
       {loading ? (
         <div className="w-[100%] h-screen flex justify-center items-center">
           <div className="loader m-auto" />
         </div>
       ) : ( 
+        <>
+     
         <Box className="flex gap-x-6 gap-y-1 items-start flex-col lg:flex-row">
+                  
           <LeadsFilter setFilterProjects={setLeadsData} professionalId={userData.userId} userSkills={userSkills} />
           <Box className="grid grid-cols-1 gap-4 py-5 flex-grow">
             {leadsData.map((lead, i) => (
@@ -118,6 +117,7 @@ export default function LeadsPage() {
           /> 
           <ClientDetails open={applied} job={activeJob} onClose={closeApplied} applied={applied} />
         </Box>
+        </>
       )}
     </>
   );

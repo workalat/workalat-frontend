@@ -1,5 +1,5 @@
 "use client"
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,6 +8,8 @@ import arrowRightSm from "@/public/icons/arrow_right_sm.svg";
 import AuthNavbar from "@/components/navbar/auth_navbar";
 
 export default function LeadsLayout({ children }: { children: ReactNode }) {
+
+
   return (
     <>
       <AuthNavbar />

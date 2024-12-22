@@ -16,7 +16,7 @@ export default function ProjectList() {
             img: "/graphics.jpg"
         },
         {
-            id: 3,
+            id: 3, 
             title: "Dry Cleaning",
             desc: "Get professional cleaning service swiftly anytime you want.",
             img: "/dry.jpg"

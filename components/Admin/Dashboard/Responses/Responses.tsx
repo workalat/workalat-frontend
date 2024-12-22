@@ -54,7 +54,6 @@ export default function Responses() {
             setLoading2(true);
           try {
             let res = await showLeadsAdmin();
-            console.log(res);
             if (res?.status !== 400 || res?.data?.status === "success") {
                 setAllLeadsData(res?.data?.data.reverse());
                 setFilterLeads(res?.data?.data.reverse());
@@ -205,6 +204,7 @@ export default function Responses() {
                             <tr>
                                 <th className="py-3 px-3 text-left font-semibold">Name</th>
                                 <th className="py-3 px-3 text-left font-semibold">Project Title</th>
+                                <th className="py-3 px-3 text-left font-semibold">Status</th>
                                 <th className="py-3 px-3 text-left font-semibold">Location</th>
                                 <th className="py-3 px-3 text-right font-semibold">
                                     <div className="flex justify-end gap-2 items-center">
@@ -246,7 +246,7 @@ export default function Responses() {
                         <tbody>
                             <tr className="h-4"></tr>
                             {
-                                allLeadsData.map((data: any, i: number) => (
+                                allLeadsData?.map((data: any, i: number) => (
                                     <tr key={i} className="bg-[#07242B] text-white border-y-8 border-white">
                                         {/* Username column */}
                                         <td className="py-4 px-3 text-[17px] xl:text-[20px] font-semibold capitalize">
@@ -255,6 +255,9 @@ export default function Responses() {
                                         {/* Project title column */}
                                         <td className="py-2 px-3 text-[15px] xl:text-[17px] text-[#ACACAC] capitalize">
                                             {data?.serviceNeeded}
+                                        </td>
+                                        <td className={` ${data?.projectStatusAdminString === "approved" ? "text-green-700" : data?.projectStatusAdminString === "rejected" ?  "text-red" : "text-[#FFBE00]" } py-2 px-3 text-[15px] xl:text-[17px] text-[#ACACAC] capitalize`}>
+                                            {data?.projectStatusAdminString}
                                         </td>
                                         {/* Location column */}
                                         <td className="py-2 px-3 text-[15px] xl:text-[17px] text-[#ACACAC] capitalize">
@@ -279,7 +282,7 @@ export default function Responses() {
 
                     <div>
                         {/* modal */}
-                        {modalData && (
+                        {modalData && ( 
                             <ResponsesModal
                                 isOpen={isModalOpen}
                                 onRequestClose={closeModal}

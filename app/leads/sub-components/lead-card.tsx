@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import FlagIcon from '@mui/icons-material/Flag';
-import ReplayIcon from '@mui/icons-material/Replay';
 
 import coinIcon from "@/public/icons/coin.svg";
-import { getPastTime } from "@/utils/helper";
+import emojiFlags from "emoji-flags";
 import moment from "moment";
 import DOMPurify from 'dompurify';
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import axios from "axios";
 
 interface Lead {
   id: number;
@@ -37,6 +38,29 @@ interface Lead {
 }
 
 export default function LeadCard({ lead }: any) {
+  const [flag, setFlag] : any = useState("");
+  const fetchFlag = async (cnt) => {
+
+    if (!cnt.trim()) {
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `https://restcountries.com/v3.1/name/${cnt}`
+      );
+
+      const country = response.data[0]; // First matching country
+      if (country && country.flags && country.flags.png) {
+        setFlag(country.flags.png)
+      } else {
+        setFlag(null)
+      }
+    } catch (err) {
+      setFlag(null)
+    }
+  };
+
   return (
     <>
     <Box className="border rounded-md bg-[#F3F3F3] px-4 py-8 sm:p-8 text-main space-y-4 lg:space-y-2">
@@ -68,7 +92,20 @@ export default function LeadCard({ lead }: any) {
             {/* Name  */}
             {lead?.clientName}
             <span className="text-sm font-medium capitalize">   {(lead?.serviceLocationTown) ?(`${lead?.serviceLocationTown}`) :  (`${lead?.serviceLocationPostal}`)}</span>
-            {/* <span className="text-sm font-medium">UK</span> */}
+            <div className="flex gap-2 my-1">
+            {
+              fetchFlag(lead?.clientCountry) !== null &&
+              <>
+              <img 
+              src={flag}
+              alt=""
+              className="w-[15px] h-[15px] object-cover rounded-sm"
+            /> 
+            </>
+            }
+            <span className="text-sm font-medium">{lead?.clientCountry}</span>
+            </div>
+
           </h3>
           <Box className="flex items-center gap-1 mt-0.5 flex-wrap">
             {/* Verified  */}

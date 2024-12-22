@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.snow.css"; 
 
 import cancelIcon from "@/public/icons/cancel.svg";
 import arrowRight from "@/public/icons/arrow_right.svg";
@@ -130,7 +130,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
     confirmEmail: "",
   });
 
-  let [form3, setForm3] = useState({
+  let [form3, setForm3] : any = useState({
     professionalCompanyName: "",
     professionalCompanyTitle: "",
     professionalServiceLocPostCodes: [],
@@ -146,6 +146,7 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
   const [primaryService, setPrimaryService]  : any  = useState("");
   const [locations, setLocations]  : any  = useState([]);
   const [selectedLocations, setSelectedLocations]  : any  = useState([]);
+  let [isNationWide, setIsNationWide] : any = useState(false);
 
   let [avatar, setAvatar]  : any  = useState("");
   const { generateSnackbar }  : any  = useSnackbar();
@@ -187,6 +188,13 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
           ["professionalCompanywebsite"]: data2?.professionalCompanywebsite,
           ["professionalAddress"]: data2?.professionalAddress,
         });
+        let find =  data2?.professionalServiceLocPostCodes.findIndex((item) => item === "nationwide");
+        if(find !== -1){
+          setIsNationWide(true);
+        }
+        else{
+          setIsNationWide(false);
+        }
 
         setLoading2(false);
       } catch (e) {}
@@ -657,6 +665,21 @@ const ProfessionalSettingsPage = ({ data1, data2 }) => {
                     })
                     }
                   />
+                  <div>
+                    <input type="checkbox" name="" id="" checked={isNationWide} onClick={(e)=>{
+                     let f = form3?.professionalServiceLocPostCodes?.findIndex((item) => item === "nationwide")
+                      if(f !== -1 ){
+                        let postcode = form3?.professionalServiceLocPostCodes?.filter((val)=> val !== "nationwide");
+                        setForm3({...form3,professionalServiceLocPostCodes : postcode} )
+                        setIsNationWide(false);
+                      }
+                      else{
+                        setForm3({...form3,professionalServiceLocPostCodes : [...form3.professionalServiceLocPostCodes, "nationwide"]} );
+                        setIsNationWide(true);
+                      }
+                      
+                    }} /> Nationwide
+                  </div>
                   <Autocomplete
                     value={formatServiceOptions().find(
                       (option) => option.value === primaryService

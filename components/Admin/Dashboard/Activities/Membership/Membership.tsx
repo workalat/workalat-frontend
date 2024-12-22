@@ -83,6 +83,7 @@ export default function Membership() {
     setLoading2(true);
     try {
       let res = await membershipPageData();
+      console.log(res);
       if (res?.status === 200 || res?.data?.status === "success") {
         setAllData(res?.data?.data.reverse());
         setAllFilterData(
@@ -131,9 +132,9 @@ export default function Membership() {
   }, []);
 
 
-  async function membershipStatus(professoinalId : string, choice) {
+  async function membershipStatus(professoinalId : string, choice, sessionId) {
     try {
-        let res: any = await changeMembershipStatus({ professoinalId, choice});
+        let res: any = await changeMembershipStatus({ professoinalId, choice,sessionId});
         if (
           res?.status === 200 ||
           res?.data?.status === "success" 
@@ -255,6 +256,11 @@ export default function Membership() {
                                 let data = allData.filter((val)=>{if(val.membershipStatus === "cancelled"){return(val)}});
                                 setAllFilterData(data);
                                 setTotalUsers(data?.length);
+                            } 
+                            else if(e.target.value === "request cancellation"){
+                                let data = allData.filter((val)=>{if(val.membershipStatus === "request cancellation"){return(val)}});
+                                setAllFilterData(data);
+                                setTotalUsers(data?.length);
                             }
                             else if(e.target.value === "expired"){
                                 let data = allData.filter((val)=>{if(val.membershipStatus === "expired"){return(val)}});
@@ -267,6 +273,7 @@ export default function Membership() {
                         <option className="bg-[#07242B] text-white" value="active">Active</option>
                         <option className="bg-[#07242B] text-white" value="pending">Pending </option>
                         <option className="bg-[#07242B] text-white" value="cancelled">Cancelled </option>
+                        <option className="bg-[#07242B] text-white" value="request cancellation">Request Cancellation</option>
                         <option className="bg-[#07242B] text-white" value="expired">Expired </option>
                     </select>
                     </div>
@@ -334,9 +341,10 @@ export default function Membership() {
                                             {/* this button will be connected with backend for some function or operation */}
 
                                             {
-                                                user?.membershipStatus === "active" ? <button className="bg-[#F52933] px-3 py-2 text-white font-semibold rounded-md flex items-center justify-center gap-1 mx-auto" onClick={()=>{membershipStatus(user?._id, "cancelled")}} ><IoMdClose className="text-[17px] text-white" /> Cancel Membership</button>
+                                                user?.membershipStatus === "active" || user?.membershipStatus === "request cancellation" ? <button className="bg-[#F52933] px-3 py-2 text-white font-semibold rounded-md flex items-center justify-center gap-1 mx-auto" onClick={()=>{membershipStatus(user?._id, "cancelled",user?.sessionId)}} ><IoMdClose className="text-[17px] text-white" /> Cancel Membership</button>
                                                     :
-                                                    <button className="bg-[#242424] mx-auto flex items-center justify-center px-4 py-2 text-white font-semibold rounded-md" onClick={()=>{membershipStatus(user?._id, "active")}}>Active Membership</button>
+                                                    user?.membershipStatus === "cancelled" ? <></> :
+                                                    <button className="bg-[#242424] mx-auto flex items-center justify-center px-4 py-2 text-white font-semibold rounded-md" onClick={()=>{membershipStatus(user?._id, "active", user?.sessionId)}}>Active Membership</button>
                                             }
                                         </td>
                                     </tr>

@@ -12,8 +12,8 @@ import VerifyUser from '@/app/middleware/VerifyUser';
 import Cookies from 'js-cookie';
 import { useSnackbar } from "@/context/snackbar_context";
 import axios from "axios";
-import { Box, Modal } from "@mui/material";
-
+import { Box, Chip, Modal } from "@mui/material";
+ 
 export default function Certifications() {
 
     const [isModalOpen, setIsModalOpen] : any = useState(false);
@@ -29,23 +29,31 @@ export default function Certifications() {
     let [expireFields, setExpireFields] = useState(false);
     let [loading,setLoading] : any  = useState(false);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    } 
+   
     const addCertification = () => {
         setIsAddNewOpen(true)
     }
 
     const closeModal = () => {
+        setCertificateData({});
+        setFilePill(null);
+        setCurrentStatus("add");
         setIsModalOpen(false);
     }
     const closeCertification = () => {
+        setCertificateData({});
+        setFilePill(null);
+        setCurrentStatus("add");
         setIsAddNewOpen(false);
     }
 
     const [currentTime, setCurrentTime]  : any  = useState<string>(
         formatDateTime(new Date())
     );
+    
+  const {
+    certificateDataProfessional
+  } : any  = useUserContext();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -56,6 +64,9 @@ export default function Certifications() {
     }, []);
     
     let [userData,setUserData]  : any  = useState({});
+    let [allCertificates, setAllCertificates] : any = useState([]);
+    let [currentStatus, setCurrentStatus] : any = useState("add");
+    let [currentCertiicate, setCurrentCertiicate] : any = useState({});
 
     const [loading2, setLoading2]  : any  = useState(true);
     let router  : any  = useRouter();
@@ -122,17 +133,35 @@ export default function Certifications() {
                   }
                   else {
                     setLoading(false);
-                    console.log(res);
                     generateSnackbar(res?.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
                   }
             }
         }
-        catch(error){
-            console.log(error);
+        catch(error : any){
             setLoading(false);
-            generateSnackbar("Please check if you have uploaded the file.", "error");
+            generateSnackbar( error?.response?.data?.message || "Please check if you have uploaded the file.", "error");
         }
       };
+
+      const openModal = async () => {
+        try{
+            console.log(userData);
+            let res = await certificateDataProfessional({userId : userData?.userId});
+            console.log(res);
+            if(res?.status !== 400 || res?.data?.status === "success"){
+                setAllCertificates(res?.data?.data?.certifications?.reverse());
+                setIsModalOpen(true);
+
+            }
+            else {
+                setIsModalOpen(false);
+              generateSnackbar(res?.response?.data?.message || "Some Error occurs, please try again in a few minutes", "error");
+            }
+        }
+        catch(e){
+            console.log(e);
+        }
+    } 
 
     return (
         <>
@@ -171,7 +200,7 @@ export default function Certifications() {
                     </div>
 
                     <div className="w-full md:w-1/2 p-3">
-                        <div className="w-full h-full bg-[#F2F2F2] p-4 rounded-md flex flex-col">
+                        <div className="w-full h-full bg-[#f2f2f2] p-4 rounded-md flex flex-col">
                             <div className="flex-grow flex flex-col justify-center items-center px-3 py-12">
                                 <img className="w-20 h-20" src="/icons/certification.svg" alt="certificate" />
                                 <h3 className="text-center text-black font-bold text-lg py-3">Take a Course</h3>
@@ -205,13 +234,38 @@ export default function Certifications() {
                                 </div>
                                 <div className="w-full mt-3 py-2 px-3">
                                     <ul>
-                                        {/* <li className="flex border-y border-black/30 py-3 justify-between items-center">
-                                            <div>
-                                                <h4 className="text-lg font-semibold">CompTIA Security</h4>
-                                                <p className="text-sm">September 2024</p>
-                                            </div>
-                                            <button onClick={addCertification}><MdEditSquare className="size-5 text-secondary" /></button>
-                                        </li> */}
+                                        {
+                                            allCertificates?.map((val)=>{
+                                                return(
+                                                    <>
+                                                    <li className="flex border-y border-black/30 py-3 justify-between items-center">
+                                                        <div>
+                                                            <h4 className="text-lg font-semibold capitalize">{val?.certificateTitle}</h4>
+                                                            <p className="text-sm">{val?.certificateExpirationMonth} {val?.certificateExpirationYear}</p>
+                                                        </div>
+                                                        <div className="flex gap-6">
+                                                            
+                                                        <Chip label={`${val?.status === "pending" ? "Pending" : val?.status  === "approved" ? "Approved" : "Rejected"}`}style={{ color:"white", backgroundColor : `${val?.status  == "pending" ? "text-secondary" : val?.status  === "approved" ? "green" : "red"}`}} />
+                                                        <button onClick={()=>{
+                                                            setCurrentStatus("edit");
+                                                            setCurrentCertiicate(val);
+                                                            setFilePill("Certification Image (Click to View)");
+                                                            setCertificateData({
+                                                                ...certificateData,
+                                                                name : val?.certificateTitle,
+                                                                month : val?.certificateExpirationMonth,
+                                                                year : val?.certificateExpirationYear,
+                                                                isExpired : val?.isExpired
+                                                            })
+                                                            setIsAddNewOpen(true);
+                                                        }}><MdEditSquare className="size-5 text-secondary" /></button>
+                                                        </div>
+                                                    </li>
+                                                    
+                                                    </>
+                                                )
+                                            })
+                                        }
                                         <li className="flex py-3 justify-between items-center border-b">
                                             <div className="px-3">
                                                 <p className="text-sm text-[#7A7A7A]">Add another certification / licence</p>
@@ -260,7 +314,7 @@ export default function Certifications() {
                                             </div>
                                         </div>
                                         {/* File Pill */}
-                                        {filePill && (
+                                        {(filePill && currentStatus!== "edit" )&& (
                                             <div className="file-pill border-2 border-red-200 p-2 bg-green-200 break-words" style={{border: ".5px solid green"}}>
                                                 <span style={{color : "green"}}>{filePill}</span>
                                             </div>
@@ -269,6 +323,8 @@ export default function Certifications() {
                                             <div className="flex flex-col md:flex-row gap-2 items-center">
                                                 <div className="w-full md:w-1/3">
                                                     <div className="flex items-center gap-2">
+                                                    {
+                                                        currentStatus !== "edit" &&
                                                         <input className="h-5 w-5 shadow" id="check" type="checkbox" checked={certificateData.isExpired} onChange={(e)=>{
                                                             if(certificateData.isExpired === true){
                                                                 setCertificateData({...certificateData,
@@ -284,24 +340,54 @@ export default function Certifications() {
                                                             }
                                                             setExpireFields(prev => !prev)
                                                             }} />
-                                                        <label className="block text-xs" htmlFor="check">Does not expire</label>
+                                                    }
+                                                        
+                                                        <label className="block text-xs" htmlFor="check">{currentStatus == "edit" ?`Certificate ${currentCertiicate?.certificateExpirationMonth == "--" ? "Will not Expire" : "Will Expire"}`  : "Does not Expire"}  </label>
                                                    </div>
                                                 </div>
+                                                
+                                                {
+                                                    currentStatus !== "edit" &&
+                                                    
                                                 <div className="w-full md:w-2/3">
-                                                    <label className="flex items-center gap-2 cursor-pointer bg-[#07242B66] justify-center px-2 py-2 rounded-md shadow">
-                                                        <FaSquarePlus className="size-4 text-black" /> Upload certificate / licence
-                                                        <input className="hidden" type="file" name="certificationImage" onChange={handleFileChange} />
-                                                   </label>
-                                                </div>
+                                                <label className="flex items-center gap-2 cursor-pointer bg-[#07242B66] justify-center px-2 py-2 rounded-md shadow">
+                                                    <FaSquarePlus className="size-4 text-black" /> Upload certificate / licence
+                                                    <input className="hidden" type="file" name="certificationImage" onChange={handleFileChange} />
+                                               </label>
+                                            </div>
+                                                }
                                             </div>
                                         </div>
 
-                                        <div className="border-t">
-                                            <div className="flex justify-center gap-3 pt-7">
-                                                <button type="button" className="flex items-center justify-normal px-4 py-2 text-black bg-white border-2 border-secondary rounded-md gap-2" onClick={closeCertification}>Cancel <FaArrowRight className="size-3" /></button>
-                                                <button type="submit" className="flex items-center justify-normal px-4 py-2 text-black bg-secondary border-2 border-secondary rounded-md gap-2">Save <FaArrowRight className="size-3" /></button>
+                                        {(filePill && currentStatus == "edit") && (
+                                        <a href={`${currentCertiicate?.certificationImage}`} target="_blank"  rel="noreferrer">
+                                            <div className="file-pill border-2 border-red-200 p-2 bg-green-200 break-words" style={{border: ".5px solid green"}}>
+                                                <span style={{color : "green"}}>{filePill}</span>
                                             </div>
+                                        </a>
+                                            
+                                            )}
+                                        
+                                        {currentStatus == "edit" &&
+                                        
+                                        <div>
+                                            <h3 className="font-bold">Admin Comment:</h3>
+                                        <p className="capitalize">{currentCertiicate?.adminComment}</p>
                                         </div>
+                                        
+                                        }
+
+                                    
+
+                                        {
+                                            currentStatus !== "edit" &&
+                                            <div className="border-t">
+                                                <div className="flex justify-center gap-3 pt-7">
+                                                    <button type="button" className="flex items-center justify-normal px-4 py-2 text-black bg-white border-2 border-secondary rounded-md gap-2" onClick={closeCertification}>Cancel <FaArrowRight className="size-3" /></button>
+                                                    <button type="submit" className="flex items-center justify-normal px-4 py-2 text-black bg-secondary border-2 border-secondary rounded-md gap-2">Save <FaArrowRight className="size-3" /></button>
+                                                </div>
+                                            </div>
+                                        }
                                     </form>
                                 </div>
                             </div>

@@ -3,11 +3,13 @@
 import { AiFillCloseSquare } from "react-icons/ai"
 import CompositionModal from "./CompositionModal"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CompositionLoader from "@/utils/CompositionLoader"
 import Link from "next/link"
 import { allUsersData } from "@/utils/usersData"
 import { IoSearchSharp } from "react-icons/io5"
+import { useUserContext } from "@/context/user_context"
+import { useSnackbar } from "@/context/snackbar_context"
 
 type PropsType = {
     closeModal: any,
@@ -16,19 +18,30 @@ type PropsType = {
 
 export default function Composition({ closeModal, isOpen }: PropsType) {
 
-    const [accountType, setAccountType] = useState<any>();
-    const [userType, setUserType] = useState<string | 'All'>('All');
+    const [accountType, setAccountType] : any = useState("system");   //system,support, user,
+    const [accountEmail, setAccountEmail] : any = useState("workalat@gmail.com"); //abc@gmail.com
+    const [userType, setUserType] : any = useState<string | 'All'>('All');
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedUser, setSelectedUser] = useState<any>();
     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    let [broadCastRecipient, setBroadCastRecipient] : any = useState([]); //[abc@gmail.com, abc12@gmail.com]
+    let [allUsersData, setAllUsersData] : any = useState([]);
+
 
     // Filtering logic based on selected userType and searchTerm
     const filteredUsers = allUsersData.filter(user => {
         if (userType === 'All') {
-            return user.userDisplayName.toLowerCase().includes(searchTerm.toLowerCase());
+            return user.userName.toLowerCase().includes(searchTerm.toLowerCase());
         }
-        return user.status === userType && user.userDisplayName.toLowerCase().includes(searchTerm.toLowerCase());
+        return (
+            user.userType === userType &&
+            user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
     });
+
+    // Update broadcast recipients state with filtered emails
+    // const filteredEmails = filteredUsers.map(user => user.userEmail);
+    // setBroadCastRecipient(filteredEmails);
 
 
     const [subject, setSubject] = useState<any>();
@@ -48,8 +61,68 @@ export default function Composition({ closeModal, isOpen }: PropsType) {
         }, 2000); // 2 seconds i set as demo for now
     };
 
+    //Backend Integration
+    
+  const { generateSnackbar }  : any  = useSnackbar();
+  const { recipientsData,sendBroadcastEmail }  : any  = useUserContext();
+
+
+async function getData(){
+    try {
+        let res = await recipientsData();
+        if (
+            res?.status === 200 ||
+            res?.data?.status === "success"
+          ) {
+            let dataClient = res?.data?.data?.clientData?.map((val)=>{return(val?.userEmail)});
+            let dataProfessional = res?.data?.data?.professionalData?.map((val)=>{return(val?.userEmail)});
+            setAllUsersData([...res?.data?.data?.clientData, ...res?.data?.data?.professionalData]);
+            setBroadCastRecipient([...dataClient, ...dataProfessional]);
+          } else {
+            generateSnackbar( res?.response?.data?.message ||  "Something went wrong, please Try Again.", "error");
+          }
+    } catch (error) {
+        // console.error('Error:', error);
+        generateSnackbar("Something went wrong, please Try Again.", "error");
+    }
+}
+
+    useEffect(()=>{
+        getData();
+    }, []);
+
+    async function sendBroadcast(e : any){
+        try {
+            e.preventDefault();
+            setMessageSending(true);
+            let res = await sendBroadcastEmail({
+                fromName : accountType,
+                from : accountEmail,
+                to : broadCastRecipient,
+                subject : subject,
+                message : message
+            });
+            if (
+                res?.status === 200 ||
+                res?.data?.status === "success"
+              ) {
+                setMessageSending(false);
+                setMessageSent(true);
+              } else {
+                generateSnackbar( res?.response?.data?.message ||  "Something went wrong, please Try Again.", "error");
+              }
+
+        } catch (error) {
+            // console.error('Error:', error);
+            generateSnackbar("Something went wrong, please Try Again.", "error");
+        }
+    }
+    
+
+
     return (
         <div>
+            
             <CompositionModal
                 isOpen={isOpen}
                 onRequestClose={closeModal}
@@ -61,18 +134,44 @@ export default function Composition({ closeModal, isOpen }: PropsType) {
                             </button>
                             <div className="w-full text-center">
                                 <h4 className="font-semibold text-[20px]">Compose Email</h4>
-                                <form onSubmit={composeMessage} className="w-full">
+                                <form className="w-full">
                                     <div className="py-2 text-start">
                                         <label htmlFor="account" className="block pb-2 font-semibold">Account</label>
-                                        <select name="account" onChange={(e: any) => setAccountType(e.target.value)} id="account" className="w-full ring-[1px] ring-gray-400 outline-none border-none rounded-md px-3 py-2">
-                                            <option value="support">Support</option>
-                                            <option value="system">System</option>
-                                            <option value="user">User</option>
+                                        <select name="account" onChange={(e: any) => {
+                                            setAccountType(e.target.value)
+
+                                            if(e.target.value === "system"){
+                                                setAccountEmail("workalat@gmail.com");
+                                            }
+                                            else if(e.target.value === "customer"){
+                                                setAccountEmail("munirarham70@gmail.com");
+                                            }
+                                            else if(e.target.value === "user"){
+                                                setAccountEmail("munirarham70@gmail.com");
+                                            }
+                                        }} id="account" className="w-full ring-[1px] ring-gray-400 outline-none border-none rounded-md px-3 py-2">
+                                        <option value="system">System (workalat@gmail.com)</option>
+                                            <option value="customer">Support (munirarham70@gmail.com)</option>
+                                            <option value="user">User (munirarham70@gmail.com)</option>
                                         </select>
                                     </div>
                                     <div className="py-2 text-start">
                                         <label htmlFor="recipient" className="block pb-2 font-semibold">Recipient</label>
-                                        <select name="recipient" onChange={(e: any) => setUserType(e.target.value)} id="recipient" className="w-full ring-[1px] ring-gray-400 outline-none border-none rounded-md px-3 py-2">
+                                        <select name="recipient" onChange={(e: any) =>{
+                                             setUserType(e.target.value)
+                                             if(e.target.value === "all"){
+                                                let data = allUsersData?.map((val)=>{return(val?.userEmail)});
+                                                setBroadCastRecipient(data);
+                                             }
+                                             else if(e.target.value === "client"){
+                                                let data = allUsersData?.filter?.((val) => val?.userType == "client").map((val)=>{return(val?.userEmail)});
+                                                setBroadCastRecipient(data);
+                                             }
+                                             else if(e.target.value === "professional"){
+                                                let data = allUsersData?.filter?.((val) => val?.userType == "professional").map((val)=>{return(val?.userEmail)});
+                                                setBroadCastRecipient(data);
+                                             }
+                                             }} id="recipient" className="w-full ring-[1px] ring-gray-400 outline-none border-none rounded-md px-3 py-2">
                                             <option value="all">All User</option>
                                             <option value="client">Client</option>
                                             <option value="professional">Professional</option>
@@ -92,10 +191,22 @@ export default function Composition({ closeModal, isOpen }: PropsType) {
                                             <input
                                                 type="search"
                                                 id="search"
-                                                value={selectedUser ? selectedUser.userDisplayName : searchTerm}
+                                                value={selectedUser ? selectedUser.userName : searchTerm}
                                                 onFocus={() => setDropdownVisible(true)}
                                                 onChange={(e) => {
                                                     setSearchTerm(e.target.value);
+                                                    if( userType =="all" &&  e.target.value === ""){
+                                                        let data = allUsersData?.map((val)=>{return(val?.userEmail)});
+                                                        setBroadCastRecipient(data);
+                                                     }
+                                                     else if(userType =="client" &&  e.target.value === ""){
+                                                        let data = allUsersData?.filter?.((val) => val?.userType == "client").map((val)=>{return(val?.userEmail)});
+                                                        setBroadCastRecipient(data);
+                                                     }
+                                                     else if(userType =="professional" &&  e.target.value === ""){
+                                                        let data = allUsersData?.filter?.((val) => val?.userType == "professional").map((val)=>{return(val?.userEmail)});
+                                                        setBroadCastRecipient(data);
+                                                     }
                                                     setDropdownVisible(true);
                                                     setSelectedUser(null); // Reset selected user when searching again
                                                 }}
@@ -114,10 +225,11 @@ export default function Composition({ closeModal, isOpen }: PropsType) {
                                                         onClick={() => {
                                                             setSelectedUser(user); // Set the selected user
                                                             setDropdownVisible(false); // Hide the dropdown
+                                                            setBroadCastRecipient([user?.userEmail]);
                                                             setSearchTerm(''); // Clear the search term
                                                         }}
                                                     >
-                                                        {user.userDisplayName}
+                                                        {user?.userName} ( {user?.userEmail} )
                                                     </li>
                                                 ))}
                                             </ul>
@@ -137,7 +249,7 @@ export default function Composition({ closeModal, isOpen }: PropsType) {
                                     </div>
 
                                     <div className="py-2 text-start">
-                                        <button className="py-3 px-4 w-full rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]">Send <FaArrowRight className="size-[15px] text-black" /></button>
+                                        <button className="py-3 px-4 w-full rounded-md text-[15px] font-semibold flex justify-center items-center gap-2 bg-[#FFBE00]" onClick={sendBroadcast}>Send <FaArrowRight className="size-[15px] text-black" /></button>
                                     </div>
                                 </form>
                             </div>
@@ -157,9 +269,18 @@ export default function Composition({ closeModal, isOpen }: PropsType) {
 
                             <div className="py-2">
                                 {userType && (
-                                    <div className="flex gap-2 items-center capitalize">
+                                    <div className="gap-2">
                                         <h5 className="text-[17px] font-bold">Recipient:</h5>
-                                        <p className="text-[15px] px-3 break-words whitespace-normal overflow-hidden">{selectedUser?.userDisplayName ? selectedUser?.userDisplayName : userType}</p>
+                                        {
+                                            broadCastRecipient?.map((val)=>{
+                                                return(
+                                                   <>
+                                                    <p className="text-[12px] px-3 break-words whitespace-normal overflow-hidden">{val}</p>
+                                                   </>
+                                                )
+
+                                            })
+                                        }
                                     </div>
                                 )}
                             </div>

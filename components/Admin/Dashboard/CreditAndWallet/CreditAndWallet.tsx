@@ -26,15 +26,6 @@ export default function CreditAndWallet() {
     const [currentPage, setCurrentPage] = useState(1);
     const transactionsPerPage = 5; // Set the number of transactions per page
 
-    // Calculate the index for slicing the data
-    // const indexOfLastTransaction = currentPage * transactionsPerPage;
-    // const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-    // const currentTransactions = walletData.slice(indexOfFirstTransaction, indexOfLastTransaction);
-
-    // console.log(currentTransactions);
-
-
-
     
        // BACKEND INTEGRATION
   const {
@@ -61,7 +52,7 @@ export default function CreditAndWallet() {
         
     const indexOfLastTransaction = currentPage * res?.data?.data?.length;
     const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-    const currentTransactions = res?.data?.data?.slice(indexOfFirstTransaction, indexOfLastTransaction);
+    const currentTransactions = res?.data?.data?.slice(0, 5);
     setAllFilterData(currentTransactions);
 
         setLoading2(false);
@@ -92,7 +83,6 @@ export default function CreditAndWallet() {
           ) { 
             if(res?.data?.data?.status === "system" || res?.data?.data?.status === "user" ){
             getData();
-            setLoading2(false);
             }
             else{
                 router.push("/admin");
@@ -247,7 +237,7 @@ export default function CreditAndWallet() {
                     </div>
 
                     <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
+                        onClick={() =>  handlePageChange(currentPage + 1)}
                         disabled={currentPage === Math.ceil(walletData.length / transactionsPerPage)}
                         className={`px-4 py-2 rounded-md font-semibold flex items-center ${currentPage === Math.ceil(walletData.length / transactionsPerPage) ? 'opacity-50' : 'opacity-100 text-[#07242B]'}`}
                     >

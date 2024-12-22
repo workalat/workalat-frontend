@@ -32,7 +32,7 @@ const Page = () => {
   // loading
   const [loading2, setLoading2] : any = useState(true);
   let router : any = useRouter();
-  let { dashboardData, showLeads } : any = useUserContext();
+  let { dashboardData, showLeads,verifyUserData } : any = useUserContext();
 
 
   const { generateSnackbar } : any = useSnackbar();
@@ -52,12 +52,13 @@ const Page = () => {
         setLoading2(true);
         let token : any = Cookies.get("token");
         let ver : any = await VerifyUser(token, "professional");
+        console.log(ver);
         if(ver?.status === "success" && ver?.userType === "professional"){
           setUserData(ver);
           let dash : any = await dashboardData({userId : ver?.userId, userType : ver?.userType});
           let leadsCount : any = await showLeads({ userId: ver?.userId , choice : "dashboard"});
           setTotalLeads(leadsCount?.data?.data);
-          setDashData(dash?.data?.data)
+          setDashData(dash?.data?.data);
           setLoading2(false);
         } 
         else{
@@ -92,7 +93,7 @@ const Page = () => {
 
 
 
-
+ 
  
   return (
     <>

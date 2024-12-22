@@ -100,6 +100,8 @@ export default function UploadPicture({
     setFiles(Array.from(e.target.files));
   };
   
+
+  
   
   const handleProjectFileUpload = async (event : any ) => {
     try {
@@ -161,6 +163,46 @@ export default function UploadPicture({
       setLoading(false);
         generateSnackbar("Some Error Occur, Please try Again." ,"error")
     }
+};
+
+
+const handleProjectUploadSkip = async (event : any ) => {
+  try {
+    event.preventDefault();
+
+    
+    setLoading(true);
+    let uploadProject = {
+      userId : projectData?.userId || sessionData?.userId,
+      serviceCategory : projectData?.serviceCategory || sessionData.serviceCategory,
+      serviceNeeded : projectData?.serviceNeeded || sessionData.serviceNeeded,
+      serviceLocationPostal : projectData?.serviceLocationPostal || sessionData.serviceLocationPostal,
+      postCodeRegion : projectData?.postCodeRegion || sessionData.postCodeRegion,
+      serviceQuestions : projectData?.serviceQuestions || sessionData.serviceQuestions,
+      serviceFrequency : projectData?.serviceFrequency || sessionData.serviceFrequency,
+      serviceFrequencyDays : projectData?.serviceFrequencyDays || sessionData.serviceFrequencyDays,
+      projectPriceString : projectData?.projectPriceString || sessionData.projectPriceString,
+      projectPriceTitle : projectData?.projectPriceTitle || sessionData.projectPriceTitle,
+      projectMaxPrice : projectData?.projectMaxPrice || sessionData.projectMaxPrice,
+      projectUrgentStatus : projectData?.projectUrgentStatus || sessionData.projectUrgentStatus,
+      pointsNeeded : projectData?.pointsNeeded || sessionData.pointsNeeded,
+      serviceTitle : projectData?.serviceTitle || sessionData.serviceTitle,
+      serviceDes : projectData?.serviceDes || sessionData.serviceDes
+    }
+    let res : any   = await postProject({project : uploadProject});
+
+    if(res?.status !== 400 || res?.data.status === "success"){
+      handleNext(); 
+    }
+    else{
+      setLoading(false)
+      generateSnackbar("Failed to Upload Project, Please try Again.", "error");
+    }
+    
+  } catch (error) {
+    setLoading(false);
+      generateSnackbar("Some Error Occur, Please try Again." ,"error")
+  }
 };
 
 if (loading) {
@@ -226,6 +268,17 @@ if (loading) {
               </AccordionDetails>
             </Accordion>
           ))}
+          <Box className="flex justify-center items-center gap-y-2 mt-8">
+          <Button
+            variant="text"
+            color="secondary"
+            size="large"
+            className=" flex gap-2"
+            onClick={handleProjectUploadSkip}
+          > 
+              Skip
+          </Button>
+          </Box>
         <Box className="flex justify-between items-center gap-y-2 mt-8">
           <Button
             variant="outlined"

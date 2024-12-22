@@ -73,6 +73,12 @@ export default function Administrator() {
   const [loading2, setLoading2]: any = useState(true);
   let [allAdminsData, setAllAdminsData]: any = useState([]);
   let [allFilterData, setAllFilterData]: any = useState([]);
+    const [validation, setValidation] : any = useState({
+    minLength: false,
+    hasNumber: false,
+    hasLetter: false,
+    hasSpecialChar: false, // To track if the password has special characters
+  });
   const { generateSnackbar }: any = useSnackbar();
   let router = useRouter();
   let [totalUsers, setTotalUsers] : any = useState(0);
@@ -94,7 +100,7 @@ export default function Administrator() {
       if (res?.status === 200 || res?.data?.status === "success") {
         setAllAdminsData(res?.data?.data?.reverse());
         setAllFilterData(
-            res?.data?.data?.reverse(),
+            res?.data?.data?.reverse()
         );
         setTotalUsers(res?.data?.data?.length);
         setCurrentStatus("Create");
@@ -126,7 +132,6 @@ export default function Administrator() {
           ) { 
             if(res?.data?.data?.status === "system"){
             getData();
-            setLoading2(false);
         }
         else{
             router.push("/admin");
@@ -145,19 +150,29 @@ export default function Administrator() {
     verify();
   }, []);
 
+    // Function to validate password
+    const validatePassword = (password) => {
+      const minLength = password.length > 6;
+      const hasNumber = /\d/.test(password); // Check if there's at least one number
+      const hasLetter = /[a-zA-Z]/.test(password); // Check if there's at least one letter
+      const hasSpecialChar = /[^a-zA-Z0-9]/.test(password); // Check for special characters (anything that's not a letter or number)
+  
+      setValidation({
+        minLength: minLength,
+        hasNumber: hasNumber,
+        hasLetter: hasLetter,
+        hasSpecialChar: hasSpecialChar, // Update the validation for special characters
+      });
+    };
 
-  async function manageAdmin(id) {
-    try {
-        console.log(id);
-    } catch (e) {
-      // console.log(e);
-      generateSnackbar("Something went wrong, please Try Again.", "error");
-    }
-  }
+
 
   async function createAdmin(e) {
     try {
       e.preventDefault();
+      if(!validation?.minLength || !validation?.hasNumber || !validation?.hasLetter || !validation?.hasSpecialChar){
+        return generateSnackbar("Enter valid Password.", "error");
+      }
       let res = await createNewAdmin(newAdmin);
       if (res?.status === 200 || res?.data?.status === "success") {
         setNewAdmin({
@@ -190,9 +205,6 @@ export default function Administrator() {
   async function updateAdminData(e : any) {
     try {
       e.preventDefault();
-      console.log("Updating Admin Data");
-      console.log(newAdmin);
-      console.log(currentId);
       let res = await updateAdmin({
         adminId : currentId,
         adminEmail : newAdmin?.admin_email,
@@ -224,7 +236,11 @@ export default function Administrator() {
       // console.log(e);
       generateSnackbar("Something went wrong, please Try Again.", "error");
     }
-  }
+    
+  };
+  // Function to determine color based on validation result
+  const getValidationColor = (isValid) => (isValid ? "text-green-500 list-disc" : "text-red-500 list-disc");
+
     return (
       <>
       {loading2 ? (
@@ -316,7 +332,7 @@ export default function Administrator() {
                                 </>
                                  :
                                 
-                                allFilterData.map((user:any) => (
+                                allFilterData?.reverse()?.map((user:any) => (
                                     <tr key={user?._id} className="border-b border-black">
                                         <td className="p-4">
                                             <input
@@ -386,15 +402,36 @@ export default function Administrator() {
                                                 }}>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="fullName" className="block pb-2 font-semibold">Full Name</label>
-                                                        <input type="text" id="fullName"  value={newAdmin?.admin_name} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_name : e.target.value})}} name="fullName" className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Name" />
+                                                        <input required={true} type="text" id="fullName"  value={newAdmin?.admin_name} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_name : e.target.value})}} name="fullName" className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Name" />
                                                     </div>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="email" className="block pb-2 font-semibold">Email</label>
-                                                        <input type="email" id="email" name="email" value={newAdmin?.admin_email} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_email : e.target.value})}} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Email" />
+                                                        <input type="email" required={true} id="email" name="email" value={newAdmin?.admin_email} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_email : e.target.value})}} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Email" />
                                                     </div>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="password" className="block pb-2 font-semibold">Password</label>
-                                                        <input type="password" id="password" name="password" value={newAdmin?.admin_password} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_password : e.target.value})}} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="***********" />
+                                                        <input type="password" id="password" name="password" value={newAdmin?.admin_password} onChange={(e : any) =>{
+                                                          validatePassword(e.target.value);
+                                                          setNewAdmin({...newAdmin, admin_password : e.target.value})
+                                                        }} className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="***********" />
+                                                    </div>
+                                                    <div>
+                                                      <div className="text-left px-5 py-2 bg-slate-200" >
+                                                      <ul className="text-[.8rem] mt-2">
+                                                      <li className={getValidationColor(validation.minLength)}>
+                                                        Password must be greater than 6 characters.
+                                                      </li>
+                                                      <li className={getValidationColor(validation.hasNumber)}>
+                                                        Password must include at least one number.
+                                                      </li>
+                                                      <li className={getValidationColor(validation.hasLetter)}>
+                                                        Password must include at least one letter.
+                                                      </li>
+                                                      <li className={getValidationColor(validation.hasSpecialChar)}>
+                                                        Password should not include special characters (e.g., @, $, #).
+                                                      </li>
+                                                    </ul>
+                                                      </div>
                                                     </div>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="level" className="block pb-2 font-semibold">Level</label>

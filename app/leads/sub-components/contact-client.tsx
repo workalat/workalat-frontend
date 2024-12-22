@@ -20,7 +20,7 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
   let [loaderMessage, setLoaderMessage] : any = useState("");
 
 
-
+ 
 
   const { generateSnackbar } : any = useSnackbar();
   const { checkBid, applyJob ,setPayPayment ,payPayment,payAsGoSession, userChatDetilas} : any = useUserContext();
@@ -43,44 +43,34 @@ export default function ContactClient({ open, onClose, job, openClientDetails, a
         generateSnackbar("Click To Contact Client", "success");
         // Display success message or handle it accordingly
     } else {
-        // console.log("Payment failed or no status received");
     }
 });
 
 
 async function handleAdd(current, user2, projectTitle) {
-  // console.log("Current", current);
-  // console.log("User", user2);
-  // console.log("Project", projectTitle);
   
   try {
     const chatRef = collection(db, "chats");
-    // console.log("ChatRef", chatRef);
     const userChatRef = collection(db, "usersChats");
-    // console.log("UserChatRef", userChatRef);
 
     const currentUser = await userChatDetilas({
       userId: current.userId,
       userType: current.userType === "client" ? "client" : "professional"
     });
-    // console.log("Current User", currentUser);
 
     const user = await userChatDetilas({
       userId: user2.clientId,
       userType: current.userType === "client" ? "professional" : "client"
     });
-    // console.log("Other User", user);
 
     // Create or reference new chat document
     const newChatRef = doc(chatRef);
-    // console.log("New chat Ref Details", newChatRef);
 
     await setDoc(newChatRef, {
       createdAt: serverTimestamp(),
       message: [],
     }, { merge: true });
 
-    // console.log("New Chat Ref created or updated");
 
     // Update chat reference for the other user
     await setDoc(doc(userChatRef, user?.data?.data?.id), {
@@ -96,7 +86,6 @@ async function handleAdd(current, user2, projectTitle) {
       })
     }, { merge: true });
 
-    // console.log("Update Current user Chat Ref");
 
     // Update chat reference for the current user
     await setDoc(doc(userChatRef, currentUser?.data?.data?.id), {
@@ -254,13 +243,9 @@ async function handleAdd(current, user2, projectTitle) {
               <WalletIcon className="text-secondary text-7xl" />
               {/* <h1 className="font-bold">Contacting {job?.clientName} will cost you {?.proposalCost} points</h1> */}
               {/* <h1 className="font-bold">This project will cost you {?.proposalCost} points</h1> */}
-              {/* <h1 className="font-bold">Contacting {job?.clientName} will cost you {?.proposalCost} points</h1> */}
-              <p>
-                Don't have enough points? {" "}
-                <Link href="/wallet" className="text-red font-bold hover:underline">
-                  Top up!
-                </Link>
-              </p>
+              <h1>You have total {userData?.bidPoints} Points in your wallet.
+                </h1>
+             
               <form className="mt-6 max-w-md mx-auto" onSubmit={handleSubmit}>
                 <TextField
                   fullWidth
@@ -271,7 +256,12 @@ async function handleAdd(current, user2, projectTitle) {
                   value={proposalMessage}
                   onChange={(e) => setProposalMessage(e.target.value)}
                 />
-                
+                 <p className='py-2'>
+                Don't have enough points? {" "}
+                <Link href="/wallet" className="text-red font-bold hover:underline">
+                  Top up!
+                </Link>
+              </p>
                
                   
                   <Button variant="contained" type="submit" className="mt-4 font-semibold" size="large">

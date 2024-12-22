@@ -20,6 +20,7 @@ import moment from "moment";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { AiOutlineSearch } from "react-icons/ai";
+import { IoMdClose } from "react-icons/io";
 
 export default function Activities() {
     // here users will be dynamically from the backend. for now i using "import { activitiesData } from "@/utils/activitiesData";" as a demo users data
@@ -402,7 +403,7 @@ export default function Activities() {
                                     <th className="p-4 text-left">Status</th>
                                     <th className="p-4 text-center">Action</th>
                                 </tr>
-                            </thead>
+                            </thead> 
                             <tbody>
                                 {allFilterData.map((user, i) => (
                                     <tr key={i} className="border-b border-black/20">
@@ -426,7 +427,7 @@ export default function Activities() {
                                         <td className="p-4 text-[15px] capitalize">{user?.transactionId.slice(0,20)}...</td>
                                         <td className="p-4 text-[15px] capitalize">{user?.des}</td>
                                         <td className="p-4 text-[15px] capitalize">
-                                            £{user?.transactionAmount} ({user?.points} Points)
+                                            £{user?.transactionAmount} (  { user?.des !== "Membership Purchase" ?  `${user?.points} Points` : `${user?.points} Leads`} )
                                         </td>
                                         <td className={`p-4 text-[15px] capitalize ${user?.transactionStatus == "success" ? "text-[#04842F]" : user?.transactionStatus == "pending" ? "text-[#FFBE00]" :( user?.transactionStatus == "cancelled" || user?.transactionStatus == "failed"  || user?.transactionStatus == "fail" || user?.transactionStatus =="refunded" )&& "text-[#FE321F]"}`}>{user?.transactionStatus}</td>
                                         <td className="p-4">
@@ -452,12 +453,15 @@ export default function Activities() {
                         isOpen={isModalOpen}
                         onRequestClose={closeModal}
                         content={
-                            <div className="py-3 px-2">
-                                <div className="flex pb-2">
+                            <div className="py-3 px-2  flex-wrap  break-words text-wrap">
+                                <div className="flex justify-end flex-wrap  break-words text-wrap">
+                                    <button onClick={closeModal} style={{fontSize : "1.4rem"}}><IoMdClose /></button>
+                                </div>
+                                <div className="flex pb-2 ">
                                     <img className="w-[60px] h-[60px] object-cover" src={modalData?.userPicture} alt="work alat" />
 
                                     <div className="px-2">
-                                        <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center">{modalData?.userName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
+                                        <h2 className="capitalize font-semibold text-[15px] flex gap-1 items-center  flex-wrap break-words text-wrap">{modalData?.userName} <span className="text-sm font-thin lowercase flex gap-0 items-center">
                                            {modalData?.userVerify && <HiMiniCheckBadge className="size-[15px] text-[#29B1FD]" /> } 
                                            {modalData?.userKycVerify && <GiCheckedShield className="size-[12px] text-[#F76C10]" /> } 
                                             </span></h2>
