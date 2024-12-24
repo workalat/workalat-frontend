@@ -6,10 +6,8 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import FlagIcon from '@mui/icons-material/Flag';
 
 import coinIcon from "@/public/icons/coin.svg";
-import emojiFlags from "emoji-flags";
 import moment from "moment";
 import DOMPurify from 'dompurify';
-import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 
@@ -103,7 +101,7 @@ export default function LeadCard({ lead }: any) {
             /> 
             </>
             }
-            <span className="text-sm font-medium">{lead?.clientCountry}</span>
+            <span className="text-sm font-medium capitalize">{lead?.clientCountry}</span>
             </div>
 
           </h3>

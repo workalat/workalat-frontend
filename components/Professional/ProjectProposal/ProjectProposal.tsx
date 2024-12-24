@@ -3,29 +3,19 @@
 import { projectsData } from "@/utils/projectClientsData"
 import ProjectsHeader from "../ProjectsHeader/ProjectsHeader";
 import { HiMiniCheckBadge } from "react-icons/hi2";
-import { FaArrowRight, FaStar } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import { AiFillCloseSquare, AiOutlineClose } from "react-icons/ai";
-import { IoCheckmarkSharp, IoFilter } from "react-icons/io5";
 import Link from "next/link";
-import AwardModal from "./AwardModal/AwardModal";
-import { BsCurrencyPound } from "react-icons/bs";
-import { MdEditSquare } from "react-icons/md";
-import CompositionLoader from "@/utils/CompositionLoader";
-import { IoMdArrowForward } from "react-icons/io";
 
 import { useUserContext } from "@/context/user_context";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSnackbar } from "@/context/snackbar_context";
 import Cookies from 'js-cookie';
 import VerifyUser from "@/app/middleware/VerifyUser"
 import { Rating, Typography } from "@mui/material";
+import axios from "axios";
 
 export default function ProjectProposal({ params }: any) {
     const dynamicData = projectsData?.find((data  : any ) => data?.projectId == params?.id);
-    // console.log(params.id);
-    // console.log(window.location.pathname);
-
     const [selectedRating, setSelectedRating] = useState(0);
 
     const handleSelect = (rating: number) => {
@@ -63,8 +53,6 @@ export default function ProjectProposal({ params }: any) {
   
       
 
-    const [awardSending, setAwardSending]  = useState<boolean>(false);
-    const [awardSent, setAwardSent] = useState<boolean>(false);
 
     useEffect(() => {
         setCurrentPath(window.location.pathname);
@@ -81,7 +69,6 @@ async function getUser(){
             if(ver?.status === "success" && ver?.userType === "professional"){
                 setUserData(ver);
                 let res = await singleProjectDetails({userId   : ver?.userId, userType : ver?.userType ,projectId : projectId, need : "proposals"});
-                console.log(res);
                 if(res.status !== 400 || res.data?.status == "success"){
                     setData(res?.data?.data); 
                     setLoading2(false);
@@ -99,6 +86,34 @@ async function getUser(){
         generateSnackbar("Some error occure, Please Try Again.", "error")
     }
 };
+
+
+const [flag, setFlag] : any = useState("");
+const fetchFlag = async (cnt) => {
+
+    if (!cnt.trim()) {
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `https://restcountries.com/v3.1/name/${cnt}`
+      );
+
+      const country = response.data[0]; // First matching country
+      if (country && country.flags && country.flags.png) {
+        setFlag(country.flags.png)
+      } else {
+        setFlag(null)
+      }
+    } catch (err) {
+      setFlag(null)
+    }
+  };
+
+
+
+
     return (
         <>
             {
@@ -140,8 +155,18 @@ async function getUser(){
                                                             { d?.professionalTotalReviews > 0 ?  (d?.professionalTotalRatings / d?.professionalTotalReviews).toFixed(1) : "0" }
                                                         </Typography>
                                                 </div>
-                                                <div className="capitalize flex items-center gap-0.5 px-2 text-[12px]"><img className="size-[13px]" src="/flag.png" alt="workalat" />
-                                                    <p>United Kingdom</p>
+                                                <div className="flex gap-2 my-1">
+                                                {
+                                                fetchFlag(d?.professionalCountry) !== null &&
+                                                <>
+                                                <img 
+                                                src={flag}
+                                                alt=""
+                                                className="w-[15px] h-[15px] object-cover rounded-sm"
+                                                /> 
+                                                </>
+                                                }
+                                                <span className="text-sm font-medium capitalize">{d?.professionalCountry}</span>
                                                 </div>
                                             </div>
                                             <p className="text-sm font-semibold capitalize">Project title: {data?.serviceNeeded} ({(data?.serviceLocationTown) ? `${data?.serviceLocationTown}` : data?.serviceLocationPostal}) </p>

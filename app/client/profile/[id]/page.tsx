@@ -17,6 +17,7 @@ import { Box, Rating, Tooltip, Typography } from "@mui/material"
 import DOMPurify from 'dompurify';
 import { useSnackbar } from "@/context/snackbar_context";
 import moment from "moment"
+import axios from "axios";
 
 
 export default function ProfilePage() {
@@ -47,7 +48,7 @@ export default function ProfilePage() {
                 }
             }
             catch(e){
-                console.log(e);
+                // console.log(e);
                 router.push("/error");
             }
         }
@@ -111,6 +112,30 @@ export default function ProfilePage() {
     
 
 
+
+    const [flag, setFlag] : any = useState("");
+    const fetchFlag = async (cnt) => {
+
+        if (!cnt.trim()) {
+        return;
+        }
+
+        try {
+        const response = await axios.get(
+            `https://restcountries.com/v3.1/name/${cnt}`
+        );
+
+        const country = response.data[0]; // First matching country
+        if (country && country.flags && country.flags.png) {
+            setFlag(country.flags.png)
+        } else {
+            setFlag(null)
+        }
+        } catch (err) {
+        setFlag(null)
+        }
+    };
+
     return (
         <>
                {loading2 ? (
@@ -163,20 +188,26 @@ export default function ProfilePage() {
                                             <div className="flex gap-1 items-center"> 
                                                
                                                 <Rating precision={0.1} value={(data.totalRatings / data.totalReviews )} readOnly />
-                                                    {/* {console.log(data.totalReviews , data.totalRatings)} */}
                                                 <p className="text-xs">{  data?.totalReviews>0 ? Number((data?.totalRatings / data?.totalReviews )).toFixed(1) : 0}</p>
                                             </div>
                                            
                                         </div>
                                         <div className="flex justify-start">
-                                            <p className="text-xs capitalize flex gap-1 items-center">
-
-                                                {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
-
-                                                {/* {data?.clientCountry} */}
-                                                </p>
-                                            <p className="text-xs capitalize ps-4">joined on {moment(data.accountCreationDate).format('MMMM D, YYYY')}</p>
+                                                <div className="flex gap-2 my-1">
+                                                {
+                                                fetchFlag(data?.clientCountry) !== null &&
+                                                <>
+                                                <img 
+                                                src={flag}
+                                                alt=""
+                                                className="w-[15px] h-[15px] object-cover rounded-sm"
+                                                /> 
+                                                </>
+                                                }
+                                                <span className="text-sm font-medium capitalize">{data?.clientCountry}</span>
+                                                </div>
                                         </div>
+                                        <p className="text-xs capitalize ps-4">joined on {moment(data.accountCreationDate).format('MMMM D, YYYY')}</p>
                                     </div>
 
                                     {/* share button */}
@@ -307,7 +338,21 @@ export default function ProfilePage() {
                                                             {review.giverRating}
                                                         </Typography>
                                                     </div>
+                                                    <div className="flex gap-2 my-1">
+                                                    {
+                                                    fetchFlag(review?.giverCountry) !== null &&
+                                                    <>
+                                                    <img 
+                                                    src={flag}
+                                                    alt=""
+                                                    className="w-[15px] h-[15px] object-cover rounded-sm"
+                                                    /> 
+                                                    </>
+                                                    }
+                                                    <span className="text-sm font-medium capitalize">{review?.giverCountry}</span>
+                                                    </div>
                                                     <p className="font-bold caption-top capitalize">{review?.projectName.slice(0,45)}...</p>
+                                                   
                                                     {/* <p className="capitalize">{review?.location}</p> */}
                                                 </div>
                                             </div>

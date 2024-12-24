@@ -1,5 +1,4 @@
 "use client"
-import AuthNavbar from "@/components/navbar/auth_navbar";
 import Profile from "@/components/Profile/Profile";
 import { useUserContext } from "@/context/user_context";
 import { useParams, useRouter } from "next/navigation";
@@ -17,7 +16,6 @@ export default function ProfilePage() {
     async function getData (){
         try{ 
             let data : any  = await  professionalDetails({userId : id});
-            console.log(data);
             if(data?.status !== 400 || data?.data?.status === "success"){
                 setData(data?.data?.data);
                 setIsData(true);

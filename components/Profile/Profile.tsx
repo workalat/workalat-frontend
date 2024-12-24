@@ -15,6 +15,7 @@ import { ReactNode, useState } from "react"
 import DOMPurify from 'dompurify';
 import { useRouter } from 'next/navigation';
 import moment from "moment"
+import axios from "axios"
 export default function Profile({data, isData}  : any ) {
     const sanitizedBio = DOMPurify.sanitize(data.professionalBio);
     let profile = 20;
@@ -24,7 +25,6 @@ export default function Profile({data, isData}  : any ) {
     (data.isPaymentVerify ? profile +=20 : profile +=0);
     
     const { generateSnackbar } = useSnackbar();
-
     const VerifiedCell = ({
         isVerified,
         Icon,
@@ -70,6 +70,30 @@ export default function Profile({data, isData}  : any ) {
         // alert('Link copied to clipboard!');
         setIsOpen(false); // Close the dropdown after copying
     };
+    
+    const [flag, setFlag] : any = useState("");
+    const fetchFlag = async (cnt) => {
+
+        if (!cnt.trim()) {
+        return;
+        }
+
+        try {
+        const response = await axios.get(
+            `https://restcountries.com/v3.1/name/${cnt}`
+        );
+
+        const country = response.data[0]; // First matching country
+        if (country && country.flags && country.flags.png) {
+            setFlag(country.flags.png)
+        } else {
+            setFlag(null)
+        }
+        } catch (err) {
+        setFlag(null)
+        }
+    };
+
     return (
         <div className="bg-white relative pb-12">
             {/* Left Image */}
@@ -110,9 +134,9 @@ export default function Profile({data, isData}  : any ) {
                                             <div className="flex gap-1 items-center"> 
                                                
                                                 <Rating precision={0.1} value={(data?.totalRatings / data?.totalReviews )} readOnly />
-                                                    {/* {console.log(data?.totalReviews , data?.totalRatings)} */}
                                                 <p className="text-xs">{  data?.totalReviews>0 ? Number((data?.totalRatings / data?.totalReviews )).toFixed(1) : 0}</p>
                                             </div>
+                                            
                                             <div className="sm:flex gap-1 items-center hidden">
                                                 <IoMdChatboxes className="size-4 text-[#EA740E]" />
                                                 <p className="text-xs">{data?.totalProjectsCompleted}</p>
@@ -132,14 +156,21 @@ export default function Profile({data, isData}  : any ) {
                                         </div>
                                         <h4 className="font-semibold text-sm sm:text-md py-1 capitalize">{data?.professionalPrimaryService}</h4>
                                         <div className="flex justify-start">
-                                            <p className="text-xs capitalize flex gap-1 items-center">
-
-                                                {/* <img className="size-[13px]" src="/flag.png" alt="workalat" /> */}
-
-                                                {/* {data?.professionalCountry} */}
-                                                </p>
-                                            <p className="text-xs capitalize ps-4">joined on {moment(data?.accountCreationDate).format('MMMM D, YYYY')}</p>
+                                        <div className="flex gap-2 my-1">
+                                                {
+                                                fetchFlag(data?.professionalCountry) !== null &&
+                                                <>
+                                                <img 
+                                                src={flag}
+                                                alt=""
+                                                className="w-[15px] h-[15px] object-cover rounded-sm"
+                                                /> 
+                                                </>
+                                                }
+                                                <span className="text-sm font-medium capitalize">{data?.professionalCountry}</span>
+                                                </div>
                                         </div>
+                                        <p className="text-xs capitalize ps-4">joined on {moment(data?.accountCreationDate).format('MMMM D, YYYY')}</p>
                                     </div>
 
                                     {/* share button */}
@@ -278,6 +309,19 @@ export default function Profile({data, isData}  : any ) {
                                                             <Typography  className='text-sm' color="text.secondary" ml={1}>
                                                             {review.giverRating}
                                                         </Typography>
+                                                    </div>
+                                                    <div className="flex gap-2 my-1">
+                                                    {
+                                                    fetchFlag(review?.giverCountry) !== null &&
+                                                    <>
+                                                    <img 
+                                                    src={flag}
+                                                    alt=""
+                                                    className="w-[15px] h-[15px] object-cover rounded-sm"
+                                                    /> 
+                                                    </>
+                                                    }
+                                                    <span className="text-sm font-medium capitalize">{review?.giverCountry}</span>
                                                     </div>
                                                     <p className="font-bold caption-top capitalize">{review?.projectName.slice(0,45)}...</p>
                                                     {/* <p className="capitalize">{review?.location}</p> */}

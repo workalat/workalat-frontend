@@ -408,7 +408,10 @@ export default function Administrator() {
                                                 }}>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="fullName" className="block pb-2 font-semibold">Full Name</label>
-                                                        <input required={true} type="text" id="fullName"  value={newAdmin?.admin_name} onChange={(e : any) => {setNewAdmin({...newAdmin, admin_name : e.target.value})}} name="fullName" className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Name" />
+                                                        <input required={true} type="text" id="fullName"  value={newAdmin?.admin_name} onChange={(e : any) => {
+                                                          console.log(e.target.value)
+                                                          setNewAdmin({...newAdmin, admin_name : e.target.value})
+                                                        }} name="fullName" className="w-full ring-[1px] ring-gray-700 rounded-md px-3 py-2" placeholder="Name" />
                                                     </div>
                                                     <div className="py-2 text-start">
                                                         <label htmlFor="email" className="block pb-2 font-semibold">Email</label>
