@@ -212,7 +212,7 @@ export default function SupportTickets() {
                                         <td className="p-4">
                                             <p className="text-[15px] font-semibold capitalize">{user?.ticketCreatorName}</p>
                                         </td>
-                                        <td className="p-4">
+                                         <td className="p-4">
                                             <p className="text-gray-500 text-[15px] capitalize">{user?.ticketNumber} | {user?.ticketSubject}</p>
                                         </td>
                                         <td className="p-4 text-[15px] capitalize">{user?.ticketRelatedProject}</td>

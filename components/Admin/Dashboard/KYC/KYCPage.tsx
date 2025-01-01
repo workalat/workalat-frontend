@@ -88,8 +88,8 @@ export default function KYCPage() {
              let clientKyc = await showAllKycData({userType : "client"});
              let professionalKyc = await showAllKycData({userType : "professional"});
              if ((clientKyc?.status === 200 && professionalKyc?.status === 200) || (clientKyc?.data?.status === "success" && professionalKyc?.data?.status === "success")) {
-                setAllKycDataClient(clientKyc?.data?.data?.reverse());
-                setAllKycDataProfessional(professionalKyc?.data?.data?.reverse())
+                setAllKycDataClient(clientKyc?.data?.data);
+                setAllKycDataProfessional(professionalKyc?.data?.data)
                 setLoading2(false);
                } else {
                  generateSnackbar(clientKyc?.response?.data?.message || "Some error occurred, Please Try Again.", "error");

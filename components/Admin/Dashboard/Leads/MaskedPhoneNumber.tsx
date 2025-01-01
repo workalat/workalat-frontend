@@ -25,7 +25,7 @@ export default function MaskedPhoneNumber({ phoneNumber }: PropsData) {
     return (
         <div className="flex items-center gap-2">
             <p className="text-[15px]">
-                {isPhoneVisible ? `+${phoneNumberStr}` : `+${maskedPhoneNumber}`}
+                {isPhoneVisible ? `${phoneNumberStr}` : `${maskedPhoneNumber}`}
             </p>
             <button onClick={handleToggleVisibility} aria-label={isPhoneVisible ? 'Hide phone number' : 'Show phone number'}>
                 {isPhoneVisible ? <FaEyeSlash className="text-[15px] text-[#07242B]" /> : <FaEye className="text-[15px] text-[#07242B]" />}

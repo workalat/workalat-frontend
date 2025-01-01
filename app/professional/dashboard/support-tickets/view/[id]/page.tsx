@@ -156,7 +156,7 @@ export default function ViewSupportTickets() {
                             <div className="flex justify-between">
                                 <div className="flex gap-3">
                                     <h4 className="text-[20px] text-white font-semibold py-2 tracking-wide">Ticket Details</h4>
-                                    <button className="bg-[#FFBE00] text-black px-4 py-1 rounded text-[12px] xl:text-[15px] font-bold capitalize">Waiting on {ticketData?.ticketStatus}</button>
+                                    <button className="bg-[#FFBE00] text-black px-4 capitalize py-1 rounded text-[12px] xl:text-[15px] font-bold"> {ticketData?.ticketStatus == "closed" ? <span>Closed</span> : <span>Waiting on {ticketData?.ticketStatus}</span> } </button>
                                 </div>
 
                             </div>
@@ -182,6 +182,7 @@ export default function ViewSupportTickets() {
 
                         {/* here is post method for post ticket reply also will be dynamic with backend operation*/}
 
+                        { ticketData?.ticketStatus !== "closed" &&
                         <div className="pt-5 pb-2">
                             <h4 className="text-[17px] font-bold tracking-wide pb-3">Post Ticket Reply</h4>
 
@@ -191,6 +192,7 @@ export default function ViewSupportTickets() {
                                 <button className="flex gap-2 justify-center items-center px-4 py-3 rounded-md bg-[#07242B] text-white text-[15px] mt-3 font-semibold" type="submit" onClick={handleReplyTicket}>Post reply <FaArrowRight className="size-3" /></button>
                             </form>
                         </div>
+                        }
 
 
                         {/* ticket chat need to dynamic it need to post method with backend for question and answer */}

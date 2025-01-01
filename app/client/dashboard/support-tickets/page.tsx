@@ -186,8 +186,11 @@ export default function SupportTickets() {
                                                 <td className="p-4 text-[15px] capitalize">{user?.ticketRelatedProject}</td>
                                                 <td className="p-4">
                                                     {/* this button will be connected with backend for some function or operation and it will dynamic */}
-                                                    {
+                                                    {/* {
                                                         (user?.ticketStatus === "admin" && user?.ticketStatus !== "closed") ? <Link href={isClientDashboard ? `/client/dashboard/support-tickets/view/${user?._id}` : `/professional/dashboard/support-tickets/view/${user?._id}`} className="flex gap-2 justify-center items-center px-2 py-2 rounded-md bg-[#7A7A7A] text-white text-[15px] font-semibold w-[200px]"><RiCloseFill className="size-[15px] rounded-sm text-[#07242B] bg-white capitalize" />Waiting on  {user?.ticketStatus}</Link> : user?.status == "closed" && <button className="px-4 py-2 rounded-md bg-[#00A770] text-white text-[15px] font-semibold">Closed</button>
+                                                    } */}
+                                                     {
+                                                            user?.ticketStatus !== "closed" ? <Link href={`/client/dashboard/support-tickets/view/${user?._id}`} className="flex gap-2 justify-center items-center px-2 py-2 rounded-md bg-[#7A7A7A] text-white text-[15px] font-semibold w-[200px]"><RiCloseFill className="size-[15px] rounded-sm text-[#07242B] bg-white capitalize" />Waiting on <span className="capitalize">{user?.ticketStatus}</span> </Link> : user?.ticketStatus == "closed" && <Link  href={`/client/dashboard/support-tickets/view/${user?._id}`} className="px-4 py-2 rounded-md bg-[#00A770] text-white text-[15px] font-semibold">Closed</Link>
                                                     }
                                                 </td>
 
